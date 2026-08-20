@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Bell, Building2, Camera, HardDrive, Link2, Moon, Palette, ScrollText, Shield, Sun, UserRound, Webhook } from 'lucide-react';
-import { Alert, Button, Card, CardBody, CardHeader, Field, Input, Select, Switch, Pressable, Box, Grid, Inline, Text, Form, Option } from '../design-system';
+import { Alert, Button, Card, CardBody, CardHeader, Field, Input, Select, Switch, Pressable, Box, Grid, Inline, Text, Form, Option, LoadingState } from '../design-system';
 import { apiRequest } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { hasPermission } from '../access';
@@ -275,7 +275,7 @@ const timezoneOptions = (() => {
     if (loadError)
         return <Box p={28}><Alert tone="danger">{loadError}</Alert></Box>;
     if (!settings)
-        return <Box p={28}><Alert tone="info">Loading Settings Center…</Alert></Box>;
+        return <Box p={28}><LoadingState title="Loading Settings Center…" text="Preparing workspace configuration and administration modules."/></Box>;
     const content = active === 'general' ? <GeneralSettings data={settings} setData={setSettings} canManage={canManage} onSaved={refresh}/> : active === 'appearance' ? <AppearanceSettings data={settings} setData={setSettings} canManage={canManage} onSaved={refresh}/> : active === 'personal' ? <PersonalSettings /> : active === 'screenshots' ? <Screenshots /> : active === 'screenshot-storage' ? <ScreenshotStorageSettings /> : active === 'notifications' ? <NotificationSettingsM13 /> : active === 'integrations' ? <IntegrationsSettingsM13 /> : active === 'api' ? <ApiSettingsM13 /> : active === 'security' ? <SecuritySettingsM13 /> : <AuditSettingsM13 />;
     return <Box className="settings-center-layout" display="flex" height="100%"><Box as="aside" className="settings-center-nav" aria-label={t('settings.center')} width={240} shrink={0} overflowY="auto" p="18px 8px" bg="var(--surface)" borderInlineEnd="1px solid var(--border)"><div className="ui-sidebar__section-label">{t('settings.center')}</div>{sections.map(section => { const Icon = section.icon; return <Pressable key={section.id} type="button" className={`ui-nav-item${active === section.id ? ' is-active' : ''}`} onClick={() => setActive(section.id)}><span className="ui-nav-item__icon"><Icon size={15}/></span><span className="ui-nav-item__label">{section.label}</span></Pressable>; })}<Box p={12} mt={12}><Alert tone={canManage ? 'info' : 'warning'}>{canManage ? 'Workspace defaults apply across modules. Personal preferences can override language/timezone per user.' : 'You have read-only access to workspace settings.'}</Alert></Box></Box><Box className="settings-center-content" flex={1} minWidth={0} overflowY="auto" p="28px 32px">{content}</Box></Box>;
 }

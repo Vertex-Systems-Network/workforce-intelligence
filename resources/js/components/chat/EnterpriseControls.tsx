@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AlertTriangle, Archive, Check, Copy, Download, FileSearch, LockKeyhole, RefreshCw, Shield, UserPlus, Users } from 'lucide-react'
 import { apiDownload, apiRequest } from '../../api/client'
-import { Alert, Badge, Button, Field, Input, Modal, Select, Textarea, Checkbox, Label, Option } from '../../design-system'
+import { useConfirmAction, Alert, Badge, Button, Field, Input, Modal, Select, Textarea, Checkbox, Label, Option, LoadingState } from '../../design-system'
 
 type ConversationEnterpriseState = {
   id: number
@@ -130,6 +130,7 @@ export function EnterpriseControls({ open, onClose, workspaceId, conversation, p
   permissions: EnterprisePermissions
   onChanged: () => Promise<void> | void
 }) {
+  const confirmAction = useConfirmAction()
   const [overview, setOverview] = useState<EnterpriseOverview | null>(null)
   const [loading, setLoading] = useState(false)
   const [busy, setBusy] = useState('')
@@ -225,7 +226,7 @@ export function EnterpriseControls({ open, onClose, workspaceId, conversation, p
 
   /** Revokes an external collaborator while keeping historical message attribution and audit records. */
   const revokeExternal = async (member: ExternalMember) => {
-    if (!window.confirm(`Revoke ${member.name || member.email || 'this collaborator'}?`)) return
+    if (!await confirmAction({ title: 'Revoke external collaborator?', description: `Revoke ${member.name || member.email || 'this collaborator'}? Historical message attribution and audit records will be preserved.`, confirmLabel: 'Revoke', danger: true })) return
     setBusy(`member-${member.id}`)
     try {
       await apiRequest(`/api/v1/chat/enterprise/external-members/${member.id}`, { method: 'PATCH', workspaceId, body: JSON.stringify({ action: 'revoke' }) })
@@ -268,7 +269,7 @@ export function EnterpriseControls({ open, onClose, workspaceId, conversation, p
 
   /** Releases one active legal hold without deleting its lifecycle record. */
   const releaseHold = async (hold: LegalHold) => {
-    if (!window.confirm(`Release legal hold “${hold.name}”?`)) return
+    if (!await confirmAction({ title: 'Release legal hold?', description: `Release legal hold “${hold.name}”? Retention deletion may resume where policy allows.`, confirmLabel: 'Release hold', danger: true })) return
     setBusy(`hold-${hold.id}`)
     try {
       await apiRequest(`/api/v1/chat/enterprise/legal-holds/${hold.id}/release`, { method: 'POST', workspaceId, body: '{}' })
@@ -331,7 +332,7 @@ export function EnterpriseControls({ open, onClose, workspaceId, conversation, p
     <div className="chat-enterprise-controls">
       {error && <Alert tone="danger">{error}</Alert>}
       {notice && <Alert tone="success">{notice}</Alert>}
-      {loading && <div className="chat-enterprise-loading"><RefreshCw size={14} /> Loading enterprise collaboration state…</div>}
+      {loading && <LoadingState compact title="Loading enterprise collaboration state…" text="Refreshing governance, external access and retention controls."/>}
       {conversation && <>
         <section className="chat-enterprise-section">
           <div className="chat-enterprise-section-title"><Shield size={15} /><div><strong>Conversation policy</strong><small>{conversation.name}</small></div></div>

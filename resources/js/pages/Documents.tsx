@@ -8,7 +8,7 @@ import { useAuth } from '../auth/AuthContext';
 import RichTextEditor from '../components/RichTextEditor';
 import { MediaPicker } from '../media/MediaPicker';
 import type { MediaAsset } from '../media/types';
-import { useConfirmAction, Alert, Badge, Button, Card, CardBody, DataGrid, Drawer, Dropdown, EmptyState, Field, FormActions, FormGrid, FormSection, IconButton, Input, Modal, Page, PageHeader, RefreshButton, Select, Stack, Switch, Tabs, Textarea, Tooltip, type DataGridColumn, Pressable, Option } from '../design-system';
+import { useConfirmAction, Alert, Badge, Button, Card, CardBody, DataGrid, Drawer, Dropdown, EmptyState, LoadingState, Field, FormActions, FormGrid, FormSection, IconButton, Input, Modal, Page, PageHeader, RefreshButton, Select, Stack, Switch, Tabs, Textarea, Tooltip, type DataGridColumn, Pressable, Option } from '../design-system';
 import { useLocalization } from '../i18n/LocalizationContext';
 import type { DocumentBatchJob, DocumentBlock, DocumentBrandKit, DocumentComment, DocumentComponent, DocumentOverview, DocumentPageMaster, DocumentTemplate, DocumentTemplateDraft, DocumentPreflight, DocumentV6Resources, DocumentVersion, GeneratedDocument, } from '../documents/types';
 import { BLOCK_ICONS, BlockInspector, CommentPanel, PageInspector, SortableBlock, blockId, documentPreflight, fileSize, findBlock, generatedPolicy, humanize, makeBlock, normalizeSettings, normalizeV6Schema, pageId, rekeyBlock, replaceBlock, type DesignerRailTab, type InspectorTab, type StudioTab, type WorkflowModal } from '../documents/studio/DocumentStudioSupport';
@@ -818,7 +818,7 @@ export default function Documents() {
         { id: 'created', header: 'Queued', sortValue: row => row.created_at ?? '', filterValue: row => row.created_at ?? '', filter: { type: 'dateRange', label: 'Queued date' }, cell: row => <span>{row.created_at ? formatDate(row.created_at) : '—'}</span> },
     ], [formatDate]);
     if (!overview)
-        return <Page><PageHeader title="Document Studio V6" description="Loading multi-page document workspace…"/><div className="document-v4-loading">Loading Document Studio…</div></Page>;
+        return <Page><PageHeader title="Document Studio V6" description="Loading multi-page document workspace…"/><LoadingState title="Loading Document Studio…" text="Preparing templates, generated documents and studio resources."/></Page>;
     return <Page className="document-v4-page">
     <PageHeader title="Document Studio V6" description="Design multi-page, data-bound, governed documents with autosave, PDF preflight, review, signatures and batch generation." actions={<><Badge tone={overview.rendering.chromium_available ? 'success' : 'warning'}>{overview.rendering.chromium_available ? 'Unicode PDF ready' : 'Legacy PDF fallback'}</Badge><Badge tone={overview.rendering.code_adapter_available ? 'success' : 'neutral'}>{overview.rendering.code_adapter_available ? 'QR / Barcode ready' : 'QR adapter optional'}</Badge><RefreshButton onRefresh={load}/><Button onClick={() => setCreating(true)} disabled={!overview.permissions.templates_manage}><Plus size={14}/> New template</Button></>}/>
     {notice && <Alert tone="info" autoHideMs={5000} onClick={() => setNotice('')}>{notice}</Alert>}

@@ -1,16 +1,18 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import Underline from '@tiptap/extension-underline'
 import { Bold, Code2, Heading2, Italic, Link2, List, ListOrdered, Quote, Redo2, Strikethrough, Underline as UnderlineIcon, Undo2 } from 'lucide-react'
-import { Button } from '../design-system'
+import { Button, Field, Input, LoadingState, Modal } from '../design-system'
 import './rich-text-editor.css'
 
 type Props = { value:string; onChange:(html:string)=>void; disabled?:boolean; placeholder?:string }
 
 /** Handles the rich text editor operation for the WorkIntel client. */ export default function RichTextEditor({value,onChange,disabled=false,placeholder='Describe the work, acceptance criteria, links, and handoff notes…'}:Props){
+  const [linkOpen,setLinkOpen]=useState(false)
+  const [linkHref,setLinkHref]=useState('https://')
   const editor=useEditor({
     extensions:[
       StarterKit,
@@ -26,18 +28,22 @@ type Props = { value:string; onChange:(html:string)=>void; disabled?:boolean; pl
 
   useEffect(()=>{ if(editor && editor.getHTML() !== (value || '<p></p>')) editor.commands.setContent(value || '', {emitUpdate:false}) },[value,editor])
   useEffect(()=>{ editor?.setEditable(!disabled) },[disabled,editor])
-  if(!editor) return <div className="task-rich-editor task-rich-editor--loading">Loading editor…</div>
+  if(!editor) return <LoadingState compact title="Loading editor…" text="Preparing rich-text controls."/>
 
-  /** Updates set link state for the current workflow. */ const setLink=()=>{
+  /** Opens an accessible link editor instead of relying on a native browser prompt. */ const setLink=()=>{
     const previous=editor.getAttributes('link').href as string|undefined
-    const href=window.prompt('Link URL',previous || 'https://')
-    if(href===null)return
-    if(!href.trim()){editor.chain().focus().unsetLink().run();return}
-    editor.chain().focus().extendMarkRange('link').setLink({href:href.trim()}).run()
+    setLinkHref(previous || 'https://')
+    setLinkOpen(true)
+  }
+  /** Applies or removes the selected link and returns focus to the editor. */ const applyLink=()=>{
+    const href=linkHref.trim()
+    if(!href)editor.chain().focus().unsetLink().run()
+    else editor.chain().focus().extendMarkRange('link').setLink({href}).run()
+    setLinkOpen(false)
   }
   /** Handles the tool operation for the WorkIntel client. */ const tool=(title:string,active:boolean,onClick:()=>void,icon:ReactNode)=><Button type="button" size="sm" variant={active?'secondary':'ghost'} iconOnly aria-label={title} title={title} onClick={onClick}>{icon}</Button>
 
-  return <div className={`task-rich-editor${disabled?' is-disabled':''}`}>
+  return <><div className={`task-rich-editor${disabled?' is-disabled':''}`}>
     {!disabled&&<div className="task-rich-editor__toolbar">
       {tool('Undo',false,()=>editor.chain().focus().undo().run(),<Undo2 size={14}/>)}
       {tool('Redo',false,()=>editor.chain().focus().redo().run(),<Redo2 size={14}/>)}
@@ -54,5 +60,5 @@ type Props = { value:string; onChange:(html:string)=>void; disabled?:boolean; pl
       {tool('Link',editor.isActive('link'),setLink,<Link2 size={14}/>)}
     </div>}
     <EditorContent editor={editor}/>
-  </div>
+  </div><Modal open={linkOpen} onClose={()=>setLinkOpen(false)} title="Edit link" description="Enter a URL for the selected text. Leave it blank to remove the link." size="sm" footer={<><Button variant="outline" onClick={()=>setLinkOpen(false)}>Cancel</Button><Button variant="primary" onClick={applyLink}>Apply link</Button></>}><Field label="Link URL"><Input autoFocus value={linkHref} onChange={event=>setLinkHref(event.target.value)} placeholder="https://example.com" onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();applyLink()}}}/></Field></Modal></>
 }
