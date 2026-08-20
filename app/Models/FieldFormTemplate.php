@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\HasMany;
+/** Provides field form template behavior within the WorkIntel application. */ class FieldFormTemplate extends Model{protected $fillable=['uuid','workspace_id','name','category','status','requires_work_order','requires_location','created_by'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['requires_work_order'=>'boolean','requires_location'=>'boolean'];}/** Handles the fields operation for the current WorkIntel workflow. */ public function fields():HasMany{return $this->hasMany(FieldFormField::class)->orderBy('position');}}

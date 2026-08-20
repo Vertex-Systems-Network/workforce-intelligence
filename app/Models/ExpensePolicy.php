@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;
+/** Provides expense policy behavior within the WorkIntel application. */ class ExpensePolicy extends Model{protected $fillable=['uuid','workspace_id','name','status','currency','receipt_required_over','mileage_rate','daily_per_diem','max_claim_amount','allowed_categories','requires_approval','created_by'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['receipt_required_over'=>'decimal:2','mileage_rate'=>'decimal:3','daily_per_diem'=>'decimal:2','max_claim_amount'=>'decimal:2','allowed_categories'=>'array','requires_approval'=>'boolean'];}}

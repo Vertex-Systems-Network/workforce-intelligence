@@ -1,0 +1,4 @@
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\BelongsTo;
+/** Provides employee document behavior within the WorkIntel application. */ class EmployeeDocument extends Model { protected $fillable=['uuid','workspace_id','member_id','folder_id','title','document_type','file_name','storage_path','mime_type','size_bytes','sha256','expires_on','visibility','uploaded_by']; /** Defines attribute casting rules for the model. */ protected function casts():array{return ['expires_on'=>'date'];} /** Handles the member operation for the current WorkIntel workflow. */ public function member():BelongsTo{return $this->belongsTo(WorkspaceMember::class,'member_id');} /** Handles the folder operation for the current WorkIntel workflow. */ public function folder():BelongsTo{return $this->belongsTo(EmployeeDocumentFolder::class,'folder_id');} }

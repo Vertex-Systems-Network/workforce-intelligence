@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\HasMany;
+/** Provides field form submission behavior within the WorkIntel application. */ class FieldFormSubmission extends Model{public $timestamps=false;protected $fillable=['uuid','workspace_id','field_form_template_id','member_id','field_work_order_id','status','latitude','longitude','submitted_at','created_at'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['submitted_at'=>'datetime','created_at'=>'datetime'];}/** Handles the answers operation for the current WorkIntel workflow. */ public function answers():HasMany{return $this->hasMany(FieldFormAnswer::class);}}

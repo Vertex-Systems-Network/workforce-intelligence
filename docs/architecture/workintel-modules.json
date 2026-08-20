@@ -1,0 +1,644 @@
+{
+  "schemaVersion": 1,
+  "product": "WorkIntel Workforce Intelligence",
+  "architecture": "modular-monolith",
+  "principles": {
+    "workspaceShellOwnsBusinessModules": true,
+    "platformConsoleIsSeparateSurface": true,
+    "featurePagesUseDesignSystemOnly": true,
+    "oneCanonicalDestinationPerIntent": true,
+    "descriptionsRequiredForPrimaryPages": true,
+    "lucideIconsOnly": true
+  },
+  "modules": [
+    {
+      "id": "home",
+      "label": "Home & Command Center",
+      "description": "Personalized workspace start, live status, notifications, recent work and global commands.",
+      "order": 10
+    },
+    {
+      "id": "work-management",
+      "label": "Work Management",
+      "description": "Projects, tasks, approvals and automations used to plan and execute work.",
+      "order": 20
+    },
+    {
+      "id": "collaboration",
+      "label": "Collaboration",
+      "description": "Chat, channels, direct conversations and contextual collaboration.",
+      "order": 30
+    },
+    {
+      "id": "time-attendance",
+      "label": "Time & Attendance",
+      "description": "Attendance, timesheets, leave, shifts and scheduling.",
+      "order": 40
+    },
+    {
+      "id": "people-hr",
+      "label": "People & HR",
+      "description": "People directory, HRIS, organization and performance lifecycle.",
+      "order": 50
+    },
+    {
+      "id": "workforce-operations",
+      "label": "Workforce Operations",
+      "description": "Activity tracking, apps/sites, screenshots, devices and field workforce operations.",
+      "order": 60
+    },
+    {
+      "id": "clients-commerce",
+      "label": "Clients & Commerce",
+      "description": "Clients, client portal commerce, payments and customer-facing business workflows.",
+      "order": 70
+    },
+    {
+      "id": "content-studio",
+      "label": "Content Studio",
+      "description": "Media Library, Website Studio and Document Studio.",
+      "order": 80
+    },
+    {
+      "id": "finance-payroll",
+      "label": "Finance & Payroll",
+      "description": "Expenses, procurement, job costing, payroll, compliance and billing.",
+      "order": 90
+    },
+    {
+      "id": "intelligence",
+      "label": "Intelligence & Reports",
+      "description": "Workforce intelligence, analytics, saved reports and exports.",
+      "order": 100
+    },
+    {
+      "id": "administration",
+      "label": "Administration",
+      "description": "Workspace modules, roles, settings, enterprise controls, integrations and lifecycle administration.",
+      "order": 110
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "account-support",
+      "label": "Account & Support",
+      "description": "Personal account, installation center and support utilities.",
+      "kind": "utility"
+    },
+    {
+      "id": "platform-console",
+      "label": "Platform Console",
+      "description": "Operator/seller tenant, plans, platform governance and system operations. Never mixed into a tenant workspace menu.",
+      "kind": "separate-app-shell"
+    },
+    {
+      "id": "public-experience",
+      "label": "Public Experience",
+      "description": "Marketing website, published websites, document signing and client-facing public routes.",
+      "kind": "public"
+    },
+    {
+      "id": "authentication",
+      "label": "Authentication",
+      "description": "Login, registration, password recovery and forced password change.",
+      "kind": "public-auth"
+    }
+  ],
+  "screenMap": {
+    "overview": {
+      "component": "Overview",
+      "target": "home",
+      "decision": "KEEP",
+      "label": "Home",
+      "description": "Workspace command center and personalized summary."
+    },
+    "live": {
+      "component": "Live",
+      "target": "home",
+      "decision": "MOVE",
+      "label": "Live Workforce",
+      "description": "Detailed real-time workforce state; summary belongs on Home."
+    },
+    "projects": {
+      "component": "Projects",
+      "target": "work-management",
+      "decision": "KEEP",
+      "label": "Projects",
+      "description": "Project portfolio and delivery context."
+    },
+    "tasks": {
+      "component": "Tasks",
+      "target": "work-management",
+      "decision": "KEEP",
+      "label": "Tasks",
+      "description": "Personal and team task execution."
+    },
+    "approvals": {
+      "component": "Approvals",
+      "target": "work-management",
+      "decision": "MOVE",
+      "label": "Approvals",
+      "description": "Unified approval inbox and workflow decisions."
+    },
+    "automations": {
+      "component": "Automations",
+      "target": "work-management",
+      "decision": "MOVE",
+      "label": "Automations",
+      "description": "Work automation definitions and run history."
+    },
+    "chat": {
+      "component": "Chat",
+      "target": "collaboration",
+      "decision": "KEEP",
+      "label": "Chat",
+      "description": "Channels, direct messages and contextual collaboration."
+    },
+    "attendance": {
+      "component": "Attendance",
+      "target": "time-attendance",
+      "decision": "KEEP",
+      "label": "Attendance",
+      "description": "Attendance events, exceptions and policies."
+    },
+    "time": {
+      "component": "Timesheets",
+      "target": "time-attendance",
+      "decision": "RENAME",
+      "label": "Timesheets",
+      "description": "Tracked time, submissions and approvals."
+    },
+    "leave": {
+      "component": "Leave",
+      "target": "time-attendance",
+      "decision": "MOVE",
+      "label": "Leave",
+      "description": "Leave requests, balances and policy workflows."
+    },
+    "schedule": {
+      "component": "SchedulingHub",
+      "target": "time-attendance",
+      "decision": "RENAME",
+      "label": "Scheduling",
+      "description": "Canonical schedule destination for rosters, shifts and requests."
+    },
+    "shifts": {
+      "component": "Shifts",
+      "target": "time-attendance",
+      "decision": "MERGE",
+      "mergeInto": "schedule",
+      "label": "Shifts",
+      "description": "Legacy/secondary shift destination; functionality moves under Scheduling."
+    },
+    "people": {
+      "component": "People",
+      "target": "people-hr",
+      "decision": "KEEP",
+      "label": "People",
+      "description": "People directory and workforce identity."
+    },
+    "hris": {
+      "component": "Hris",
+      "target": "people-hr",
+      "decision": "MOVE",
+      "label": "HRIS",
+      "description": "Employee records, documents, lifecycle and assets."
+    },
+    "organization": {
+      "component": "Organization",
+      "target": "people-hr",
+      "decision": "MOVE",
+      "label": "Organization",
+      "description": "Departments, teams and reporting structure."
+    },
+    "performance": {
+      "component": "Performance",
+      "target": "people-hr",
+      "decision": "MOVE",
+      "label": "Performance",
+      "description": "Goals, reviews, learning and growth."
+    },
+    "activity": {
+      "component": "Activity",
+      "target": "workforce-operations",
+      "decision": "MOVE",
+      "label": "Activity Tracking",
+      "description": "Desktop/browser activity evidence and rules."
+    },
+    "apps": {
+      "component": "AppsSites",
+      "target": "workforce-operations",
+      "decision": "RENAME",
+      "label": "Apps & Websites",
+      "description": "Application and website activity breakdown."
+    },
+    "screenshots": {
+      "component": "Screenshots",
+      "target": "workforce-operations",
+      "decision": "MOVE",
+      "label": "Screenshots",
+      "description": "Screenshot review, retention and storage operations."
+    },
+    "devices": {
+      "component": "Devices",
+      "target": "workforce-operations",
+      "decision": "MOVE",
+      "label": "Devices & Agents",
+      "description": "Desktop/browser enrollment and device operations."
+    },
+    "field": {
+      "component": "FieldWorkforce",
+      "target": "workforce-operations",
+      "decision": "MOVE",
+      "label": "Field Workforce",
+      "description": "Field work orders, checkpoints, forms and incidents."
+    },
+    "clients": {
+      "component": "Clients",
+      "target": "clients-commerce",
+      "decision": "KEEP",
+      "label": "Clients",
+      "description": "Client records, portal and account relationships."
+    },
+    "client-commerce": {
+      "component": "ClientCommerce",
+      "target": "clients-commerce",
+      "decision": "RENAME",
+      "label": "Client Billing & Payments",
+      "description": "Client invoices, payment actions and recurring billing."
+    },
+    "media": {
+      "component": "MediaLibrary",
+      "target": "content-studio",
+      "decision": "KEEP",
+      "label": "Media Library",
+      "description": "Reusable digital assets and upload workflows."
+    },
+    "website": {
+      "component": "WebsiteStudio",
+      "target": "content-studio",
+      "decision": "KEEP",
+      "label": "Website Studio",
+      "description": "Visual website creation, preview and publishing."
+    },
+    "documents": {
+      "component": "Documents",
+      "target": "content-studio",
+      "decision": "KEEP",
+      "label": "Document Studio",
+      "description": "Templates, generated documents, review and signing."
+    },
+    "finance": {
+      "component": "FinanceOps",
+      "target": "finance-payroll",
+      "decision": "RENAME",
+      "label": "Expenses & Procurement",
+      "description": "Expenses, procurement, cost centers and job costing."
+    },
+    "payroll": {
+      "component": "Payroll",
+      "target": "finance-payroll",
+      "decision": "KEEP",
+      "label": "Payroll",
+      "description": "Payroll calculations, approvals and pay history."
+    },
+    "payroll-compliance": {
+      "component": "PayrollCompliance",
+      "target": "finance-payroll",
+      "decision": "MOVE",
+      "label": "Payroll Compliance",
+      "description": "Compliance, exports, benefits and contractors."
+    },
+    "billing": {
+      "component": "Billing",
+      "target": "finance-payroll",
+      "decision": "MOVE",
+      "label": "Workspace Billing",
+      "description": "Workspace subscription and plan management."
+    },
+    "insights": {
+      "component": "Insights",
+      "target": "intelligence",
+      "decision": "RENAME",
+      "label": "Workforce Intelligence",
+      "description": "Explainable workforce and staffing signals."
+    },
+    "reports": {
+      "component": "Reports",
+      "target": "intelligence",
+      "decision": "MOVE",
+      "label": "Reports",
+      "description": "Saved reports, scheduled reports and exports."
+    },
+    "modules": {
+      "component": "Modules",
+      "target": "administration",
+      "decision": "KEEP",
+      "label": "Modules",
+      "description": "Workspace capability enablement and module dependencies."
+    },
+    "access": {
+      "component": "AccessControl",
+      "target": "administration",
+      "decision": "RENAME",
+      "label": "Roles & Access",
+      "description": "Roles, permissions, scopes and user access."
+    },
+    "settings": {
+      "component": "Settings",
+      "target": "administration",
+      "decision": "MOVE",
+      "label": "Settings",
+      "description": "Workspace configuration, branding and preferences."
+    },
+    "enterprise": {
+      "component": "Enterprise",
+      "target": "administration",
+      "decision": "MOVE",
+      "label": "Enterprise Governance",
+      "description": "Identity, SCIM, security and governance controls."
+    },
+    "trash": {
+      "component": "TrashCenter",
+      "target": "administration",
+      "decision": "MOVE",
+      "label": "Trash & Recovery",
+      "description": "Recoverable deletions and lifecycle administration."
+    },
+    "platform": {
+      "component": "SellerPlatformApp",
+      "target": "platform-console",
+      "decision": "REMOVE",
+      "label": "Platform Console",
+      "description": "Legacy tenant Platform page retired; platform operators use the dedicated seller/platform console.",
+      "canonicalPath": "/seller"
+    },
+    "downloads": {
+      "component": "Downloads",
+      "target": "account-support",
+      "decision": "MOVE",
+      "label": "Installation Center",
+      "description": "Desktop/browser installers and setup guidance."
+    },
+    "account": {
+      "component": "MyAccess",
+      "target": "account-support",
+      "decision": "MOVE",
+      "label": "My Account",
+      "description": "Personal profile, security and access details."
+    }
+  },
+  "nonSidebarPages": {
+    "EmployeeProfile": {
+      "target": "people-hr",
+      "decision": "KEEP",
+      "description": "People detail route reached from the directory."
+    },
+    "MarketingWebsite": {
+      "target": "public-experience",
+      "decision": "KEEP",
+      "description": "Public marketing surface."
+    },
+    "SellerConsole": {
+      "target": "platform-console",
+      "decision": "KEEP",
+      "description": "Dedicated seller/operator console surface."
+    },
+    "Scheduling": {
+      "target": "time-attendance",
+      "decision": "REMOVE",
+      "replacement": "SchedulingHub",
+      "description": "Legacy duplicate scheduling implementation; no canonical sidebar route should target it."
+    }
+  },
+  "routeFileMap": {
+    "api.php": {
+      "target": "multiple",
+      "decision": "SPLIT",
+      "description": "Legacy mixed API registry; progressively move domain routes into owned module route files."
+    },
+    "automation.php": {
+      "target": "work-management",
+      "decision": "MOVE"
+    },
+    "chat.php": {
+      "target": "collaboration",
+      "decision": "MOVE"
+    },
+    "commerce.php": {
+      "target": "clients-commerce",
+      "decision": "MOVE"
+    },
+    "documents.php": {
+      "target": "content-studio",
+      "decision": "MOVE"
+    },
+    "enterprise.php": {
+      "target": "administration",
+      "decision": "MOVE"
+    },
+    "finance_ops.php": {
+      "target": "finance-payroll",
+      "decision": "MOVE"
+    },
+    "hris.php": {
+      "target": "people-hr",
+      "decision": "MOVE"
+    },
+    "intelligence.php": {
+      "target": "intelligence",
+      "decision": "MOVE"
+    },
+    "mobile_field.php": {
+      "target": "workforce-operations",
+      "decision": "MOVE"
+    },
+    "payroll_compliance.php": {
+      "target": "finance-payroll",
+      "decision": "MOVE"
+    },
+    "performance.php": {
+      "target": "people-hr",
+      "decision": "MOVE"
+    },
+    "platform.php": {
+      "target": "platform-console",
+      "decision": "MOVE"
+    },
+    "website.php": {
+      "target": "content-studio",
+      "decision": "MOVE"
+    },
+    "web.php": {
+      "target": "public-experience",
+      "decision": "KEEP"
+    },
+    "channels.php": {
+      "target": "collaboration",
+      "decision": "KEEP"
+    },
+    "console.php": {
+      "target": "administration",
+      "decision": "KEEP"
+    }
+  },
+  "currentModuleMap": {
+    "people": "people-hr",
+    "organization": "people-hr",
+    "projects": "work-management",
+    "tasks": "work-management",
+    "time": "time-attendance",
+    "attendance": "time-attendance",
+    "scheduling": "time-attendance",
+    "approvals": "work-management",
+    "activity": "workforce-operations",
+    "screenshots": "workforce-operations",
+    "devices": "workforce-operations",
+    "clients": "clients-commerce",
+    "hris": "people-hr",
+    "performance": "people-hr",
+    "payroll": "finance-payroll",
+    "payroll-compliance": "finance-payroll",
+    "finance": "finance-payroll",
+    "reports": "intelligence",
+    "documents": "content-studio",
+    "website": "content-studio",
+    "chat": "collaboration",
+    "intelligence": "intelligence",
+    "field": "workforce-operations",
+    "automations": "work-management",
+    "enterprise": "administration",
+    "platform": "platform-console"
+  },
+  "permissionGroupMap": {
+    "People": "people-hr",
+    "Organization": "people-hr",
+    "Projects": "work-management",
+    "Tasks": "work-management",
+    "Time": "time-attendance",
+    "Attendance": "time-attendance",
+    "Scheduling": "time-attendance",
+    "Approvals": "work-management",
+    "Activity": "workforce-operations",
+    "Screenshots": "workforce-operations",
+    "Payroll": "finance-payroll",
+    "Reports": "intelligence",
+    "Documents": "content-studio",
+    "Website": "content-studio",
+    "Media": "content-studio",
+    "Lifecycle": "administration",
+    "Chat": "collaboration",
+    "Clients": "clients-commerce",
+    "Devices": "workforce-operations",
+    "Settings": "administration",
+    "Access": "administration",
+    "Modules": "administration",
+    "Billing": "finance-payroll",
+    "Notifications": "home",
+    "Integrations": "administration",
+    "API": "administration",
+    "Security": "administration",
+    "HRIS": "people-hr",
+    "Performance": "people-hr",
+    "Expenses": "finance-payroll",
+    "Procurement": "finance-payroll",
+    "Job Costing": "finance-payroll",
+    "Finance": "finance-payroll",
+    "Payroll Compliance": "finance-payroll",
+    "Field Workforce": "workforce-operations",
+    "Enterprise": "administration",
+    "Automations": "work-management",
+    "Intelligence": "intelligence",
+    "Platform": "platform-console"
+  },
+  "routePrefixMap": {
+    "api/v1/public-websites": "public-experience",
+    "api/v1/public/documents": "public-experience",
+    "api/v1/public": "public-experience",
+    "storage/": "public-experience",
+    "{path?}": "home",
+    "api/v1/auth": "authentication",
+    "api/v1/mfa": "authentication",
+    "sanctum/": "authentication",
+    "api/v1/projects": "work-management",
+    "api/v1/tasks": "work-management",
+    "api/v1/task-workflow": "work-management",
+    "api/v1/approvals": "work-management",
+    "api/v1/approval-workflows": "work-management",
+    "api/v1/approval-delegations": "work-management",
+    "api/v1/automations": "work-management",
+    "api/v1/automation-runs": "work-management",
+    "api/v1/automation-dead-letters": "work-management",
+    "api/v1/automation-incoming-hooks": "work-management",
+    "api/incoming/v1/automations": "work-management",
+    "api/v1/chat": "collaboration",
+    "broadcasting/auth": "collaboration",
+    "api/v1/attendance": "time-attendance",
+    "api/v1/leave": "time-attendance",
+    "api/v1/holidays": "time-attendance",
+    "api/v1/scheduling": "time-attendance",
+    "api/v1/shifts": "time-attendance",
+    "api/v1/shift-assignments": "time-attendance",
+    "api/v1/timesheets": "time-attendance",
+    "api/v1/time-entries": "time-attendance",
+    "api/v1/timer": "time-attendance",
+    "api/v1/people": "people-hr",
+    "api/v1/hris": "people-hr",
+    "api/v1/organization": "people-hr",
+    "api/v1/performance": "people-hr",
+    "api/v1/activity-tracking": "workforce-operations",
+    "api/v1/live-workforce": "workforce-operations",
+    "api/v1/screenshots": "workforce-operations",
+    "api/v1/devices": "workforce-operations",
+    "api/v1/field": "workforce-operations",
+    "api/v1/mobile": "workforce-operations",
+    "api/v1/agent": "workforce-operations",
+    "api/v1/browser": "workforce-operations",
+    "api/v1/clients": "clients-commerce",
+    "api/v1/client-commerce": "clients-commerce",
+    "api/v1/client-invoices": "clients-commerce",
+    "api/v1/client-reports": "clients-commerce",
+    "api/v1/client-portal": "clients-commerce",
+    "api/v1/documents": "content-studio",
+    "api/v1/website": "content-studio",
+    "api/v1/media": "content-studio",
+    "api/v1/finance-ops": "finance-payroll",
+    "api/v1/payroll-compliance": "finance-payroll",
+    "api/v1/payroll": "finance-payroll",
+    "api/v1/billing": "finance-payroll",
+    "api/v1/intelligence": "intelligence",
+    "api/v1/reports": "intelligence",
+    "api/v1/report-runs": "intelligence",
+    "api/v1/seller": "platform-console",
+    "api/v1/platform": "platform-console",
+    "api/partner/": "platform-console",
+    "api/platform/": "platform-console",
+    "api/v1/commerce": "platform-console",
+    "health/": "platform-console",
+    "up": "platform-console",
+    "api/v1/installation-center": "account-support",
+    "api/v1/releases": "account-support",
+    "api/v1/access-control": "administration",
+    "api/v1/modules": "administration",
+    "api/v1/settings": "administration",
+    "api/v1/enterprise": "administration",
+    "api/v1/enterprise-sso": "administration",
+    "api/scim/": "administration",
+    "api/v1/integrations": "administration",
+    "api/v1/api-keys": "administration",
+    "api/v1/webhooks": "administration",
+    "api/v1/webhook-deliveries": "administration",
+    "api/v1/security-events": "administration",
+    "api/v1/security-integrations": "administration",
+    "api/v1/audit-logs": "administration",
+    "api/v1/trash": "administration",
+    "api/v1/lifecycle": "administration",
+    "api/v1/ui": "administration",
+    "api/v1/workspace": "administration",
+    "api/v1/localization": "administration",
+    "api/public/v1": "administration",
+    "api/v1/search": "home",
+    "api/v1/notifications": "home",
+    "api/v1/notification-preferences": "home"
+  }
+}

@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;
+/** Provides mobile access token behavior within the WorkIntel application. */ class MobileAccessToken extends Model{public $timestamps=false;protected $fillable=['uuid','workspace_id','user_id','member_id','token_hash','token_prefix','device_uuid','platform','device_name','app_version','push_token_encrypted','last_used_at','last_used_ip','expires_at','revoked_at','created_at'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['last_used_at'=>'datetime','expires_at'=>'datetime','revoked_at'=>'datetime','created_at'=>'datetime'];}}

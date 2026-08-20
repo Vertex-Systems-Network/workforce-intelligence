@@ -1,0 +1,4 @@
+<?php
+namespace App\Models;
+use App\Casts\DateOnly;use Illuminate\Database\Eloquent\Model;
+/** Provides termination settlement behavior within the WorkIntel application. */ class TerminationSettlement extends Model{protected $fillable=['uuid','workspace_id','member_id','payroll_compliance_pack_id','currency','termination_date','service_years','base_amount','leave_payout','other_earnings','deductions','total_amount','status','calculation_snapshot','payroll_run_id','created_by','approved_by','approved_at'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['termination_date'=>DateOnly::class,'service_years'=>'decimal:3','base_amount'=>'decimal:2','leave_payout'=>'decimal:2','other_earnings'=>'decimal:2','deductions'=>'decimal:2','total_amount'=>'decimal:2','calculation_snapshot'=>'array','approved_at'=>'datetime'];}}

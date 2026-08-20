@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use App\Casts\DateOnly;use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\HasMany;
+/** Provides compensation review cycle behavior within the WorkIntel application. */ class CompensationReviewCycle extends Model{protected $fillable=['uuid','workspace_id','name','start_date','end_date','status','currency','budget_amount','created_by'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['start_date'=>DateOnly::class,'end_date'=>DateOnly::class,'budget_amount'=>'decimal:2'];}/** Handles the items operation for the current WorkIntel workflow. */ public function items():HasMany{return $this->hasMany(CompensationReviewItem::class,'cycle_id');}}

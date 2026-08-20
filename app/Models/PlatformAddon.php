@@ -1,0 +1,4 @@
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\HasMany;
+/** Provides platform addon behavior within the WorkIntel application. */ class PlatformAddon extends Model{protected $fillable=['uuid','name','slug','description','category','status','pricing_mode','currency','monthly_price','unit_price','included_quantity','unit_name','entitlement_key','entitlement_value','entitlement_mode','eligible_plans'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['monthly_price'=>'decimal:2','unit_price'=>'decimal:4','included_quantity'=>'decimal:4','entitlement_value'=>'array','eligible_plans'=>'array'];}/** Handles the subscriptions operation for the current WorkIntel workflow. */ public function subscriptions():HasMany{return $this->hasMany(WorkspaceAddon::class);}}

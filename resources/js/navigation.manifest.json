@@ -1,0 +1,674 @@
+{
+  "employee": [
+    {
+      "id": "home",
+      "labelKey": "group.home",
+      "items": [
+        [
+          "overview"
+        ]
+      ]
+    },
+    {
+      "id": "work-management",
+      "labelKey": "group.work",
+      "items": [
+        [
+          "approvals",
+          "navigation.my_requests"
+        ],
+        [
+          "projects"
+        ],
+        [
+          "tasks",
+          "navigation.my_tasks"
+        ]
+      ]
+    },
+    {
+      "id": "collaboration",
+      "labelKey": "group.collaboration",
+      "items": [
+        [
+          "chat"
+        ]
+      ]
+    },
+    {
+      "id": "time-attendance",
+      "labelKey": "group.time_attendance",
+      "items": [
+        [
+          "schedule",
+          "navigation.my_schedule"
+        ],
+        [
+          "attendance",
+          "navigation.my_attendance"
+        ],
+        [
+          "leave",
+          "navigation.my_leave"
+        ],
+        [
+          "time",
+          "navigation.my_timesheets"
+        ]
+      ]
+    },
+    {
+      "id": "people-hr",
+      "labelKey": "group.people",
+      "items": [
+        [
+          "organization"
+        ],
+        [
+          "performance",
+          "navigation.my_growth"
+        ]
+      ]
+    },
+    {
+      "id": "workforce-operations",
+      "labelKey": "group.operations",
+      "items": [
+        [
+          "activity",
+          "navigation.my_activity"
+        ],
+        [
+          "screenshots",
+          "navigation.my_screenshots"
+        ],
+        [
+          "field",
+          "navigation.my_field_work"
+        ]
+      ]
+    },
+    {
+      "id": "finance-payroll",
+      "labelKey": "group.money",
+      "items": [
+        [
+          "payroll",
+          "navigation.my_pay"
+        ],
+        [
+          "finance",
+          "navigation.my_expenses"
+        ]
+      ]
+    },
+    {
+      "id": "intelligence",
+      "labelKey": "group.insights",
+      "items": [
+        [
+          "insights",
+          "navigation.my_intelligence"
+        ]
+      ]
+    },
+    {
+      "id": "account-support",
+      "labelKey": "group.account",
+      "items": [
+        [
+          "downloads"
+        ],
+        [
+          "account"
+        ]
+      ]
+    }
+  ],
+  "payroll-manager": [
+    {
+      "id": "work-management",
+      "labelKey": "group.work",
+      "items": [
+        [
+          "approvals"
+        ],
+        [
+          "automations",
+          "navigation.automation_runs"
+        ]
+      ]
+    },
+    {
+      "id": "collaboration",
+      "labelKey": "group.collaboration",
+      "items": [
+        [
+          "chat"
+        ]
+      ]
+    },
+    {
+      "id": "time-attendance",
+      "labelKey": "group.time_attendance",
+      "items": [
+        [
+          "attendance"
+        ],
+        [
+          "time",
+          "navigation.approved_time"
+        ]
+      ]
+    },
+    {
+      "id": "people-hr",
+      "labelKey": "group.people",
+      "items": [
+        [
+          "people"
+        ],
+        [
+          "performance"
+        ]
+      ]
+    },
+    {
+      "id": "content-studio",
+      "labelKey": "group.content",
+      "items": [
+        [
+          "documents"
+        ],
+        [
+          "media"
+        ]
+      ]
+    },
+    {
+      "id": "finance-payroll",
+      "labelKey": "group.money",
+      "items": [
+        [
+          "payroll",
+          "navigation.payroll_runs"
+        ],
+        [
+          "finance",
+          "navigation.expense_reimbursements"
+        ],
+        [
+          "payroll-compliance"
+        ]
+      ]
+    },
+    {
+      "id": "intelligence",
+      "labelKey": "group.insights",
+      "items": [
+        [
+          "insights"
+        ],
+        [
+          "reports"
+        ]
+      ]
+    },
+    {
+      "id": "account-support",
+      "labelKey": "group.account",
+      "items": [
+        [
+          "downloads"
+        ],
+        [
+          "account"
+        ]
+      ]
+    }
+  ],
+  "hr": [
+    {
+      "id": "work-management",
+      "labelKey": "group.work",
+      "items": [
+        [
+          "approvals"
+        ],
+        [
+          "automations",
+          "navigation.automation_runs"
+        ]
+      ]
+    },
+    {
+      "id": "collaboration",
+      "labelKey": "group.collaboration",
+      "items": [
+        [
+          "chat"
+        ]
+      ]
+    },
+    {
+      "id": "time-attendance",
+      "labelKey": "group.time_attendance",
+      "items": [
+        [
+          "schedule"
+        ],
+        [
+          "attendance",
+          "navigation.team_attendance"
+        ],
+        [
+          "leave"
+        ],
+        [
+          "time"
+        ]
+      ]
+    },
+    {
+      "id": "people-hr",
+      "labelKey": "group.people",
+      "items": [
+        [
+          "people"
+        ],
+        [
+          "hris"
+        ],
+        [
+          "organization"
+        ],
+        [
+          "performance"
+        ]
+      ]
+    },
+    {
+      "id": "workforce-operations",
+      "labelKey": "group.operations",
+      "items": [
+        [
+          "devices"
+        ]
+      ]
+    },
+    {
+      "id": "content-studio",
+      "labelKey": "group.content",
+      "items": [
+        [
+          "documents"
+        ],
+        [
+          "media"
+        ]
+      ]
+    },
+    {
+      "id": "finance-payroll",
+      "labelKey": "group.money",
+      "items": [
+        [
+          "finance"
+        ]
+      ]
+    },
+    {
+      "id": "intelligence",
+      "labelKey": "group.insights",
+      "items": [
+        [
+          "insights"
+        ],
+        [
+          "reports"
+        ]
+      ]
+    },
+    {
+      "id": "account-support",
+      "labelKey": "group.account",
+      "items": [
+        [
+          "downloads"
+        ],
+        [
+          "account"
+        ]
+      ]
+    }
+  ],
+  "manager": [
+    {
+      "id": "home",
+      "labelKey": "group.home",
+      "items": [
+        [
+          "overview"
+        ],
+        [
+          "live",
+          "navigation.live_team"
+        ]
+      ]
+    },
+    {
+      "id": "work-management",
+      "labelKey": "group.work",
+      "items": [
+        [
+          "approvals"
+        ],
+        [
+          "projects"
+        ],
+        [
+          "tasks",
+          "navigation.team_tasks"
+        ],
+        [
+          "automations",
+          "navigation.automation_runs"
+        ]
+      ]
+    },
+    {
+      "id": "collaboration",
+      "labelKey": "group.collaboration",
+      "items": [
+        [
+          "chat"
+        ]
+      ]
+    },
+    {
+      "id": "time-attendance",
+      "labelKey": "group.time_attendance",
+      "items": [
+        [
+          "schedule",
+          "navigation.team_schedule"
+        ],
+        [
+          "attendance",
+          "navigation.team_attendance"
+        ],
+        [
+          "leave",
+          "navigation.team_leave"
+        ],
+        [
+          "time",
+          "navigation.team_timesheets"
+        ]
+      ]
+    },
+    {
+      "id": "people-hr",
+      "labelKey": "group.people",
+      "items": [
+        [
+          "people"
+        ],
+        [
+          "performance"
+        ]
+      ]
+    },
+    {
+      "id": "workforce-operations",
+      "labelKey": "group.operations",
+      "items": [
+        [
+          "activity",
+          "navigation.team_activity"
+        ],
+        [
+          "apps"
+        ],
+        [
+          "screenshots",
+          "navigation.team_screenshots"
+        ],
+        [
+          "field"
+        ]
+      ]
+    },
+    {
+      "id": "content-studio",
+      "labelKey": "group.content",
+      "items": [
+        [
+          "documents"
+        ]
+      ]
+    },
+    {
+      "id": "finance-payroll",
+      "labelKey": "group.money",
+      "items": [
+        [
+          "finance"
+        ]
+      ]
+    },
+    {
+      "id": "intelligence",
+      "labelKey": "group.insights",
+      "items": [
+        [
+          "insights",
+          "navigation.team_intelligence"
+        ],
+        [
+          "reports"
+        ]
+      ]
+    },
+    {
+      "id": "account-support",
+      "labelKey": "group.account",
+      "items": [
+        [
+          "downloads"
+        ],
+        [
+          "account"
+        ]
+      ]
+    }
+  ],
+  "owner": [
+    {
+      "id": "home",
+      "labelKey": "group.home",
+      "items": [
+        [
+          "overview"
+        ],
+        [
+          "live"
+        ]
+      ]
+    },
+    {
+      "id": "work-management",
+      "labelKey": "group.work",
+      "items": [
+        [
+          "approvals"
+        ],
+        [
+          "projects"
+        ],
+        [
+          "tasks"
+        ],
+        [
+          "automations"
+        ]
+      ]
+    },
+    {
+      "id": "collaboration",
+      "labelKey": "group.collaboration",
+      "items": [
+        [
+          "chat"
+        ]
+      ]
+    },
+    {
+      "id": "time-attendance",
+      "labelKey": "group.time_attendance",
+      "items": [
+        [
+          "schedule"
+        ],
+        [
+          "attendance"
+        ],
+        [
+          "leave"
+        ],
+        [
+          "time"
+        ]
+      ]
+    },
+    {
+      "id": "people-hr",
+      "labelKey": "group.people",
+      "items": [
+        [
+          "people"
+        ],
+        [
+          "hris"
+        ],
+        [
+          "organization"
+        ],
+        [
+          "performance"
+        ]
+      ]
+    },
+    {
+      "id": "workforce-operations",
+      "labelKey": "group.operations",
+      "items": [
+        [
+          "activity"
+        ],
+        [
+          "apps"
+        ],
+        [
+          "screenshots"
+        ],
+        [
+          "field"
+        ],
+        [
+          "devices"
+        ]
+      ]
+    },
+    {
+      "id": "clients-commerce",
+      "labelKey": "group.clients",
+      "items": [
+        [
+          "clients"
+        ],
+        [
+          "client-commerce"
+        ]
+      ]
+    },
+    {
+      "id": "content-studio",
+      "labelKey": "group.content",
+      "items": [
+        [
+          "website"
+        ],
+        [
+          "documents"
+        ],
+        [
+          "media"
+        ]
+      ]
+    },
+    {
+      "id": "finance-payroll",
+      "labelKey": "group.money",
+      "items": [
+        [
+          "finance"
+        ],
+        [
+          "payroll"
+        ],
+        [
+          "payroll-compliance"
+        ],
+        [
+          "billing"
+        ]
+      ]
+    },
+    {
+      "id": "intelligence",
+      "labelKey": "group.insights",
+      "items": [
+        [
+          "insights"
+        ],
+        [
+          "reports"
+        ]
+      ]
+    },
+    {
+      "id": "administration",
+      "labelKey": "group.administration",
+      "items": [
+        [
+          "modules"
+        ],
+        [
+          "enterprise"
+        ],
+        [
+          "access"
+        ],
+        [
+          "settings"
+        ],
+        [
+          "trash"
+        ]
+      ]
+    },
+    {
+      "id": "account-support",
+      "labelKey": "group.account",
+      "items": [
+        [
+          "downloads"
+        ],
+        [
+          "account"
+        ]
+      ]
+    }
+  ]
+}

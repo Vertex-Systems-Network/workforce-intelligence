@@ -1,0 +1,4 @@
+<?php
+namespace App\Models;
+use App\Casts\DateOnly;use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\BelongsTo;
+/** Provides member benefit behavior within the WorkIntel application. */ class MemberBenefit extends Model{protected $fillable=['workspace_id','member_id','code','name','type','employee_amount','employer_amount','frequency','taxable','cash','effective_from','effective_to','status','metadata'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['employee_amount'=>'decimal:2','employer_amount'=>'decimal:2','taxable'=>'boolean','cash'=>'boolean','effective_from'=>DateOnly::class,'effective_to'=>DateOnly::class,'metadata'=>'array'];}/** Handles the member operation for the current WorkIntel workflow. */ public function member():BelongsTo{return $this->belongsTo(WorkspaceMember::class,'member_id');}}

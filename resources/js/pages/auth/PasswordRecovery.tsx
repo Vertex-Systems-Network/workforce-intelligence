@@ -1,0 +1,17 @@
+import { useState, type FormEvent } from 'react'
+import { ArrowRight, CheckCircle2 } from 'lucide-react'
+import { authService } from '../../auth/authService'
+import { Alert, Button, Field, Input, Form } from '../../design-system'
+import { AuthBackButton, AuthHeading, AuthMobileBrand } from './AuthPrimitives'
+
+/** Handles the forgot password operation for the WorkIntel client. */ export function ForgotPassword({onLogin,productName='WorkIntel'}:{onLogin:()=>void;productName?:string}){
+ const [email,setEmail]=useState(''),[message,setMessage]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false)
+ /** Handles the submit operation for the WorkIntel client. */ const submit=async(e:FormEvent)=>{e.preventDefault();setBusy(true);setError('');try{setMessage(await authService.forgotPassword(email))}catch(err){setError(err instanceof Error?err.message:'Could not request password reset.')}finally{setBusy(false)}}
+ return <><AuthMobileBrand productName={productName}/><AuthBackButton onClick={onLogin}/><AuthHeading kicker="Account recovery" title="Reset your password" description="Enter your account email. The response is deliberately generic for account privacy."/>{error&&<Alert tone="danger">{error}</Alert>}{message?<Alert tone="success"><CheckCircle2 size={14}/> {message}</Alert>:<Form className="auth-form" onSubmit={submit}><Field label="Email"><Input type="email" value={email} onChange={e=>setEmail(e.target.value)} required autoComplete="email"/></Field><Button variant="primary" size="lg" type="submit" disabled={busy}>{busy?'Sending…':<>Send reset link <ArrowRight size={15}/></>}</Button></Form>}</>
+}
+
+/** Handles the reset password screen operation for the WorkIntel client. */ export function ResetPasswordScreen({token,email:initialEmail,onLogin,productName='WorkIntel'}:{token:string;email:string;onLogin:()=>void;productName?:string}){
+ const [email,setEmail]=useState(initialEmail),[password,setPassword]=useState(''),[confirmation,setConfirmation]=useState(''),[message,setMessage]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false)
+ /** Handles the submit operation for the WorkIntel client. */ const submit=async(e:FormEvent)=>{e.preventDefault();setBusy(true);setError('');try{setMessage(await authService.resetPassword({token,email,password,passwordConfirmation:confirmation}))}catch(err){setError(err instanceof Error?err.message:'Could not reset password.')}finally{setBusy(false)}}
+ return <><AuthMobileBrand productName={productName}/><AuthBackButton onClick={onLogin}/><AuthHeading kicker="Account recovery" title="Choose a new password" description="Use at least 8 characters with letters and numbers."/>{error&&<Alert tone="danger">{error}</Alert>}{message?<><Alert tone="success">{message}</Alert><Button variant="primary" size="lg" onClick={onLogin}>Continue to sign in</Button></>:<Form className="auth-form" onSubmit={submit}><Field label="Email"><Input type="email" value={email} onChange={e=>setEmail(e.target.value)} required/></Field><Field label="New password"><Input type="password" value={password} onChange={e=>setPassword(e.target.value)} required autoComplete="new-password"/></Field><Field label="Confirm password"><Input type="password" value={confirmation} onChange={e=>setConfirmation(e.target.value)} required autoComplete="new-password"/></Field><Button variant="primary" size="lg" type="submit" disabled={busy}>{busy?'Resetting…':'Reset password'}</Button></Form>}</>
+}

@@ -1,0 +1,2 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\BelongsTo;/** Provides chat message reaction behavior within the WorkIntel application. */ class ChatMessageReaction extends Model{public $timestamps=false;protected $fillable=['message_id','member_id','emoji','created_at'];/** Handles the member operation for the current WorkIntel workflow. */ public function member():BelongsTo{return $this->belongsTo(WorkspaceMember::class,'member_id');}}

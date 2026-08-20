@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;
+/** Provides workspace security policy behavior within the WorkIntel application. */ class WorkspaceSecurityPolicy extends Model{protected $fillable=['workspace_id','require_mfa','mfa_role_slugs','session_ttl_minutes','max_active_sessions','allow_password_login','require_sso','password_min_length','block_compromised_devices'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['require_mfa'=>'boolean','mfa_role_slugs'=>'array','allow_password_login'=>'boolean','require_sso'=>'boolean','block_compromised_devices'=>'boolean'];}}

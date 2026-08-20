@@ -1,0 +1,98 @@
+{
+  "roadmapVersion": 1,
+  "updatedAt": "2026-08-20",
+  "overallPercent": 97,
+  "phases": [
+    {
+      "id": "M0",
+      "name": "Roadmap & Acceptance Criteria",
+      "weight": 5,
+      "percent": 100,
+      "status": "complete"
+    },
+    {
+      "id": "M1",
+      "name": "Full System Inventory & Module Map",
+      "weight": 8,
+      "percent": 100,
+      "status": "complete"
+    },
+    {
+      "id": "M2",
+      "name": "WorkIntel Design System V1",
+      "weight": 12,
+      "percent": 95,
+      "status": "in-progress"
+    },
+    {
+      "id": "M3",
+      "name": "Application Shell & Information Architecture",
+      "weight": 9,
+      "percent": 95,
+      "status": "in-progress"
+    },
+    {
+      "id": "M4",
+      "name": "Shared UX Systems V3",
+      "weight": 10,
+      "percent": 100,
+      "status": "complete"
+    },
+    {
+      "id": "M5",
+      "name": "Core Workforce Module Conversion",
+      "weight": 10,
+      "percent": 100,
+      "status": "complete"
+    },
+    {
+      "id": "M6",
+      "name": "Business/Admin Module Conversion",
+      "weight": 10,
+      "percent": 100,
+      "status": "complete"
+    },
+    {
+      "id": "M7",
+      "name": "Media DAM V3",
+      "weight": 8,
+      "percent": 95,
+      "status": "in-progress"
+    },
+    {
+      "id": "M8",
+      "name": "Website Studio V3",
+      "weight": 8,
+      "percent": 95,
+      "status": "in-progress"
+    },
+    {
+      "id": "M9",
+      "name": "Document Studio V6",
+      "weight": 7,
+      "percent": 95,
+      "status": "in-progress"
+    },
+    {
+      "id": "M10",
+      "name": "Chat & Collaboration V4",
+      "weight": 5,
+      "percent": 95,
+      "status": "in-progress"
+    },
+    {
+      "id": "M11",
+      "name": "Role UX + Help + Onboarding",
+      "weight": 4,
+      "percent": 95,
+      "status": "in-progress"
+    },
+    {
+      "id": "M12",
+      "name": "Accessibility, Performance & Final Certification",
+      "weight": 4,
+      "percent": 85,
+      "status": "in-progress"
+    }
+  ]
+}

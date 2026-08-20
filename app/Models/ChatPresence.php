@@ -1,0 +1,2 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;/** Provides chat presence behavior within the WorkIntel application. */ class ChatPresence extends Model{protected $table='chat_presence';protected $fillable=['workspace_id','member_id','conversation_id','is_typing','last_seen_at'];/** Defines attribute casting rules for the model. */ protected function casts():array{return['is_typing'=>'boolean','last_seen_at'=>'datetime'];}}

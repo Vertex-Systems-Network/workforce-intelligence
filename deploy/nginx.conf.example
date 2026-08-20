@@ -1,0 +1,29 @@
+server {
+    listen 80;
+    server_name time.example.com;
+    return 301 https://$host$request_uri;
+}
+server {
+    listen 443 ssl http2;
+    server_name time.example.com;
+    root /var/www/workforce/public;
+    index index.php;
+    client_max_body_size 25m;
+
+    ssl_certificate /etc/letsencrypt/live/time.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/time.example.com/privkey.pem;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_read_timeout 120;
+    }
+
+    location ~ /\.(?!well-known).* { deny all; }
+    location ~* \.(env|log|sql|sqlite)$ { deny all; }
+}

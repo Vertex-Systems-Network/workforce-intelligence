@@ -1,0 +1,59 @@
+/* WorkIntel Design System V1 semantic tokens. Palette aliases intentionally reference the existing theme contract. */
+:root {
+  --wi-color-canvas: var(--bg);
+  --wi-color-surface: var(--surface);
+  --wi-color-surface-raised: var(--elevated);
+  --wi-color-surface-hover: var(--surface-hover);
+  --wi-color-border: var(--border);
+  --wi-color-border-strong: var(--border-strong);
+  --wi-color-text: var(--text);
+  --wi-color-text-muted: var(--text-2);
+  --wi-color-text-subtle: var(--text-3);
+  --wi-color-brand: var(--accent-solid);
+  --wi-color-danger: var(--danger);
+  --wi-color-success: var(--success);
+  --wi-color-warning: var(--warning);
+  --wi-color-info: var(--info);
+
+  --wi-space-0: 0;
+  --wi-space-1: 4px;
+  --wi-space-2: 8px;
+  --wi-space-3: 12px;
+  --wi-space-4: 16px;
+  --wi-space-5: 20px;
+  --wi-space-6: 24px;
+  --wi-space-8: 32px;
+  --wi-space-10: 40px;
+  --wi-space-12: 48px;
+
+  --wi-control-sm: 30px;
+  --wi-control-md: 36px;
+  --wi-control-lg: 42px;
+  --wi-page-max: 1600px;
+  --wi-reading-max: 820px;
+
+  --wi-radius-sm: var(--radius-sm);
+  --wi-radius-md: var(--radius);
+  --wi-radius-lg: var(--radius-lg);
+  --wi-radius-xl: var(--radius-xl);
+  --wi-radius-pill: 999px;
+
+  --wi-shadow-sm: 0 1px 2px color-mix(in srgb, var(--shadow-color) 22%, transparent);
+  --wi-shadow-md: 0 8px 24px color-mix(in srgb, var(--shadow-color) 24%, transparent);
+  --wi-shadow-overlay: 0 20px 60px color-mix(in srgb, var(--shadow-color) 44%, transparent);
+
+  --wi-z-base: 1;
+  --wi-z-sticky: 30;
+  --wi-z-dropdown: 1000;
+  --wi-z-popover: 1100;
+  --wi-z-drawer: 1200;
+  --wi-z-modal: 1300;
+  --wi-z-tooltip: 1400;
+  --wi-z-toast: 1500;
+
+  --wi-motion-fast: 120ms;
+  --wi-motion-normal: 180ms;
+  --wi-motion-slow: 260ms;
+  --wi-ease-standard: cubic-bezier(.2,.8,.2,1);
+  --wi-focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 24%, transparent);
+}

@@ -1,0 +1,2 @@
+# Laravel scheduler - run exactly once per minute on one scheduler node.
+* * * * * cd /var/www/workforce && php artisan schedule:run >> /dev/null 2>&1

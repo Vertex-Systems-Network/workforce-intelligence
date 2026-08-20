@@ -1,0 +1,5 @@
+import { useEffect, useState } from 'react'
+import { authService } from '../../auth/authService'
+import { Alert, Button, LoadingState } from '../../design-system'
+import { AuthHeading, AuthMobileBrand } from './AuthPrimitives'
+/** Handles the verify email operation for the WorkIntel client. */ export default function VerifyEmail({token,onLogin,productName='WorkIntel'}:{token:string;onLogin:()=>void;productName?:string}){const [message,setMessage]=useState(''),[error,setError]=useState('');useEffect(()=>{void authService.verifyEmail(token).then(setMessage).catch(e=>setError(e instanceof Error?e.message:'Verification failed.'))},[token]);return <><AuthMobileBrand productName={productName}/><AuthHeading kicker="Email verification" title="Verify workspace access" description="Confirming the email token before workspace access is granted."/>{error?<Alert tone="danger">{error}</Alert>:message?<Alert tone="success">{message}</Alert>:<LoadingState compact title="Verifying your email…" text="This should only take a moment."/>}<Button variant="primary" size="lg" onClick={onLogin} disabled={!message&& !error}>Continue to sign in</Button></>}

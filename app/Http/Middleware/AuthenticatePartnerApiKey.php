@@ -1,0 +1,7 @@
+<?php
+namespace App\Http\Middleware;
+use App\Models\PartnerApiKey;use App\Services\Billing\EntitlementService;use Closure;use Illuminate\Http\Request;use Illuminate\Support\Facades\RateLimiter;use Symfony\Component\HttpFoundation\Response;
+/** Provides authenticate partner api key behavior within the WorkIntel application. */ class AuthenticatePartnerApiKey
+{
+ /** Executes the command, job, or request handler. */ public function handle(Request $request,Closure $next):Response{$plain=$request->bearerToken();abort_unless($plain&&str_starts_with($plain,'wip_'),401,'A valid partner API key is required.');$key=PartnerApiKey::with('account.billingWorkspace')->where('token_hash',hash('sha256',$plain))->whereNull('revoked_at')->first();abort_unless($key&&$key->account&&$key->account->status==='active',401,'The partner API key is invalid or revoked.');abort_if($key->expires_at&&$key->expires_at->isPast(),401,'The partner API key has expired.');$billing=$key->account->billingWorkspace;abort_unless($billing&&app(EntitlementService::class)->allows($billing,'feature.partner_api'),403,'Partner API is not included in the billing workspace plan.');$bucket='partner-api:'.$key->id.':'.now()->format('YmdHi');if(RateLimiter::tooManyAttempts($bucket,120))abort(429,'Partner API rate limit exceeded.');RateLimiter::hit($bucket,65);$key->forceFill(['last_used_at'=>now(),'last_used_ip'=>$request->ip()])->save();$request->attributes->set('partnerApiKey',$key);$request->attributes->set('partnerAccount',$key->account);return $next($request);}
+}

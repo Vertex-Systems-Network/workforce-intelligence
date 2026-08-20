@@ -1,0 +1,29 @@
+{
+  "phase": "M7",
+  "name": "Media DAM V3",
+  "percent": 95,
+  "status": "in-progress",
+  "completed": [
+    "DAM collections with workspace/restricted sharing",
+    "Member-specific favorites and Recent/category/rights navigation",
+    "Collection-aware asset filtering and system-wide MediaPicker discovery",
+    "Immutable metadata and binary version history",
+    "Safe binary replacement with stable asset identity",
+    "Historical binary download and restore-as-new-current workflow",
+    "Quarantined historical binary restore/download prevention",
+    "Usage visibility and image focal-point metadata",
+    "Rights governance metadata, expiry/review attention states",
+    "Private focal-point-aware raster renditions/transforms",
+    "DataGrid bulk favorite/folder/collection/trash/restore actions",
+    "Resumable chunked large uploads with browser resume state and exact chunk checksums/ranges",
+    "Scheduled cleanup of abandoned resumable-upload chunks",
+    "Upload queue and shared progress bar",
+    "Folder and collection FormDialog workflows",
+    "M7 source, frontend, PHPUnit source and target DB-flow contracts"
+  ],
+  "remaining": [
+    "Target Laragon npm typecheck/build certification with installed Node dependencies",
+    "Target Playwright visual/keyboard/mobile/RTL certification",
+    "Target DB-backed MediaDamV3FlowTest execution with PDO driver"
+  ]
+}

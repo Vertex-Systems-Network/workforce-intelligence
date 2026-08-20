@@ -1,0 +1,83 @@
+WorkIntel — Chat V2.1 Professional Collaboration Stabilization
+Date: 2026-08-13
+Base: WorkIntel P11 Strict Clean Release
+
+IMPLEMENTED
+- Current signed-in workspace member excluded from New Conversation options server-side and client-side.
+- Inactive/suspended/archived workspace memberships excluded from creation options.
+- Workspace members backed by suspended/inactive global User records excluded from creation options.
+- Explicit self-DM API request rejected with HTTP 422 and code SELF_CONVERSATION_NOT_ALLOWED.
+- Canonical two-person direct-message pairs reuse the existing conversation instead of creating duplicates.
+- Previously archived canonical DM is reopened instead of creating a second pair.
+- Auth workspace mapping now preserves member_id as memberId for reliable self identity in UI.
+- Conversation list response exposes viewer_member_id as a second server-trusted identity source.
+- Presence query filters inactive members and remains restricted to members sharing conversations with the viewer.
+- Conversation online indicator excludes the signed-in member so the user's own presence cannot make a peer appear online.
+- Mention quick-picks exclude the signed-in member.
+- Desktop chat stabilized as three panes: conversations / active chat / details.
+- Tablet conversation details use an overlay drawer.
+- Mobile chat uses one panel at a time instead of stacking list + chat + details vertically.
+- Message polling no longer unconditionally forces the reader to the bottom.
+- Added unread divider and Jump to latest behavior.
+- Read cursor advances when the viewer reaches/latest message rather than on every background poll.
+- Typing presence is debounced instead of making a request on every keystroke.
+- Pinned-message and navigation styling use RTL-safe logical properties for Urdu/Arabic.
+- Existing Chat module-off, private attachment, mentions, reactions, pins and project/task scope behavior retained.
+- Strict release verification scripts now include Chat V2.1 smoke and targeted PHPUnit gates.
+
+NEW TESTS / CONTRACTS
+- tests/Unit/ChatStabilizationContractTest.php
+- tests/frontend/chat-stabilization.test.mjs
+- Expanded tests/Feature/ChatCollaborationFlowTest.php with:
+  * current member exclusion
+  * suspended/archived membership exclusion
+  * suspended global user exclusion
+  * self-DM rejection
+  * duplicate DM reuse
+  * presence privacy
+- tools/chat-stabilization-smoke.php
+
+ACTUAL SOURCE VALIDATION PASSED
+- First-party PHP files linted: 657
+- PHP syntax errors: 0
+- TS/TSX files parsed: 79
+- TS/TSX parse errors: 0
+- Broken local imports: 0
+- PHP documented declarations: 3029
+- Missing PHPDoc declarations: 0
+- JS/TS documented declarations: 905
+- Missing JSDoc declarations: 0
+- Source integrity files scanned: 840
+- Cross-project/source integrity failures: 0
+- Migration files: 53 (unchanged by Chat V2.1)
+- Migration identifiers checked: 918
+- Migration identifier failures: 0
+- Longest checked identifier: 64
+- Chat V2.1 dependency-free smoke: PASS (11 checks)
+- Release source smoke: PASS
+- npm test: PASS — 7/7 frontend source tests
+- Static route declarations: 550
+- Chat route declarations: 14
+- No new database migration required for V2.1.
+
+RUNTIME COMMANDS ACTUALLY ATTEMPTED
+1) php artisan route:list --except-vendor
+   BLOCKED before Laravel boot: vendor/autoload.php is not present in the strict source archive.
+
+2) php artisan test --filter=ChatStabilizationContractTest
+   BLOCKED before PHPUnit boot: vendor/autoload.php is not present.
+
+3) php artisan test --filter=ChatCollaborationFlowTest
+   BLOCKED before PHPUnit boot: vendor/autoload.php is not present.
+
+4) npm run typecheck
+   BLOCKED by missing installed dev dependency: @types/node.
+
+5) npm run build
+   BLOCKED by missing installed dependency binary: vite.
+
+6) npm registry connectivity was checked and returned EAI_AGAIN for registry.npmjs.org; npm dependency installation could not be completed in this packaging environment.
+
+RELEASE VERIFICATION ON LARAGON
+Run verify-release.cmd for an existing database. It now runs Chat V2.1 source smoke plus targeted Chat stabilization and collaboration PHPUnit before the full suite.
+Run verify-clean-install.cmd only against a disposable database after typing RESET; it performs migrate:fresh --seed, second seed pass, targeted Chat tests, full PHPUnit, npm test, typecheck and production build.

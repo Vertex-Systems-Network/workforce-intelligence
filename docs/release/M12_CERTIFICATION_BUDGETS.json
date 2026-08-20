@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "source": {
+    "js_ts_total_bytes_max": 3200000,
+    "js_ts_files_max": 150,
+    "largest_non_i18n_source_bytes_max": 180000,
+    "i18n_source_bytes_max": 600000,
+    "css_total_bytes_max": 150000
+  },
+  "build": {
+    "javascript_total_bytes_max": 6500000,
+    "javascript_total_gzip_bytes_max": 2200000,
+    "largest_javascript_asset_bytes_max": 2500000,
+    "css_total_bytes_max": 650000,
+    "asset_count_max": 220,
+    "source_maps_allowed": false
+  },
+  "runtime": {
+    "routes_min": 700,
+    "routes_max": 760,
+    "scheduled_workintel_jobs_min": 30,
+    "scheduled_workintel_jobs_max": 40
+  }
+}

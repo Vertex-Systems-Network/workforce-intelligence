@@ -1,0 +1,4 @@
+<?php
+namespace App\Models;
+use App\Casts\DateOnly;use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\HasMany;
+/** Provides payroll compliance pack behavior within the WorkIntel application. */ class PayrollCompliancePack extends Model{protected $fillable=['uuid','workspace_id','name','country_code','region_code','version','currency','effective_from','effective_to','status','replace_default_tax','settings','disclaimer','created_by'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['effective_from'=>DateOnly::class,'effective_to'=>DateOnly::class,'replace_default_tax'=>'boolean','settings'=>'array'];}/** Defines validation rules for the incoming request. */ public function rules():HasMany{return $this->hasMany(PayrollComplianceRule::class)->orderBy('priority');}}

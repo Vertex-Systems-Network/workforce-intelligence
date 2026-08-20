@@ -1,0 +1,23 @@
+<?php
+use App\Http\Controllers\Api\V1\FinanceOpsController;use App\Http\Middleware\ResolveWorkspace;use Illuminate\Support\Facades\Route;
+Route::prefix('v1')->middleware(['auth:sanctum',ResolveWorkspace::class])->group(function(){
+ Route::get('/finance-ops/overview',[FinanceOpsController::class,'overview'])->middleware('workspace.permission:expenses.view_own');
+ Route::post('/finance-ops/cost-centers',[FinanceOpsController::class,'storeCostCenter'])->middleware('workspace.permission:cost_centers.manage');
+ Route::patch('/finance-ops/cost-centers/{costCenter}',[FinanceOpsController::class,'updateCostCenter'])->middleware('workspace.permission:cost_centers.manage');
+ Route::post('/finance-ops/expense-policies',[FinanceOpsController::class,'storePolicy'])->middleware('workspace.permission:expenses.policies.manage');
+ Route::patch('/finance-ops/expense-policies/{policy}',[FinanceOpsController::class,'updatePolicy'])->middleware('workspace.permission:expenses.policies.manage');
+ Route::post('/finance-ops/claims',[FinanceOpsController::class,'storeClaim'])->middleware('workspace.permission:expenses.view_own');
+ Route::post('/finance-ops/claims/{claim}/items',[FinanceOpsController::class,'addClaimItem'])->middleware('workspace.permission:expenses.view_own');
+ Route::delete('/finance-ops/claims/{claim}/items/{item}',[FinanceOpsController::class,'deleteClaimItem'])->middleware('workspace.permission:expenses.view_own');
+ Route::post('/finance-ops/claims/{claim}/items/{item}/receipt',[FinanceOpsController::class,'uploadReceipt'])->middleware('workspace.permission:expenses.view_own');
+ Route::get('/finance-ops/claim-items/{item}/receipt',[FinanceOpsController::class,'downloadReceipt'])->middleware('workspace.permission:expenses.view_own');
+ Route::post('/finance-ops/claims/{claim}/submit',[FinanceOpsController::class,'submitClaim'])->middleware('workspace.permission:expenses.view_own');
+ Route::post('/finance-ops/claims/{claim}/reimburse-payroll',[FinanceOpsController::class,'reimburseToPayroll'])->middleware('workspace.permission:expenses.manage');
+ Route::post('/finance-ops/purchase-requests',[FinanceOpsController::class,'storePurchaseRequest'])->middleware('workspace.permission_any:procurement.request,procurement.manage');
+ Route::post('/finance-ops/purchase-requests/{purchaseRequest}/submit',[FinanceOpsController::class,'submitPurchaseRequest'])->middleware('workspace.permission_any:procurement.request,procurement.manage');
+ Route::post('/finance-ops/job-budgets',[FinanceOpsController::class,'storeJobBudget'])->middleware('workspace.permission:job_costing.manage');
+ Route::patch('/finance-ops/job-budgets/{budget}',[FinanceOpsController::class,'updateJobBudget'])->middleware('workspace.permission:job_costing.manage');
+ Route::get('/finance-ops/projects/{project}/cost',[FinanceOpsController::class,'projectCost'])->middleware('workspace.permission_any:job_costing.view,job_costing.manage');
+ Route::post('/finance-ops/projects/{project}/snapshot',[FinanceOpsController::class,'snapshotProjectCost'])->middleware('workspace.permission:job_costing.manage');
+ Route::put('/finance-ops/projects/{project}/allocations',[FinanceOpsController::class,'allocateProject'])->middleware('workspace.permission:job_costing.manage');
+});

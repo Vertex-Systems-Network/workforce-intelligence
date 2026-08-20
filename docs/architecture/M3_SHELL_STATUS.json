@@ -1,0 +1,22 @@
+{
+  "phase": "M3",
+  "batch": 1,
+  "name": "Application Shell & Information Architecture",
+  "progressPercent": 55,
+  "tenantRoles": 5,
+  "classifiedPages": 40,
+  "workspaceModules": 11,
+  "platformConsoleMixedIntoTenantNavigation": false,
+  "legacySidebarGroupIds": 0,
+  "features": {
+    "moduleFirstCollapsibleSidebar": true,
+    "pageContextDescriptions": true,
+    "moduleDirectoryOnHome": true,
+    "moduleAwareCommandPalette": true,
+    "hashDeepLinksAndBrowserHistory": true,
+    "platformOperatorSeparateSurface": true,
+    "dedicatedModuleHomePages": false,
+    "globalEntitySearch": false,
+    "mobileOverlayNavigation": false
+  }
+}

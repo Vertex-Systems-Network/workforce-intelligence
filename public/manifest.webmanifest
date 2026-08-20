@@ -1,0 +1,13 @@
+{
+  "name": "Workforce Intelligence",
+  "short_name": "WorkIntel",
+  "description": "Workforce attendance, time, projects and employee self-service.",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0c0c11",
+  "theme_color": "#0c0c11",
+  "icons": [
+    {"src": "/favicon.ico", "sizes": "any", "type": "image/x-icon", "purpose": "any"}
+  ]
+}

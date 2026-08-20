@@ -1,0 +1,41 @@
+page,target_area,decision,label,description
+overview,home,KEEP,Home,Workspace command center and personalized summary.
+live,home,MOVE,Live Workforce,Detailed real-time workforce state; summary belongs on Home.
+projects,work-management,KEEP,Projects,Project portfolio and delivery context.
+tasks,work-management,KEEP,Tasks,Personal and team task execution.
+approvals,work-management,MOVE,Approvals,Unified approval inbox and workflow decisions.
+automations,work-management,MOVE,Automations,Work automation definitions and run history.
+chat,collaboration,KEEP,Chat,"Channels, direct messages and contextual collaboration."
+attendance,time-attendance,KEEP,Attendance,"Attendance events, exceptions and policies."
+time,time-attendance,RENAME,Timesheets,"Tracked time, submissions and approvals."
+leave,time-attendance,MOVE,Leave,"Leave requests, balances and policy workflows."
+schedule,time-attendance,RENAME,Scheduling,"Canonical schedule destination for rosters, shifts and requests."
+shifts,time-attendance,MERGE,Shifts,Legacy/secondary shift destination; functionality moves under Scheduling.
+people,people-hr,KEEP,People,People directory and workforce identity.
+hris,people-hr,MOVE,HRIS,"Employee records, documents, lifecycle and assets."
+organization,people-hr,MOVE,Organization,"Departments, teams and reporting structure."
+performance,people-hr,MOVE,Performance,"Goals, reviews, learning and growth."
+activity,workforce-operations,MOVE,Activity Tracking,Desktop/browser activity evidence and rules.
+apps,workforce-operations,RENAME,Apps & Websites,Application and website activity breakdown.
+screenshots,workforce-operations,MOVE,Screenshots,"Screenshot review, retention and storage operations."
+devices,workforce-operations,MOVE,Devices & Agents,Desktop/browser enrollment and device operations.
+field,workforce-operations,MOVE,Field Workforce,"Field work orders, checkpoints, forms and incidents."
+clients,clients-commerce,KEEP,Clients,"Client records, portal and account relationships."
+client-commerce,clients-commerce,RENAME,Client Billing & Payments,"Client invoices, payment actions and recurring billing."
+media,content-studio,KEEP,Media Library,Reusable digital assets and upload workflows.
+website,content-studio,KEEP,Website Studio,"Visual website creation, preview and publishing."
+documents,content-studio,KEEP,Document Studio,"Templates, generated documents, review and signing."
+finance,finance-payroll,RENAME,Expenses & Procurement,"Expenses, procurement, cost centers and job costing."
+payroll,finance-payroll,KEEP,Payroll,"Payroll calculations, approvals and pay history."
+payroll-compliance,finance-payroll,MOVE,Payroll Compliance,"Compliance, exports, benefits and contractors."
+billing,finance-payroll,MOVE,Workspace Billing,Workspace subscription and plan management.
+insights,intelligence,RENAME,Workforce Intelligence,Explainable workforce and staffing signals.
+reports,intelligence,MOVE,Reports,"Saved reports, scheduled reports and exports."
+modules,administration,KEEP,Modules,Workspace capability enablement and module dependencies.
+access,administration,RENAME,Roles & Access,"Roles, permissions, scopes and user access."
+settings,administration,MOVE,Settings,"Workspace configuration, branding and preferences."
+enterprise,administration,MOVE,Enterprise Governance,"Identity, SCIM, security and governance controls."
+trash,administration,MOVE,Trash & Recovery,Recoverable deletions and lifecycle administration.
+platform,platform-console,MOVE,Platform Workspace Tools,Platform-only operations; remove from tenant workspace navigation.
+downloads,account-support,MOVE,Installation Center,Desktop/browser installers and setup guidance.
+account,account-support,MOVE,My Account,"Personal profile, security and access details."

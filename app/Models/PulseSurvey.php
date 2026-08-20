@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\HasMany;
+/** Provides pulse survey behavior within the WorkIntel application. */ class PulseSurvey extends Model{protected $fillable=['uuid','workspace_id','title','description','status','anonymous','opens_at','closes_at','created_by'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['anonymous'=>'boolean','opens_at'=>'datetime','closes_at'=>'datetime'];}/** Handles the questions operation for the current WorkIntel workflow. */ public function questions():HasMany{return $this->hasMany(PulseQuestion::class);}}

@@ -1,0 +1,9 @@
+<VirtualHost *:80>
+    ServerName time.example.com
+    DocumentRoot "D:/laragon/www/workforce/public"
+    <Directory "D:/laragon/www/workforce/public">
+        AllowOverride All
+        Require all granted
+        Options -Indexes +FollowSymLinks
+    </Directory>
+</VirtualHost>

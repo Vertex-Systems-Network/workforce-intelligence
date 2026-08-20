@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>WorkIntel Browser Tracker</title><link rel="stylesheet" href="popup.css"></head>
+<body><main>
+<header><div class="mark">W</div><div><strong>WorkIntel</strong><span>Browser Tracker</span></div></header>
+<section id="connect-view">
+  <label>Workforce server URL<input id="server" type="url" placeholder="https://team.example.com"></label>
+  <label>Enrollment code<input id="code" placeholder="WI-XXXX-XXXX-XXXX or WB-XXXX-XXXX-XXXX"></label>
+  <button id="connect">Connect browser</button>
+</section>
+<section id="status-view" hidden>
+  <div class="status"><span class="dot"></span><div><strong>Connected</strong><span id="connection"></span></div></div>
+  <div class="metric"><span>Server</span><strong id="server-status"></strong></div>
+  <div class="metric"><span>Queued sessions</span><strong id="queue">0</strong></div>
+  <div class="metric"><span>Last sync</span><strong id="last-sync">Never</strong></div>
+  <p class="privacy">Domain only. URL paths, queries, form data and typed content are not collected. Incognito/private tabs are ignored.</p>
+  <button id="sync" class="secondary">Sync now</button><button id="disconnect" class="danger">Disconnect locally</button>
+</section>
+<p id="message"></p>
+</main><script src="popup.js"></script></body></html>

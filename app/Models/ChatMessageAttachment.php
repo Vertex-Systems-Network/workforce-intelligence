@@ -1,0 +1,2 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\BelongsTo;/** Provides chat message attachment behavior within the WorkIntel application. */ class ChatMessageAttachment extends Model{public $timestamps=false;protected $fillable=['message_id','disk','path','filename','mime_type','size_bytes','checksum_sha256','security_status','security_reason','created_at'];/** Handles the message operation for the current WorkIntel workflow. */ public function message():BelongsTo{return $this->belongsTo(ChatMessage::class);}}

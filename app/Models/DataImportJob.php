@@ -1,0 +1,4 @@
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\HasMany;
+/** Provides data import job behavior within the WorkIntel application. */ class DataImportJob extends Model{protected $fillable=['uuid','workspace_id','created_by','source_system','entity_type','status','file_path','original_name','file_sha256','column_mapping','options','summary','last_error','started_at','completed_at'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['column_mapping'=>'array','options'=>'array','summary'=>'array','started_at'=>'datetime','completed_at'=>'datetime'];}/** Handles the items operation for the current WorkIntel workflow. */ public function items():HasMany{return $this->hasMany(DataImportItem::class);}}

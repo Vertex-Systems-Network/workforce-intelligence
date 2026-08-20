@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\BelongsTo;
+/** Provides expense reimbursement behavior within the WorkIntel application. */ class ExpenseReimbursement extends Model{protected $fillable=['uuid','workspace_id','expense_claim_id','member_id','amount','currency','method','status','payroll_run_id','payroll_item_id','payroll_adjustment_id','processed_at'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['amount'=>'decimal:2','processed_at'=>'datetime'];}/** Handles the claim operation for the current WorkIntel workflow. */ public function claim():BelongsTo{return $this->belongsTo(ExpenseClaim::class,'expense_claim_id');}}

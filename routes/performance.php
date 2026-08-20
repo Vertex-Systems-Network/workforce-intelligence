@@ -1,0 +1,24 @@
+<?php
+use App\Http\Controllers\Api\V1\PerformanceController;use App\Http\Middleware\ResolveWorkspace;use Illuminate\Support\Facades\Route;
+Route::prefix('v1')->middleware(['auth:sanctum',ResolveWorkspace::class])->group(function(){
+ Route::get('/performance/overview',[PerformanceController::class,'overview'])->middleware('workspace.permission:performance.view_own');
+ Route::post('/performance/goals',[PerformanceController::class,'storeGoal'])->middleware('workspace.permission:performance.view_own');
+ Route::patch('/performance/goals/{goal}',[PerformanceController::class,'updateGoal'])->middleware('workspace.permission:performance.view_own');
+ Route::post('/performance/review-cycles',[PerformanceController::class,'storeReviewCycle'])->middleware('workspace.permission:performance.reviews.manage');
+ Route::post('/performance/review-cycles/{cycle}/launch',[PerformanceController::class,'launchReviewCycle'])->middleware('workspace.permission:performance.reviews.manage');
+ Route::patch('/performance/reviews/{review}',[PerformanceController::class,'submitReview'])->middleware('workspace.permission:performance.view_own');
+ Route::post('/performance/one-on-ones',[PerformanceController::class,'storeOneOnOne'])->middleware('workspace.permission:performance.view_own');
+ Route::patch('/performance/one-on-ones/{oneOnOne}',[PerformanceController::class,'updateOneOnOne'])->middleware('workspace.permission:performance.view_own');
+ Route::post('/performance/skills',[PerformanceController::class,'storeSkill'])->middleware('workspace.permission:performance.skills.manage');
+ Route::put('/performance/members/{member}/skills',[PerformanceController::class,'saveMemberSkill'])->middleware('workspace.permission:performance.view_own');
+ Route::post('/performance/courses',[PerformanceController::class,'storeCourse'])->middleware('workspace.permission:performance.learning.manage');
+ Route::post('/performance/courses/{course}/enroll',[PerformanceController::class,'enrollCourse'])->middleware('workspace.permission:performance.learning.manage');
+ Route::patch('/performance/enrollments/{enrollment}',[PerformanceController::class,'updateEnrollment'])->middleware('workspace.permission:performance.view_own');
+ Route::post('/performance/development-plans',[PerformanceController::class,'storeDevelopmentPlan'])->middleware('workspace.permission:performance.view_own');
+ Route::post('/performance/recognitions',[PerformanceController::class,'recognize'])->middleware('workspace.permission:performance.view_own');
+ Route::post('/performance/surveys',[PerformanceController::class,'storeSurvey'])->middleware('workspace.permission:performance.surveys.manage');
+ Route::post('/performance/surveys/{survey}/respond',[PerformanceController::class,'respondSurvey'])->middleware('workspace.permission:performance.view_own');
+ Route::post('/performance/compensation-cycles',[PerformanceController::class,'storeCompensationCycle'])->middleware('workspace.permission:performance.compensation.manage');
+ Route::put('/performance/compensation-cycles/{cycle}/items',[PerformanceController::class,'saveCompensationItem'])->middleware('workspace.permission:performance.compensation.manage');
+ Route::post('/performance/compensation-items/{item}/submit',[PerformanceController::class,'submitCompensationItem'])->middleware('workspace.permission:performance.compensation.manage');
+});

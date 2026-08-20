@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\BelongsTo;
+/** Provides performance goal update behavior within the WorkIntel application. */ class PerformanceGoalUpdate extends Model{protected $fillable=['performance_goal_id','member_id','progress_percent','current_value','note','recorded_at'];/** Defines attribute casting rules for the model. */ protected function casts():array{return ['current_value'=>'decimal:2','recorded_at'=>'datetime'];}/** Handles the goal operation for the current WorkIntel workflow. */ public function goal():BelongsTo{return $this->belongsTo(PerformanceGoal::class,'performance_goal_id');}}

@@ -1,0 +1,4 @@
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;use Illuminate\Database\Eloquent\Relations\BelongsTo;
+/** Provides asset assignment behavior within the WorkIntel application. */ class AssetAssignment extends Model { protected $fillable=['uuid','workspace_id','asset_id','member_id','assigned_on','expected_return_on','returned_on','condition_out','condition_in','notes','assigned_by','returned_by']; /** Defines attribute casting rules for the model. */ protected function casts():array{return ['assigned_on'=>'date','expected_return_on'=>'date','returned_on'=>'date'];} /** Handles the asset operation for the current WorkIntel workflow. */ public function asset():BelongsTo{return $this->belongsTo(CompanyAsset::class,'asset_id');} /** Handles the member operation for the current WorkIntel workflow. */ public function member():BelongsTo{return $this->belongsTo(WorkspaceMember::class,'member_id');} }

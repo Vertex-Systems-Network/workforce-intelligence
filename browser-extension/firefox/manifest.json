@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "WorkIntel Browser Tracker",
+  "version": "1.0.0",
+  "description": "Domain-only browser activity tracking for Workforce Intelligence.",
+  "permissions": [
+    "tabs",
+    "storage",
+    "alarms",
+    "idle"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "scripts": [
+      "service-worker.js"
+    ]
+  },
+  "action": {
+    "default_title": "WorkIntel Browser Tracker",
+    "default_popup": "popup.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{6e9e8a58-5e8f-4f32-b42a-02d5fa95cc10}",
+      "strict_min_version": "128.0",
+      "data_collection_permissions": {
+        "required": [
+          "browsingActivity"
+        ]
+      }
+    }
+  }
+}
