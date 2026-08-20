@@ -26,7 +26,7 @@ Scheduling has one sidebar destination. Schedule Board and Shift Templates now l
 
 Shared WorkIntel controls translate registered labels at render time, including page headers, cards, buttons, fields, segmented controls, tabs, badges, dialogs, drawers, alerts, file controls, selects, empty states, refresh feedback and DataGrid controls. Dynamic business data is left unchanged.
 
-`humanLabels.tsx` provides a curated label registry for common status, role and work-mode values so technical identifiers such as `pending`, `payroll_manager` or dotted values are not intentionally surfaced as user-facing copy.
+Status, role and work-mode labels are resolved through the typed localization catalog and the legacy page-copy bridge where required. DEV-08 removed the unused `humanLabels.tsx` prototype after the import graph confirmed that no runtime surface consumed it.
 
 ## RTL
 
