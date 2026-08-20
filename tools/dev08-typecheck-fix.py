@@ -46,6 +46,7 @@ replace('resources/js/pages/Clients.tsx', 'type Client, type ClientForm, type Cl
 replace('resources/js/pages/Payroll.tsx', 'type CompensationForm, type CompensationRow, type PayType, type PayrollItem, type PayrollRun, type RunStatus', 'type Adjustment, type CompensationForm, type CompensationProfile, type CompensationRow, type PayType, type PayrollItem, type PayrollRun, type RunStatus')
 replace('resources/js/pages/Reports.tsx', 'type Catalog, type Column, type Dataset, type Preview, type ReportConfig, type ReportExport, type ReportRun, type SavedReport, type Schedule, datasetIcons, dateTime, defaultConfig', 'type Catalog, type Column, type Dataset, type FilterDef, type Preview, type ReportConfig, type ReportExport, type ReportRun, type SavedReport, type Schedule, type Visualization, datasetIcons, dateTime, daysAgo, defaultConfig')
 replace('resources/js/pages/Reports.tsx', 'rowKey={(_, index) => index}', 'rowKey={row => result.rows.indexOf(row)}')
+replace('resources/js/pages/Reports.tsx', 'pageSize={compact ? 10 : 25}', 'defaultPageSize={compact ? 10 : 25}')
 replace('resources/js/pages/WebsiteStudio.tsx', 'ReviewInspector, SectionInspector, SortableSection, autosaveMetadata,', 'ReviewInspector, SectionInspector, SortableSection, autosaveMetadata, localeOptions,')
 replace('resources/js/pages/FinanceOps.tsx', "import { ErrorState, apiRequest } from '../api/client';import { useAuth } from '../auth/AuthContext';import { Alert,", "import { apiRequest } from '../api/client';import { useAuth } from '../auth/AuthContext';import { ErrorState, Alert,")
 
