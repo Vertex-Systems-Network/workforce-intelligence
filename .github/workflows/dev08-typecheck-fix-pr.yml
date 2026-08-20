@@ -13,12 +13,20 @@ jobs:
         with:
           ref: dev-08-dead-duplicate-cleanup
           fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install frontend dependencies
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
       - name: Apply verified TypeScript repair
         run: python tools/dev08-typecheck-fix.py
-      - name: Run dependency-free regressions
+      - name: Verify repaired source
         run: |
           git diff --check
           npm test
+          npx tsc --noEmit
       - name: Commit repair and remove temporary runner
         run: |
           rm tools/dev08-typecheck-fix.py .github/workflows/dev08-typecheck-fix-pr.yml
