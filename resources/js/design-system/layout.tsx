@@ -1,4 +1,4 @@
-import type { CSSProperties, HTMLAttributes, LabelHTMLAttributes, ReactNode } from 'react';
+import type { CSSProperties, HTMLAttributes, LabelHTMLAttributes, ReactNode, Ref } from 'react';
 
 /** Join design-system class names without leaking falsey tokens. */
 const cx = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(' ');
@@ -25,20 +25,20 @@ export interface VisualProps extends LayoutSpacingProps {
 }
 
 /** Convert declarative WorkIntel visual props into the only inline visual implementation feature code needs. */
-function visualStyle({m,mt,mb,ml,mr,p,pt,pb,pl,pr,flex,minWidth,maxWidth,width,height,minHeight,maxHeight,display,position,inset,top,right,bottom,left,zIndex,bg,border,borderTop,borderRight,borderBottom,borderLeft,borderColor,borderInlineEnd,radius,overflow,overflowX,overflowY,overflowWrap,textOverflow,wordBreak,objectFit,gridColumns,gridRows,gridColumn,aspectRatio,transform,filter,cursor,opacity,boxShadow,transition,gap,rowGap,columnGap,align,justify,wrap,direction,shrink,grow,basis,placeItems,color,size,weight,lineHeight,textAlign,whiteSpace,textTransform,letterSpacing,fontFamily,font}:VisualProps):CSSProperties {
+export function visualStyle({m,mt,mb,ml,mr,p,pt,pb,pl,pr,flex,minWidth,maxWidth,width,height,minHeight,maxHeight,display,position,inset,top,right,bottom,left,zIndex,bg,border,borderTop,borderRight,borderBottom,borderLeft,borderColor,borderInlineEnd,radius,overflow,overflowX,overflowY,overflowWrap,textOverflow,wordBreak,objectFit,gridColumns,gridRows,gridColumn,aspectRatio,transform,filter,cursor,opacity,boxShadow,transition,gap,rowGap,columnGap,align,justify,wrap,direction,shrink,grow,basis,placeItems,color,size,weight,lineHeight,textAlign,whiteSpace,textTransform,letterSpacing,fontFamily,font}:VisualProps):CSSProperties {
   return {margin:m,marginTop:mt,marginBottom:mb,marginLeft:ml,marginRight:mr,padding:p,paddingTop:pt,paddingBottom:pb,paddingLeft:pl,paddingRight:pr,flex,minWidth,maxWidth,width,height,minHeight,maxHeight,display,position,inset,top,right,bottom,left,zIndex,background:bg,border,borderTop,borderRight,borderBottom,borderLeft,borderColor,borderInlineEnd,borderRadius:radius,overflow,overflowX,overflowY,overflowWrap,textOverflow,wordBreak,objectFit,gridTemplateColumns:gridColumns,gridTemplateRows:gridRows,gridColumn,aspectRatio,transform,filter,cursor,opacity,boxShadow,transition,gap,rowGap,columnGap,alignItems:align,justifyContent:justify,flexWrap:wrap,flexDirection:direction,flexShrink:shrink,flexGrow:grow,flexBasis:basis,placeItems,color,fontSize:size,fontWeight:weight,lineHeight,textAlign,whiteSpace,textTransform,letterSpacing,fontFamily,font}
 }
 
 const visualPropKeys=new Set(['m','mt','mb','ml','mr','p','pt','pb','pl','pr','flex','minWidth','maxWidth','width','height','minHeight','maxHeight','display','position','inset','top','right','bottom','left','zIndex','bg','border','borderTop','borderRight','borderBottom','borderLeft','borderColor','borderInlineEnd','radius','overflow','overflowX','overflowY','overflowWrap','textOverflow','wordBreak','objectFit','gridColumns','gridRows','gridColumn','aspectRatio','transform','filter','cursor','opacity','boxShadow','transition','gap','rowGap','columnGap','align','justify','wrap','direction','shrink','grow','basis','placeItems','color','size','weight','lineHeight','textAlign','whiteSpace','textTransform','letterSpacing','fontFamily','font'])
 /** Separate design-system visual props from DOM props so declarative styling never leaks unknown attributes. */
-function splitVisualProps<T extends Record<string,unknown>>(props:T):[VisualProps,Record<string,unknown>]{const visual:Record<string,unknown>={};const rest:Record<string,unknown>={};for(const [key,value] of Object.entries(props)){(visualPropKeys.has(key)?visual:rest)[key]=value}return [visual as VisualProps,rest]}
+export function splitVisualProps<T extends Record<string,unknown>>(props:T):[VisualProps,Record<string,unknown>]{const visual:Record<string,unknown>={};const rest:Record<string,unknown>={};for(const [key,value] of Object.entries(props)){(visualPropKeys.has(key)?visual:rest)[key]=value}return [visual as VisualProps,rest]}
 
-type BoxTag='div'|'section'|'header'|'nav'|'main'|'aside'|'article'|'span'|'p'|'h1'|'h2'|'h3'|'h4'|'strong'|'small'|'code'|'pre'|'i'
+type BoxTag='div'|'section'|'header'|'nav'|'main'|'aside'|'article'|'span'|'p'|'h1'|'h2'|'h3'|'h4'|'strong'|'small'|'code'|'pre'|'i'|'details'|'summary'
 /** Render a neutral polymorphic layout box while keeping visual implementation inside the design system. */
-export function Box({as='div',children,className='',style,...props}:HTMLAttributes<HTMLElement>&VisualProps&{as?:BoxTag}){
+export function Box({as='div',children,className='',style,ref,...props}:HTMLAttributes<HTMLElement>&VisualProps&{as?:BoxTag;ref?:Ref<HTMLElement>}){
   const [visual,rest]=splitVisualProps(props)
   const Component=as as any
-  return <Component className={cx('ui-box',className)} style={{...visualStyle(visual),...style}} {...rest}>{children}</Component>
+  return <Component ref={ref} className={cx('ui-box',className)} style={{...visualStyle(visual),...style}} {...rest}>{children}</Component>
 }
 
 /** Handles vertical flow with design-system-owned spacing and alignment. */

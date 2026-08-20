@@ -11,7 +11,7 @@ import type { MediaAsset } from '../media/types';
 import { useConfirmAction, Alert, Badge, Button, Card, CardBody, DataGrid, Drawer, Dropdown, EmptyState, LoadingState, Field, FormActions, FormGrid, FormSection, IconButton, Input, Modal, Page, PageHeader, RefreshButton, Select, Stack, Switch, Tabs, Textarea, Tooltip, type DataGridColumn, Pressable, Option } from '../design-system';
 import { useLocalization } from '../i18n/LocalizationContext';
 import type { DocumentBatchJob, DocumentBlock, DocumentBrandKit, DocumentComment, DocumentComponent, DocumentOverview, DocumentPageMaster, DocumentTemplate, DocumentTemplateDraft, DocumentPreflight, DocumentV6Resources, DocumentVersion, GeneratedDocument, } from '../documents/types';
-import { BLOCK_ICONS, BlockInspector, CommentPanel, PageInspector, SortableBlock, blockId, documentPreflight, fileSize, findBlock, generatedPolicy, humanize, makeBlock, normalizeSettings, normalizeV6Schema, pageId, rekeyBlock, replaceBlock, type DesignerRailTab, type InspectorTab, type StudioTab, type WorkflowModal } from '../documents/studio/DocumentStudioSupport';
+import { BLOCK_ICONS, BlockInspector, CommentPanel, PageInspector, SortableBlock, blockId, copyUrl, documentPreflight, downloadGenerated, fileSize, findBlock, generatedPolicy, humanize, makeBlock, normalizeSettings, normalizeV6Schema, pageId, rekeyBlock, replaceBlock, type DesignerRailTab, type InspectorTab, type StudioTab, type WorkflowModal } from '../documents/studio/DocumentStudioSupport';
 import './document-studio-v4.css';
 /** Render the complete Document Studio V6 designer, workflow and generated-document experience. */
 export default function Documents() {

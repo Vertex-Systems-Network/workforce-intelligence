@@ -1,4 +1,4 @@
-import { Children, cloneElement, createContext, forwardRef, isValidElement, useCallback, useContext, useEffect, useId, useMemo, useRef, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type ChangeEvent, type CSSProperties, type FormHTMLAttributes, type HTMLAttributes, type LabelHTMLAttributes, type OptionHTMLAttributes, type ImgHTMLAttributes, type InputHTMLAttributes, type KeyboardEvent as ReactKeyboardEvent, type ReactElement, type ReactNode, type RefObject, type SelectHTMLAttributes, type TableHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { Children, cloneElement, createContext, forwardRef, isValidElement, useCallback, useContext, useEffect, useId, useMemo, useRef, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type ChangeEvent, type CSSProperties, type FormHTMLAttributes, type HTMLAttributes, type LabelHTMLAttributes, type OptionHTMLAttributes, type ImgHTMLAttributes, type InputHTMLAttributes, type KeyboardEvent as ReactKeyboardEvent, type ReactElement, type ReactNode, type Ref, type RefObject, type SelectHTMLAttributes, type TableHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowDown, ArrowUp, Bookmark, BookmarkPlus, Check, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleHelp, Columns3, FileUp, Filter, Grid2X2, List, LoaderCircle, RefreshCw, RotateCcw, Search, Trash2, X } from 'lucide-react'
 import ReactDatePicker from 'react-datepicker'
@@ -59,7 +59,7 @@ export function SettingRow({title,description,control,className=''}:{title:React
 
 /** Render the shared semantic form root; optional gap/columns enable design-system-owned form composition. */
 export function Form({children,className='',style,gap,columns,m,mt,mb,ml,mr,p,pt,pb,pl,pr,minWidth,maxWidth,width,...props}:FormHTMLAttributes<HTMLFormElement>&LayoutSpacingProps&{gap?:LayoutLength;columns?:string}){
-  const composed:CSSProperties={...layoutStyle({m,mt,mb,ml,mr,p,pt,pb,pl,pr,minWidth,maxWidth,width}),...(gap!==undefined||columns?{display:'grid',gap,gridTemplateColumns:columns}:{}),...style}
+  const composed:CSSProperties={...visualStyle({m,mt,mb,ml,mr,p,pt,pb,pl,pr,minWidth,maxWidth,width}),...(gap!==undefined||columns?{display:'grid',gap,gridTemplateColumns:columns}:{}),...style}
   return <form className={cx('ui-form',className)} style={composed} {...props}>{children}</form>
 }
 
@@ -149,7 +149,7 @@ export function RefreshButton({onRefresh,label,lastUpdated,className=''}:{onRefr
 }
 
 /** Render one consistent form field with optional hint, required marker and validation feedback. */ export function Field({ label, hint, error, required = false, children, className = '' }: { label?: ReactNode; hint?: ReactNode; error?: ReactNode; required?: boolean; children: ReactNode; className?: string }) {
-  const localize=useLocalizedNode();return <label className={cx('ui-field', error && 'is-error', className)}>{label && <span className="ui-label">{localize(label)}{required&&<span className="ui-required" aria-hidden="true"> *</span>}</span>}{children}{error?<span className="ui-field-error" role="alert">{localize(error)}</span>:hint&&<span className="ui-hint">{localize(hint)}</span>}</label>
+  const localize=useLocalizedNode();return <label className={cx('ui-field', Boolean(error) && 'is-error', className)}>{label && <span className="ui-label">{localize(label)}{required&&<span className="ui-required" aria-hidden="true"> *</span>}</span>}{children}{error?<span className="ui-field-error" role="alert">{localize(error)}</span>:hint&&<span className="ui-hint">{localize(hint)}</span>}</label>
 }
 /** Handles the local date string operation for the WorkIntel client. */ function localDateString(date:Date){const y=date.getFullYear();const m=String(date.getMonth()+1).padStart(2,'0');const d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}
 /** Handles the local time string operation for the WorkIntel client. */ function localTimeString(date:Date){return `${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`}
@@ -165,7 +165,7 @@ export function RefreshButton({onRefresh,label,lastUpdated,className=''}:{onRefr
   /** Handles the commit operation for the WorkIntel client. */ const commit=(date:Date|null)=>{const next=!date?'':mode==='date'?localDateString(date):mode==='time'?localTimeString(date):`${localDateString(date)}T${localTimeString(date)}`;if(onChange){onChange({target:{value:next},currentTarget:{value:next}} as ChangeEvent<HTMLInputElement>)}}
   return <span className="wi-picker-wrap" style={style}><Picker selected={selected} onChange={commit} className={cx('ui-input','wi-picker-input',className)} wrapperClassName="wi-picker" popperClassName="wi-picker-popper" calendarClassName="wi-picker-calendar" portalId="workintel-datepicker-portal" dateFormat={mode==='date'?'yyyy-MM-dd':mode==='time'?'HH:mm':'yyyy-MM-dd HH:mm'} showTimeSelect={mode==='datetime-local'} showTimeSelectOnly={mode==='time'} timeFormat="HH:mm" timeIntervals={15} calendarStartDay={1} minDate={minDate??undefined} maxDate={maxDate??undefined} disabled={disabled} placeholderText={placeholder} id={id} name={name} required={required} isClearable={!required} autoComplete="off" /></span>
 }
-/** Render a consistently styled file chooser while preserving the native input for forms and accessibility. */ function FileInput({ className = '', onChange, disabled, ...props }: InputHTMLAttributes<HTMLInputElement>) {
+/** Render a consistently styled file chooser while preserving the native input for forms and accessibility. */ function FileInput({ className = '', onChange, disabled, inputRef, ...props }: InputHTMLAttributes<HTMLInputElement> & { inputRef?: Ref<HTMLInputElement> }) {
   const localization=useOptionalLocalization();const chooseFile=localization?.t('common.choose_file')??'Choose file';const browse=localization?.t('common.browse')??'Browse'
   const [fileLabel, setFileLabel] = useState(chooseFile)
   /** Forward file changes and expose the selected filename in the styled control. */
@@ -174,9 +174,10 @@ export function RefreshButton({onRefresh,label,lastUpdated,className=''}:{onRefr
     setFileLabel(files.length > 1 ? (localization?.t('common.files_selected',{count:files.length})??`${files.length} files selected`) : files[0]?.name ?? chooseFile)
     onChange?.(event)
   }
-  return <span className={cx('ui-file-input', disabled && 'is-disabled', className)}><input {...props} type="file" disabled={disabled} onChange={change}/><span className="ui-file-input__action"><FileUp size={14}/> {browse}</span><span className="ui-file-input__name" title={fileLabel}>{fileLabel}</span></span>
+  return <span className={cx('ui-file-input', disabled && 'is-disabled', className)}><input ref={inputRef} {...props} type="file" disabled={disabled} onChange={change}/><span className="ui-file-input__action"><FileUp size={14}/> {browse}</span><span className="ui-file-input__name" title={fileLabel}>{fileLabel}</span></span>
 }
-/** Handles the input operation for the WorkIntel client. */ export function Input({ className = '', type, style, ...props }: InputHTMLAttributes<HTMLInputElement> & VisualProps) { const [visual,rest]=splitVisualProps(props); const composed={...visualStyle(visual),...style}; if(type==='date'||type==='time'||type==='datetime-local')return <SmartDateInput type={type as 'date'|'time'|'datetime-local'} className={className} style={composed} {...rest}/>; if(type==='file')return <FileInput className={className} style={composed} {...rest}/>; return <input className={cx('ui-input', className)} type={type} style={composed} {...rest} /> }
+/** Handles the input operation for the WorkIntel client while exposing the native input ref used by command/search surfaces. */
+export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement> & VisualProps>(function Input({ className = '', type, style, ...props }, ref) { const [visual,rest]=splitVisualProps(props); const composed={...visualStyle(visual),...style}; if(type==='date'||type==='time'||type==='datetime-local')return <SmartDateInput type={type as 'date'|'time'|'datetime-local'} className={className} style={composed} {...rest}/>; if(type==='file')return <FileInput inputRef={ref} className={className} style={composed} {...rest}/>; return <input ref={ref} className={cx('ui-input', className)} type={type} style={composed} {...rest} /> })
 /** Handles the textarea operation for the WorkIntel client. */ export function Textarea({ className = '', ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) { return <textarea className={cx('ui-textarea', className)} {...props} /> }
 type SelectOptionRow = { value: string; label: ReactNode; disabled: boolean }
 /** Normalize React option children into rows used by the custom single-select listbox. */
@@ -542,7 +543,7 @@ export type DataGridFilterConfig = { type:'text'|'select'|'dateRange'; label?:st
 export type DataGridColumn<T> = {
   id:string
   header:ReactNode
-  cell:(row:T)=>ReactNode
+  cell?:(row:T)=>ReactNode
   value?:(row:T)=>unknown
   sortValue?:(row:T)=>string|number|Date|null|undefined
   searchValue?:(row:T)=>string|number|null|undefined
@@ -643,7 +644,7 @@ export function DataGrid<T>({
     id:column.id,
     header:()=>column.header,
     accessorFn:(row:T)=>column.filterValue?.(row)??column.searchValue?.(row)??column.sortValue?.(row)??column.value?.(row)??'',
-    cell:info=>column.cell(info.row.original),
+    cell:info=>column.cell?column.cell(info.row.original):String(column.value?.(info.row.original)??''),
     enableSorting:Boolean(column.sortable!==false&&(column.sortValue||column.value||column.searchValue||column.filterValue)),
     enableHiding:column.hideable!==false,
     enableColumnFilter:Boolean(column.filter),

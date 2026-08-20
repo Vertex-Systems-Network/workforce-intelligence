@@ -1,9 +1,10 @@
 import { useState, type ReactNode } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Barcode, Box, Braces, ChevronDown, Columns3, Copy, FileText, GalleryHorizontalEnd, GripVertical, Image as ImageIcon, Link2, ListTree, MessageSquareText, PanelLeftClose, PanelRightClose, PenLine, Plus, QrCode, RefreshCw, Settings2, Stamp, Table2, Trash2, Type, Variable, X } from 'lucide-react';
+import { Barcode, Box as BoxIcon, Braces, ChevronDown, Columns3, Copy, FileText, GalleryHorizontalEnd, GripVertical, Image as ImageIcon, Link2, ListTree, MessageSquareText, PanelLeftClose, PanelRightClose, PenLine, Plus, QrCode, RefreshCw, Settings2, Stamp, Table2, Trash2, Type, Variable, X } from 'lucide-react';
 import RichTextEditor from '../../components/RichTextEditor';
-import { Alert, Button, Dropdown, EmptyState, Field, FormGrid, FormSection, IconButton, Input, Option, Pressable, Select, Stack, Switch, Textarea } from '../../design-system';
+import { apiDownload } from '../../api/client';
+import { Alert, Box, Button, Dropdown, EmptyState, Field, FormGrid, FormSection, IconButton, Input, Option, Pressable, Select, Stack, Switch, Textarea } from '../../design-system';
 import type { DocumentBlock, DocumentComment, DocumentComponent, DocumentTemplate, GeneratedDocument } from '../types';
 
 export type StudioTab = 'designer' | 'generated' | 'components' | 'variables';
@@ -14,7 +15,7 @@ export type WorkflowModal = {
     document?: GeneratedDocument | null;
 } | null;
 export type BlockIconMap = Record<string, ReactNode>;
-export const BLOCK_ICONS: BlockIconMap = { logo: <ImageIcon size={14}/>, heading: <Type size={14}/>, text: <Type size={14}/>, rich_text: <Type size={14}/>, field: <Variable size={14}/>, image: <ImageIcon size={14}/>, key_value: <ListTree size={14}/>, table: <Table2 size={14}/>, totals: <Table2 size={14}/>, formula: <Braces size={14}/>, conditional: <Braces size={14}/>, repeat: <RefreshCw size={14}/>, columns: <Columns3 size={14}/>, callout: <MessageSquareText size={14}/>, stamp: <Stamp size={14}/>, qr: <QrCode size={14}/>, barcode: <Barcode size={14}/>, reusable: <Box size={14}/>, divider: <PanelLeftClose size={14}/>, spacer: <GalleryHorizontalEnd size={14}/>, signature: <PenLine size={14}/>, page_number: <FileText size={14}/>, page_break: <FileText size={14}/>, footer: <PanelRightClose size={14}/> };
+export const BLOCK_ICONS: BlockIconMap = { logo: <ImageIcon size={14}/>, heading: <Type size={14}/>, text: <Type size={14}/>, rich_text: <Type size={14}/>, field: <Variable size={14}/>, image: <ImageIcon size={14}/>, key_value: <ListTree size={14}/>, table: <Table2 size={14}/>, totals: <Table2 size={14}/>, formula: <Braces size={14}/>, conditional: <Braces size={14}/>, repeat: <RefreshCw size={14}/>, columns: <Columns3 size={14}/>, callout: <MessageSquareText size={14}/>, stamp: <Stamp size={14}/>, qr: <QrCode size={14}/>, barcode: <Barcode size={14}/>, reusable: <BoxIcon size={14}/>, divider: <PanelLeftClose size={14}/>, spacer: <GalleryHorizontalEnd size={14}/>, signature: <PenLine size={14}/>, page_number: <FileText size={14}/>, page_break: <FileText size={14}/>, footer: <PanelRightClose size={14}/> };
 /** Return a collision-resistant block identifier suitable for nested schema validation. */
 export function blockId() { return `b_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`; }
 /** Return a collision-resistant logical page identifier for the V6 page model. */
@@ -159,9 +160,9 @@ export function documentPreflight(template: DocumentTemplate | null): string[] {
     return issues;
 }
 /** Trigger an authenticated generated-document download while preserving the server filename. */
-async function downloadGenerated(id: number, workspaceId: number) { const result = await apiDownload(`/api/v1/documents/generated/${id}/download`, workspaceId); const url = URL.createObjectURL(result.blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = result.filename; anchor.click(); window.setTimeout(() => URL.revokeObjectURL(url), 1000); }
+export async function downloadGenerated(id: number, workspaceId: number) { const result = await apiDownload(`/api/v1/documents/generated/${id}/download`, workspaceId); const url = URL.createObjectURL(result.blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = result.filename; anchor.click(); window.setTimeout(() => URL.revokeObjectURL(url), 1000); }
 /** Copy a secure one-time URL to the clipboard when browser permissions allow it. */
-async function copyUrl(url: string) { await navigator.clipboard.writeText(new URL(url, window.location.origin).toString()); }
+export async function copyUrl(url: string) { await navigator.clipboard.writeText(new URL(url, window.location.origin).toString()); }
 /** Render one sortable top-level designer block with selection and accessible actions. */
 export function SortableBlock({ block, selected, editable, onSelect, onDelete, onDuplicate }: {
     block: DocumentBlock;
@@ -175,7 +176,7 @@ export function SortableBlock({ block, selected, editable, onSelect, onDelete, o
     const summary = String(block.text ?? block.label ?? block.value ?? block.source ?? block.expression ?? '');
     return <Box ref={setNodeRef} className={`document-v4-block${selected ? ' is-selected' : ''}`} transform={CSS.Transform.toString(transform)} transition={transition}>
     <Pressable type="button" className="document-v4-block__handle" {...(editable ? attributes : {})} {...(editable ? listeners : {})} disabled={!editable} aria-label="Reorder block"><GripVertical size={14}/></Pressable>
-    <Pressable type="button" className="document-v4-block__main" onClick={onSelect}><span>{BLOCK_ICONS[block.type] ?? <Box size={14}/>}</span><div><strong>{humanize(block.type)}</strong><small>{summary || 'Configure this block in the inspector'}</small></div></Pressable>
+    <Pressable type="button" className="document-v4-block__main" onClick={onSelect}><span>{BLOCK_ICONS[block.type] ?? <BoxIcon size={14}/>}</span><div><strong>{humanize(block.type)}</strong><small>{summary || 'Configure this block in the inspector'}</small></div></Pressable>
     {editable && <div className="document-v4-block__actions"><IconButton variant="ghost" size="sm" aria-label="Duplicate block" onClick={onDuplicate}><Copy size={12}/></IconButton><IconButton variant="ghost" size="sm" aria-label="Delete block" onClick={onDelete}><Trash2 size={12}/></IconButton></div>}
   </Box>;
 }
@@ -196,21 +197,10 @@ export function ItemRows({ items, onChange, disabled }: {
     return <div className="document-v4-repeat-editor">{items.map((row, index) => <div key={index} className="document-v4-repeat-editor__row"><Input disabled={disabled} value={row.label} onChange={event => update(index, 'label', event.target.value)} placeholder="Label"/><Input disabled={disabled} value={row.value} onChange={event => update(index, 'value', event.target.value)} placeholder="{{variable.path}}"/><IconButton disabled={disabled} variant="ghost" size="sm" aria-label="Remove row" onClick={() => onChange(items.filter((_, rowIndex) => rowIndex !== index))}><X size={12}/></IconButton></div>)}<Button type="button" size="sm" variant="ghost" disabled={disabled} onClick={() => onChange([...items, { label: 'Label', value: '{{workspace.name}}' }])}><Plus size={12}/> Add row</Button></div>;
 }
 /** Render structured repeating-table columns with alignment controls and no raw JSON textarea. */
+type TableColumnDefinition = Pick<NonNullable<DocumentBlock['columns']>[number], 'label' | 'key' | 'align' | 'width' | 'format'>;
 export function TableColumns({ columns, onChange, disabled }: {
-    columns: Array<{
-        label?: string;
-        key?: string;
-        align?: 'left' | 'center' | 'right';
-        width?: number;
-        format?: string;
-    }>;
-    onChange: (columns: Array<{
-        label?: string;
-        key?: string;
-        align?: 'left' | 'center' | 'right';
-        width?: number;
-        format?: string;
-    }>) => void;
+    columns: TableColumnDefinition[];
+    onChange: (columns: TableColumnDefinition[]) => void;
     disabled: boolean;
 }) {
     /** Update one repeating-table column definition immutably. */
@@ -223,7 +213,7 @@ export function ChildBlocks({ blocks, onChange, disabled }: {
     onChange: (blocks: DocumentBlock[]) => void;
     disabled: boolean;
 }) {
-    return <div className="document-v4-child-blocks">{blocks.map(block => <div key={block.id}><span>{BLOCK_ICONS[block.type] ?? <Box size={12}/>} {humanize(block.type)}</span><Input disabled={disabled} value={String(block.text ?? block.value ?? '')} onChange={event => onChange(blocks.map(row => row.id === block.id ? { ...row, ...(row.type === 'field' ? { value: event.target.value } : { text: event.target.value }) } : row))}/><IconButton disabled={disabled} size="sm" variant="ghost" aria-label="Remove nested block" onClick={() => onChange(blocks.filter(row => row.id !== block.id))}><Trash2 size={11}/></IconButton></div>)}<Dropdown trigger={<Button type="button" size="sm" variant="ghost" disabled={disabled}><Plus size={12}/> Add nested block <ChevronDown size={11}/></Button>} items={['heading', 'text', 'field', 'rich_text', 'divider', 'signature'].map(type => ({ label: humanize(type), icon: BLOCK_ICONS[type], onClick: () => onChange([...blocks, makeBlock(type)]) }))}/></div>;
+    return <div className="document-v4-child-blocks">{blocks.map(block => <div key={block.id}><span>{BLOCK_ICONS[block.type] ?? <BoxIcon size={12}/>} {humanize(block.type)}</span><Input disabled={disabled} value={String(block.text ?? block.value ?? '')} onChange={event => onChange(blocks.map(row => row.id === block.id ? { ...row, ...(row.type === 'field' ? { value: event.target.value } : { text: event.target.value }) } : row))}/><IconButton disabled={disabled} size="sm" variant="ghost" aria-label="Remove nested block" onClick={() => onChange(blocks.filter(row => row.id !== block.id))}><Trash2 size={11}/></IconButton></div>)}<Dropdown trigger={<Button type="button" size="sm" variant="ghost" disabled={disabled}><Plus size={12}/> Add nested block <ChevronDown size={11}/></Button>} items={['heading', 'text', 'field', 'rich_text', 'divider', 'signature'].map(type => ({ label: humanize(type), icon: BLOCK_ICONS[type], onClick: () => onChange([...blocks, makeBlock(type)]) }))}/></div>;
 }
 /** Render the selected V4 block's safe structured configuration controls. */
 export function BlockInspector({ block, onChange, editable, workspaceId, components, onPickMedia, onDetachReusable }: {
@@ -241,7 +231,7 @@ export function BlockInspector({ block, onChange, editable, workspaceId, compone
     const patch = (next: Partial<DocumentBlock>) => onChange({ ...block, ...next });
     const disabled = !editable;
     return <Stack gap={12}>
-    <div className="document-v4-inspector-heading"><span>{BLOCK_ICONS[block.type] ?? <Box size={15}/>}</span><div><strong>{humanize(block.type)}</strong><small>{block.id}</small></div></div>
+    <div className="document-v4-inspector-heading"><span>{BLOCK_ICONS[block.type] ?? <BoxIcon size={15}/>}</span><div><strong>{humanize(block.type)}</strong><small>{block.id}</small></div></div>
     {['heading', 'text', 'stamp', 'footer'].includes(block.type) && <Field label="Text"><Textarea disabled={disabled} rows={block.type === 'text' ? 5 : 3} value={String(block.text ?? '')} onChange={event => patch({ text: event.target.value })}/></Field>}
     {block.type === 'rich_text' && <Field label="Rich content"><RichTextEditor disabled={disabled} value={String(block.html ?? '')} onChange={html => patch({ html })} placeholder="Write formatted document content…"/></Field>}
     {block.type === 'callout' && <><Field label="Tone"><Select disabled={disabled} value={block.tone ?? 'info'} onChange={event => patch({ tone: event.target.value as DocumentBlock['tone'] })}><Option value="neutral">Neutral</Option><Option value="info">Info</Option><Option value="success">Success</Option><Option value="warning">Warning</Option><Option value="danger">Danger</Option></Select></Field><Field label="Content"><RichTextEditor disabled={disabled} value={String(block.html ?? '')} onChange={html => patch({ html })}/></Field></>}
@@ -250,13 +240,7 @@ export function BlockInspector({ block, onChange, editable, workspaceId, compone
     {block.type === 'logo' && <><Field label="Fallback company label"><Input disabled={disabled} value={String(block.label ?? '')} onChange={event => patch({ label: event.target.value })}/></Field><FormGrid columns={2}><Field label="Width %"><Input disabled={disabled} type="number" min="10" max="100" value={Number(block.width ?? 34)} onChange={event => patch({ width: Number(event.target.value) })}/></Field><Field label="Alignment"><Select disabled={disabled} value={block.align ?? 'left'} onChange={event => patch({ align: event.target.value as DocumentBlock['align'] })}><Option value="left">Left</Option><Option value="center">Center</Option><Option value="right">Right</Option></Select></Field></FormGrid><Button type="button" variant="outline" disabled={disabled} onClick={() => onPickMedia(block)}><ImageIcon size={13}/> {block.media_asset_id ? 'Replace logo media' : 'Choose logo from Media Library'}</Button></>}
     {block.type === 'image' && <><Button type="button" variant="outline" disabled={disabled} onClick={() => onPickMedia(block)}><ImageIcon size={13}/> {block.media_asset_id ? 'Replace image' : 'Choose or upload image'}</Button><FormGrid columns={2}><Field label="Media asset ID"><Input disabled value={block.media_asset_id ? String(block.media_asset_id) : ''} placeholder="Choose media"/></Field><Field label="Width %"><Input disabled={disabled} type="number" min="10" max="100" value={Number(block.width ?? 100)} onChange={event => patch({ width: Number(event.target.value) })}/></Field></FormGrid><Field label="Alt text"><Input disabled={disabled} value={String(block.alt ?? '')} onChange={event => patch({ alt: event.target.value })}/></Field><Field label="Caption"><Input disabled={disabled} value={String(block.caption ?? '')} onChange={event => patch({ caption: event.target.value })}/></Field></>}
     {(block.type === 'key_value' || block.type === 'totals') && <Field label={block.type === 'totals' ? 'Totals rows' : 'Key/value rows'}><ItemRows disabled={disabled} items={block.items ?? []} onChange={items => patch({ items })}/></Field>}
-    {block.type === 'table' && <><FormGrid columns={2}><Field label="Data source"><Input disabled={disabled} value={String(block.source ?? '')} onChange={event => patch({ source: event.target.value })}/></Field><Field label="Max rows"><Input disabled={disabled} type="number" min="1" max="1000" value={Number(block.max_rows ?? 250)} onChange={event => patch({ max_rows: Number(event.target.value) })}/></Field></FormGrid><Switch checked={block.show_header !== false} disabled={disabled} onChange={checked => patch({ show_header: checked })} label="Show table header"/><Field label="Columns"><TableColumns disabled={disabled} columns={(block.columns ?? []) as Array<{
-                label?: string;
-                key?: string;
-                align?: 'left' | 'center' | 'right';
-                width?: number;
-                format?: string;
-            }>} onChange={columns => patch({ columns })}/></Field></>}
+    {block.type === 'table' && <><FormGrid columns={2}><Field label="Data source"><Input disabled={disabled} value={String(block.source ?? '')} onChange={event => patch({ source: event.target.value })}/></Field><Field label="Max rows"><Input disabled={disabled} type="number" min="1" max="1000" value={Number(block.max_rows ?? 250)} onChange={event => patch({ max_rows: Number(event.target.value) })}/></Field></FormGrid><Switch checked={block.show_header !== false} disabled={disabled} onChange={checked => patch({ show_header: checked })} label="Show table header"/><Field label="Columns"><TableColumns disabled={disabled} columns={(block.columns ?? []) as TableColumnDefinition[]} onChange={columns => patch({ columns })}/></Field></>}
     {block.type === 'formula' && <><Field label="Expression" hint="Use numeric variables with + − × ÷ and parentheses. No executable code is evaluated."><Input disabled={disabled} value={String(block.expression ?? '0')} onChange={event => patch({ expression: event.target.value })}/></Field><FormGrid columns={2}><Field label="Label"><Input disabled={disabled} value={String(block.label ?? '')} onChange={event => patch({ label: event.target.value })}/></Field><Field label="Decimals"><Input disabled={disabled} type="number" min="0" max="6" value={Number(block.decimals ?? 2)} onChange={event => patch({ decimals: Number(event.target.value) })}/></Field></FormGrid></>}
     {block.type === 'conditional' && <><FormGrid columns={2}><Field label="Variable path"><Input disabled={disabled} value={String(block.condition?.path ?? '')} onChange={event => patch({ condition: { ...block.condition, path: event.target.value } })}/></Field><Field label="Operator"><Select disabled={disabled} value={String(block.condition?.operator ?? 'truthy')} onChange={event => patch({ condition: { ...block.condition, operator: event.target.value } })}>{['truthy', 'falsy', 'eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'contains', 'empty', 'not_empty'].map(option => <Option key={option} value={option}>{humanize(option)}</Option>)}</Select></Field></FormGrid><Field label="Comparison value"><Input disabled={disabled} value={String(block.condition?.value ?? '')} onChange={event => patch({ condition: { ...block.condition, value: event.target.value } })}/></Field><Field label="Rendered when condition matches"><ChildBlocks disabled={disabled} blocks={block.children ?? []} onChange={children => patch({ children })}/></Field></>}
     {block.type === 'repeat' && <><FormGrid columns={3}><Field label="Array source"><Input disabled={disabled} value={String(block.source ?? '')} onChange={event => patch({ source: event.target.value })}/></Field><Field label="Alias"><Input disabled={disabled} value={String(block.alias ?? 'item')} onChange={event => patch({ alias: event.target.value })}/></Field><Field label="Max items"><Input disabled={disabled} type="number" min="1" max="250" value={Number(block.max_items ?? 100)} onChange={event => patch({ max_items: Number(event.target.value) })}/></Field></FormGrid><Field label="Repeated child blocks"><ChildBlocks disabled={disabled} blocks={block.children ?? []} onChange={children => patch({ children })}/></Field></>}

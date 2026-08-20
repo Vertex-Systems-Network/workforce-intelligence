@@ -5,7 +5,7 @@ import { useAuth } from '../auth/AuthContext';
 import { useConfirmAction, ErrorState, EmptyState, Alert, Badge, Button, Card, CardBody, CardHeader, Field, Input, Modal, Page, PageHeader, Select, StatCard, Switch, Tabs, Textarea, DataGrid, FormDialog, type DataGridColumn, Pressable, Box, Grid, Inline, Stack, Text, Label, Option } from '../design-system';
 import { PageLoadingState } from '../components/LoadingStates';
 import ActionEditor from './automations/ActionEditor';
-import { type ActionForm, type DeadRow, type HookRow, type Overview, type RunRow, type Template, type WorkflowForm, type WorkflowRow, emptyAction, emptyForm, fmt, normalizeConfig, tone } from './automations/support';
+import { type ActionForm, type Condition, type DeadRow, type HookRow, type Overview, type RunRow, type Template, type WorkflowForm, type WorkflowRow, emptyAction, emptyForm, fmt, maybeJson, normalizeConfig, tone } from './automations/support';
 /** Handles the automations operation for the WorkIntel client. */ export default function Automations() {
     const confirmAction = useConfirmAction();
     const { session } = useAuth();
