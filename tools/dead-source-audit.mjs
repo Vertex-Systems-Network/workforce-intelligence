@@ -5,14 +5,15 @@ const root = process.cwd()
 const sourceRoot = path.join(root, 'resources/js')
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.css', '.json']
 const ignored = new Set(['vite-env.d.ts'])
-const standaloneRoots = new Set([
-  'design-system/ToolkitPreview.tsx',
-  'media/AvatarCropper.tsx',
-])
+// DEV-08 closes all known browser-source exceptions. New standalone roots must be
+// consciously reintroduced here and justified in the architecture ledger.
+const standaloneRoots = new Set()
 const retiredPaths = [
   'resources/js/pages/EmployeeProfile.tsx',
   'resources/js/data.ts',
   'resources/js/i18n/humanLabels.tsx',
+  'resources/js/design-system/ToolkitPreview.tsx',
+  'resources/js/media/AvatarCropper.tsx',
 ]
 
 /** Return every source file that participates in the browser module graph. */
@@ -104,7 +105,7 @@ for (const marker of ['setMemberAvatar', 'openSecurity', 'profile photo']) {
 }
 
 console.log(`DEV-08 dead-source audit: ${runtimeReachable.size} runtime source files reachable from app.tsx`)
-console.log(`Intentional standalone roots: ${[...standaloneRoots].join(', ')}`)
+console.log(`Intentional standalone roots: ${standaloneRoots.size ? [...standaloneRoots].join(', ') : 'none'}`)
 console.log(`Unreachable source debt: ${unreachable.length}; production console.log/debugger debt: ${debugResidue.length}`)
 if (failures.length) {
   console.error(`DEV-08 dead-source audit: FAIL (${failures.length})`)
