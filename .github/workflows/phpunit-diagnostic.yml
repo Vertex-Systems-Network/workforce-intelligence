@@ -1,0 +1,37 @@
+name: PHPUnit Diagnostic
+
+on:
+  push:
+    branches:
+      - diagnostic/access-control-seed-on-dev08
+  pull_request:
+
+jobs:
+  first-failure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, xml, xmlwriter, pdo_mysql, pdo_sqlite, sqlite3, fileinfo
+          coverage: none
+      - run: composer install --prefer-dist --no-interaction
+      - run: cp .env.example .env && php artisan key:generate
+      - name: Capture first PHPUnit failure
+        shell: bash
+        run: |
+          set +e
+          php artisan test --stop-on-failure > phpunit-full.log 2>&1
+          status=$?
+          tail -n 180 phpunit-full.log > phpunit-first-failure.log
+          printf '%s\n' "$status" > phpunit-exit-code.txt
+          exit 0
+      - name: Upload PHPUnit diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpunit-first-failure
+          path: |
+            phpunit-first-failure.log
+            phpunit-exit-code.txt
+          if-no-files-found: error
