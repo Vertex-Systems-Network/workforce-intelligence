@@ -24,9 +24,11 @@ class WebsiteStudioV3ContractTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         $studio = (string) file_get_contents($root.'/resources/js/pages/WebsiteStudio.tsx');
+        $support = (string) file_get_contents($root.'/resources/js/website/studio/WebsiteStudioSupport.tsx');
+        $frontend = $studio."\n".$support;
         $service = (string) file_get_contents($root.'/app/Services/WebsiteBuilderService.php');
         $migration = (string) file_get_contents($root.'/database/migrations/2026_08_20_000400_create_website_staging_review_and_component_links.php');
-        foreach (['Stage','Publish staging','ReviewInspector','linked_reusable_uuid','Responsive overrides'] as $needle) $this->assertStringContainsString($needle, $studio);
+        foreach (['Stage','Publish staging','ReviewInspector','linked_reusable_uuid','Responsive overrides'] as $needle) $this->assertStringContainsString($needle, $frontend);
         foreach (['stagePage','createPreviewToken','previewPayload','pageComments','syncReusableLinks','propagateReusableSection','bindDynamicValues'] as $needle) $this->assertStringContainsString($needle, $service);
         foreach (['website_preview_tokens','website_page_comments','website_reusable_section_links','staged_version'] as $needle) $this->assertStringContainsString($needle, $migration);
     }
@@ -36,8 +38,10 @@ class WebsiteStudioV3ContractTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         $studio = (string) file_get_contents($root.'/resources/js/pages/WebsiteStudio.tsx');
+        $support = (string) file_get_contents($root.'/resources/js/website/studio/WebsiteStudioSupport.tsx');
+        $frontend = $studio."\n".$support;
         $service = (string) file_get_contents($root.'/app/Services/WebsiteBuilderService.php');
-        foreach (['website-builder-shell--v3','website-rail-tabs','website-inspector-tabs','Run preflight'] as $needle) $this->assertStringContainsString($needle, $studio);
+        foreach (['website-builder-shell--v3','website-rail-tabs','website-inspector-tabs','Run preflight'] as $needle) $this->assertStringContainsString($needle, $frontend);
         foreach (['preflightPage','media.rights_expired','form.missing','url.unsafe','binding.unknown'] as $needle) $this->assertStringContainsString($needle, $service);
     }
 }
