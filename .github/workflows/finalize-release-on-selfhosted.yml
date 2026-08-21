@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - ops/finalize-release
+  pull_request:
+    branches:
+      - main
 
 jobs:
   finalize:
