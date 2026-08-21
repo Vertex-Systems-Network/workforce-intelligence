@@ -6,11 +6,9 @@ import { browserInventory, findBrowserExecutable } from './e2e-browser.mjs'
 const root = path.resolve(import.meta.dirname, '..')
 const requestedMode = ['public', 'full', 'accessibility'].includes(process.argv[2]) ? process.argv[2] : 'public'
 const requireSystemBrowsers = process.argv.includes('--require-system-browsers')
-const playwrightBin = process.platform === 'win32'
-  ? path.join(root, 'node_modules/.bin/playwright.cmd')
-  : path.join(root, 'node_modules/.bin/playwright')
+const playwrightCli = path.join(root, 'node_modules/@playwright/test/cli.js')
 
-if (!fs.existsSync(playwrightBin)) {
+if (!fs.existsSync(playwrightCli)) {
   console.error('WorkIntel browser certification requires @playwright/test. Run npm install first.')
   process.exit(1)
 }
@@ -37,7 +35,7 @@ console.log(`Chrome: ${inventory.chrome ?? 'not detected'}`)
 console.log(`Edge: ${inventory.edge ?? 'not detected'}`)
 console.log(`Firefox system install: ${inventory.firefox ?? 'not detected'} (Playwright Firefox engine is used by the suite)`)
 
-const result = spawnSync(playwrightBin, ['test', '--config=tools/playwright.config.mjs'], {
+const result = spawnSync(process.execPath, [playwrightCli, 'test', '--config=tools/playwright.config.mjs'], {
   cwd: root,
   stdio: 'inherit',
   env: {
@@ -47,4 +45,9 @@ const result = spawnSync(playwrightBin, ['test', '--config=tools/playwright.conf
     ...(installedBrowser && profile === 'standard' ? { WORKINTEL_E2E_BROWSER_EXECUTABLE: installedBrowser } : {}),
   },
 })
+
+if (result.error) {
+  console.error(`Unable to launch Playwright certification: ${result.error.message}`)
+}
+
 process.exit(result.status ?? 1)
