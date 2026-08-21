@@ -34,7 +34,11 @@ class ChatPerformanceCertificationContractTest extends TestCase
     /** Verify the web client owns cursor history, offline outbox, multi-tab sync and bounded rendering. */
     public function test_frontend_reliability_contracts_are_present(): void
     {
-        $page = file_get_contents(base_path('resources/js/pages/Chat.tsx'));
+        $page = implode("\n", [
+            file_get_contents(base_path('resources/js/pages/Chat.tsx')),
+            file_get_contents(base_path('resources/js/components/chat/ChatPanels.tsx')),
+            file_get_contents(base_path('resources/js/components/chat/chatUtils.ts')),
+        ]);
         foreach (['BroadcastChannel', 'workintel-chat-outbox', 'createClientMessageId', 'loadOlderMessages', '?after=', 'Queued for delivery', 'retryOutboxMessage', 'mergeMessageWindow'] as $token) {
             $this->assertStringContainsString($token, $page);
         }
