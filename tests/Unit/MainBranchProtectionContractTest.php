@@ -22,7 +22,7 @@ class MainBranchProtectionContractTest extends TestCase
             'required_conversation_resolution = $true',
             'allow_force_pushes = $false',
             'allow_deletions = $false',
-            "repos/$Repository/branches/$Branch/protection",
+            'repos/$Repository/branches/$Branch/protection',
             'MAIN BRANCH PROTECTION CERTIFICATION PASSED',
         ] as $marker) {
             $this->assertStringContainsString($marker, $script);
