@@ -26,15 +26,46 @@ jobs:
           ref: main
           fetch-depth: 1
 
-      - name: Verify local GitHub CLI admin session
+      - name: Resolve existing GitHub CLI admin session
         run: |
           if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
             throw 'GitHub CLI (gh) is not installed on this self-hosted runner.'
           }
           gh --version
-          gh auth status
-          if ($LASTEXITCODE -ne 0) {
-            throw 'The self-hosted runner does not have an authenticated gh session.'
+
+          $resolved = $false
+          gh auth status 1>$null 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host 'Using GitHub CLI auth from the runner service profile.'
+            $resolved = $true
+          }
+
+          if (-not $resolved) {
+            $candidates = @()
+            if (Test-Path 'C:\Users') {
+              $candidates += @(Get-ChildItem 'C:\Users' -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+                Join-Path $_.FullName 'AppData\Roaming\GitHub CLI'
+                Join-Path $_.FullName '.config\gh'
+              })
+            }
+
+            foreach ($dir in ($candidates | Select-Object -Unique)) {
+              if (-not (Test-Path (Join-Path $dir 'hosts.yml'))) { continue }
+              $env:GH_CONFIG_DIR = $dir
+              gh auth status 1>$null 2>$null
+              if ($LASTEXITCODE -eq 0) {
+                $login = (gh api user --jq .login).Trim()
+                if ($LASTEXITCODE -ne 0 -or -not $login) { continue }
+                Write-Host "Using authenticated GitHub CLI profile for: $login"
+                "GH_CONFIG_DIR=$dir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+                $resolved = $true
+                break
+              }
+            }
+          }
+
+          if (-not $resolved) {
+            throw 'No authenticated GitHub CLI profile was found on this Windows machine.'
           }
 
       - name: Apply and verify main branch protection
