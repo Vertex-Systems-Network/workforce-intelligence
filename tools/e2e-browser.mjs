@@ -30,9 +30,11 @@ export function findEdgeExecutable() {
   ])
 }
 
-/** Return Mozilla Firefox when installed on the current workstation. */
+/** Return Mozilla Firefox from an explicitly certified binary or a standard workstation installation. */
 export function findFirefoxExecutable() {
+  const explicit = process.env.WORKINTEL_E2E_FIREFOX_EXECUTABLE?.trim()
   return firstExisting([
+    explicit,
     process.platform === 'win32' ? path.join(process.env.PROGRAMFILES ?? '', 'Mozilla Firefox/firefox.exe') : '',
     process.platform === 'win32' ? path.join(process.env['PROGRAMFILES(X86)'] ?? '', 'Mozilla Firefox/firefox.exe') : '',
     process.platform === 'darwin' ? '/Applications/Firefox.app/Contents/MacOS/firefox' : '',
@@ -54,7 +56,7 @@ export function findChromiumExecutable() {
   ])
 }
 
-/** Report system-browser paths used by Block N actual Chrome/Edge/Firefox certification. */
+/** Report system/provisioned browser paths used by Block N Chrome/Edge/Firefox certification. */
 export function browserInventory() {
   return {
     chrome: findChromeExecutable(),
