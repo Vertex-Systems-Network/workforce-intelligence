@@ -35,23 +35,31 @@ jobs:
             throw 'No Laragon www root found on any mounted filesystem drive.'
           }
 
+          $candidatePaths = @()
+          foreach ($base in $laragonRoots) {
+            $candidatePaths += $base
+            $candidatePaths += @(Get-ChildItem -Path $base -Directory -Recurse -Depth 3 -Force -ErrorAction SilentlyContinue |
+              Where-Object { $_.Name -eq '.git' } |
+              ForEach-Object { $_.Parent.FullName })
+            $candidatePaths += @(Get-ChildItem -Path $base -Filter 'verify-laragon-release.cmd' -File -Recurse -Depth 3 -ErrorAction SilentlyContinue |
+              ForEach-Object { $_.Directory.FullName })
+          }
+          $candidatePaths = @($candidatePaths | Select-Object -Unique)
+          Write-Host ('Candidate checkouts: ' + ($candidatePaths -join ', '))
+
           $repoMatches = @()
           $markerMatches = @()
-          foreach ($base in $laragonRoots) {
-            $dirs = @((Get-Item $base)) + @(Get-ChildItem -Path $base -Directory -ErrorAction SilentlyContinue)
-            foreach ($dir in $dirs) {
-              $path = $dir.FullName
-              if (-not (Test-Path (Join-Path $path '.git'))) { continue }
+          foreach ($path in $candidatePaths) {
+            if (-not (Test-Path (Join-Path $path '.git'))) { continue }
 
-              $remote = (& git -c "safe.directory=$path" -C $path remote get-url origin 2>$null)
-              if ($LASTEXITCODE -eq 0 -and $remote -match 'Vertex-Systems-Network/workforce-intelligence(?:\.git)?$') {
-                $repoMatches += $path
-                continue
-              }
+            $remote = (& git -c "safe.directory=$path" -C $path remote get-url origin 2>$null)
+            if ($LASTEXITCODE -eq 0 -and $remote -match 'Vertex-Systems-Network/workforce-intelligence(?:\.git)?$') {
+              $repoMatches += $path
+              continue
+            }
 
-              if ((Test-Path (Join-Path $path 'verify-laragon-release.cmd')) -and (Test-Path (Join-Path $path 'artisan'))) {
-                $markerMatches += $path
-              }
+            if ((Test-Path (Join-Path $path 'verify-laragon-release.cmd')) -and (Test-Path (Join-Path $path 'artisan'))) {
+              $markerMatches += $path
             }
           }
 
