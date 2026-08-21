@@ -77,6 +77,7 @@ export default defineConfig({
     stderr: 'pipe',
     env: {
       SANCTUM_STATEFUL_DOMAINS: statefulDomains,
+      WORKINTEL_RATE_AUTH_LOGIN: process.env.WORKINTEL_RATE_AUTH_LOGIN || '10',
     },
   },
   projects: profile === 'accessibility' ? accessibilityProjects : standardProjects,
