@@ -115,7 +115,7 @@ class WebsiteStudioV3FlowTest extends TestCase
     public function test_archived_page_must_be_restored_before_staging(): void
     {
         [$headers] = $this->ownerPage();
-        $page = $this->postJson('/api/v1/website/pages', ['page_type' => 'standard', 'title' => 'Archive staging guard', 'slug' => 'archive-staging-guard', 'language' => 'en', 'is_home' => false], $headers)
+        $page = $this->postJson('/api/v1/website/pages', ['page_type' => 'custom', 'title' => 'Archive staging guard', 'slug' => 'archive-staging-guard', 'language' => 'en', 'is_home' => false], $headers)
             ->assertCreated()->json('data');
         $this->deleteJson('/api/v1/website/pages/'.$page['id'], [], $headers)->assertOk();
         $schema = ['schema_version' => 1, 'sections' => [['id' => 'archived_stage', 'type' => 'hero', 'settings' => ['title' => 'Archived', 'primary_url' => '#']]]];

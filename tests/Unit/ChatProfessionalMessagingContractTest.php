@@ -23,7 +23,7 @@ class ChatProfessionalMessagingContractTest extends TestCase
     /** Verifies the UI exposes every Chat V2.2 professional interaction rather than dead placeholders. */
     public function test_professional_chat_ui_exposes_real_actions(): void
     {
-        $page = file_get_contents(base_path('resources/js/pages/Chat.tsx'));
+        $page = file_get_contents(base_path('resources/js/pages/Chat.tsx'))."\n".file_get_contents(base_path('resources/js/components/chat/ChatPanels.tsx'));
         foreach (['Saved Messages', 'Edit history', 'Forward message', 'Create poll', 'Draft saved', 'from:', 'has:file', 'has:link'] as $needle) {
             $this->assertStringContainsString($needle, $page);
         }

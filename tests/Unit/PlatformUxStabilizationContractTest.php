@@ -30,7 +30,7 @@ class PlatformUxStabilizationContractTest extends TestCase
         $access = file_get_contents($root.'/resources/js/access.ts');
         $tasks = file_get_contents($root.'/resources/js/pages/Tasks.tsx');
         $this->assertStringContainsString('"time-attendance"', $manifest);
-        $this->assertStringContainsString('"content"', $manifest);
+        $this->assertStringContainsString('"content-studio"', $manifest);
         $this->assertStringContainsString('MULTI_PAGE_MODULE_LABELS', $access);
         $this->assertStringContainsString('ViewModeToggle', $tasks);
         $this->assertStringContainsString('gridLabel="Board" tableLabel="List"', $tasks);

@@ -11,8 +11,10 @@ final class SharedUxSystemsContractTest extends TestCase
     public function test_shared_ux_primitives_and_data_grid_v3_are_present(): void
     {
         $source = file_get_contents(base_path('resources/js/design-system/index.tsx'));
+        $layout = file_get_contents(base_path('resources/js/design-system/layout.tsx'));
+        $designSystem = $source."\n".$layout;
         foreach (['FilterBar', 'DateRangeField', 'LoadingState', 'ErrorState', 'DialogActions', 'ConfirmDialog', 'ConfirmProvider', 'FormDialog', 'BooleanField', 'ChoiceList', 'ChoiceRow', 'SettingRow'] as $name) {
-            self::assertStringContainsString("export function {$name}", $source);
+            self::assertStringContainsString("export function {$name}", $designSystem);
         }
         self::assertStringContainsString('data-grid-version="3"', $source);
         self::assertStringContainsString('<DateRangeField', $source);

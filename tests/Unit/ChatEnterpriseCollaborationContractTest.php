@@ -58,10 +58,11 @@ class ChatEnterpriseCollaborationContractTest extends TestCase
     public function test_enterprise_frontend_contract_is_present(): void
     {
         $chat = file_get_contents(dirname(__DIR__, 2).'/resources/js/pages/Chat.tsx');
+        $panels = file_get_contents(dirname(__DIR__, 2).'/resources/js/components/chat/ChatPanels.tsx');
         $enterprise = file_get_contents(dirname(__DIR__, 2).'/resources/js/components/chat/EnterpriseControls.tsx');
         self::assertStringContainsString('EnterpriseControls', $chat);
-        self::assertStringContainsString('External ·', $chat);
-        self::assertStringContainsString('Quarantined', $chat);
+        self::assertStringContainsString('External ·', $panels);
+        self::assertStringContainsString('Quarantined', $panels);
         foreach (['Enterprise controls', 'External access', 'Legal hold', 'eDiscovery', 'DLP'] as $label) {
             self::assertStringContainsString($label, $enterprise);
         }
