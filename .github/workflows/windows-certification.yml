@@ -33,9 +33,23 @@ jobs:
           }
           gh --version
 
+          function Test-GhAuth {
+            param([string] $ConfigDir)
+            if ($ConfigDir) {
+              $env:GH_CONFIG_DIR = $ConfigDir
+            } else {
+              Remove-Item Env:GH_CONFIG_DIR -ErrorAction SilentlyContinue
+            }
+            $oldPreference = $ErrorActionPreference
+            $ErrorActionPreference = 'SilentlyContinue'
+            & gh auth status *> $null
+            $code = $LASTEXITCODE
+            $ErrorActionPreference = $oldPreference
+            return ($code -eq 0)
+          }
+
           $resolved = $false
-          gh auth status 1>$null 2>$null
-          if ($LASTEXITCODE -eq 0) {
+          if (Test-GhAuth '') {
             Write-Host 'Using GitHub CLI auth from the runner service profile.'
             $resolved = $true
           }
@@ -51,16 +65,19 @@ jobs:
 
             foreach ($dir in ($candidates | Select-Object -Unique)) {
               if (-not (Test-Path (Join-Path $dir 'hosts.yml'))) { continue }
-              $env:GH_CONFIG_DIR = $dir
-              gh auth status 1>$null 2>$null
-              if ($LASTEXITCODE -eq 0) {
-                $login = (gh api user --jq .login).Trim()
-                if ($LASTEXITCODE -ne 0 -or -not $login) { continue }
-                Write-Host "Using authenticated GitHub CLI profile for: $login"
-                "GH_CONFIG_DIR=$dir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-                $resolved = $true
-                break
-              }
+              if (-not (Test-GhAuth $dir)) { continue }
+
+              $oldPreference = $ErrorActionPreference
+              $ErrorActionPreference = 'SilentlyContinue'
+              $login = (& gh api user --jq .login 2>$null)
+              $apiCode = $LASTEXITCODE
+              $ErrorActionPreference = $oldPreference
+              if ($apiCode -ne 0 -or -not $login) { continue }
+
+              Write-Host "Using authenticated GitHub CLI profile for: $($login.Trim())"
+              "GH_CONFIG_DIR=$dir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+              $resolved = $true
+              break
             }
           }
 
