@@ -23,6 +23,8 @@ class MainBranchProtectionContractTest extends TestCase
             'required_conversation_resolution = $true',
             'allow_force_pushes = $false',
             'allow_deletions = $false',
+            'collaborators?affiliation=all&per_page=100',
+            'no second write-capable reviewer was found',
             'repos/$Repository/branches/$Branch/protection',
             'MAIN BRANCH PROTECTION CERTIFICATION PASSED',
         ] as $marker) {
