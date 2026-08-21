@@ -1,0 +1,82 @@
+name: WorkIntel Final Physical Release Finalization
+
+on:
+  push:
+    branches:
+      - ops/finalize-release
+
+jobs:
+  finalize:
+    runs-on: [self-hosted, Windows, X64]
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
+    steps:
+      - name: Report selected runner
+        run: |
+          Write-Host "Runner: $env:RUNNER_NAME"
+          Write-Host "Machine: $env:COMPUTERNAME"
+
+      - name: Verify and sync real Laragon checkout
+        run: |
+          $root = 'D:\laragon\www\workforce'
+          if (-not (Test-Path (Join-Path $root '.git'))) {
+            throw "Real Laragon checkout not found at $root"
+          }
+          Set-Location $root
+          $branch = (git branch --show-current).Trim()
+          if ($branch -ne 'main') {
+            throw "Real Laragon checkout must be on main; current branch is '$branch'."
+          }
+          $dirty = git status --porcelain
+          if ($dirty) {
+            throw 'Real Laragon checkout has uncommitted changes; refusing to modify or certify it.'
+          }
+          git fetch origin main
+          if ($LASTEXITCODE -ne 0) { throw 'git fetch origin main failed.' }
+          git pull --ff-only origin main
+          if ($LASTEXITCODE -ne 0) { throw 'git pull --ff-only origin main failed.' }
+          $head = (git rev-parse HEAD).Trim()
+          $originMain = (git rev-parse origin/main).Trim()
+          if ($head -ne $originMain) {
+            throw "Laragon checkout HEAD $head does not match origin/main $originMain."
+          }
+          Write-Host "Laragon checkout certified target SHA: $head"
+
+      - name: Run physical Laragon Windows plus MySQL certification
+        run: |
+          $root = 'D:\laragon\www\workforce'
+          Set-Location $root
+          cmd /d /c verify-laragon-release.cmd
+          if ($LASTEXITCODE -ne 0) {
+            throw "verify-laragon-release.cmd failed with exit code $LASTEXITCODE."
+          }
+          $log = Get-ChildItem 'storage\logs\certification\laragon-release-*.log' -File |
+            Sort-Object LastWriteTime -Descending |
+            Select-Object -First 1
+          if (-not $log) { throw 'Laragon certification did not produce an evidence log.' }
+          $tail = Get-Content -Path $log.FullName -Tail 1
+          if ($tail -ne 'WORKINTEL LARAGON RELEASE CERTIFICATION PASSED') {
+            throw "Evidence log final line is invalid: $tail"
+          }
+          Write-Host "Physical evidence: $($log.FullName)"
+          Copy-Item $log.FullName (Join-Path $env:RUNNER_TEMP 'workintel-laragon-release-evidence.log') -Force
+
+      - name: Apply and verify main branch protection
+        run: |
+          $root = 'D:\laragon\www\workforce'
+          Set-Location $root
+          cmd /d /c apply-main-branch-protection.cmd
+          if ($LASTEXITCODE -ne 0) {
+            throw "apply-main-branch-protection.cmd failed with exit code $LASTEXITCODE."
+          }
+
+      - name: Upload physical certification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workintel-final-physical-release-evidence
+          path: ${{ runner.temp }}\workintel-laragon-release-evidence.log
+          if-no-files-found: warn
+          retention-days: 30
