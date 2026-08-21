@@ -71,14 +71,14 @@ jobs:
         env:
           WORKINTEL_RATE_AUTH_LOGIN: 120
       - name: Summarize accessibility browser certification failure
-        if: steps.accessibility_e2e.outcome == 'failure'
+        if: failure() && steps.accessibility_e2e.outcome == 'failure'
         shell: bash
         run: |
           echo "Accessibility Playwright failure artifacts:"
           find storage/app/private/e2e-results -type f -maxdepth 4 -print 2>/dev/null || true
           find storage/app/private/e2e-results -type f -name 'error-context.md' -exec sh -c 'echo "--- $1"; sed -n "1,240p" "$1"' _ {} \; 2>/dev/null || true
       - name: Upload accessibility browser certification failure artifacts
-        if: steps.accessibility_e2e.outcome == 'failure'
+        if: failure() && steps.accessibility_e2e.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: workintel-accessibility-e2e-failure-${{ github.run_id }}-${{ github.run_attempt }}
