@@ -6,6 +6,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: windows-certification-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   windows-certification:
     runs-on: [self-hosted, Windows, X64]
@@ -66,11 +70,21 @@ jobs:
             throw 'Unable to resolve the latest official PowerShell win-x64 ZIP asset.'
           }
 
+          if (-not (Get-Command curl.exe -ErrorAction SilentlyContinue)) {
+            throw 'curl.exe is required to bootstrap portable PowerShell on the self-hosted runner.'
+          }
+
           $pwshRoot = Join-Path $env:RUNNER_TEMP 'workintel-pwsh'
           $zipPath = Join-Path $env:RUNNER_TEMP $asset.name
           Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $pwshRoot
+          Remove-Item -Force -ErrorAction SilentlyContinue $zipPath
           New-Item -ItemType Directory -Force -Path $pwshRoot | Out-Null
-          Invoke-WebRequest -Headers $headers -Uri $asset.browser_download_url -OutFile $zipPath
+
+          & curl.exe -L --fail --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 300 -o $zipPath $asset.browser_download_url
+          if ($LASTEXITCODE -ne 0 -or -not (Test-Path $zipPath)) {
+            throw 'Portable PowerShell download failed.'
+          }
+
           Expand-Archive -Path $zipPath -DestinationPath $pwshRoot -Force
           $pwshExe = Join-Path $pwshRoot 'pwsh.exe'
           if (-not (Test-Path $pwshExe)) {
