@@ -140,20 +140,32 @@ jobs:
             $firefoxRoot = Join-Path $env:RUNNER_TEMP 'workintel-firefox'
             Remove-Item -Force -ErrorAction SilentlyContinue $installerPath
             Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $firefoxRoot
+            New-Item -ItemType Directory -Force -Path $firefoxRoot | Out-Null
 
             & curl.exe -L --fail --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 300 -o $installerPath 'https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US'
             if ($LASTEXITCODE -ne 0 -or -not (Test-Path $installerPath)) {
               throw 'Official Mozilla Firefox full installer download failed.'
             }
 
-            $extract = Start-Process -FilePath $installerPath -ArgumentList "/ExtractDir=$firefoxRoot" -Wait -PassThru
-            if ($extract.ExitCode -ne 0) {
-              throw "Mozilla Firefox extraction failed with exit code $($extract.ExitCode)."
+            $installArgs = @(
+              '/S',
+              "/InstallDirectoryPath=$firefoxRoot",
+              '/TaskbarShortcut=false',
+              '/DesktopShortcut=false',
+              '/StartMenuShortcut=false',
+              '/MaintenanceService=false',
+              '/RegisterDefaultAgent=false'
+            )
+            $install = Start-Process -FilePath $installerPath -ArgumentList $installArgs -Wait -PassThru
+            if ($install.ExitCode -ne 0) {
+              throw "Mozilla Firefox full installer failed with exit code $($install.ExitCode)."
             }
-            $firefoxExe = Join-Path $firefoxRoot 'firefox.exe'
+
+            $firefoxExe = Get-ChildItem -Path $firefoxRoot -Filter firefox.exe -Recurse -File -ErrorAction SilentlyContinue |
+              Select-Object -First 1 -ExpandProperty FullName
           }
 
-          if (-not (Test-Path $firefoxExe)) {
+          if (-not $firefoxExe -or -not (Test-Path $firefoxExe)) {
             throw 'Mozilla Firefox executable was not found after provisioning.'
           }
           & $firefoxExe --version
