@@ -42,6 +42,26 @@ use Illuminate\Support\Facades\Schema;
             'job_title'=>'Project Coordinator','department_id'=>$department?->id,'manager_id'=>$manager?->id,'employment_type'=>'full_time','joining_date'=>today(),'status'=>'active','timezone'=>$workspace->timezone?:'UTC',
         ]);
         if($member->status->value!=='active')$member->update(['status'=>'active']);
+
+        // Keep the authorization invariant authoritative while surfacing any
+        // demo-identity collision with enough context to diagnose CI seed state.
+        $workspace->refresh();
+        $user->refresh();
+        $member->refresh();
+        if((int)$workspace->owner_id===(int)$member->user_id){
+            $owner=User::find($workspace->owner_id);
+            throw new \RuntimeException(sprintf(
+                'AccessControlSeeder identity collision: workspace=%d owner_id=%d owner_email=%s coordinator_id=%d coordinator_email=%s member_id=%d member_user_id=%d.',
+                (int)$workspace->id,
+                (int)$workspace->owner_id,
+                (string)($owner?->email??'missing'),
+                (int)$user->id,
+                (string)$user->email,
+                (int)$member->id,
+                (int)$member->user_id,
+            ));
+        }
+
         app(RoleAccessService::class)->assignRoles($workspace,$member,[$role->id],$role->id,$workspace->owner_id);
     }
 }
