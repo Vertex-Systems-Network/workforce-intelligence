@@ -16,7 +16,7 @@ class FinalCertificationM12ContractTest extends TestCase
         foreach(['media_renditions','website_preview_tokens','document_brand_kits','document_batch_jobs','chat_activity_states'] as $marker)$this->assertStringContainsString($marker,$production);
 
         $windowsCi=(string)file_get_contents($root.'/.github/workflows/windows-certification.yml');
-        foreach(['windows-latest','pdo_sqlite, sqlite3, fileinfo, gd','Actual Chrome Edge Firefox accessibility certification','test:e2e:cross-browser'] as $marker)$this->assertStringContainsString($marker,$windowsCi);
+        foreach(['windows-latest','pdo_sqlite, sqlite3, fileinfo, gd','Parse Laragon release certification script','System.Management.Automation.Language.Parser','Actual Chrome Edge Firefox accessibility certification','test:e2e:cross-browser'] as $marker)$this->assertStringContainsString($marker,$windowsCi);
 
         $laragonPreflight=(string)file_get_contents($root.'/tools/laragon-release-preflight.php');
         foreach(['PHP_OS_FAMILY','pdo_mysql','gd','DB_CONNECTION=mysql',"DB::connection('mysql')",'SELECT VERSION() AS version'] as $marker)$this->assertStringContainsString($marker,$laragonPreflight);
