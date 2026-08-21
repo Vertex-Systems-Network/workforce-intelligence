@@ -1,5 +1,6 @@
 name: WorkIntel Final Physical Release Finalization
 
+# Temporary operational workflow; this branch/PR is never merged.
 on:
   push:
     branches:
