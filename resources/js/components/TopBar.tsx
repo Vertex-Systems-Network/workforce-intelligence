@@ -10,6 +10,7 @@ import { pageTranslationKey } from '../navigation'
 import { pageShell, workspaceModule, workspaceModuleForPage, type WorkspaceModuleId } from '../moduleCatalog'
 import type { Page } from './Sidebar'
 import LanguageSwitcher from '../i18n/LanguageSwitcher'
+import './TopBar.css'
 
 /** Describes the top bar props data contract used by the WorkIntel client. */ interface TopBarProps {
   page:Page; activeModule?:WorkspaceModuleId|null; user:AuthUser; workspace:AuthWorkspace; workspaces:AuthWorkspace[]
