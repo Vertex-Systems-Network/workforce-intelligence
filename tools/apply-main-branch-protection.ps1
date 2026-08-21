@@ -20,6 +20,25 @@ if ($LASTEXITCODE -ne 0) {
     Fail 'GitHub CLI is not authenticated. Run gh auth login with repository Administration: write access.'
 }
 
+$currentUser = (& gh api -H 'Accept: application/vnd.github+json' -H "X-GitHub-Api-Version: $apiVersion" user) | ConvertFrom-Json
+if (-not $currentUser.login) {
+    Fail 'Unable to resolve the authenticated GitHub user.'
+}
+
+$collaborators = (& gh api -H 'Accept: application/vnd.github+json' -H "X-GitHub-Api-Version: $apiVersion" "repos/$Repository/collaborators?affiliation=all&per_page=100") | ConvertFrom-Json
+$eligibleReviewers = @(
+    $collaborators | Where-Object {
+        $_.login -ne $currentUser.login -and
+        $_.type -eq 'User' -and
+        ($_.permissions.push -or $_.permissions.maintain -or $_.permissions.admin)
+    }
+)
+
+if ($eligibleReviewers.Count -lt 1) {
+    Fail 'Refusing to enable 1-approval + admin-enforced protection because no second write-capable reviewer was found. Add an eligible collaborator/team member first, then rerun this operator.'
+}
+
+Write-Host "Reviewer safety preflight: PASS ($($eligibleReviewers.Count) eligible reviewer(s) besides $($currentUser.login))"
 Write-Host "Applying protected-branch policy to ${Repository}:$Branch"
 
 $payload = [ordered]@{
