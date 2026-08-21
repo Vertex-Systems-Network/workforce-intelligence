@@ -4,6 +4,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$apiVersion = '2026-03-10'
 
 function Fail([string] $Message) {
     Write-Error $Message -ErrorAction Continue
@@ -60,7 +61,7 @@ try {
 
     & gh api --method PUT `
         -H 'Accept: application/vnd.github+json' `
-        -H 'X-GitHub-Api-Version: 2022-11-28' `
+        -H "X-GitHub-Api-Version: $apiVersion" `
         "repos/$Repository/branches/$Branch/protection" `
         --input $tempFile 1>$null
 
@@ -72,12 +73,12 @@ finally {
     Remove-Item -Force -ErrorAction SilentlyContinue $tempFile
 }
 
-$branchState = (& gh api -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' "repos/$Repository/branches/$Branch") | ConvertFrom-Json
+$branchState = (& gh api -H 'Accept: application/vnd.github+json' -H "X-GitHub-Api-Version: $apiVersion" "repos/$Repository/branches/$Branch") | ConvertFrom-Json
 if (-not $branchState.protected) {
     Fail 'Branch API still reports protected=false after the update.'
 }
 
-$protection = (& gh api -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' "repos/$Repository/branches/$Branch/protection") | ConvertFrom-Json
+$protection = (& gh api -H 'Accept: application/vnd.github+json' -H "X-GitHub-Api-Version: $apiVersion" "repos/$Repository/branches/$Branch/protection") | ConvertFrom-Json
 $contexts = @($protection.required_status_checks.contexts)
 $missing = @('test', 'windows-certification') | Where-Object { $_ -notin $contexts }
 
