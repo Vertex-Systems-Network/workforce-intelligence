@@ -28,6 +28,21 @@ jobs:
             exit 1
           }
 
+      - name: Parse main branch protection operator
+        shell: powershell
+        run: |
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path 'tools/apply-main-branch-protection.ps1'),
+            [ref]$tokens,
+            [ref]$errors
+          ) | Out-Null
+          if ($errors.Count -gt 0) {
+            $errors | Format-List
+            exit 1
+          }
+
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'

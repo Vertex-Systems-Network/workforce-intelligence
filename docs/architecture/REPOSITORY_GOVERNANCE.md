@@ -23,7 +23,19 @@ The `main` branch must be protected with at least the following controls:
 - disallow deletion of `main`;
 - do not require linear history while certified merge commits remain the repository's accepted merge strategy.
 
-`CODEOWNERS` requests repository-owner review. Code-owner review may be made mandatory only when the repository has enough eligible reviewers to avoid creating an unrecoverable single-maintainer merge deadlock.
+`CODEOWNERS` requests repository-owner review. Code-owner review is not itself required by the protection operator. Because this policy requires one approval and also enforces protection for administrators, the operator performs a reviewer-safety preflight and refuses to enable the rule unless at least one additional write-capable reviewer is visible to GitHub. This prevents an accidental single-maintainer merge deadlock.
+
+## Applying the protection rule
+
+On an authenticated administrator workstation, install GitHub CLI, authenticate with repository `Administration: write`, then run:
+
+`apply-main-branch-protection.cmd`
+
+The command calls `tools/apply-main-branch-protection.ps1`. It first verifies that another eligible reviewer exists, then applies the complete policy through GitHub's branch-protection API, and finally reads the branch and protection APIs back. It exits non-zero unless the reviewer preflight and all required controls are confirmed. Successful completion prints:
+
+`MAIN BRANCH PROTECTION CERTIFICATION PASSED`
+
+This command does not use `GITHUB_TOKEN` or a lower-privilege workflow token because branch-protection mutation requires repository Administration write.
 
 ## Current enforcement state
 
