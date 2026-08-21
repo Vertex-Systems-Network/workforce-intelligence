@@ -25,6 +25,18 @@ The `main` branch must be protected with at least the following controls:
 
 `CODEOWNERS` requests repository-owner review. Code-owner review may be made mandatory only when the repository has enough eligible reviewers to avoid creating an unrecoverable single-maintainer merge deadlock.
 
+## Applying the protection rule
+
+On an authenticated administrator workstation, install GitHub CLI, authenticate with repository `Administration: write`, then run:
+
+`apply-main-branch-protection.cmd`
+
+The command calls `tools/apply-main-branch-protection.ps1`, applies the complete policy through GitHub's branch-protection API, then reads the branch and protection APIs back. It exits non-zero unless all required controls are confirmed. Successful completion prints:
+
+`MAIN BRANCH PROTECTION CERTIFICATION PASSED`
+
+This command does not use `GITHUB_TOKEN` or a lower-privilege workflow token because branch-protection mutation requires repository Administration write.
+
 ## Current enforcement state
 
 At the time this document was introduced, GitHub's branch API reported `main` as `protected: false`. Issue #8 is the canonical external repository-setting gate. This document, CODEOWNERS, CONTRIBUTING, SECURITY policy and pull-request template improve governance but do not substitute for the actual GitHub branch-protection setting.
