@@ -134,23 +134,16 @@ jobs:
               throw 'curl.exe is required to provision Mozilla Firefox on the self-hosted runner.'
             }
 
-            $msiPath = Join-Path $env:RUNNER_TEMP 'Firefox-latest-x64.msi'
-            Remove-Item -Force -ErrorAction SilentlyContinue $msiPath
-            & curl.exe -L --fail --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 300 -o $msiPath 'https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US'
-            if ($LASTEXITCODE -ne 0 -or -not (Test-Path $msiPath)) {
-              throw 'Official Mozilla Firefox MSI download failed.'
+            $installerPath = Join-Path $env:RUNNER_TEMP 'Firefox-latest-x64.exe'
+            Remove-Item -Force -ErrorAction SilentlyContinue $installerPath
+            & curl.exe -L --fail --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 300 -o $installerPath 'https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US'
+            if ($LASTEXITCODE -ne 0 -or -not (Test-Path $installerPath)) {
+              throw 'Official Mozilla Firefox full installer download failed.'
             }
 
-            $msiArgs = @(
-              '/i', $msiPath,
-              'TASKBAR_SHORTCUT=false',
-              'DESKTOP_SHORTCUT=false',
-              'INSTALL_MAINTENANCE_SERVICE=false',
-              '/qn', '/norestart'
-            )
-            $install = Start-Process -FilePath 'msiexec.exe' -ArgumentList $msiArgs -Wait -PassThru
-            if ($install.ExitCode -notin @(0, 1641, 3010)) {
-              throw "Mozilla Firefox MSI installation failed with exit code $($install.ExitCode)."
+            $install = Start-Process -FilePath $installerPath -ArgumentList '/S' -Wait -PassThru
+            if ($install.ExitCode -notin @(0, 3010)) {
+              throw "Mozilla Firefox full installer failed with exit code $($install.ExitCode)."
             }
           }
 
