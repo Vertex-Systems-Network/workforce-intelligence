@@ -42,31 +42,6 @@ use Illuminate\Support\Facades\Schema;
             'job_title'=>'Project Coordinator','department_id'=>$department?->id,'manager_id'=>$manager?->id,'employment_type'=>'full_time','joining_date'=>today(),'status'=>'active','timezone'=>$workspace->timezone?:'UTC',
         ]);
         if($member->status->value!=='active')$member->update(['status'=>'active']);
-
-        // Diagnostic-only guard: compare the in-memory identity with a second
-        // database read without mutating either model used by assignRoles().
-        $freshWorkspace=Workspace::findOrFail($workspace->id);
-        $freshMember=WorkspaceMember::findOrFail($member->id);
-        $preCollision=(int)$workspace->owner_id===(int)$member->user_id;
-        $freshCollision=(int)$freshWorkspace->owner_id===(int)$freshMember->user_id;
-        if($preCollision||$freshCollision){
-            $owner=User::find($freshWorkspace->owner_id);
-            throw new \RuntimeException(sprintf(
-                'AccessControlSeeder identity collision: workspace=%d pre_owner_id=%d fresh_owner_id=%d owner_email=%s coordinator_id=%d coordinator_email=%s member_id=%d pre_member_user_id=%d fresh_member_user_id=%d pre_collision=%s fresh_collision=%s.',
-                (int)$workspace->id,
-                (int)$workspace->owner_id,
-                (int)$freshWorkspace->owner_id,
-                (string)($owner?->email??'missing'),
-                (int)$user->id,
-                (string)$user->email,
-                (int)$member->id,
-                (int)$member->user_id,
-                (int)$freshMember->user_id,
-                $preCollision?'yes':'no',
-                $freshCollision?'yes':'no',
-            ));
-        }
-
         app(RoleAccessService::class)->assignRoles($workspace,$member,[$role->id],$role->id,$workspace->owner_id);
     }
 }
