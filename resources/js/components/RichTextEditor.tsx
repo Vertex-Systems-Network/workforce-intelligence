@@ -60,5 +60,5 @@ type Props = { value:string; onChange:(html:string)=>void; disabled?:boolean; pl
       {tool('Link',editor.isActive('link'),setLink,<Link2 size={14}/>)}
     </div>}
     <EditorContent editor={editor}/>
-  </div><Modal open={linkOpen} onClose={()=>setLinkOpen(false)} title="Edit link" description="Enter a URL for the selected text. Leave it blank to remove the link." size="sm" footer={<><Button variant="outline" onClick={()=>setLinkOpen(false)}>Cancel</Button><Button variant="primary" onClick={applyLink}>Apply link</Button></>}><Field label="Link URL"><Input autoFocus value={linkHref} onChange={event=>setLinkHref(event.target.value)} placeholder="https://example.com" onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();applyLink()}}}/></Field></Modal></>
+  </div><Modal open={linkOpen} onClose={()=>setLinkOpen(false)} title="Edit link" description="Enter a URL for the selected text. Leave it blank to remove the link." size="md" footer={<><Button variant="outline" onClick={()=>setLinkOpen(false)}>Cancel</Button><Button variant="primary" onClick={applyLink}>Apply link</Button></>}><Field label="Link URL"><Input autoFocus value={linkHref} onChange={event=>setLinkHref(event.target.value)} placeholder="https://example.com" onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();applyLink()}}}/></Field></Modal></>
 }

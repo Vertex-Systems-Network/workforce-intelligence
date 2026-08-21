@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
         $this->assertStringContainsString("'/options'",$routes);
         $this->assertStringContainsString('workspace.{workspaceId}.chat.{conversationId}',$channels);
         $this->assertStringContainsString("'chat' => [",$catalog);
-        $page=file_get_contents(base_path('resources/js/pages/Chat.tsx'));
+        $page=file_get_contents(base_path('resources/js/pages/Chat.tsx'))."\n".file_get_contents(base_path('resources/js/components/chat/ChatPanels.tsx'));
         foreach(['Project thread','Task thread','/api/v1/chat/options','Read by','attachments[]'] as $needle)$this->assertStringContainsString($needle,$page);
     }
 }

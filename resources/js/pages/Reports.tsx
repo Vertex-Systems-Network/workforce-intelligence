@@ -5,7 +5,7 @@ import { apiDownload, apiRequest } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { PageLoadingState } from '../components/LoadingStates';
 import { useConfirmAction, ErrorState, Alert, Badge, Button, Card, CardBody, CardHeader, Drawer, EmptyState, Field, Input, Page, PageHeader, Segmented, Select, Textarea, Pressable, Checkbox, Box, Grid, Inline, Stack, Label, Option, DataGrid, FormDialog, SettingRow, Text, type DataGridColumn } from '../design-system';
-import { type Catalog, type Column, type Dataset, type Preview, type ReportConfig, type ReportExport, type ReportRun, type SavedReport, type Schedule, datasetIcons, dateTime, defaultConfig, formatCell, money, triggerDownload } from './reports/support';
+import { type Catalog, type Column, type Dataset, type FilterDef, type Preview, type ReportConfig, type ReportExport, type ReportRun, type SavedReport, type Schedule, type Visualization, datasetIcons, dateTime, daysAgo, defaultConfig, formatCell, money, triggerDownload } from './reports/support';
 /** Handles the reports operation for the WorkIntel client. */ export default function Reports() {
     const confirmAction = useConfirmAction();
     const { session } = useAuth();
@@ -390,5 +390,5 @@ import { type Catalog, type Column, type Dataset, type Preview, type ReportConfi
         return <EmptyState title="No report columns"/>;
     const currencyDimension = result.columns.find(column => column.key === 'currency');
     const columns: DataGridColumn<Record<string, any>>[] = result.columns.map(column => ({ id: column.key, header: column.label, searchValue: row => String(row[column.key] ?? ''), sortValue: row => row[column.key], cell: row => formatCell(row[column.key], column, row.currency ? String(row.currency) : 'USD') }));
-    return <div><Inline gap={8} wrap="wrap" mb={10}>{result.columns.filter(c => c.type === 'metric').map(column => <Badge key={column.key} tone="info">{column.label}: {formatCell(result.summary[column.key], column, currencyDimension && result.rows[0]?.currency ? String(result.rows[0].currency) : 'USD')}</Badge>)}</Inline><DataGrid rows={result.rows} columns={columns} rowKey={(_, index) => index} persistKey={`reports.result.${result.dataset}`} searchable={!compact} pageSize={compact ? 10 : 25} empty={<EmptyState title="No rows match these filters"/>}/></div>;
+    return <div><Inline gap={8} wrap="wrap" mb={10}>{result.columns.filter(c => c.type === 'metric').map(column => <Badge key={column.key} tone="info">{column.label}: {formatCell(result.summary[column.key], column, currencyDimension && result.rows[0]?.currency ? String(result.rows[0].currency) : 'USD')}</Badge>)}</Inline><DataGrid rows={result.rows} columns={columns} rowKey={row => result.rows.indexOf(row)} persistKey={`reports.result.${result.dataset}`} searchable={!compact} defaultPageSize={compact ? 10 : 25} empty={<EmptyState title="No rows match these filters"/>}/></div>;
 }

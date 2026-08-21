@@ -9,7 +9,7 @@ import { getRealtime } from '../realtime';
 import { useLocalization } from '../i18n/LocalizationContext';
 import { MediaFileField } from '../media/MediaFileField';
 import { EnterpriseControls } from '../components/chat/EnterpriseControls';
-import type { Attachment, ChatNotificationPreference, CollaborationInbox, Conversation, ConversationContext, ConversationFilter, CreationOptions, EditVersion, Message, MessageActionType, MessagePageMeta, MobilePanel, OutboxItem, Presence, PreviewState, PublicChannel, SearchMode, SyncState, ThreadData, ChannelResource, ContextBookmark, ContextFile, Member } from '../components/chat/chatTypes';
+import type { Attachment, ChatNotificationPreference, CollaborationInbox, Conversation, ConversationContext, ConversationFilter, InboxThreadItem, CreationOptions, EditVersion, Message, MessageActionType, MessagePageMeta, MobilePanel, OutboxItem, Presence, PreviewState, PublicChannel, SearchMode, SyncState, ThreadData, ChannelResource, ContextBookmark, ContextFile, Member } from '../components/chat/chatTypes';
 import { attachmentKind, createClientMessageId, displayBody, mergeMessageWindow, messageFlagged, nearBottom, readOutbox, size, writeOutbox } from '../components/chat/chatUtils';
 import { AttachmentPreview, ConversationDetails, MessageCard, NewConversation, PollModal, ThreadPanel } from '../components/chat/ChatPanels';
 /** Renders the professional workplace chat experience with durable drafts, threads and message actions. */

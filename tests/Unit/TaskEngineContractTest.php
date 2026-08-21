@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
         $board = file_get_contents($root.'/resources/js/components/TaskBoard.tsx');
         $editor = file_get_contents($root.'/resources/js/components/RichTextEditor.tsx');
         $tasks = file_get_contents($root.'/resources/js/pages/Tasks.tsx');
+        $workflow = file_get_contents($root.'/resources/js/pages/tasks/WorkflowManager.tsx');
         $package = file_get_contents($root.'/package.json');
 
         $this->assertStringContainsString('@dnd-kit/core', $package);
@@ -23,7 +24,7 @@ use PHPUnit\Framework\TestCase;
         $this->assertStringContainsString('assignee_ids', $tasks);
         $this->assertStringContainsString('observer_ids', $tasks);
         $this->assertStringContainsString('checklist', $tasks);
-        $this->assertStringContainsString('Task workflow', $tasks);
+        $this->assertStringContainsString('Task workflow', $workflow);
     }
 
     /** Handles the test backend contract contains workflow statuses tags observers checklists and activity operation for the current WorkIntel workflow. */ public function test_backend_contract_contains_workflow_statuses_tags_observers_checklists_and_activity(): void

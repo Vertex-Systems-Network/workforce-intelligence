@@ -6,7 +6,7 @@ import { hasPermission } from '../access';
 import { PageLoadingState } from '../components/LoadingStates';
 import { useConfirmAction, EmptyState, Alert, Badge, Button, Card, CardBody, DataGrid, Drawer, Dropdown, Field, Input, Modal, FormDialog, SettingRow, Page, PageHeader, Segmented, Select, Textarea, type DataGridColumn, Pressable, Checkbox, Box, Grid, Inline, Stack, Text, Form, Label, Option } from '../design-system';
 import { useShellEntitySearch } from '../shellEntityFocus';
-import { type Client, type ClientForm, type ClientReport, type Invoice, type PortalAccount, type PortalInvite, type Project, dt, emptyClient, money } from './clients/support';
+import { type Client, type ClientForm, type ClientReport, type Invoice, type InvoiceLine, type PortalAccount, type PortalInvite, type Project, dt, emptyClient, money } from './clients/support';
 /** Handles the clients operation for the WorkIntel client. */ export default function Clients() {
     const confirmAction = useConfirmAction();
     const { session } = useAuth();

@@ -12,7 +12,7 @@ import { Alert, Badge, Button, Card, CardBody, CardHeader, DataGrid, type DataGr
 import { useLocalization } from '../i18n/LocalizationContext';
 import WebsiteRenderer from '../website/WebsiteRenderer';
 import type { PublicWebsitePayload, WebsitePublicForm, WebsiteSchema, WebsiteSection } from '../website/types';
-import { FormEditorModal, PageSeoInspector, ReviewInspector, SectionInspector, SortableSection, autosaveMetadata, bindPreviewTokens, previewPayload, schemaMediaIds, sectionDefaults, websitePageAudit, type AutosaveDraft, type Domain, type InspectorPanel, type LeadRow, type LeftPanel, type OverviewPayload, type PageRow, type PreflightResult, type PreviewTokenRow, type ReusableSection, type ReviewComment, type SharePreview, type Site, type VersionRow, type WebsiteForm } from '../website/studio/WebsiteStudioSupport';
+import { FormEditorModal, PageSeoInspector, ReviewInspector, SectionInspector, SortableSection, autosaveMetadata, localeOptions, bindPreviewTokens, previewPayload, schemaMediaIds, sectionDefaults, websitePageAudit, type AutosaveDraft, type Domain, type InspectorPanel, type LeadRow, type LeftPanel, type OverviewPayload, type PageRow, type PreflightResult, type PreviewTokenRow, type ReusableSection, type ReviewComment, type SharePreview, type Site, type VersionRow, type WebsiteForm } from '../website/studio/WebsiteStudioSupport';
 import './website-studio.css';
 /** Render the complete Website Studio shell while focused editor concerns live in support modules. */
 export default function WebsiteStudio() {

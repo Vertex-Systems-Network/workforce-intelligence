@@ -42,11 +42,13 @@ class WebsitePortalBuilderContractTest extends TestCase
     public function test_visual_builder_and_public_delivery_contract_is_present(): void
     {
         $studio = file_get_contents(base_path('resources/js/pages/WebsiteStudio.tsx'));
+        $support = file_get_contents(base_path('resources/js/website/studio/WebsiteStudioSupport.tsx'));
+        $builder = $studio."\n".$support;
         $renderer = file_get_contents(base_path('resources/js/website/WebsiteRenderer.tsx'));
         $app = file_get_contents(base_path('resources/js/app.tsx'));
         $web = file_get_contents(base_path('routes/web.php'));
-        foreach (['DndContext', 'WebsiteRenderer', 'Save as reusable section', 'Archive page', 'DataGrid', 'MediaPicker'] as $needle) {
-            $this->assertStringContainsString($needle, $studio);
+        foreach (['DndContext', 'WebsiteRenderer', 'Save as reusable component', 'Archive page', 'DataGrid', 'MediaPicker'] as $needle) {
+            $this->assertStringContainsString($needle, $builder);
         }
         $this->assertStringContainsString('if(preview)return', $renderer);
         $this->assertStringContainsString('preview={preview}', $renderer);

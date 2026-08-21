@@ -7,6 +7,10 @@ const inventory = browserInventory()
 const browserExecutable = findBrowserExecutable()
 const baseURL = process.env.WORKINTEL_E2E_BASE_URL || 'http://127.0.0.1:8777'
 const profile = process.env.WORKINTEL_E2E_PROFILE || 'standard'
+const statefulDomains = Array.from(new Set([
+  ...(process.env.SANCTUM_STATEFUL_DOMAINS || '').split(',').map(value => value.trim()).filter(Boolean),
+  new URL(baseURL).host,
+])).join(',')
 
 /** Build a Chromium-family project with an optional branded system browser executable. */
 function chromiumProject(name, viewport, executablePath, extraUse = {}) {
@@ -71,6 +75,10 @@ export default defineConfig({
     timeout: 45_000,
     stdout: 'pipe',
     stderr: 'pipe',
+    env: {
+      SANCTUM_STATEFUL_DOMAINS: statefulDomains,
+      WORKINTEL_RATE_AUTH_LOGIN: process.env.WORKINTEL_RATE_AUTH_LOGIN || '10',
+    },
   },
   projects: profile === 'accessibility' ? accessibilityProjects : standardProjects,
 })

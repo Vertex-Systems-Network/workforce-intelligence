@@ -44,7 +44,7 @@ class ChatWorkspaceCollaborationContractTest extends TestCase
     /** Verifies the frontend exposes governed channels, resources, workflow actions and notification choices. */
     public function test_workspace_collaboration_ui_has_real_controls(): void
     {
-        $page = file_get_contents(base_path('resources/js/pages/Chat.tsx'));
+        $page = file_get_contents(base_path('resources/js/pages/Chat.tsx'))."\n".file_get_contents(base_path('resources/js/components/chat/ChatPanels.tsx'));
         foreach (['Public channels', 'Announcement', 'Create task', 'Create approval', 'Create incident', 'Mentions only', 'Channel resources', '/assign', 'Read-only', 'Lock channel'] as $needle) {
             $this->assertStringContainsString($needle, $page);
         }

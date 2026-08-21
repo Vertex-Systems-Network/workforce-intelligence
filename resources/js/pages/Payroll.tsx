@@ -4,7 +4,7 @@ import { apiRequest } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { useConfirmAction, EmptyState, Alert, Badge, Button, Drawer, Field, Input, Page, PageHeader, Segmented, Select, Tabs, Textarea, Pressable, Checkbox, Box, Grid, Inline, Stack, Text, Option, DataGrid, FormDialog, SettingRow, type DataGridColumn } from '../design-system';
 import { PageLoadingState } from '../components/LoadingStates';
-import { type CompensationForm, type CompensationRow, type PayType, type PayrollItem, type PayrollRun, type RunStatus, dateLabel, emptyComp, hours, money, payLabel, statusLabel, statusTone } from './payroll/support';
+import { type Adjustment, type CompensationForm, type CompensationProfile, type CompensationRow, type PayType, type PayrollItem, type PayrollRun, type RunStatus, dateLabel, emptyComp, hours, money, payLabel, statusLabel, statusTone } from './payroll/support';
 /** Handles the payroll operation for the WorkIntel client. */ export default function Payroll() {
     const confirmAction = useConfirmAction();
     const { session } = useAuth();

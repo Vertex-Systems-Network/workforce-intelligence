@@ -63,13 +63,15 @@ class DocumentStudioV6ContractTest extends TestCase
         $service=(string)file_get_contents(base_path('app/Services/Documents/DocumentStudioV6Service.php'));
         $renderer=(string)file_get_contents(base_path('app/Services/Documents/DocumentTemplateRenderer.php'));
         $page=(string)file_get_contents(base_path('resources/js/pages/Documents.tsx'));
+        $support=(string)file_get_contents(base_path('resources/js/documents/studio/DocumentStudioSupport.tsx'));
         $routes=(string)file_get_contents(base_path('routes/documents.php'));
         $console=(string)file_get_contents(base_path('routes/console.php'));
 
         foreach(['document_brand_kits','document_page_masters','document_batch_jobs'] as $table)$this->assertStringContainsString($table,$migration);
         foreach(['createBrandKit','createPageMaster','queueBatchGenerate','processQueuedBatches'] as $method)$this->assertStringContainsString("function {$method}",$service);
         foreach(['DocumentBrandKit','DocumentPageMaster','formatTableValue'] as $marker)$this->assertStringContainsString($marker,$renderer);
-        foreach(['Save current brand kit','Save current page master','Detach to local copy','Update source','documents.batch-jobs.v6'] as $marker)$this->assertStringContainsString($marker,$page);
+        foreach(['Save current brand kit','Save current page master','Update source','documents.batch-jobs.v6'] as $marker)$this->assertStringContainsString($marker,$page);
+        $this->assertStringContainsString('Detach to local copy',$support);
         $this->assertStringContainsString('/documents/templates/{template}/batch-jobs',$routes);
         $this->assertStringContainsString('workintel:process-document-batches',$console);
     }
