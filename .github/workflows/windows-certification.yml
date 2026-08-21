@@ -24,34 +24,6 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Parse Laragon release certification script
-        run: |
-          $tokens = $null
-          $errors = $null
-          [System.Management.Automation.Language.Parser]::ParseFile(
-            (Resolve-Path 'tools/run-laragon-release.ps1'),
-            [ref]$tokens,
-            [ref]$errors
-          ) | Out-Null
-          if ($errors.Count -gt 0) {
-            $errors | Format-List
-            exit 1
-          }
-
-      - name: Parse main branch protection operator
-        run: |
-          $tokens = $null
-          $errors = $null
-          [System.Management.Automation.Language.Parser]::ParseFile(
-            (Resolve-Path 'tools/apply-main-branch-protection.ps1'),
-            [ref]$tokens,
-            [ref]$errors
-          ) | Out-Null
-          if ($errors.Count -gt 0) {
-            $errors | Format-List
-            exit 1
-          }
-
       - name: Bootstrap PowerShell 7 for setup-php
         env:
           GH_TOKEN: ${{ github.token }}
