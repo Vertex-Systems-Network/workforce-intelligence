@@ -13,7 +13,7 @@ Describe the focused change and the reason it is needed.
 
 - [ ] Relevant source/unit/feature tests pass.
 - [ ] WorkIntel CI job `test` is green.
-- [ ] WorkIntel Windows Certification job `windows-certification` is green when required.
+- [ ] WorkIntel Windows Certification job `windows-certification` is green.
 - [ ] Migration/seed behavior is safe and repeatable when database code changed.
 - [ ] Browser/accessibility certification remains green when UI behavior changed.
 - [ ] No live-database destructive verifier was used.
