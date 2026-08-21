@@ -24,9 +24,15 @@ jobs:
 
       - name: Discover verify and sync real Laragon checkout
         run: |
-          $laragonRoots = @('C:\laragon\www', 'D:\laragon\www') | Where-Object { Test-Path $_ }
+          $laragonRoots = @()
+          Get-PSDrive -PSProvider FileSystem | ForEach-Object {
+            $candidate = Join-Path $_.Root 'laragon\www'
+            if (Test-Path $candidate) { $laragonRoots += $candidate }
+          }
+          $laragonRoots = @($laragonRoots | Select-Object -Unique)
+          Write-Host ('Laragon roots: ' + ($laragonRoots -join ', '))
           if ($laragonRoots.Count -eq 0) {
-            throw 'No Laragon www root found on C: or D:.'
+            throw 'No Laragon www root found on any mounted filesystem drive.'
           }
 
           $repoMatches = @()
