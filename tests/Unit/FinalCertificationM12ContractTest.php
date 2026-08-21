@@ -26,7 +26,7 @@ class FinalCertificationM12ContractTest extends TestCase
 
         $laragonRunner=(string)file_get_contents($root.'/tools/run-laragon-release.ps1');
         foreach(['Start-Transcript','Stop-Transcript','Add-Content','Get-Content -Path $logFile -Tail 1','WORKINTEL_REQUIRE_CROSS_BROWSER','e2e-browser-doctor.mjs --require-all','verify-release.cmd','LARAGON RELEASE CERTIFICATION PASSED'] as $marker)$this->assertStringContainsString($marker,$laragonRunner);
-        $this->assertMatchesRegularExpression('/Stop-Transcript.*Add-Content.*Get-Content -Path \\$logFile -Tail 1/s',$laragonRunner);
+        $this->assertMatchesRegularExpression('/Stop-Transcript.*Add-Content.*Get-Content -Path \$logFile -Tail 1/s',$laragonRunner);
 
         $laragonCmd=(string)file_get_contents($root.'/verify-laragon-release.cmd');
         $this->assertStringContainsString('run-laragon-release.ps1',$laragonCmd);
