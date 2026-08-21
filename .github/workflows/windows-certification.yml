@@ -122,39 +122,45 @@ jobs:
             npm install --no-audit --no-fund
           }
 
-      - name: Ensure Mozilla Firefox system browser
+      - name: Provision Mozilla Firefox certification browser
         run: |
           $firefoxCandidates = @(
             (Join-Path ${env:ProgramFiles} 'Mozilla Firefox\firefox.exe'),
             (Join-Path ${env:ProgramFiles(x86)} 'Mozilla Firefox\firefox.exe')
           ) | Where-Object { $_ -and (Test-Path $_) }
 
-          if ($firefoxCandidates.Count -eq 0) {
+          if ($firefoxCandidates.Count -gt 0) {
+            $firefoxExe = $firefoxCandidates[0]
+          } else {
             if (-not (Get-Command curl.exe -ErrorAction SilentlyContinue)) {
               throw 'curl.exe is required to provision Mozilla Firefox on the self-hosted runner.'
             }
 
             $installerPath = Join-Path $env:RUNNER_TEMP 'Firefox-latest-x64.exe'
+            $firefoxRoot = Join-Path $env:RUNNER_TEMP 'workintel-firefox'
             Remove-Item -Force -ErrorAction SilentlyContinue $installerPath
+            Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $firefoxRoot
+
             & curl.exe -L --fail --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 300 -o $installerPath 'https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US'
             if ($LASTEXITCODE -ne 0 -or -not (Test-Path $installerPath)) {
               throw 'Official Mozilla Firefox full installer download failed.'
             }
 
-            $install = Start-Process -FilePath $installerPath -ArgumentList '/S' -Wait -PassThru
-            if ($install.ExitCode -notin @(0, 3010)) {
-              throw "Mozilla Firefox full installer failed with exit code $($install.ExitCode)."
+            $extract = Start-Process -FilePath $installerPath -ArgumentList "/ExtractDir=$firefoxRoot" -Wait -PassThru
+            if ($extract.ExitCode -ne 0) {
+              throw "Mozilla Firefox extraction failed with exit code $($extract.ExitCode)."
             }
+            $firefoxExe = Join-Path $firefoxRoot 'firefox.exe'
           }
 
-          $firefoxCandidates = @(
-            (Join-Path ${env:ProgramFiles} 'Mozilla Firefox\firefox.exe'),
-            (Join-Path ${env:ProgramFiles(x86)} 'Mozilla Firefox\firefox.exe')
-          ) | Where-Object { $_ -and (Test-Path $_) }
-          if ($firefoxCandidates.Count -eq 0) {
-            throw 'Mozilla Firefox was not found after provisioning.'
+          if (-not (Test-Path $firefoxExe)) {
+            throw 'Mozilla Firefox executable was not found after provisioning.'
           }
-          & $firefoxCandidates[0] --version
+          & $firefoxExe --version
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Mozilla Firefox executable failed its version probe.'
+          }
+          "WORKINTEL_E2E_FIREFOX_EXECUTABLE=$firefoxExe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Require installed Chrome Edge Firefox
         run: node tools/e2e-browser-doctor.mjs --require-all
