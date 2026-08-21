@@ -12,6 +12,7 @@ class MainBranchProtectionContractTest extends TestCase
         $root = base_path();
         $script = (string) file_get_contents($root.'/tools/apply-main-branch-protection.ps1');
         $cmd = (string) file_get_contents($root.'/apply-main-branch-protection.cmd');
+        $windowsCi = (string) file_get_contents($root.'/.github/workflows/windows-certification.yml');
 
         foreach ([
             "contexts = @('test', 'windows-certification')",
@@ -30,6 +31,10 @@ class MainBranchProtectionContractTest extends TestCase
 
         foreach (['where gh', 'apply-main-branch-protection.ps1'] as $marker) {
             $this->assertStringContainsString($marker, $cmd);
+        }
+
+        foreach (['Parse main branch protection operator', 'tools/apply-main-branch-protection.ps1'] as $marker) {
+            $this->assertStringContainsString($marker, $windowsCi);
         }
     }
 }
