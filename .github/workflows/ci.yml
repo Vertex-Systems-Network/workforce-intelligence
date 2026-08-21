@@ -47,6 +47,21 @@ jobs:
       - run: php artisan workintel:production-doctor --json --require-build
       - run: php artisan workintel:final-certification --json --require-build
       - run: npm run test:e2e:full
+      - name: Summarize browser certification failure
+        if: failure()
+        shell: bash
+        run: |
+          echo "Playwright failure artifacts:"
+          find storage/app/private/e2e-results -type f -maxdepth 4 -print 2>/dev/null || true
+          find storage/app/private/e2e-results -type f -name 'error-context.md' -exec sh -c 'echo "--- $1"; sed -n "1,240p" "$1"' _ {} \; 2>/dev/null || true
+      - name: Upload browser certification failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workintel-e2e-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: storage/app/private/e2e-results
+          if-no-files-found: warn
+          retention-days: 7
       - run: npm run accessibility:audit
       - run: php artisan workintel:accessibility-doctor --json --require-build
       - run: npm run test:e2e:accessibility
