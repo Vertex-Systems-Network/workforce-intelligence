@@ -26,7 +26,7 @@ The repository owner explicitly removed physical Laragon + MySQL workstation acc
 
 The hosted post-quota Linux/MySQL re-certification debt from Issue #11 was also explicitly waived under the existing GitHub Actions quota exception. This does not convert the quota-failed hosted runs into passing runs; it removes that deferred re-run from the active closure scope. Historical successful Linux/MySQL certification evidence remains preserved below.
 
-Repository governance is tracked separately from modular product maturity. Main branch protection remains an operational repository-control task until GitHub reports `main` as protected; it does not reopen completed product modules.
+Repository branch protection was explicitly removed from the active governance scope on 2026-08-22. Repository governance remains pull-request-first by policy, but no GitHub branch-protection rule or branch-protection completion gate is required for closure.
 
 ## Certification evidence — 2026-08-21 to 2026-08-22
 
