@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - diagnostic/access-control-seed-on-dev08
+  pull_request:
 
 jobs:
   diagnose-auth-shell:
