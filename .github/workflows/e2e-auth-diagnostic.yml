@@ -22,7 +22,9 @@ jobs:
       - run: composer install --prefer-dist --no-interaction
       - run: cp .env.example .env && php artisan key:generate
       - name: Install frontend dependencies
-        run: npm ci
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
       - run: npx playwright install --with-deps chromium
       - run: npm run build
       - run: php artisan migrate:fresh --seed --force
