@@ -19,7 +19,8 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
     steps:
       - name: Report selected self-hosted runner
-        run: Write-Host "Selected self-hosted Windows runner: $env:RUNNER_NAME"
+        run: |
+          Write-Host "Selected self-hosted Windows runner: $env:RUNNER_NAME"
 
       - uses: actions/checkout@v4
 
