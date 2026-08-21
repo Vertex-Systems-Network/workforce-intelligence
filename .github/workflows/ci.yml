@@ -47,6 +47,8 @@ jobs:
       - run: php artisan workintel:production-doctor --json --require-build
       - run: php artisan workintel:final-certification --json --require-build
       - run: npm run test:e2e:full
+        env:
+          WORKINTEL_RATE_AUTH_LOGIN: 120
       - name: Summarize browser certification failure
         if: failure()
         shell: bash
