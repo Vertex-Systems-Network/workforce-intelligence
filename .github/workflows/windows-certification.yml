@@ -12,15 +12,16 @@ concurrency:
 
 jobs:
   windows-certification:
-    runs-on: [self-hosted, Windows, X64]
+    runs-on: windows-latest
     timeout-minutes: 90
     defaults:
       run:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
     steps:
-      - name: Report selected self-hosted runner
+      - name: Report selected GitHub-hosted runner
         run: |
-          Write-Host "Selected self-hosted Windows runner: $env:RUNNER_NAME"
+          Write-Host "GitHub-hosted runner: $env:RUNNER_NAME"
+          Write-Host "Image OS: $env:RUNNER_OS"
 
       - uses: actions/checkout@v4
 
@@ -47,7 +48,7 @@ jobs:
           }
 
           if (-not (Get-Command curl.exe -ErrorAction SilentlyContinue)) {
-            throw 'curl.exe is required to bootstrap portable PowerShell on the self-hosted runner.'
+            throw 'curl.exe is required to bootstrap portable PowerShell.'
           }
 
           $pwshRoot = Join-Path $env:RUNNER_TEMP 'workintel-pwsh'
@@ -97,58 +98,6 @@ jobs:
           } else {
             npm install --no-audit --no-fund
           }
-
-      - name: Provision Mozilla Firefox certification browser
-        run: |
-          $firefoxCandidates = @(
-            (Join-Path ${env:ProgramFiles} 'Mozilla Firefox\firefox.exe'),
-            (Join-Path ${env:ProgramFiles(x86)} 'Mozilla Firefox\firefox.exe')
-          ) | Where-Object { $_ -and (Test-Path $_) }
-
-          if ($firefoxCandidates.Count -gt 0) {
-            $firefoxExe = $firefoxCandidates[0]
-          } else {
-            if (-not (Get-Command curl.exe -ErrorAction SilentlyContinue)) {
-              throw 'curl.exe is required to provision Mozilla Firefox on the self-hosted runner.'
-            }
-
-            $installerPath = Join-Path $env:RUNNER_TEMP 'Firefox-latest-x64.exe'
-            $firefoxRoot = Join-Path $env:RUNNER_TEMP 'workintel-firefox'
-            Remove-Item -Force -ErrorAction SilentlyContinue $installerPath
-            Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $firefoxRoot
-            New-Item -ItemType Directory -Force -Path $firefoxRoot | Out-Null
-
-            & curl.exe -L --fail --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 300 -o $installerPath 'https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US'
-            if ($LASTEXITCODE -ne 0 -or -not (Test-Path $installerPath)) {
-              throw 'Official Mozilla Firefox full installer download failed.'
-            }
-
-            $installArgs = @(
-              '/S',
-              "/InstallDirectoryPath=$firefoxRoot",
-              '/TaskbarShortcut=false',
-              '/DesktopShortcut=false',
-              '/StartMenuShortcut=false',
-              '/MaintenanceService=false',
-              '/RegisterDefaultAgent=false'
-            )
-            $install = Start-Process -FilePath $installerPath -ArgumentList $installArgs -Wait -PassThru
-            if ($install.ExitCode -ne 0) {
-              throw "Mozilla Firefox full installer failed with exit code $($install.ExitCode)."
-            }
-
-            $firefoxExe = Get-ChildItem -Path $firefoxRoot -Filter firefox.exe -Recurse -File -ErrorAction SilentlyContinue |
-              Select-Object -First 1 -ExpandProperty FullName
-          }
-
-          if (-not $firefoxExe -or -not (Test-Path $firefoxExe)) {
-            throw 'Mozilla Firefox executable was not found after provisioning.'
-          }
-          & $firefoxExe --version
-          if ($LASTEXITCODE -ne 0) {
-            throw 'Mozilla Firefox executable failed its version probe.'
-          }
-          "WORKINTEL_E2E_FIREFOX_EXECUTABLE=$firefoxExe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Require installed Chrome Edge Firefox
         run: node tools/e2e-browser-doctor.mjs --require-all
