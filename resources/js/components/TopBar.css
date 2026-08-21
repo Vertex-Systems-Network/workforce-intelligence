@@ -1,0 +1,12 @@
+/* Keep the compact desktop top bar while guaranteeing touch-friendly primary controls. */
+@media (max-width: 1024px), (pointer: coarse), (any-pointer: coarse), (hover: none) {
+  .ui-topbar button {
+    min-height: 44px;
+  }
+
+  .ui-topbar .ui-button--icon,
+  .ui-topbar .ui-avatar-trigger,
+  .ui-topbar .ui-topbar__search {
+    min-width: 44px;
+  }
+}
