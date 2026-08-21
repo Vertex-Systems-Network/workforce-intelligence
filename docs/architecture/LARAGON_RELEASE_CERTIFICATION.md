@@ -40,6 +40,8 @@ M12 can move from 95% to 100% only when `verify-laragon-release.cmd` exits with 
 WORKINTEL LARAGON RELEASE CERTIFICATION PASSED
 ```
 
+The runner stops the PowerShell transcript before sealing the evidence file, appends the required success marker as the final physical log line, reads the tail back, and fails the certification if that tail does not match exactly. This keeps the acceptance criterion deterministic instead of allowing PowerShell transcript footer lines to appear after the success marker.
+
 Keep the generated evidence log with the release record. A hosted runner or a SQLite-only Windows run must not be substituted for this final combined Windows + MySQL proof.
 
 ## Optional destructive clean-install proof
