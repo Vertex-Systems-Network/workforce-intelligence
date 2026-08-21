@@ -1,6 +1,7 @@
 /* Keep the compact desktop top bar while guaranteeing touch-friendly primary controls. */
 @media (max-width: 1024px), (pointer: coarse), (any-pointer: coarse), (hover: none) {
-  .ui-topbar button {
+  .ui-topbar button,
+  .ui-topbar .wi-language-switcher .ui-select-trigger {
     min-height: 44px;
   }
 
