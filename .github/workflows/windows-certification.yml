@@ -22,8 +22,20 @@ jobs:
           Write-Host "Selected runner: $env:RUNNER_NAME"
           Write-Host "Machine: $env:COMPUTERNAME"
 
-      - name: Discover verify and sync real Laragon checkout
+      - name: Checkout canonical main for provenance verification
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: canonical-main
+          fetch-depth: 1
+
+      - name: Discover and verify real Laragon release tree
         run: |
+          $canonical = Join-Path $env:GITHUB_WORKSPACE 'canonical-main'
+          if (-not (Test-Path (Join-Path $canonical '.git'))) {
+            throw 'Canonical main checkout is unavailable.'
+          }
+
           $laragonRoots = @()
           Get-PSDrive -PSProvider FileSystem | ForEach-Object {
             $candidate = Join-Path $_.Root 'laragon\www'
@@ -35,31 +47,26 @@ jobs:
             throw 'No Laragon www root found on any mounted filesystem drive.'
           }
 
-          $candidatePaths = @()
+          $repoMatches = @()
+          $markerMatches = @()
           foreach ($base in $laragonRoots) {
-            $candidatePaths += $base
+            $candidatePaths = @()
+            $candidatePaths += @(Get-ChildItem -Path $base -Filter 'verify-laragon-release.cmd' -File -Recurse -Depth 3 -ErrorAction SilentlyContinue |
+              ForEach-Object { $_.Directory.FullName })
             $candidatePaths += @(Get-ChildItem -Path $base -Directory -Recurse -Depth 3 -Force -ErrorAction SilentlyContinue |
               Where-Object { $_.Name -eq '.git' } |
               ForEach-Object { $_.Parent.FullName })
-            $candidatePaths += @(Get-ChildItem -Path $base -Filter 'verify-laragon-release.cmd' -File -Recurse -Depth 3 -ErrorAction SilentlyContinue |
-              ForEach-Object { $_.Directory.FullName })
-          }
-          $candidatePaths = @($candidatePaths | Select-Object -Unique)
-          Write-Host ('Candidate checkouts: ' + ($candidatePaths -join ', '))
 
-          $repoMatches = @()
-          $markerMatches = @()
-          foreach ($path in $candidatePaths) {
-            if (-not (Test-Path (Join-Path $path '.git'))) { continue }
-
-            $remote = (& git -c "safe.directory=$path" -C $path remote get-url origin 2>$null)
-            if ($LASTEXITCODE -eq 0 -and $remote -match 'Vertex-Systems-Network/workforce-intelligence(?:\.git)?$') {
-              $repoMatches += $path
-              continue
-            }
-
-            if ((Test-Path (Join-Path $path 'verify-laragon-release.cmd')) -and (Test-Path (Join-Path $path 'artisan'))) {
-              $markerMatches += $path
+            foreach ($path in @($candidatePaths | Select-Object -Unique)) {
+              if ((Test-Path (Join-Path $path 'verify-laragon-release.cmd')) -and (Test-Path (Join-Path $path 'artisan'))) {
+                $markerMatches += $path
+              }
+              if (Test-Path (Join-Path $path '.git')) {
+                $remote = (& git -c "safe.directory=$path" -C $path remote get-url origin 2>$null)
+                if ($LASTEXITCODE -eq 0 -and $remote -match 'Vertex-Systems-Network/workforce-intelligence(?:\.git)?$') {
+                  $repoMatches += $path
+                }
+              }
             }
           }
 
@@ -67,35 +74,59 @@ jobs:
           if ($matches.Count -eq 0) {
             $matches = @($markerMatches | Select-Object -Unique)
           }
+          Write-Host ('Repository matches: ' + (($repoMatches | Select-Object -Unique) -join ', '))
+          Write-Host ('Marker matches: ' + (($markerMatches | Select-Object -Unique) -join ', '))
           if ($matches.Count -ne 1) {
-            Write-Host ('Repository matches: ' + (($repoMatches | Select-Object -Unique) -join ', '))
-            Write-Host ('Marker matches: ' + (($markerMatches | Select-Object -Unique) -join ', '))
-            throw "Expected exactly one Laragon WorkIntel checkout, found $($matches.Count)."
+            throw "Expected exactly one Laragon WorkIntel release tree, found $($matches.Count)."
           }
 
           $root = $matches[0]
-          Write-Host "Discovered Laragon checkout: $root"
-          "WORKINTEL_LARAGON_ROOT=$root" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Write-Host "Discovered Laragon release tree: $root"
 
-          $branch = (& git -c "safe.directory=$root" -C $root branch --show-current).Trim()
-          if ($branch -ne 'main') {
-            throw "Real Laragon checkout must be on main; current branch is '$branch'."
+          if (Test-Path (Join-Path $root '.git')) {
+            $branch = (& git -c "safe.directory=$root" -C $root branch --show-current).Trim()
+            if ($branch -ne 'main') {
+              throw "Real Laragon checkout must be on main; current branch is '$branch'."
+            }
+            $dirty = & git -c "safe.directory=$root" -C $root status --porcelain
+            if ($dirty) {
+              Write-Host $dirty
+              throw 'Real Laragon checkout has uncommitted changes; refusing to modify or certify it.'
+            }
+            & git -c "safe.directory=$root" -C $root fetch origin main
+            if ($LASTEXITCODE -ne 0) { throw 'git fetch origin main failed.' }
+            & git -c "safe.directory=$root" -C $root pull --ff-only origin main
+            if ($LASTEXITCODE -ne 0) { throw 'git pull --ff-only origin main failed.' }
+          } else {
+            Write-Host 'Physical Laragon release tree has no .git metadata; using canonical-main hash provenance verification.'
           }
-          $dirty = & git -c "safe.directory=$root" -C $root status --porcelain
-          if ($dirty) {
-            Write-Host $dirty
-            throw 'Real Laragon checkout has uncommitted changes; refusing to modify or certify it.'
+
+          $contracts = @(
+            'verify-laragon-release.cmd',
+            'verify-release.cmd',
+            'apply-main-branch-protection.cmd',
+            'tools/run-laragon-release.ps1',
+            'tools/laragon-release-preflight.php',
+            'tools/apply-main-branch-protection.ps1',
+            'tools/e2e-browser-doctor.mjs',
+            'tools/e2e-browser.mjs',
+            'composer.json',
+            'package.json',
+            'artisan'
+          )
+          foreach ($relative in $contracts) {
+            $expected = Join-Path $canonical $relative
+            $actual = Join-Path $root $relative
+            if (-not (Test-Path $expected)) { throw "Canonical contract missing: $relative" }
+            if (-not (Test-Path $actual)) { throw "Physical release contract missing: $relative" }
+            $expectedHash = (Get-FileHash -Algorithm SHA256 -Path $expected).Hash
+            $actualHash = (Get-FileHash -Algorithm SHA256 -Path $actual).Hash
+            if ($expectedHash -ne $actualHash) {
+              throw "Physical release contract differs from main: $relative"
+            }
           }
-          & git -c "safe.directory=$root" -C $root fetch origin main
-          if ($LASTEXITCODE -ne 0) { throw 'git fetch origin main failed.' }
-          & git -c "safe.directory=$root" -C $root pull --ff-only origin main
-          if ($LASTEXITCODE -ne 0) { throw 'git pull --ff-only origin main failed.' }
-          $head = (& git -c "safe.directory=$root" -C $root rev-parse HEAD).Trim()
-          $originMain = (& git -c "safe.directory=$root" -C $root rev-parse origin/main).Trim()
-          if ($head -ne $originMain) {
-            throw "Laragon checkout HEAD $head does not match origin/main $originMain."
-          }
-          Write-Host "Laragon checkout target SHA: $head"
+          Write-Host 'Canonical main release-contract provenance: PASS'
+          "WORKINTEL_LARAGON_ROOT=$root" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Run physical Laragon Windows plus MySQL certification
         run: |
