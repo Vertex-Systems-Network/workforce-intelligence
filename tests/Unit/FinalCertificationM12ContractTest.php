@@ -16,7 +16,10 @@ class FinalCertificationM12ContractTest extends TestCase
         foreach(['media_renditions','website_preview_tokens','document_brand_kits','document_batch_jobs','chat_activity_states'] as $marker)$this->assertStringContainsString($marker,$production);
 
         $windowsCi=(string)file_get_contents($root.'/.github/workflows/windows-certification.yml');
-        foreach(['windows-latest','pdo_sqlite, sqlite3, fileinfo, gd','Parse Laragon release certification script','System.Management.Automation.Language.Parser','Actual Chrome Edge Firefox accessibility certification','test:e2e:cross-browser'] as $marker)$this->assertStringContainsString($marker,$windowsCi);
+        foreach(['self-hosted','Windows','X64','Report selected self-hosted runner','RUNNER_NAME','cancel-in-progress: true','ExecutionPolicy Bypass','Bootstrap PowerShell 7 for setup-php','PowerShell/PowerShell/releases/latest','curl.exe','--max-time 300','pdo_sqlite, sqlite3, fileinfo, gd, zip','Provision Mozilla Firefox certification browser','firefox-latest-ssl','Firefox-latest-x64.exe','/InstallDirectoryPath=','/MaintenanceService=false','WORKINTEL_E2E_FIREFOX_EXECUTABLE','Parse Laragon release certification script','System.Management.Automation.Language.Parser','Actual Chrome Edge Firefox accessibility certification','test:e2e:cross-browser'] as $marker)$this->assertStringContainsString($marker,$windowsCi);
+
+        $browserHelper=(string)file_get_contents($root.'/tools/e2e-browser.mjs');
+        foreach(['findFirefoxExecutable','WORKINTEL_E2E_FIREFOX_EXECUTABLE'] as $marker)$this->assertStringContainsString($marker,$browserHelper);
 
         $laragonPreflight=(string)file_get_contents($root.'/tools/laragon-release-preflight.php');
         foreach(['PHP_OS_FAMILY','pdo_mysql','gd','DB_CONNECTION=mysql',"DB::connection('mysql')",'SELECT VERSION() AS version'] as $marker)$this->assertStringContainsString($marker,$laragonPreflight);

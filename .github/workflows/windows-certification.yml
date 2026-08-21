@@ -6,15 +6,25 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: windows-certification-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   windows-certification:
-    runs-on: windows-latest
+    runs-on: [self-hosted, Windows, X64]
     timeout-minutes: 90
+    defaults:
+      run:
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
     steps:
+      - name: Report selected self-hosted runner
+        run: |
+          Write-Host "Selected self-hosted Windows runner: $env:RUNNER_NAME"
+
       - uses: actions/checkout@v4
 
       - name: Parse Laragon release certification script
-        shell: powershell
         run: |
           $tokens = $null
           $errors = $null
@@ -29,7 +39,6 @@ jobs:
           }
 
       - name: Parse main branch protection operator
-        shell: powershell
         run: |
           $tokens = $null
           $errors = $null
@@ -43,10 +52,55 @@ jobs:
             exit 1
           }
 
+      - name: Bootstrap PowerShell 7 for setup-php
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if (Get-Command pwsh -ErrorAction SilentlyContinue) {
+            pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion'
+            exit 0
+          }
+
+          $headers = @{
+            Accept = 'application/vnd.github+json'
+            Authorization = "Bearer $env:GH_TOKEN"
+            'X-GitHub-Api-Version' = '2022-11-28'
+          }
+          $release = Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/PowerShell/PowerShell/releases/latest'
+          $asset = $release.assets | Where-Object {
+            $_.name -match '^PowerShell-[0-9.]+-win-x64\.zip$'
+          } | Select-Object -First 1
+          if (-not $asset) {
+            throw 'Unable to resolve the latest official PowerShell win-x64 ZIP asset.'
+          }
+
+          if (-not (Get-Command curl.exe -ErrorAction SilentlyContinue)) {
+            throw 'curl.exe is required to bootstrap portable PowerShell on the self-hosted runner.'
+          }
+
+          $pwshRoot = Join-Path $env:RUNNER_TEMP 'workintel-pwsh'
+          $zipPath = Join-Path $env:RUNNER_TEMP $asset.name
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $pwshRoot
+          Remove-Item -Force -ErrorAction SilentlyContinue $zipPath
+          New-Item -ItemType Directory -Force -Path $pwshRoot | Out-Null
+
+          & curl.exe -L --fail --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 300 -o $zipPath $asset.browser_download_url
+          if ($LASTEXITCODE -ne 0 -or -not (Test-Path $zipPath)) {
+            throw 'Portable PowerShell download failed.'
+          }
+
+          Expand-Archive -Path $zipPath -DestinationPath $pwshRoot -Force
+          $pwshExe = Join-Path $pwshRoot 'pwsh.exe'
+          if (-not (Test-Path $pwshExe)) {
+            throw 'Portable PowerShell bootstrap did not produce pwsh.exe.'
+          }
+          $pwshRoot | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          & $pwshExe -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion'
+
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          extensions: mbstring, dom, xml, xmlwriter, pdo_sqlite, sqlite3, fileinfo, gd
+          extensions: mbstring, dom, xml, xmlwriter, pdo_sqlite, sqlite3, fileinfo, gd, zip
           coverage: none
 
       - uses: actions/setup-node@v4
@@ -57,7 +111,6 @@ jobs:
         run: composer install --prefer-dist --no-interaction
 
       - name: Prepare local runtime
-        shell: pwsh
         run: |
           Copy-Item .env.example .env -Force
           php artisan key:generate
@@ -66,13 +119,64 @@ jobs:
           composer check-platform-reqs
 
       - name: Install frontend dependencies
-        shell: pwsh
         run: |
           if (Test-Path package-lock.json) {
             npm ci --no-audit --no-fund
           } else {
             npm install --no-audit --no-fund
           }
+
+      - name: Provision Mozilla Firefox certification browser
+        run: |
+          $firefoxCandidates = @(
+            (Join-Path ${env:ProgramFiles} 'Mozilla Firefox\firefox.exe'),
+            (Join-Path ${env:ProgramFiles(x86)} 'Mozilla Firefox\firefox.exe')
+          ) | Where-Object { $_ -and (Test-Path $_) }
+
+          if ($firefoxCandidates.Count -gt 0) {
+            $firefoxExe = $firefoxCandidates[0]
+          } else {
+            if (-not (Get-Command curl.exe -ErrorAction SilentlyContinue)) {
+              throw 'curl.exe is required to provision Mozilla Firefox on the self-hosted runner.'
+            }
+
+            $installerPath = Join-Path $env:RUNNER_TEMP 'Firefox-latest-x64.exe'
+            $firefoxRoot = Join-Path $env:RUNNER_TEMP 'workintel-firefox'
+            Remove-Item -Force -ErrorAction SilentlyContinue $installerPath
+            Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $firefoxRoot
+            New-Item -ItemType Directory -Force -Path $firefoxRoot | Out-Null
+
+            & curl.exe -L --fail --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 300 -o $installerPath 'https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US'
+            if ($LASTEXITCODE -ne 0 -or -not (Test-Path $installerPath)) {
+              throw 'Official Mozilla Firefox full installer download failed.'
+            }
+
+            $installArgs = @(
+              '/S',
+              "/InstallDirectoryPath=$firefoxRoot",
+              '/TaskbarShortcut=false',
+              '/DesktopShortcut=false',
+              '/StartMenuShortcut=false',
+              '/MaintenanceService=false',
+              '/RegisterDefaultAgent=false'
+            )
+            $install = Start-Process -FilePath $installerPath -ArgumentList $installArgs -Wait -PassThru
+            if ($install.ExitCode -ne 0) {
+              throw "Mozilla Firefox full installer failed with exit code $($install.ExitCode)."
+            }
+
+            $firefoxExe = Get-ChildItem -Path $firefoxRoot -Filter firefox.exe -Recurse -File -ErrorAction SilentlyContinue |
+              Select-Object -First 1 -ExpandProperty FullName
+          }
+
+          if (-not $firefoxExe -or -not (Test-Path $firefoxExe)) {
+            throw 'Mozilla Firefox executable was not found after provisioning.'
+          }
+          & $firefoxExe --version
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Mozilla Firefox executable failed its version probe.'
+          }
+          "WORKINTEL_E2E_FIREFOX_EXECUTABLE=$firefoxExe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Require installed Chrome Edge Firefox
         run: node tools/e2e-browser-doctor.mjs --require-all
@@ -133,7 +237,6 @@ jobs:
 
       - name: Summarize browser failure
         if: failure()
-        shell: pwsh
         run: |
           $root = 'storage/app/private/e2e-results'
           if (Test-Path $root) {
