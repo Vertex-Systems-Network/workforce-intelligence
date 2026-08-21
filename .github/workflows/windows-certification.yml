@@ -1,0 +1,124 @@
+name: WorkIntel Windows Certification
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  windows-certification:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, xml, xmlwriter, pdo_sqlite, sqlite3, fileinfo, gd
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Prepare local runtime
+        shell: pwsh
+        run: |
+          Copy-Item .env.example .env -Force
+          php artisan key:generate
+          php tools/runtime-closure-preflight.php
+          composer validate --no-check-publish
+          composer check-platform-reqs
+
+      - name: Install frontend dependencies
+        shell: pwsh
+        run: |
+          if (Test-Path package-lock.json) {
+            npm ci --no-audit --no-fund
+          } else {
+            npm install --no-audit --no-fund
+          }
+
+      - name: Require installed Chrome Edge Firefox
+        run: node tools/e2e-browser-doctor.mjs --require-all
+
+      - name: Install Playwright automation engines
+        run: npx playwright install chromium firefox
+
+      - name: Frontend source contracts
+        run: npm test
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Production frontend build
+        run: npm run build
+
+      - name: Production performance budget
+        run: npm run performance:audit:build
+
+      - name: Fresh SQLite migration and seed
+        run: php artisan migrate:fresh --seed --force
+
+      - name: Seeder idempotency
+        run: php artisan db:seed --force
+
+      - name: Full PHPUnit suite
+        run: php artisan test
+
+      - name: Production doctor
+        run: php artisan workintel:production-doctor --json --require-build
+
+      - name: Final certification doctor
+        run: php artisan workintel:final-certification --json --require-build
+
+      - id: full_e2e
+        name: Full responsive browser certification
+        run: npm run test:e2e:full
+        env:
+          WORKINTEL_RATE_AUTH_LOGIN: 120
+
+      - name: Accessibility source audit
+        run: npm run accessibility:audit
+
+      - name: Accessibility doctor
+        run: php artisan workintel:accessibility-doctor --json --require-build
+
+      - id: cross_browser
+        name: Actual Chrome Edge Firefox accessibility certification
+        run: npm run test:e2e:cross-browser
+        env:
+          WORKINTEL_RATE_AUTH_LOGIN: 120
+
+      - name: Route boot
+        run: php artisan route:list --except-vendor
+
+      - name: Scheduler boot
+        run: php artisan schedule:list
+
+      - name: Summarize browser failure
+        if: failure()
+        shell: pwsh
+        run: |
+          $root = 'storage/app/private/e2e-results'
+          if (Test-Path $root) {
+            Get-ChildItem $root -Recurse -File | Select-Object -ExpandProperty FullName
+            Get-ChildItem $root -Recurse -Filter error-context.md | ForEach-Object {
+              Write-Host "--- $($_.FullName)"
+              Get-Content $_.FullName -TotalCount 240
+            }
+          }
+
+      - name: Upload Windows browser failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workintel-windows-certification-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: storage/app/private/e2e-results
+          if-no-files-found: warn
+          retention-days: 7
