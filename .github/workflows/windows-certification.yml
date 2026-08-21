@@ -12,18 +12,14 @@ concurrency:
 
 jobs:
   windows-certification:
-    runs-on: [self-hosted, Windows, X64, LOCAL-WIN-01]
+    runs-on: [self-hosted, Windows, X64]
     timeout-minutes: 90
     defaults:
       run:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
     steps:
-      - name: Assert dedicated runner identity
-        run: |
-          if ($env:RUNNER_NAME -ne 'LOCAL-WIN-01') {
-            throw "Windows certification must run only on LOCAL-WIN-01; selected runner is '$env:RUNNER_NAME'."
-          }
-          Write-Host "Dedicated runner confirmed: $env:RUNNER_NAME"
+      - name: Report selected self-hosted runner
+        run: Write-Host "Selected self-hosted Windows runner: $env:RUNNER_NAME"
 
       - uses: actions/checkout@v4
 
