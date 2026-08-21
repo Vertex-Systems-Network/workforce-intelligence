@@ -8,7 +8,7 @@ on:
 
 jobs:
   windows-certification:
-    runs-on: windows-latest
+    runs-on: [self-hosted, Windows, X64]
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
