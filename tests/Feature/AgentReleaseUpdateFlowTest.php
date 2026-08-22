@@ -6,6 +6,7 @@ use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 /** Covers the authenticated, platform-scoped desktop-agent release channel. */
@@ -22,7 +23,7 @@ class AgentReleaseUpdateFlowTest extends TestCase
         $membership = $owner->memberships()->firstOrFail();
         $employee = User::where('email', 'employee@acme.test')->firstOrFail()->memberships()->firstOrFail();
 
-        $this->actingAs($owner);
+        Sanctum::actingAs($owner);
         $workspaceHeaders = ['X-Workspace-Id' => (string) $membership->workspace_id];
         $enrollment = $this->postJson('/api/v1/devices/enrollments', [
             'member_id' => $employee->id,
@@ -111,7 +112,7 @@ class AgentReleaseUpdateFlowTest extends TestCase
     {
         $this->seed(DatabaseSeeder::class);
         $owner = User::where('email', 'owner@acme.test')->firstOrFail();
-        $this->actingAs($owner);
+        Sanctum::actingAs($owner);
 
         $this->getJson('/api/v1/agent/release')->assertUnauthorized();
     }
