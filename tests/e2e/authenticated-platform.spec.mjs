@@ -22,17 +22,28 @@ async function expectNoViewportOverflow(page) {
   expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.width + 2)
 }
 
+/** Open the responsive navigation drawer when a sidebar destination is off-canvas, then activate it. */
+async function clickWorkspaceDestination(page, accessibleName) {
+  const destination = page.getByRole('button', { name: accessibleName })
+  await expect(destination).toBeVisible()
+
+  if (!(await destination.isInViewport())) {
+    const openNavigation = page.getByRole('button', { name: /^Open navigation$/i })
+    await expect(openNavigation).toBeVisible()
+    await openNavigation.click()
+    await expect(destination).toBeInViewport()
+  }
+
+  await destination.click()
+}
+
 test('workspace clicks stay synchronized through browser Back and Forward', async ({ page }) => {
   await login(page)
-  const liveTeam = page.getByRole('button', { name: /^Live Team$/i })
-  await expect(liveTeam).toBeVisible()
-  await liveTeam.click()
+  await clickWorkspaceDestination(page, /^Live Team$/i)
   await expect(page).toHaveURL(/#live$/)
   await expect(page.getByRole('heading', { name: /live workforce/i })).toBeVisible()
 
-  const home = page.getByRole('button', { name: /^Home$/i })
-  await expect(home).toBeVisible()
-  await home.click()
+  await clickWorkspaceDestination(page, /^Home$/i)
   await expect(page).toHaveURL(/#overview$/)
 
   await page.goBack()
@@ -55,7 +66,7 @@ test('workspace dropdown remains open through scroll and action menus portal out
 
   const people = page.getByRole('button', { name: /^People$/i })
   if (await people.count()) {
-    await people.click()
+    await clickWorkspaceDestination(page, /^People$/i)
     const action = page.getByRole('button', { name: /^Actions for /i }).first()
     if (await action.count()) {
       await action.click()
@@ -102,7 +113,7 @@ test('DataGrid and chat destinations load without uncaught page errors', async (
   for (const destination of [/^People$/i, /^Chat$/i]) {
     const button = page.getByRole('button', { name: destination })
     if (!(await button.count())) continue
-    await button.click()
+    await clickWorkspaceDestination(page, destination)
     await page.waitForTimeout(400)
     await expectNoViewportOverflow(page)
   }
