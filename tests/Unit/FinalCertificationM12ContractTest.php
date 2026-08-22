@@ -19,7 +19,7 @@ class FinalCertificationM12ContractTest extends TestCase
         $this->assertStringContainsString('runs-on: windows-latest',$windowsCi);
         $this->assertStringContainsString('Report selected GitHub-hosted runner',$windowsCi);
         $this->assertStringNotContainsString('self-hosted',$windowsCi);
-        foreach(['RUNNER_NAME','cancel-in-progress: true','ExecutionPolicy Bypass','Bootstrap PowerShell 7 for setup-php','PowerShell/PowerShell/releases/latest','curl.exe','--max-time 300','pdo_sqlite, sqlite3, fileinfo, gd, zip','Provision Mozilla Firefox certification browser','firefox-latest-ssl','Firefox-latest-x64.exe','/InstallDirectoryPath=','/MaintenanceService=false','WORKINTEL_E2E_FIREFOX_EXECUTABLE','Actual Chrome Edge Firefox accessibility certification','test:e2e:cross-browser'] as $marker)$this->assertStringContainsString($marker,$windowsCi);
+        foreach(['RUNNER_NAME','cancel-in-progress: true','ExecutionPolicy Bypass','Bootstrap PowerShell 7 for setup-php','PowerShell/PowerShell/releases/latest','curl.exe','--max-time 300','pdo_sqlite, sqlite3, fileinfo, gd, zip','Require installed Chrome Edge Firefox','Actual Chrome Edge Firefox accessibility certification','test:e2e:cross-browser'] as $marker)$this->assertStringContainsString($marker,$windowsCi);
 
         $browserHelper=(string)file_get_contents($root.'/tools/e2e-browser.mjs');
         foreach(['findFirefoxExecutable','WORKINTEL_E2E_FIREFOX_EXECUTABLE'] as $marker)$this->assertStringContainsString($marker,$browserHelper);
