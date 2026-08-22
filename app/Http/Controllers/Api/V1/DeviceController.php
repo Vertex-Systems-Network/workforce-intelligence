@@ -129,11 +129,6 @@ use Illuminate\Validation\Rule;
             'payload' => ['nullable', 'array'],
         ]);
 
-        if ($data['command_type'] === 'update_agent') {
-            abort_unless(in_array('self_update', $device->capabilities ?? [], true), 422, 'This agent does not support managed self-update. Install the latest verified package once from Downloads & Installation Center.');
-            abort_if(! empty($data['payload']), 422, 'Managed update commands do not accept custom payloads.');
-        }
-
         $command = AgentCommand::create([
             'uuid' => (string) Str::uuid(),
             'workspace_id' => $device->workspace_id,
