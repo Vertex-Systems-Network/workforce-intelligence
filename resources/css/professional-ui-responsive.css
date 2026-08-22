@@ -79,11 +79,14 @@
 .chat-poll-meta { font-size: 12px; }
 .chat-poll-card > button { min-height: 38px; font-size: 13px; }
 .chat-checkbox-row { font-size: 13px; }
+.chat-draft-status { font-size: 12px; }
 .chat-thread-panel .chat-details-heading small,
 .chat-thread-message-meta small,
 .chat-thread-follow { font-size: 12px; }
 .chat-thread-message-meta strong { font-size: 12px; }
 .chat-thread-scroll p { font-size: 13px; }
+.chat-history-list article > div { font-size: 12px; }
+.chat-history-list p { font-size: 13px; }
 .chat-public-channels strong,
 .chat-resource-list strong,
 .chat-resource-row strong,
@@ -93,16 +96,25 @@
 .chat-resource-row small,
 .chat-enterprise-list article small { font-size: 11px; }
 .chat-public-channels button { font-size: 12px; }
+.chat-command-hint { font-size: 11px; }
+.chat-message.is-bot .chat-message-meta strong::after { font-size: 10px; line-height: 16px; }
+.chat-work-action-card strong { font-size: 12px; }
+.chat-work-action-card small { font-size: 11px; }
+.chat-member-admin .ui-select { font-size: 12px; }
 .chat-enterprise-loading { font-size: 12px; }
 .chat-enterprise-section-title strong { font-size: 13px; }
 .chat-enterprise-section-title small { font-size: 11px; }
+.chat-enterprise-secret strong { font-size: 12px; }
 .chat-enterprise-secret code,
 .chat-enterprise-audit { font-size: 11px; }
+.chat-enterprise-audit strong { font-size: 11px; }
 .chat-message-meta .ui-badge { font-size: 11px; }
 .chat-history-loader button { font-size: 12px; }
+.chat-sync-state { font-size: 11px; }
 .chat-outbox-message { font-size: 12px; }
 .chat-outbox-message strong { font-size: 12px; }
 .chat-outbox-message button { font-size: 11px; }
+.chat-outbox-count { font-size: 11px; }
 .chat-delivery-state { font-size: 11px; }
 .chat-conversation-filters .ui-segmented button { font-size: 12px; }
 .chat-activity-item strong,
@@ -117,7 +129,7 @@
 .chat-context-item > span,
 .chat-context-item button span { font-size: 12px; }
 
-/* Seller and client-payment surfaces use the same readable hierarchy as the workspace shell. */
+/* Seller, client portal and client-payment surfaces use the same readable hierarchy as the workspace shell. */
 .seller-auth__brand small,
 .seller-shell__header small,
 .seller-shell__header > div:last-child > span { font-size: 12px; }
@@ -125,6 +137,8 @@
 .seller-capability-matrix h3 { font-size: 13px; }
 .seller-capability-row strong { font-size: 13px; }
 .seller-capability-row small { font: 500 12px/1.45 var(--font-mono); }
+.client-portal-auth .ui-page-description { font-size: 14px; line-height: 1.6; }
+.client-portal-secure { font-size: 12px; }
 .client-commerce-gateway-checks label { font-size: 13px; min-height: 38px; }
 .client-payment-panel__header strong { font-size: 14px; }
 .client-payment-panel__header small { font-size: 12px; }
@@ -181,7 +195,8 @@
 
   .marketing-header__actions { margin-left: auto; }
   .marketing-header__actions .ui-button--ghost { display: none; }
-  .chat-poll-trigger { font-size: 0; }
+  .chat-poll-trigger,
+  .chat-sync-state { font-size: 0; }
 }
 
 @media (max-width: 440px) {

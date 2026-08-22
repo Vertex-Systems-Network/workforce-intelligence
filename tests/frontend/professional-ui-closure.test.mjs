@@ -77,12 +77,18 @@ test('secondary and operational UI text stays readable across marketing, auth, c
     '.marketing-security-card p { font-size: 13px; }',
     '.auth-check { font-size: 13px; }',
     '.chat-message-text { font-size: 14px; line-height: 1.6; }',
+    '.chat-draft-status { font-size: 12px; }',
+    '.chat-sync-state { font-size: 11px; }',
+    '.chat-history-list article > div { font-size: 12px; }',
     '.seller-capability-row small { font: 500 12px/1.45 var(--font-mono); }',
+    '.client-portal-auth .ui-page-description { font-size: 14px; line-height: 1.6; }',
+    '.client-portal-secure { font-size: 12px; }',
     '.client-payment-method small,',
     'grid-template-columns: repeat(2, minmax(0, 1fr))',
     'min-height: 44px',
   ]) assert.ok(responsiveCss.includes(marker), `missing responsive readability contract: ${marker}`)
   assert.equal(responsiveCss.includes('overflow-x: auto'), false)
+  assert.ok(responsiveCss.includes('.chat-poll-trigger,\n  .chat-sync-state { font-size: 0; }'), 'mobile icon-only status treatment must remain explicit')
 })
 
 test('repository exposes unified local quality and real opt-in WAVE commands', () => {

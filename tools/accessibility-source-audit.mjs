@@ -58,7 +58,7 @@ requireMarkers('resources/js/shellNavigation.ts', ['popstate', "new Event('hashc
 requireMarkers('resources/views/app.blade.php', ['rel="icon"', "asset('favicon.svg')", 'color-scheme', 'prefers-reduced-motion:reduce'])
 requireMarkers('resources/css/app.css', ['prefers-reduced-motion:reduce', '@media(pointer:coarse)', '@media(forced-colors:active)', '.ui-skip-link', ':focus-visible'])
 requireMarkers('resources/css/professional-ui.css', ['font-size: 14px', '--wi-control-h: 38px', '.ui-page-title', '.ui-sidebar__module-label', '.marketing-feature-section', '@media (pointer: coarse)', '@media (prefers-reduced-motion: reduce)', '@media (forced-colors: active)'])
-requireMarkers('resources/css/professional-ui-responsive.css', ['grid-template-columns: repeat(2, minmax(0, 1fr))', 'min-height: 44px', '.marketing-product-kpi span { font-size: 12px; }', '.marketing-security-card p { font-size: 13px; }'])
+requireMarkers('resources/css/professional-ui-responsive.css', ['grid-template-columns: repeat(2, minmax(0, 1fr))', 'min-height: 44px', '.marketing-product-kpi span { font-size: 12px; }', '.marketing-security-card p { font-size: 13px; }', '.chat-message-text { font-size: 14px; line-height: 1.6; }', '.chat-sync-state { font-size: 11px; }', '.client-portal-secure { font-size: 12px; }'])
 requireMarkers('tools/e2e-browser.mjs', ['findChromeExecutable', 'findEdgeExecutable', 'findFirefoxExecutable', 'browserInventory'])
 requireMarkers('tools/playwright.config.mjs', ['accessibilityProjects', 'firefox-desktop', 'touch-mobile', 'reflow-200pct-equivalent'])
 requireMarkers('tools/run-browser-certification.mjs', ['accessibility', '--require-system-browsers', 'WORKINTEL_E2E_PROFILE'])
