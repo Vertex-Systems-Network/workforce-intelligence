@@ -28,3 +28,24 @@ test('M13 release reproducibility audit is enforced by Linux certification', () 
   ]) assert.ok(audit.includes(token), token)
   assert.ok(ci.includes('python3 tools/release-reproducibility-audit.py'))
 })
+
+test('M13 published releases are immutable under the same semantic version', () => {
+  const builder = read('tools/build-releases.py')
+  const audit = read('tools/release-immutability-audit.py')
+  const ci = read('.github/workflows/ci.yml')
+  for (const token of [
+    'verify_published_binary(destination, previous)',
+    'archive_payload(destination) != archive_payload(candidate)',
+    'changed without a version bump',
+    'Refusing to overwrite untracked release binary',
+    "previous.get('released_at') if previous else utc_now()",
+  ]) assert.ok(builder.includes(token), token)
+  for (const token of [
+    'assert_unchanged_rebuild()',
+    "'desktop-agent/PRODUCTION_AGENT.md'",
+    "'browser-extension/popup.css'",
+    "'browser-extension/firefox/popup.css'",
+    'assert_manifest_integrity_is_authoritative()',
+  ]) assert.ok(audit.includes(token), token)
+  assert.ok(ci.includes('python3 tools/release-immutability-audit.py'))
+})
