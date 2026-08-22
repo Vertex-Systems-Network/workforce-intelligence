@@ -87,10 +87,11 @@ use Tests\TestCase;
             'annual_allowance_days' => 2,
         ], $headers)->assertCreated()->json('data.id');
 
+        $leaveDate = now()->addWeekdays(10)->toDateString();
         $leaveId = $this->postJson('/api/v1/leave', [
             'leave_type_id' => $leaveTypeId,
-            'start_date' => now()->addDays(14)->toDateString(),
-            'end_date' => now()->addDays(14)->toDateString(),
+            'start_date' => $leaveDate,
+            'end_date' => $leaveDate,
             'reason' => 'Community volunteering',
         ], $headers)->assertCreated()->json('data.id');
 
