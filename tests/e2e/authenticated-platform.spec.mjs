@@ -22,6 +22,28 @@ async function expectNoViewportOverflow(page) {
   expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.width + 2)
 }
 
+test('workspace clicks stay synchronized through browser Back and Forward', async ({ page }) => {
+  await login(page)
+  const liveTeam = page.getByRole('button', { name: /^Live Team$/i })
+  await expect(liveTeam).toBeVisible()
+  await liveTeam.click()
+  await expect(page).toHaveURL(/#live$/)
+  await expect(page.getByRole('heading', { name: /live workforce/i })).toBeVisible()
+
+  const home = page.getByRole('button', { name: /^Home$/i })
+  await expect(home).toBeVisible()
+  await home.click()
+  await expect(page).toHaveURL(/#overview$/)
+
+  await page.goBack()
+  await expect(page).toHaveURL(/#live$/)
+  await expect(page.getByRole('heading', { name: /live workforce/i })).toBeVisible()
+
+  await page.goForward()
+  await expect(page).toHaveURL(/#overview$/)
+  await expect(page.locator('#workintel-main')).toBeVisible()
+})
+
 test('workspace dropdown remains open through scroll and action menus portal outside tables', async ({ page }) => {
   await login(page)
   const workspaceTrigger = page.locator('.ui-topbar .ui-dropdown-anchor').first()
