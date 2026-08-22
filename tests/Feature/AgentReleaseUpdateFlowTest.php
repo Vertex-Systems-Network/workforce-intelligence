@@ -9,12 +9,10 @@ use Illuminate\Support\Facades\File;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-/** Covers the authenticated, platform-scoped desktop-agent release channel. */
 class AgentReleaseUpdateFlowTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** Verifies agents can fetch only their managed platform release and corrupted binaries fail closed. */
     public function test_authenticated_agent_release_is_platform_scoped_and_integrity_checked(): void
     {
         $this->seed(DatabaseSeeder::class);
@@ -72,14 +70,15 @@ class AgentReleaseUpdateFlowTest extends TestCase
                 ]],
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
-            $this->withHeaders($agentHeaders)
+            $metadata = $this->withHeaders($agentHeaders)
                 ->getJson('/api/v1/agent/release')
                 ->assertOk()
-                ->assertHeader('Cache-Control', 'no-store')
                 ->assertJsonPath('release.slug', 'agent-windows-x64')
                 ->assertJsonPath('release.version', '1.2.0')
                 ->assertJsonPath('release.sha256', $sha)
                 ->assertJsonPath('release.download_path', '/api/v1/agent/release/download');
+
+            $this->assertStringContainsString('no-store', (string) $metadata->headers->get('Cache-Control'));
 
             $this->withHeaders($agentHeaders)
                 ->get('/api/v1/agent/release/download')
@@ -107,7 +106,6 @@ class AgentReleaseUpdateFlowTest extends TestCase
         }
     }
 
-    /** Verifies a normal signed-in web session cannot impersonate a device on the update channel. */
     public function test_agent_release_channel_requires_device_authentication(): void
     {
         $this->seed(DatabaseSeeder::class);
