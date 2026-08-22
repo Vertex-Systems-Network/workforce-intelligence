@@ -10,4 +10,36 @@
   .ui-topbar .ui-topbar__search {
     min-width: 44px;
   }
+
+  /* Top-bar actions intentionally overflow horizontally on narrow screens. Keep each
+     direct interactive wrapper at its intrinsic width so tooltip/dropdown anchors
+     cannot collapse and overlap a neighbouring control's hit target. */
+  .ui-topbar > .ui-tooltip-anchor,
+  .ui-topbar > .ui-dropdown-anchor,
+  .ui-topbar > .wi-language-switcher,
+  .ui-topbar > .ui-button,
+  .ui-topbar > .ui-avatar-trigger {
+    flex: 0 0 auto;
+  }
+
+  /* IconButton renders through a tooltip anchor; reserve the full touch target for
+     the mobile navigation trigger instead of allowing its wrapper to shrink to 0. */
+  .ui-topbar > .ui-tooltip-anchor:first-child {
+    min-width: 44px;
+  }
+
+  /* The workspace dropdown is the first direct dropdown anchor, not the first child
+     (the mobile navigation tooltip precedes it). Clamp its label without covering
+     the navigation control. */
+  .ui-topbar > .ui-dropdown-anchor:first-of-type > .ui-button {
+    max-width: 132px;
+    overflow: hidden;
+  }
+
+  .ui-topbar > .ui-dropdown-anchor:first-of-type > .ui-button > .ui-button__content {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
