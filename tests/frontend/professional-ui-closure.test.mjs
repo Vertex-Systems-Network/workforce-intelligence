@@ -8,7 +8,9 @@ const read = relative => fs.readFileSync(path.join(root, relative), 'utf8')
 
 const marketing = read('resources/js/pages/MarketingWebsite.tsx')
 const professionalCss = read('resources/css/professional-ui.css')
+const responsiveCss = read('resources/css/professional-ui-responsive.css')
 const manifest = JSON.parse(read('resources/js/navigation.manifest.json'))
+const packageJson = JSON.parse(read('package.json'))
 const shellNavigation = read('resources/js/shellNavigation.ts')
 const blade = read('resources/views/app.blade.php')
 const architecture = read('docs/architecture/SYSTEM_ARCHITECTURE_AND_FLOW.md')
@@ -65,6 +67,27 @@ test('professional UI establishes readable primary typography and control sizing
   assert.ok(professionalCss.includes('@media (pointer: coarse)'))
   assert.ok(professionalCss.includes('@media (prefers-reduced-motion: reduce)'))
   assert.ok(professionalCss.includes('@media (forced-colors: active)'))
+})
+
+test('secondary UI text and mobile marketing navigation stay readable without hidden horizontal navigation', () => {
+  for (const marker of [
+    '.marketing-product-kpi span { font-size: 12px; }',
+    '.marketing-visual-card small { font-size: 12px; }',
+    '.marketing-security-card p { font-size: 13px; }',
+    'grid-template-columns: repeat(2, minmax(0, 1fr))',
+    'min-height: 44px',
+  ]) assert.ok(responsiveCss.includes(marker), `missing responsive readability contract: ${marker}`)
+  assert.equal(responsiveCss.includes('overflow-x: auto'), false)
+})
+
+test('repository exposes unified local quality and real opt-in WAVE commands', () => {
+  assert.equal(packageJson.scripts.quality, 'npm run verify:source && npm run accessibility:audit && npm run performance:audit')
+  assert.equal(packageJson.scripts['quality:full'], 'npm run quality && npm run build')
+  assert.equal(packageJson.scripts['accessibility:wave'], 'node tools/wave-accessibility-audit.mjs')
+  const wave = read('tools/wave-accessibility-audit.mjs')
+  assert.ok(wave.includes('https://wave.webaim.org/api/request'))
+  assert.ok(wave.includes('Hosted WAVE requires a publicly reachable URL'))
+  assert.ok(wave.includes('WAVE_MAX_CONTRAST_ERRORS'))
 })
 
 test('browser history traversal is synchronized with hash-addressable shell state', () => {

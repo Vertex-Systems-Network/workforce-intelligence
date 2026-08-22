@@ -58,16 +58,20 @@ requireMarkers('resources/js/shellNavigation.ts', ['popstate', "new Event('hashc
 requireMarkers('resources/views/app.blade.php', ['rel="icon"', "asset('favicon.svg')", 'color-scheme', 'prefers-reduced-motion:reduce'])
 requireMarkers('resources/css/app.css', ['prefers-reduced-motion:reduce', '@media(pointer:coarse)', '@media(forced-colors:active)', '.ui-skip-link', ':focus-visible'])
 requireMarkers('resources/css/professional-ui.css', ['font-size: 14px', '--wi-control-h: 38px', '.ui-page-title', '.ui-sidebar__module-label', '.marketing-feature-section', '@media (pointer: coarse)', '@media (prefers-reduced-motion: reduce)', '@media (forced-colors: active)'])
+requireMarkers('resources/css/professional-ui-responsive.css', ['grid-template-columns: repeat(2, minmax(0, 1fr))', 'min-height: 44px', '.marketing-product-kpi span { font-size: 12px; }', '.marketing-security-card p { font-size: 13px; }'])
 requireMarkers('tools/e2e-browser.mjs', ['findChromeExecutable', 'findEdgeExecutable', 'findFirefoxExecutable', 'browserInventory'])
 requireMarkers('tools/playwright.config.mjs', ['accessibilityProjects', 'firefox-desktop', 'touch-mobile', 'reflow-200pct-equivalent'])
 requireMarkers('tools/run-browser-certification.mjs', ['accessibility', '--require-system-browsers', 'WORKINTEL_E2E_PROFILE'])
 requireMarkers('tests/e2e/accessibility-platform.spec.mjs', ['focus', 'reduced motion', 'RTL', 'touch'])
+requireMarkers('tools/wave-accessibility-audit.mjs', ['WAVE_API_KEY', 'WORKINTEL_WAVE_URL', 'https://wave.webaim.org/api/request', 'WAVE_MAX_ERRORS', 'WAVE_MAX_CONTRAST_ERRORS'])
+requireMarkers('package.json', ['"quality": "npm run verify:source && npm run accessibility:audit && npm run performance:audit"', '"accessibility:wave": "node tools/wave-accessibility-audit.mjs"'])
 
 const favicon = path.join(root, 'public/favicon.svg')
 if (!fs.existsSync(favicon) || fs.statSync(favicon).size < 100) failures.push('public/favicon.svg must be a non-empty real favicon asset')
 if (fs.existsSync(path.join(root, 'public/favicon.ico')) && fs.statSync(path.join(root, 'public/favicon.ico')).size === 0) failures.push('public/favicon.ico is an empty placeholder and must not be committed')
 
 const professionalCss = source('resources/css/professional-ui.css')
+const responsiveCss = source('resources/css/professional-ui-responsive.css')
 const bodyFont = professionalCss.match(/body\s*\{[^}]*font-size:\s*([\d.]+)px/s)
 if (!bodyFont || Number(bodyFont[1]) < 14) failures.push('Professional UI body font size must be at least 14px')
 const pageTitleFont = professionalCss.match(/\.ui-page-title\s*\{[^}]*font-size:\s*([\d.]+)px/s)
@@ -76,6 +80,7 @@ const navFont = professionalCss.match(/\.ui-nav-item\s*\{[^}]*font-size:\s*([\d.
 if (!navFont || Number(navFont[1]) < 14) failures.push('Primary navigation text must be at least 14px')
 const moduleFont = professionalCss.match(/\.ui-sidebar__module-label\s*\{[^}]*font-size:\s*([\d.]+)px/s)
 if (!moduleFont || Number(moduleFont[1]) < 12) failures.push('Module navigation labels must be at least 12px')
+if (responsiveCss.includes('overflow-x: auto')) failures.push('Mobile marketing navigation must expose destinations without hidden horizontal scrolling')
 
 const catalog = source('resources/js/i18n/locales/core.ts')
 for (const key of ['common.skip_to_content', 'common.data_table', 'common.toggle_setting', 'common.workspace_navigation', 'common.options', 'common.progress', 'common.tabs']) {
@@ -110,4 +115,4 @@ if (failures.length) {
   process.exit(1)
 }
 console.log('WorkIntel accessibility source audit: PASS')
-console.log('WCAG-oriented focus, semantics, readable typography, responsive reflow, RTL, contrast, favicon and browser-matrix contracts are present.')
+console.log('WCAG-oriented focus, semantics, readable typography, responsive reflow, RTL, contrast, favicon and browser-matrix contracts are present; the optional WAVE adapter is configured separately for public URLs.')

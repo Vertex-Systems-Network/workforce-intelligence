@@ -22,6 +22,7 @@
     "runtime:preflight": "php tools/runtime-closure-preflight.php",
     "runtime:closure:public": "node tools/run-browser-certification.mjs public",
     "accessibility:audit": "node tools/accessibility-source-audit.mjs",
+    "accessibility:wave": "node tools/wave-accessibility-audit.mjs",
     "accessibility:doctor": "node tools/e2e-browser-doctor.mjs",
     "test:e2e:accessibility": "node tools/run-browser-certification.mjs accessibility",
     "test:e2e:cross-browser": "node tools/run-browser-certification.mjs accessibility --require-system-browsers",
