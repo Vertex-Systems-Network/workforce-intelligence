@@ -27,6 +27,7 @@ use App\Http\Middleware\ApplyRequestLocale;
 use App\Http\Middleware\RequirePlatformOperator;
 use App\Http\Middleware\ObserveRequest;
 use App\Services\Observability\ObservabilityService;
+use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -35,6 +36,11 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
+        then: function (): void {
+            Route::middleware(['api', 'locale', 'agent.auth', 'workspace.module:devices', 'throttle:60,1'])
+                ->prefix('api/v1/agent/release')
+                ->group(base_path('routes/agent-release.php'));
+        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(SecurityHeaders::class);
