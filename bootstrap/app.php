@@ -4,6 +4,7 @@ require_once __DIR__.'/runtime.php';
 workintel_prepare_runtime_directories(dirname(__DIR__));
 
 use App\Http\Middleware\ApplyRequestLocale;
+use App\Http\Middleware\AuditWorkspaceRequest;
 use App\Http\Middleware\AuthenticateBrowserConnection;
 use App\Http\Middleware\AuthenticateClientPortal;
 use App\Http\Middleware\AuthenticateDeviceAgent;
@@ -11,7 +12,6 @@ use App\Http\Middleware\AuthenticateMobileClient;
 use App\Http\Middleware\AuthenticatePartnerApiKey;
 use App\Http\Middleware\AuthenticateScimToken;
 use App\Http\Middleware\AuthenticateWorkspaceApiKey;
-use App\Http\Middleware\AuditWorkspaceRequest;
 use App\Http\Middleware\ObserveRequest;
 use App\Http\Middleware\RequireAnyWorkspacePermission;
 use App\Http\Middleware\RequireApiScope;
