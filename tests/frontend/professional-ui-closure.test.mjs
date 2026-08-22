@@ -15,6 +15,7 @@ const shellNavigation = read('resources/js/shellNavigation.ts')
 const blade = read('resources/views/app.blade.php')
 const architecture = read('docs/architecture/SYSTEM_ARCHITECTURE_AND_FLOW.md')
 const hygieneAudit = read('tools/dead-source-audit.mjs')
+const agents = read('AGENTS.md')
 
 /** Marketing information architecture must represent every owner-level product area. */
 test('marketing website represents every owner navigation area', () => {
@@ -109,6 +110,19 @@ test('source hygiene rejects temporary root placeholders and dead interaction pa
   assert.ok(hygieneAudit.includes('browser-native-dialog'))
   assert.ok(hygieneAudit.includes('empty-handler'))
   assert.ok(hygieneAudit.includes('unfinished-comment'))
+})
+
+test('AI execution contract preserves quality truthfulness and final exact-head certification', () => {
+  for (const marker of [
+    'npm run quality',
+    'npm run quality:full',
+    'npm run accessibility:wave',
+    'Never claim “WAVE passed”',
+    'The expensive runner/browser matrix is the final release step',
+    'Do not merge because an older SHA was green',
+    'Do not bypass, fake, skip or weaken required governance/browser/accessibility statuses',
+    'GitHub-hosted',
+  ]) assert.ok(agents.includes(marker), `AGENTS.md missing execution contract: ${marker}`)
 })
 
 test('browser history traversal is synchronized with hash-addressable shell state', () => {
