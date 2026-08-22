@@ -30,7 +30,6 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Exceptions\PostTooLargeException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Throwable;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -74,19 +73,19 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->shouldRenderJsonWhen(fn (Request $request, Throwable $exception): bool => $request->is('api/*') || $request->expectsJson());
+        $exceptions->shouldRenderJsonWhen(fn (Request $request, \Throwable $exception): bool => $request->is('api/*') || $request->expectsJson());
         $exceptions->render(function (PostTooLargeException $exception, Request $request) {
-            if (! $request->is('api/*') && ! $request->expectsJson()) {
+            if (!$request->is('api/*') && !$request->expectsJson()) {
                 return null;
             }
 
             return response()->json(['message' => 'The upload exceeds the server POST size limit. Increase post_max_size/upload_max_filesize or choose a smaller file.'], 413);
         });
         // Report unhandled exceptions into the privacy-safe observability ledger without changing Laravel's response contract.
-        $exceptions->report(function (Throwable $exception): void {
+        $exceptions->report(function (\Throwable $exception): void {
             try {
                 app(ObservabilityService::class)->recordException($exception);
-            } catch (Throwable) {
+            } catch (\Throwable) {
             }
         });
     })->create();
