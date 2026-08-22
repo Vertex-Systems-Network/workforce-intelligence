@@ -1,11 +1,11 @@
 import type { LucideIcon } from 'lucide-react'
 import {
   ArrowRight, BarChart3, BriefcaseBusiness, CalendarCheck2, Check, CircleDollarSign,
-  Clock3, FileText, FolderKanban, Gauge, Globe2, HardDrive, Images, KeyRound,
-  LayoutDashboard, LockKeyhole, MessageSquareText, Monitor, Network, Play, Receipt,
-  Settings2, ShieldCheck, Sparkles, Trash2, UserRoundCog, Users, WalletCards, Workflow,
+  FolderKanban, Gauge, Globe2, HardDrive, Images, KeyRound, LayoutDashboard,
+  LockKeyhole, MessageSquareText, Monitor, Network, Play, Settings2, ShieldCheck,
+  Sparkles, UserRoundCog, Users, WalletCards, Workflow,
 } from 'lucide-react'
-import { Button } from '../design-system'
+import { Button, Link } from '../design-system'
 
 type MarketingFeature = { name:string; description:string }
 type MarketingSection = {
@@ -168,15 +168,15 @@ function ProductVisual({section,index}:{section:MarketingSection;index:number}){
 /** Render the public WorkIntel product website as a complete, accessible platform overview. */
 export default function MarketingWebsite(){
   return <div className="marketing-site">
-    <a className="ui-skip-link" href="#marketing-main">Skip to main content</a>
+    <Link className="ui-skip-link" href="#marketing-main">Skip to main content</Link>
     <header className="marketing-header">
       <div className="marketing-shell marketing-header__inner">
-        <a className="marketing-brand" href="/" aria-label="WorkIntel home"><span className="marketing-brand__mark" aria-hidden="true"><LayoutDashboard size={17}/></span><span>WorkIntel</span></a>
+        <Link className="marketing-brand" href="/" aria-label="WorkIntel home"><span className="marketing-brand__mark" aria-hidden="true"><LayoutDashboard size={17}/></span><span>WorkIntel</span></Link>
         <nav className="marketing-nav" aria-label="Marketing navigation">
-          <a href="#platform">Platform</a>
-          <a href="#workforce-operations">Tracking</a>
-          <a href="#security">Security</a>
-          <a href="#architecture">How it works</a>
+          <Link href="#platform">Platform</Link>
+          <Link href="#workforce-operations">Tracking</Link>
+          <Link href="#security">Security</Link>
+          <Link href="#architecture">How it works</Link>
         </nav>
         <div className="marketing-header__actions"><Button variant="ghost" onClick={()=>window.location.assign('/app')}>Log in</Button><Button variant="primary" onClick={()=>window.location.assign('/app')}>Open Workspace <ArrowRight size={14}/></Button></div>
       </div>
@@ -197,7 +197,7 @@ export default function MarketingWebsite(){
             <div className="marketing-product-window">
               <div className="marketing-product-toolbar"><i/><i/><i/><strong>Acme Corp · Command Center</strong></div>
               <div className="marketing-product-body">
-                <div className="marketing-product-sidebar" aria-hidden="true"><div className="marketing-product-navline is-active"/>{Array.from({length:8},(_,index)=><div className="marketing-product-navline" style={{width:`${58+(index%3)*12}%`}} key={index}/>)}</div>
+                <div className="marketing-product-sidebar" aria-hidden="true"><div className="marketing-product-navline is-active"/>{Array.from({length:8},(_,index)=><div className={`marketing-product-navline marketing-product-navline--${index%3}`} key={index}/>)}</div>
                 <div className="marketing-product-main"><div className="marketing-product-title"/><div className="marketing-product-copy"/><div className="marketing-product-kpis"><div className="marketing-product-kpi"><span>Working now</span><strong>17</strong></div><div className="marketing-product-kpi"><span>Tracked today</span><strong>142h</strong></div><div className="marketing-product-kpi"><span>Attendance</span><strong>86%</strong></div></div><div className="marketing-product-chart"/></div>
               </div>
             </div>
