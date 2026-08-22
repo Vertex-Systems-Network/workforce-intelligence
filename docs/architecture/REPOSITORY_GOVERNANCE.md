@@ -32,7 +32,7 @@ If an accidental direct write occurs, preserve auditability: repair it with a no
 The repository retains its automated validation surfaces, including:
 
 - WorkIntel CI job `test` where GitHub Actions capacity is available;
-- WorkIntel Windows Certification job `windows-certification` on matching self-hosted Windows runners;
+- WorkIntel Windows Certification job `windows-certification` on GitHub-hosted `windows-latest`;
 - PHPUnit, migrations/seeds, production/final doctors, responsive E2E, accessibility and cross-browser certification where applicable.
 
 A quota/capacity failure must never be relabeled as a passing run. Historical successful certification evidence remains valid evidence for the commits on which it executed.
