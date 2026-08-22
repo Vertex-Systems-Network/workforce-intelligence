@@ -1,12 +1,13 @@
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { arch, hostname, platform, release, tmpdir } from 'node:os'
-import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync, chmodSync, openSync, closeSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, unlinkSync, chmodSync, openSync, closeSync, renameSync, rmSync } from 'node:fs'
 import { dirname, resolve, basename } from 'node:path'
 import { execFileSync, spawnSync } from 'node:child_process'
 
-const VERSION = '1.1.0'
+const VERSION = '1.2.1'
 const POLL_MS = 5000
 const MAX_SESSION_SECONDS = 300
+const AGENT_CAPABILITIES = ['heartbeat','offline_sync','commands','app_tracking','screenshots','idle_detection','native_service','self_update']
 const root = dirname(new URL(import.meta.url).pathname.replace(/^\/(.:)/, '$1'))
 const stateDir = resolve(process.env.WORKINTEL_AGENT_HOME || resolve(root, 'storage-native'))
 const configFile = resolve(stateDir, 'device.json')
@@ -27,11 +28,29 @@ mkdirSync(stateDir, { recursive: true })
 /** Handles the validate server url operation for the WorkIntel application. */ function validateServerUrl(value) {
   const url = new URL(String(value || '').trim())
   if (!['http:','https:'].includes(url.protocol)) throw new Error('Server must use http:// or https://')
+  if (url.username || url.password) throw new Error('Server URL must not contain credentials.')
   const local = ['localhost','127.0.0.1','::1'].includes(url.hostname)
   if (url.protocol !== 'https:' && !local && process.env.WORKINTEL_ALLOW_INSECURE_HTTP !== 'true') {
     throw new Error('HTTPS is required for non-local servers. Set WORKINTEL_ALLOW_INSECURE_HTTP=true only for trusted development networks.')
   }
+  url.hash = ''
+  url.search = ''
   return url.toString().replace(/\/$/, '')
+}
+
+/** Resolves one API path against the validated enrolled origin and rejects origin changes. */ function trustedRequestUrl(config, path) {
+  if (typeof path !== 'string' || !path.startsWith('/api/v1/')) throw new Error('Agent request path is not trusted.')
+  const serverUrl = validateServerUrl(config?.server_url)
+  const base = new URL(`${serverUrl}/`)
+  const endpoint = new URL(path.replace(/^\//, ''), base)
+  if (endpoint.origin !== base.origin || endpoint.username || endpoint.password) throw new Error('Agent request origin is not trusted.')
+  return endpoint
+}
+
+/** Performs one authenticated request without following redirects away from the enrolled server. */ async function authenticatedRequest(config, path, options = {}) {
+  const headers = new Headers(options.headers || {})
+  if (config?.access_token) headers.set('Authorization', `Bearer ${config.access_token}`)
+  return fetch(trustedRequestUrl(config, path), {...options, headers, redirect:'error'})
 }
 
 /** Handles the acquire lock operation for the WorkIntel application. */ function acquireLock() {
@@ -49,12 +68,106 @@ mkdirSync(stateDir, { recursive: true })
 /** Handles the json request operation for the WorkIntel application. */ async function jsonRequest(config, path, options = {}) {
   const headers = new Headers(options.headers || {})
   headers.set('Accept','application/json')
-  if (!(options.body instanceof FormData)) headers.set('Content-Type','application/json')
-  if (config?.access_token) headers.set('Authorization', `Bearer ${config.access_token}`)
-  const response = await fetch(`${config.server_url}${path}`, {...options, headers})
+  if (options.body !== undefined && !(options.body instanceof FormData)) headers.set('Content-Type','application/json')
+  const response = await authenticatedRequest(config, path, {...options, headers})
   const payload = await response.json().catch(() => null)
   if (!response.ok) throw new Error(payload?.message || `HTTP ${response.status}`)
   return payload
+}
+
+/** Compares stable semantic versions without trusting package-provided executable code. */ function compareVersions(left, right) {
+  const parse = value => {
+    const match = String(value || '').match(/^(\d+)\.(\d+)\.(\d+)(?:[-+][0-9A-Za-z.-]+)?$/)
+    if (!match) throw new Error(`Invalid agent version: ${value}`)
+    return match.slice(1, 4).map(Number)
+  }
+  const a=parse(left),b=parse(right)
+  for(let i=0;i<3;i++){if(a[i]!==b[i])return a[i]>b[i]?1:-1}
+  return 0
+}
+
+/**
+ * Downloads one managed archive through curl into an already-open secure descriptor.
+ * The device token travels over stdin so it is not exposed in the process argument list.
+ */
+function downloadManagedArchive(config, archivePath, headersPath) {
+  if(!commandExists('curl'))throw new Error('curl is required for managed agent updates.')
+  const endpoint=trustedRequestUrl(config,'/api/v1/agent/release/download')
+  const token=String(config?.access_token||'')
+  if(!token||/[\r\n\0]/u.test(token))throw new Error('Managed update token is invalid.')
+  const archiveFd=openSync(archivePath,'wx',0o600)
+  try{
+    const result=spawnSync('curl',[
+      '--fail','--silent','--show-error','--no-progress-meter','--connect-timeout','10','--max-time','120',
+      '--proto',endpoint.protocol==='https:'?'=https':'=http','--dump-header',headersPath,
+      '--header','Accept: application/zip','--header','@-',endpoint.toString()
+    ],{input:`Authorization: Bearer ${token}\r\n`,stdio:['pipe',archiveFd,'pipe'],encoding:'utf8',windowsHide:true})
+    if(result.error)throw result.error
+    if(result.status!==0)throw new Error(`Update download failed: ${String(result.stderr||'curl failed').trim()}`)
+  }finally{closeSync(archiveFd)}
+  const headers=readFileSync(headersPath,'utf8')
+  const statuses=[...headers.matchAll(/^HTTP\/\S+\s+(\d{3})/gmi)].map(match=>Number(match[1]))
+  const status=statuses.at(-1)||0
+  if(status<200||status>=300)throw new Error(`Update download failed with HTTP ${status||'unknown'}`)
+  return {
+    sha256:headers.match(/^x-release-sha256:\s*([^\r\n]+)/mi)?.[1]?.trim()||null,
+    version:headers.match(/^x-workintel-version:\s*([^\r\n]+)/mi)?.[1]?.trim()||null,
+  }
+}
+
+/** Downloads, verifies, stages, and atomically replaces the managed native-agent source. */ async function installManagedUpdate(config) {
+  const metadata=await jsonRequest(config,'/api/v1/agent/release')
+  const managed=metadata?.release
+  if(!managed||typeof managed.version!=='string'||typeof managed.sha256!=='string')throw new Error('Managed release metadata is incomplete.')
+  if(managed.download_path!=='/api/v1/agent/release/download')throw new Error('Managed release download path is not trusted.')
+  if(!/^[a-f0-9]{64}$/i.test(managed.sha256))throw new Error('Managed release checksum is invalid.')
+  if(compareVersions(managed.version,VERSION)<=0)return {updated:false,from:VERSION,to:managed.version,sha256:managed.sha256}
+
+  const updateDir=mkdtempSync(resolve(tmpdir(),'workintel-update-'))
+  const archivePath=resolve(updateDir,'release.zip')
+  const headersPath=resolve(updateDir,'release.headers')
+  const extractDir=resolve(updateDir,'extract')
+  const currentPath=resolve(root,'native-agent.mjs')
+  const stagedPath=resolve(root,`native-agent.mjs.next-${randomUUID()}`)
+  const backupPath=resolve(root,'native-agent.mjs.previous')
+  mkdirSync(extractDir,{mode:0o700})
+  try{
+    const responseMeta=downloadManagedArchive(config,archivePath,headersPath)
+    if(responseMeta.sha256&&responseMeta.sha256.toLowerCase()!==managed.sha256.toLowerCase())throw new Error('Update response checksum does not match release metadata.')
+    if(responseMeta.version&&responseMeta.version!==managed.version)throw new Error('Update response version does not match release metadata.')
+    const actualHash=createHash('sha256').update(readFileSync(archivePath)).digest('hex')
+    if(actualHash.toLowerCase()!==managed.sha256.toLowerCase())throw new Error('Downloaded update failed SHA-256 verification.')
+    if(platform()==='win32'){
+      const safeArchive=archivePath.replaceAll("'","''"),safeExtract=extractDir.replaceAll("'","''")
+      powershell(`Expand-Archive -LiteralPath '${safeArchive}' -DestinationPath '${safeExtract}' -Force`)
+    }else{
+      if(!commandExists('unzip'))throw new Error('The unzip command is required for managed agent updates.')
+      execFileSync('unzip',['-q',archivePath,'-d',extractDir],{stdio:'pipe',timeout:30000})
+    }
+    const candidate=resolve(extractDir,'desktop-agent','native-agent.mjs')
+    if(!existsSync(candidate))throw new Error('Managed release does not contain desktop-agent/native-agent.mjs.')
+    const candidateSource=readFileSync(candidate,'utf8')
+    const candidateVersion=candidateSource.match(/const VERSION = ['"]([^'"]+)['"]/u)?.[1]
+    if(candidateVersion!==managed.version)throw new Error('Managed release source version does not match release metadata.')
+    execFileSync(process.execPath,['--check',candidate],{stdio:'pipe',timeout:15000})
+
+    copyFileSync(candidate,stagedPath)
+    if(platform()!=='win32')chmodSync(stagedPath,0o755)
+    if(existsSync(backupPath))unlinkSync(backupPath)
+    copyFileSync(currentPath,backupPath)
+    try{
+      unlinkSync(currentPath)
+      renameSync(stagedPath,currentPath)
+      if(platform()!=='win32')chmodSync(currentPath,0o755)
+    }catch(error){
+      try{copyFileSync(backupPath,currentPath)}catch{}
+      throw error
+    }
+    return {updated:true,from:VERSION,to:managed.version,sha256:actualHash}
+  }finally{
+    try{if(existsSync(stagedPath))unlinkSync(stagedPath)}catch{}
+    try{rmSync(updateDir,{recursive:true,force:true})}catch{}
+  }
 }
 
 /** Handles the powershell operation for the WorkIntel application. */ function powershell(command) {
@@ -124,7 +237,7 @@ let screenshotNotificationShown=false
   const payload=await jsonRequest(temp,'/api/v1/agent/enroll',{method:'POST',body:JSON.stringify({
     enrollment_code:code,installation_id:installationId,name:hostname(),platform:platform()==='win32'?'windows':platform()==='darwin'?'macos':'linux',
     os_name:platform()==='win32'?'Windows':platform()==='darwin'?'macOS':'Linux',os_version:release(),architecture:arch(),agent_version:VERSION,
-    capabilities:['heartbeat','offline_sync','commands','app_tracking','screenshots','idle_detection','native_service']
+    capabilities:AGENT_CAPABILITIES
   })})
   const config={server_url:serverUrl,installation_id:installationId,device_uuid:payload.device.uuid,access_token:payload.access_token,heartbeat_interval_seconds:payload.config.heartbeat_interval_seconds,tracking_status:'active',remote_activity_config:payload.config.activity,remote_screenshot_config:payload.config.screenshots,enrolled_at:new Date().toISOString()}
   saveConfig(config); queueEvent('agent.enrolled',{device_uuid:payload.device.uuid,version:VERSION}); log(`Enrolled ${payload.device.name} (${payload.device.uuid})`)
@@ -143,13 +256,23 @@ let screenshotNotificationShown=false
       if(command.command_type==='pause_tracking')config.tracking_status='paused'
       else if(command.command_type==='resume_tracking')config.tracking_status='active'
       else if(command.command_type==='restart_agent'){await ack(config,command,'acknowledged',{message:'Supervisor restart requested.'});saveConfig(config);process.exit(0)}
-      else if(command.command_type==='update_agent'){await ack(config,command,'acknowledged',{message:'Update command received. Install the latest release package from Downloads or managed deployment.'});continue}
+      else if(command.command_type==='update_agent'){
+        const result=await installManagedUpdate(config)
+        if(result.updated){
+          queueEvent('agent.updated',{from:result.from,to:result.to,sha256:result.sha256})
+          await ack(config,command,'acknowledged',{message:`Agent updated from ${result.from} to ${result.to}. Restarting under the installation supervisor.`,...result})
+          saveConfig(config)
+          process.exit(0)
+        }
+        await ack(config,command,'acknowledged',{message:`Agent ${VERSION} is already current for the managed stable channel.`,...result})
+        continue
+      }
       saveConfig(config);await ack(config,command,'acknowledged',{tracking_status:config.tracking_status})
     }catch(error){try{await ack(config,command,'failed',{message:error.message})}catch{}}
   }
 }
 /** Handles the heartbeat operation for the WorkIntel application. */ async function heartbeat(config, context, idle) {
-  const result=await jsonRequest(config,'/api/v1/agent/heartbeat',{method:'POST',body:JSON.stringify({agent_version:VERSION,tracking_status:config.tracking_status,is_idle:idle,offline_queue_size:getQueue().length,os_version:release(),capabilities:['heartbeat','offline_sync','commands','app_tracking','screenshots','idle_detection','native_service'],metadata:{hostname:hostname()},current_app:context?.app||null,activity_percent:idle?0:100})})
+  const result=await jsonRequest(config,'/api/v1/agent/heartbeat',{method:'POST',body:JSON.stringify({agent_version:VERSION,tracking_status:config.tracking_status,is_idle:idle,offline_queue_size:getQueue().length,os_version:release(),capabilities:AGENT_CAPABILITIES,metadata:{hostname:hostname()},current_app:context?.app||null,activity_percent:idle?0:100})})
   config.heartbeat_interval_seconds=result.config.heartbeat_interval_seconds;config.remote_activity_config=result.config.activity;config.remote_screenshot_config=result.config.screenshots;saveConfig(config);await commands(config,result.commands)
 }
 
@@ -187,6 +310,7 @@ let currentSession=null
 
 /** Handles the run operation for the WorkIntel application. */ async function run() {
   acquireLock();const config=getConfig();if(!config?.access_token||!config?.server_url)throw new Error('Agent is not enrolled. Run enroll first.')
+  validateServerUrl(config.server_url)
   queueEvent('agent.started',{version:VERSION,platform:platform(),architecture:arch()});let offline=false;let lastHeartbeat=0;let screenshotDue=nextScreenshotAt(config)
   while(true){
     const context=foreground();const idleThreshold=Math.max(60,Number(config.remote_activity_config?.idle_threshold_seconds||300))*1000;const idle=idleMilliseconds()>=idleThreshold
@@ -206,6 +330,6 @@ try{
   if(command==='enroll')await enroll(a,b)
   else if(command==='run')await run()
   else if(command==='status')status()
-  else if(command==='once'){const c=getConfig();if(!c?.access_token)throw new Error('Not enrolled.');const ctx=foreground();const idle=idleMilliseconds()>=Math.max(60,Number(c.remote_activity_config?.idle_threshold_seconds||300))*1000;await heartbeat(c,ctx,idle);await sync(c);status()}
+  else if(command==='once'){const c=getConfig();if(!c?.access_token)throw new Error('Not enrolled.');validateServerUrl(c.server_url);const ctx=foreground();const idle=idleMilliseconds()>=Math.max(60,Number(c.remote_activity_config?.idle_threshold_seconds||300))*1000;await heartbeat(c,ctx,idle);await sync(c);status()}
   else {console.log(`WorkIntel Native Agent ${VERSION}\n\nCommands:\n  node native-agent.mjs enroll https://your-server.example WI-XXXX-XXXX-XXXX\n  node native-agent.mjs run\n  node native-agent.mjs once\n  node native-agent.mjs status`)}
 }catch(error){console.error(error instanceof Error?error.message:String(error));process.exit(1)}

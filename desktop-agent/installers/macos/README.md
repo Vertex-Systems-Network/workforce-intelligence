@@ -1,6 +1,6 @@
 # macOS deployment
 
-Requirements: macOS 12+, Node.js 20+.
+Requirements: macOS 12+, Node.js 20+, and curl.
 
 ```bash
 ./install.command https://time.example.com WI-XXXX-XXXX-XXXX

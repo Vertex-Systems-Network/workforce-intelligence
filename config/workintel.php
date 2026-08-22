@@ -7,7 +7,7 @@ return [
         'enrollment_minutes' => (int) env('WORKINTEL_AGENT_ENROLLMENT_MINUTES', 10),
         'token_days' => (int) env('WORKINTEL_AGENT_TOKEN_DAYS', 365),
         'sync_batch_max' => (int) env('WORKINTEL_AGENT_SYNC_BATCH_MAX', 500),
-        'latest_version' => env('WORKINTEL_AGENT_LATEST_VERSION', '1.1.0'),
+        'latest_version' => env('WORKINTEL_AGENT_LATEST_VERSION', '1.2.1'),
         'minimum_supported_version' => env('WORKINTEL_AGENT_MINIMUM_VERSION', '1.0.0'),
     ],
     'screenshots' => [

@@ -1,6 +1,6 @@
 # Windows deployment
 
-Requirements: Windows 10/11, PowerShell 5+, Node.js 20+.
+Requirements: Windows 10/11, PowerShell 5+, Node.js 20+, and curl.
 
 From an elevated or normal user PowerShell (the agent runs in the signed-in user's desktop session so it can observe foreground applications):
 

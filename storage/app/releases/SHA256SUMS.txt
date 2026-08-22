@@ -1,5 +1,5 @@
-a66d2690e0f6d4a52c6ce80710aa76bd47b56068a05e9e9d507806fbc8fa0708  WorkIntel-Agent-Windows-1.1.0.zip
-54b472d0d8e1f5bf3ddf0890fc681660b76329516b1b8b11545e87b9e95beb3a  WorkIntel-Agent-macOS-1.1.0.zip
-e7ed3e3a76301c5816a697d7628399aeb5a7e0c9db40670b33e62e75022cf52d  WorkIntel-Agent-Linux-1.1.0.zip
-50434dbee1663715a7e8a3a598ccbdef7849bf75b580dbff9811a367b7a41bc2  WorkIntel-Browser-Chrome-Edge-1.0.0.zip
-a68fbf3a6323144084c71ccbcfe8393b7c6bc40969af930bab9502326a54ad22  WorkIntel-Browser-Firefox-1.0.0.zip
+884de1c021b761d39e3b845cc7cf9f68a653b4a2a322f5708f469f1a6d3ecedb  WorkIntel-Agent-Windows-1.2.1.zip
+7cec2ff0ccd1b710d99bc45e1aefb54d26a2311c9db196cf5bffa6a49c124299  WorkIntel-Agent-macOS-1.2.1.zip
+76711d9090ca0658954ee448e7b79ea515624ce647c6543024afe6c70cb04227  WorkIntel-Agent-Linux-1.2.1.zip
+373d6c80da299a8efca8bfa0efaee2dc916411df3038b687c57df058157fc5b6  WorkIntel-Browser-Chrome-Edge-1.0.0.zip
+587f920994ead1feeab4bfe0a2a026d8a04b23ec348cbf932f0eed57427b2c0f  WorkIntel-Browser-Firefox-1.0.0.zip
