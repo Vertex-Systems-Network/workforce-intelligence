@@ -16,6 +16,8 @@ const blade = read('resources/views/app.blade.php')
 const architecture = read('docs/architecture/SYSTEM_ARCHITECTURE_AND_FLOW.md')
 const hygieneAudit = read('tools/dead-source-audit.mjs')
 const agents = read('AGENTS.md')
+const ciWorkflow = read('.github/workflows/ci.yml')
+const qualityWorkflow = read('.github/workflows/code-quality.yml')
 
 /** Marketing information architecture must represent every owner-level product area. */
 test('marketing website represents every owner navigation area', () => {
@@ -123,6 +125,16 @@ test('AI execution contract preserves quality truthfulness and final exact-head 
     'Do not bypass, fake, skip or weaken required governance/browser/accessibility statuses',
     'GitHub-hosted',
   ]) assert.ok(agents.includes(marker), `AGENTS.md missing execution contract: ${marker}`)
+})
+
+test('CI avoids duplicate feature-branch push runs and cancels stale PR work', () => {
+  for (const workflow of [ciWorkflow, qualityWorkflow]) {
+    assert.ok(workflow.includes('push:\n    branches: [main]'), 'push certification must be limited to main')
+    assert.ok(workflow.includes('pull_request:\n    branches: [main]'), 'pull-request certification must target main')
+    assert.ok(workflow.includes('cancel-in-progress: true'), 'stale certification work must be cancelled')
+  }
+  assert.ok(ciWorkflow.includes('group: workintel-ci-${{ github.event.pull_request.number || github.ref }}'))
+  assert.ok(qualityWorkflow.includes('group: workintel-quality-${{ github.event.pull_request.number || github.ref }}'))
 })
 
 test('browser history traversal is synchronized with hash-addressable shell state', () => {
