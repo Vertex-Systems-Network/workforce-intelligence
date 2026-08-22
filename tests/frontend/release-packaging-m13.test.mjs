@@ -49,3 +49,21 @@ test('M13 published releases are immutable under the same semantic version', () 
   ]) assert.ok(audit.includes(token), token)
   assert.ok(ci.includes('python3 tools/release-immutability-audit.py'))
 })
+
+test('M13 release publication validates the whole catalog before committing new artifacts', () => {
+  const builder = read('tools/build-releases.py')
+  const audit = read('tools/release-immutability-audit.py')
+  for (const token of [
+    'def prepare_zip(staging: Path, slug: str, name: str, version: str, entries)',
+    'def commit_release_transaction(plans: list[dict], manifest_bytes: bytes, checksums_bytes: bytes, staging: Path)',
+    "with tempfile.TemporaryDirectory(prefix='workintel-release-transaction-')",
+    'for plan in plans:',
+    'atomic_restore(MANIFEST_PATH, old_manifest, staging)',
+  ]) assert.ok(builder.includes(token), token)
+  for (const token of [
+    'assert_mixed_version_validation_is_transactional()',
+    'M13_TRANSACTIONAL_BROWSER_DRIFT',
+    'Failed mixed-version validation partially published release state',
+    "glob(f'WorkIntel-Agent-*-{next_version}.zip')",
+  ]) assert.ok(audit.includes(token), token)
+})
