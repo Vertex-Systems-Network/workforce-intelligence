@@ -53,18 +53,35 @@ requireMarkers('resources/js/design-system/index.tsx', ['export function Modal',
 requireMarkers('resources/js/website/WebsiteRenderer.tsx', ['ui-skip-link', 'id="website-main"', 'aria-live="polite"'])
 requireMarkers('resources/js/documents/PublicDocumentSignApp.tsx', ['ui-skip-link', 'id="document-sign-main"', 'aria-pressed'])
 requireMarkers('resources/js/components/Sidebar.tsx', ['<nav', 'common.workspace_navigation', 'aria-label'])
+requireMarkers('resources/js/pages/MarketingWebsite.tsx', ['id="marketing-main"', 'aria-label="Marketing navigation"', 'id="platform"', 'id="security"', 'role="img"', 'aria-labelledby'])
+requireMarkers('resources/js/shellNavigation.ts', ['popstate', "new Event('hashchange')", 'pushState', 'replaceState'])
+requireMarkers('resources/views/app.blade.php', ['rel="icon"', "asset('favicon.svg')", 'color-scheme', 'prefers-reduced-motion:reduce'])
 requireMarkers('resources/css/app.css', ['prefers-reduced-motion:reduce', '@media(pointer:coarse)', '@media(forced-colors:active)', '.ui-skip-link', ':focus-visible'])
+requireMarkers('resources/css/professional-ui.css', ['font-size: 14px', '--wi-control-h: 38px', '.ui-page-title', '.ui-sidebar__module-label', '.marketing-feature-section', '@media (pointer: coarse)', '@media (prefers-reduced-motion: reduce)', '@media (forced-colors: active)'])
 requireMarkers('tools/e2e-browser.mjs', ['findChromeExecutable', 'findEdgeExecutable', 'findFirefoxExecutable', 'browserInventory'])
 requireMarkers('tools/playwright.config.mjs', ['accessibilityProjects', 'firefox-desktop', 'touch-mobile', 'reflow-200pct-equivalent'])
 requireMarkers('tools/run-browser-certification.mjs', ['accessibility', '--require-system-browsers', 'WORKINTEL_E2E_PROFILE'])
 requireMarkers('tests/e2e/accessibility-platform.spec.mjs', ['focus', 'reduced motion', 'RTL', 'touch'])
+
+const favicon = path.join(root, 'public/favicon.svg')
+if (!fs.existsSync(favicon) || fs.statSync(favicon).size < 100) failures.push('public/favicon.svg must be a non-empty real favicon asset')
+if (fs.existsSync(path.join(root, 'public/favicon.ico')) && fs.statSync(path.join(root, 'public/favicon.ico')).size === 0) failures.push('public/favicon.ico is an empty placeholder and must not be committed')
+
+const professionalCss = source('resources/css/professional-ui.css')
+const bodyFont = professionalCss.match(/body\s*\{[^}]*font-size:\s*([\d.]+)px/s)
+if (!bodyFont || Number(bodyFont[1]) < 14) failures.push('Professional UI body font size must be at least 14px')
+const pageTitleFont = professionalCss.match(/\.ui-page-title\s*\{[^}]*font-size:\s*([\d.]+)px/s)
+if (!pageTitleFont || Number(pageTitleFont[1]) < 20) failures.push('Professional UI page title must be at least 20px')
+const navFont = professionalCss.match(/\.ui-nav-item\s*\{[^}]*font-size:\s*([\d.]+)px/s)
+if (!navFont || Number(navFont[1]) < 14) failures.push('Primary navigation text must be at least 14px')
+const moduleFont = professionalCss.match(/\.ui-sidebar__module-label\s*\{[^}]*font-size:\s*([\d.]+)px/s)
+if (!moduleFont || Number(moduleFont[1]) < 12) failures.push('Module navigation labels must be at least 12px')
 
 const catalog = source('resources/js/i18n/locales/core.ts')
 for (const key of ['common.skip_to_content', 'common.data_table', 'common.toggle_setting', 'common.workspace_navigation', 'common.options', 'common.progress', 'common.tabs']) {
   const occurrences = catalog.split(`'${key}'`).length - 1
   if (occurrences !== 5) failures.push(`resources/js/i18n/locales/core.ts: ${key} must exist exactly once in each of five locales; found ${occurrences}`)
 }
-
 
 const appCss = source('resources/css/app.css')
 const dark = themeTokens(appCss, ':root, :root[data-theme="dark"]')
@@ -88,9 +105,9 @@ for (const [theme, tokens] of [['dark', dark], ['light', light]]) {
 }
 
 if (failures.length) {
-  console.error('WorkIntel Block N accessibility source audit: FAIL')
+  console.error('WorkIntel accessibility source audit: FAIL')
   for (const failure of failures) console.error(`- ${failure}`)
   process.exit(1)
 }
-console.log('WorkIntel Block N accessibility source audit: PASS')
-console.log('Shared focus, semantic, responsive, RTL, contrast and browser-matrix landmarks are present.')
+console.log('WorkIntel accessibility source audit: PASS')
+console.log('WCAG-oriented focus, semantics, readable typography, responsive reflow, RTL, contrast, favicon and browser-matrix contracts are present.')
