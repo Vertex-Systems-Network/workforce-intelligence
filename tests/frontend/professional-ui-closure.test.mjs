@@ -1,0 +1,92 @@
+import assert from 'node:assert/strict'
+import fs from 'node:fs'
+import path from 'node:path'
+import test from 'node:test'
+
+const root = process.cwd()
+const read = relative => fs.readFileSync(path.join(root, relative), 'utf8')
+
+const marketing = read('resources/js/pages/MarketingWebsite.tsx')
+const professionalCss = read('resources/css/professional-ui.css')
+const manifest = JSON.parse(read('resources/js/navigation.manifest.json'))
+const shellNavigation = read('resources/js/shellNavigation.ts')
+const blade = read('resources/views/app.blade.php')
+const architecture = read('docs/architecture/SYSTEM_ARCHITECTURE_AND_FLOW.md')
+
+/** Marketing information architecture must represent every owner-level product area. */
+test('marketing website represents every owner navigation area', () => {
+  const sectionForGroup = {
+    home: 'command-center',
+    'work-management': 'work-management',
+    collaboration: 'collaboration',
+    'time-attendance': 'time-attendance',
+    'people-hr': 'people-hr',
+    'workforce-operations': 'workforce-operations',
+    'clients-commerce': 'clients-commerce',
+    'content-studio': 'content-studio',
+    'finance-payroll': 'finance-payroll',
+    intelligence: 'intelligence-reports',
+    administration: 'administration',
+    'account-support': 'account-installation',
+  }
+  for (const group of manifest.owner) {
+    assert.ok(sectionForGroup[group.id], `missing marketing mapping for owner group ${group.id}`)
+    assert.match(marketing, new RegExp(`id:'${sectionForGroup[group.id]}'`), `marketing section missing for ${group.id}`)
+  }
+})
+
+/** Current owner destinations must remain discoverable in public product copy. */
+test('marketing copy covers current owner feature destinations', () => {
+  const expectedLabels = [
+    'Home', 'Live Team', 'Approvals', 'Projects', 'Tasks', 'Automation Studio', 'Team Chat',
+    'Scheduling', 'Attendance', 'Leave', 'Timesheets', 'People', 'HRIS', 'Organization',
+    'Performance', 'Activity', 'Apps & Sites', 'Screenshots', 'Field Workforce', 'Devices',
+    'Clients', 'Client payments', 'Website Studio', 'Documents', 'Media Library',
+    'Finance & expenses', 'Payroll', 'Payroll compliance', 'Billing', 'Workforce Intelligence',
+    'Reports', 'Modules', 'Enterprise', 'Access Control', 'Settings', 'Trash & lifecycle',
+    'Downloads', 'My Access',
+  ]
+  for (const label of expectedLabels) assert.ok(marketing.includes(label), `missing marketing feature copy: ${label}`)
+})
+
+test('marketing navigation uses real semantic destinations', () => {
+  for (const anchor of ['href="#platform"', 'href="#workforce-operations"', 'href="#security"', 'href="#architecture"']) assert.ok(marketing.includes(anchor), `missing ${anchor}`)
+  assert.ok(marketing.includes('aria-label="Marketing navigation"'))
+  assert.ok(marketing.includes('id="marketing-main"'))
+  assert.ok(!marketing.includes('>Security</Pressable>'), 'Security must not be a fake app redirect control')
+})
+
+test('professional UI establishes readable primary typography and control sizing', () => {
+  assert.match(professionalCss, /body\s*\{[\s\S]*?font-size:\s*14px;/)
+  assert.match(professionalCss, /\.ui-page-title\s*\{[^}]*font-size:\s*22px;/)
+  assert.match(professionalCss, /\.ui-nav-item\s*\{[^}]*font-size:\s*14px;/)
+  assert.match(professionalCss, /\.ui-sidebar__module-label\s*\{[^}]*font-size:\s*12\.5px;/)
+  assert.ok(professionalCss.includes('--wi-control-h: 38px'))
+  assert.ok(professionalCss.includes('@media (pointer: coarse)'))
+  assert.ok(professionalCss.includes('@media (prefers-reduced-motion: reduce)'))
+  assert.ok(professionalCss.includes('@media (forced-colors: active)'))
+})
+
+test('browser history traversal is synchronized with hash-addressable shell state', () => {
+  assert.ok(shellNavigation.includes("addEventListener('popstate'"))
+  assert.ok(shellNavigation.includes("dispatchEvent(new Event('hashchange'))"))
+  assert.ok(shellNavigation.includes('window.history.pushState'))
+  assert.ok(shellNavigation.includes('window.history.replaceState'))
+})
+
+test('favicon is real, referenced and no empty ico placeholder remains', () => {
+  const favicon = path.join(root, 'public/favicon.svg')
+  assert.ok(fs.existsSync(favicon))
+  assert.ok(fs.statSync(favicon).size > 100)
+  assert.equal(fs.existsSync(path.join(root, 'public/favicon.ico')), false)
+  assert.ok(blade.includes("asset('favicon.svg')"))
+  assert.ok(read('public/manifest.webmanifest').includes('/favicon.svg'))
+})
+
+test('architecture ledger contains runtime, navigation, authorization and tracking flow charts', () => {
+  assert.ok(architecture.includes('## 1. Runtime architecture'))
+  assert.ok(architecture.includes('## 2. Private shell navigation'))
+  assert.ok(architecture.includes('## 3. Workspace authorization pipeline'))
+  assert.ok(architecture.includes('## 5. Workforce tracking ingestion'))
+  assert.ok((architecture.match(/```mermaid/g) ?? []).length >= 5)
+})
