@@ -1,0 +1,217 @@
+/* Refinements that intentionally load after the core professional UI layer. */
+.marketing-product-navline--0 { width: 58%; }
+.marketing-product-navline--1 { width: 70%; }
+.marketing-product-navline--2 { width: 82%; }
+
+/* Secondary information stays compact without dropping into hard-to-read 10–11px text. */
+.ui-sidebar__brand-plan,
+.ui-sidebar__module-count,
+.ui-sidebar__module-meta,
+.ui-sidebar__favorites-title,
+.ui-command__item-sub,
+.ui-command__footer { font-size: 12px; }
+
+.ui-shell-context__module-link { font-size: 13px; }
+.ui-first-run-guide__meta { font-size: 12px !important; }
+.ui-role-start-here__task small { font-size: 13px; }
+.ui-module-home__page-main .ui-text { font-size: 13px !important; }
+.ui-action-tile small { font-size: 13px; }
+.overview-mini-stat small,
+.overview-alert small { font-size: 12px; }
+
+/* Authentication is a primary workflow, so helper text and links must not collapse into microcopy. */
+.auth-showcase__eyebrow,
+.auth-heading__kicker,
+.auth-divider { font-size: 12px; }
+.auth-showcase__metrics span,
+.auth-showcase__foot { font-size: 12px; }
+.auth-heading p { font-size: 14px; }
+.auth-check { font-size: 13px; }
+.auth-link,
+.auth-switch button,
+.auth-back { font: 500 13px/1.4 var(--font-sans); }
+.auth-demo-list button { min-height: 48px; }
+.auth-demo-list button > span { font-size: 12px; }
+.auth-demo-list strong { font-size: 13px; }
+.auth-demo-list small,
+.auth-demo-list code { font-size: 12px; }
+.auth-switch { font-size: 13px; }
+.auth-password-rules span { font-size: 12px; }
+
+/* Collaboration remains information-dense, but operational text must still be legible. */
+.chat-search .ui-input { height: 38px; }
+.chat-section-label { font-size: 12px; }
+.chat-icon-button,
+.chat-file-button { width: 36px; height: 36px; }
+.chat-conv-copy strong { font-size: 13px; }
+.chat-conv-copy small,
+.chat-search-results small,
+.chat-header small { font-size: 12px; }
+.chat-message-meta { font-size: 12px; }
+.chat-message-meta strong { font-size: 13px; }
+.chat-message-text { font-size: 14px; line-height: 1.6; }
+.chat-deleted,
+.chat-reply-preview,
+.chat-unread-divider,
+.chat-hint,
+.chat-composer-reply,
+.chat-file-strip,
+.chat-detail-row,
+.chat-read-receipt { font-size: 12px; }
+.chat-message-actions button,
+.chat-reactions button { font-size: 12px; }
+.chat-attachment strong,
+.chat-attachment small,
+.chat-member strong,
+.chat-member small,
+.chat-member-picker strong,
+.chat-member-picker small { font-size: 12px; }
+.chat-empty,
+.chat-empty-main,
+.chat-member-picker label { font-size: 13px; }
+.chat-search-help { font-size: 12px; }
+.chat-search-help code { font-size: 11px; }
+.chat-sidebar-shortcuts button { font-size: 12px; min-height: 36px; }
+.chat-message-menu button { font-size: 12px !important; }
+.chat-forwarded strong,
+.chat-forwarded p,
+.chat-forwarded em { font-size: 12px; }
+.chat-poll-meta { font-size: 12px; }
+.chat-poll-card > button { min-height: 38px; font-size: 13px; }
+.chat-checkbox-row { font-size: 13px; }
+.chat-draft-status { font-size: 12px; }
+.chat-thread-panel .chat-details-heading small,
+.chat-thread-message-meta small,
+.chat-thread-follow { font-size: 12px; }
+.chat-thread-message-meta strong { font-size: 12px; }
+.chat-thread-scroll p { font-size: 13px; }
+.chat-history-list article > div { font-size: 12px; }
+.chat-history-list p { font-size: 13px; }
+.chat-public-channels strong,
+.chat-resource-list strong,
+.chat-resource-row strong,
+.chat-enterprise-list article strong { font-size: 12px; }
+.chat-public-channels small,
+.chat-resource-list small,
+.chat-resource-row small,
+.chat-enterprise-list article small { font-size: 11px; }
+.chat-public-channels button { font-size: 12px; }
+.chat-command-hint { font-size: 11px; }
+.chat-message.is-bot .chat-message-meta strong::after { font-size: 10px; line-height: 16px; }
+.chat-work-action-card strong { font-size: 12px; }
+.chat-work-action-card small { font-size: 11px; }
+.chat-member-admin .ui-select { font-size: 12px; }
+.chat-enterprise-loading { font-size: 12px; }
+.chat-enterprise-section-title strong { font-size: 13px; }
+.chat-enterprise-section-title small { font-size: 11px; }
+.chat-enterprise-secret strong { font-size: 12px; }
+.chat-enterprise-secret code,
+.chat-enterprise-audit { font-size: 11px; }
+.chat-enterprise-audit strong { font-size: 11px; }
+.chat-message-meta .ui-badge { font-size: 11px; }
+.chat-history-loader button { font-size: 12px; }
+.chat-sync-state { font-size: 11px; }
+.chat-outbox-message { font-size: 12px; }
+.chat-outbox-message strong { font-size: 12px; }
+.chat-outbox-message button { font-size: 11px; }
+.chat-outbox-count { font-size: 11px; }
+.chat-delivery-state { font-size: 11px; }
+.chat-conversation-filters .ui-segmented button { font-size: 12px; }
+.chat-activity-item strong,
+.chat-activity-item span,
+.chat-context-item > strong,
+.chat-context-item button strong,
+.chat-context-file strong { font-size: 12px; }
+.chat-activity-item small,
+.chat-context-item > small,
+.chat-context-item button small,
+.chat-context-file small { font-size: 11px; }
+.chat-context-item > span,
+.chat-context-item button span { font-size: 12px; }
+
+/* Seller, client portal and client-payment surfaces use the same readable hierarchy as the workspace shell. */
+.seller-auth__brand small,
+.seller-shell__header small,
+.seller-shell__header > div:last-child > span { font-size: 12px; }
+.seller-shell__header strong { font-size: 14px; }
+.seller-capability-matrix h3 { font-size: 13px; }
+.seller-capability-row strong { font-size: 13px; }
+.seller-capability-row small { font: 500 12px/1.45 var(--font-mono); }
+.client-portal-auth .ui-page-description { font-size: 14px; line-height: 1.6; }
+.client-portal-secure { font-size: 12px; }
+.client-commerce-gateway-checks label { font-size: 13px; min-height: 38px; }
+.client-payment-panel__header strong { font-size: 14px; }
+.client-payment-panel__header small { font-size: 12px; }
+.client-payment-method strong,
+.client-payment-status strong,
+.client-payment-instructions strong { font-size: 13px; }
+.client-payment-method small,
+.client-payment-status small { font-size: 12px; }
+.client-payment-instructions p { font-size: 13px; }
+.client-payment-instructions pre { font: 500 12px/1.55 var(--font-mono); }
+
+.marketing-trust { font-size: 13px; }
+.marketing-product-toolbar strong { font-size: 12.5px; }
+.marketing-product-kpi span { font-size: 12px; }
+.marketing-metric span { font-size: 13px; }
+.marketing-feature-list li { font-size: 13px; }
+.marketing-feature-visual__chrome strong { font-size: 12px; }
+.marketing-visual-card small { font-size: 12px; }
+.marketing-visual-row { font-size: 12px; }
+.marketing-visual-row strong { font-size: 12.5px; }
+.marketing-visual-pill { font-size: 12px; }
+.marketing-security-card p { font-size: 13px; }
+.marketing-footer { font-size: 13px; }
+
+@media (max-width: 760px) {
+  .marketing-header__inner {
+    min-height: 0;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    padding-top: 8px;
+  }
+
+  /* Keep all four destinations visible instead of hiding them in horizontal overflow. */
+  .marketing-nav {
+    order: 3;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    margin: 0;
+    gap: 6px;
+    overflow: visible;
+    padding: 8px 0 10px;
+    border-top: 1px solid var(--border-muted);
+  }
+
+  .marketing-nav a {
+    min-width: 0;
+    min-height: 44px;
+    justify-content: center;
+    padding-inline: 10px;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .marketing-header__actions { margin-left: auto; }
+  .marketing-header__actions .ui-button--ghost { display: none; }
+  .chat-poll-trigger,
+  .chat-sync-state { font-size: 0; }
+}
+
+@media (max-width: 440px) {
+  .marketing-nav { gap: 5px; }
+  .marketing-nav a { font-size: 12.5px; }
+}
+
+@media (pointer: coarse) {
+  .chat-icon-button,
+  .chat-file-button { width: 44px; height: 44px; }
+  .chat-conversation-list > button,
+  .chat-search-results button,
+  .chat-sidebar-shortcuts button,
+  .chat-poll-card > button,
+  .chat-member-picker label,
+  .client-commerce-gateway-checks label,
+  .client-payment-method { min-height: 44px; }
+}

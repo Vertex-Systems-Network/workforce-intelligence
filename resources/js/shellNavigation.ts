@@ -9,8 +9,23 @@ export type ShellDestination=
   | {kind:'page';page:Page}
   | {kind:'module';module:WorkspaceModuleId}
 
+let browserHistoryBridgeInstalled=false
+
+/**
+ * Browser history traversal emits popstate for pushState/replaceState entries, not
+ * hashchange. The private shell historically listened to hashchange, so Back and
+ * Forward could update the address bar without updating the rendered page. Bridge
+ * popstate into the shell's existing location event once per browser session.
+ */
+function ensureBrowserHistoryBridge(){
+  if(browserHistoryBridgeInstalled||typeof window==='undefined')return
+  browserHistoryBridgeInstalled=true
+  window.addEventListener('popstate',()=>window.dispatchEvent(new Event('hashchange')))
+}
+
 /** Resolve a page or module home from the current hash while rejecting arbitrary values. */
 export function shellDestinationFromLocation():ShellDestination|null{
+  ensureBrowserHistoryBridge()
   const raw=window.location.hash.replace(/^#/,'').trim()
   if(!raw)return null
   if(raw.startsWith('module/')){
@@ -22,6 +37,7 @@ export function shellDestinationFromLocation():ShellDestination|null{
 
 /** Write one safe shell destination to browser history for refresh and Back/Forward support. */
 export function writeShellHistory(destination:ShellDestination,mode:'push'|'replace'='push'){
+  ensureBrowserHistoryBridge()
   const hash=destination.kind==='module'?`#module/${destination.module}`:`#${destination.page}`
   if(window.location.hash===hash)return
   const url=`${window.location.pathname}${window.location.search}${hash}`

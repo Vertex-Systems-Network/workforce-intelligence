@@ -22,6 +22,43 @@ async function expectNoViewportOverflow(page) {
   expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.width + 2)
 }
 
+/** Open the responsive navigation drawer when required, then activate a destination that is actually in the viewport. */
+async function clickWorkspaceDestination(page, accessibleName) {
+  const destination = page.getByRole('button', { name: accessibleName })
+  await expect(destination).toBeVisible()
+
+  const openNavigation = page.getByRole('button', { name: /^Open navigation$/i })
+  if (await openNavigation.isVisible()) {
+    const sidebar = page.locator('.ui-sidebar')
+    const mobileDrawerOpen = await sidebar.evaluate(element => element.classList.contains('is-mobile-open'))
+    if (!mobileDrawerOpen) {
+      await openNavigation.click()
+      await expect(sidebar).toHaveClass(/is-mobile-open/)
+    }
+  }
+
+  await expect(destination).toBeInViewport()
+  await destination.click()
+}
+
+test('workspace clicks stay synchronized through browser Back and Forward', async ({ page }) => {
+  await login(page)
+  await clickWorkspaceDestination(page, /^Live Team$/i)
+  await expect(page).toHaveURL(/#live$/)
+  await expect(page.getByRole('heading', { name: /live workforce/i })).toBeVisible()
+
+  await clickWorkspaceDestination(page, /^Home$/i)
+  await expect(page).toHaveURL(/#overview$/)
+
+  await page.goBack()
+  await expect(page).toHaveURL(/#live$/)
+  await expect(page.getByRole('heading', { name: /live workforce/i })).toBeVisible()
+
+  await page.goForward()
+  await expect(page).toHaveURL(/#overview$/)
+  await expect(page.locator('#workintel-main')).toBeVisible()
+})
+
 test('workspace dropdown remains open through scroll and action menus portal outside tables', async ({ page }) => {
   await login(page)
   const workspaceTrigger = page.locator('.ui-topbar .ui-dropdown-anchor').first()
@@ -33,7 +70,7 @@ test('workspace dropdown remains open through scroll and action menus portal out
 
   const people = page.getByRole('button', { name: /^People$/i })
   if (await people.count()) {
-    await people.click()
+    await clickWorkspaceDestination(page, /^People$/i)
     const action = page.getByRole('button', { name: /^Actions for /i }).first()
     if (await action.count()) {
       await action.click()
@@ -80,7 +117,7 @@ test('DataGrid and chat destinations load without uncaught page errors', async (
   for (const destination of [/^People$/i, /^Chat$/i]) {
     const button = page.getByRole('button', { name: destination })
     if (!(await button.count())) continue
-    await button.click()
+    await clickWorkspaceDestination(page, destination)
     await page.waitForTimeout(400)
     await expectNoViewportOverflow(page)
   }
