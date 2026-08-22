@@ -3,6 +3,35 @@
 .marketing-product-navline--1 { width: 70%; }
 .marketing-product-navline--2 { width: 82%; }
 
+/* Secondary information stays compact without dropping into hard-to-read 10–11px text. */
+.ui-sidebar__brand-plan,
+.ui-sidebar__module-count,
+.ui-sidebar__module-meta,
+.ui-sidebar__favorites-title,
+.ui-command__item-sub,
+.ui-command__footer { font-size: 12px; }
+
+.ui-shell-context__module-link { font-size: 13px; }
+.ui-first-run-guide__meta { font-size: 12px !important; }
+.ui-role-start-here__task small { font-size: 13px; }
+.ui-module-home__page-main .ui-text { font-size: 13px !important; }
+.ui-action-tile small { font-size: 13px; }
+.overview-mini-stat small,
+.overview-alert small { font-size: 12px; }
+
+.marketing-trust { font-size: 13px; }
+.marketing-product-toolbar strong { font-size: 12.5px; }
+.marketing-product-kpi span { font-size: 12px; }
+.marketing-metric span { font-size: 13px; }
+.marketing-feature-list li { font-size: 13px; }
+.marketing-feature-visual__chrome strong { font-size: 12px; }
+.marketing-visual-card small { font-size: 12px; }
+.marketing-visual-row { font-size: 12px; }
+.marketing-visual-row strong { font-size: 12.5px; }
+.marketing-visual-pill { font-size: 12px; }
+.marketing-security-card p { font-size: 13px; }
+.marketing-footer { font-size: 13px; }
+
 @media (max-width: 760px) {
   .marketing-header__inner {
     min-height: 0;
@@ -11,21 +40,33 @@
     padding-top: 8px;
   }
 
+  /* Keep all four destinations visible instead of hiding them in horizontal overflow. */
   .marketing-nav {
     order: 3;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
     margin: 0;
-    gap: 4px;
-    overflow-x: auto;
-    padding: 6px 0 8px;
+    gap: 6px;
+    overflow: visible;
+    padding: 8px 0 10px;
     border-top: 1px solid var(--border-muted);
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
   }
 
-  .marketing-nav::-webkit-scrollbar { display: none; }
-  .marketing-nav a { flex: 0 0 auto; min-height: 42px; white-space: nowrap; }
+  .marketing-nav a {
+    min-width: 0;
+    min-height: 44px;
+    justify-content: center;
+    padding-inline: 10px;
+    text-align: center;
+    white-space: normal;
+  }
+
   .marketing-header__actions { margin-left: auto; }
   .marketing-header__actions .ui-button--ghost { display: none; }
+}
+
+@media (max-width: 440px) {
+  .marketing-nav { gap: 5px; }
+  .marketing-nav a { font-size: 12.5px; }
 }
