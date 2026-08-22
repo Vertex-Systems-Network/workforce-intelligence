@@ -4,7 +4,7 @@ import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFi
 import { dirname, resolve, basename } from 'node:path'
 import { execFileSync, spawnSync } from 'node:child_process'
 
-const VERSION = '1.2.0'
+const VERSION = '1.2.1'
 const POLL_MS = 5000
 const MAX_SESSION_SECONDS = 300
 const AGENT_CAPABILITIES = ['heartbeat','offline_sync','commands','app_tracking','screenshots','idle_detection','native_service','self_update']
@@ -86,6 +86,35 @@ mkdirSync(stateDir, { recursive: true })
   return 0
 }
 
+/**
+ * Downloads one managed archive through curl into an already-open secure descriptor.
+ * The device token travels over stdin so it is not exposed in the process argument list.
+ */
+function downloadManagedArchive(config, archivePath, headersPath) {
+  if(!commandExists('curl'))throw new Error('curl is required for managed agent updates.')
+  const endpoint=trustedRequestUrl(config,'/api/v1/agent/release/download')
+  const token=String(config?.access_token||'')
+  if(!token||/[\r\n\0]/u.test(token))throw new Error('Managed update token is invalid.')
+  const archiveFd=openSync(archivePath,'wx',0o600)
+  try{
+    const result=spawnSync('curl',[
+      '--fail','--silent','--show-error','--no-progress-meter','--connect-timeout','10','--max-time','120',
+      '--proto',endpoint.protocol==='https:'?'=https':'=http','--dump-header',headersPath,
+      '--header','Accept: application/zip','--header','@-',endpoint.toString()
+    ],{input:`Authorization: Bearer ${token}\r\n`,stdio:['pipe',archiveFd,'pipe'],encoding:'utf8',windowsHide:true})
+    if(result.error)throw result.error
+    if(result.status!==0)throw new Error(`Update download failed: ${String(result.stderr||'curl failed').trim()}`)
+  }finally{closeSync(archiveFd)}
+  const headers=readFileSync(headersPath,'utf8')
+  const statuses=[...headers.matchAll(/^HTTP\/\S+\s+(\d{3})/gmi)].map(match=>Number(match[1]))
+  const status=statuses.at(-1)||0
+  if(status<200||status>=300)throw new Error(`Update download failed with HTTP ${status||'unknown'}`)
+  return {
+    sha256:headers.match(/^x-release-sha256:\s*([^\r\n]+)/mi)?.[1]?.trim()||null,
+    version:headers.match(/^x-workintel-version:\s*([^\r\n]+)/mi)?.[1]?.trim()||null,
+  }
+}
+
 /** Downloads, verifies, stages, and atomically replaces the managed native-agent source. */ async function installManagedUpdate(config) {
   const metadata=await jsonRequest(config,'/api/v1/agent/release')
   const managed=metadata?.release
@@ -94,25 +123,20 @@ mkdirSync(stateDir, { recursive: true })
   if(!/^[a-f0-9]{64}$/i.test(managed.sha256))throw new Error('Managed release checksum is invalid.')
   if(compareVersions(managed.version,VERSION)<=0)return {updated:false,from:VERSION,to:managed.version,sha256:managed.sha256}
 
-  const response=await authenticatedRequest(config,'/api/v1/agent/release/download',{headers:{Accept:'application/zip'}})
-  if(!response.ok){const payload=await response.json().catch(()=>null);throw new Error(payload?.message||`Update download failed with HTTP ${response.status}`)}
-  const headerHash=response.headers.get('x-release-sha256')
-  const headerVersion=response.headers.get('x-workintel-version')
-  if(headerHash&&headerHash.toLowerCase()!==managed.sha256.toLowerCase())throw new Error('Update response checksum does not match release metadata.')
-  if(headerVersion&&headerVersion!==managed.version)throw new Error('Update response version does not match release metadata.')
-  const archiveBytes=Buffer.from(await response.arrayBuffer())
-  const actualHash=createHash('sha256').update(archiveBytes).digest('hex')
-  if(actualHash.toLowerCase()!==managed.sha256.toLowerCase())throw new Error('Downloaded update failed SHA-256 verification.')
-
   const updateDir=mkdtempSync(resolve(tmpdir(),'workintel-update-'))
   const archivePath=resolve(updateDir,'release.zip')
+  const headersPath=resolve(updateDir,'release.headers')
   const extractDir=resolve(updateDir,'extract')
   const currentPath=resolve(root,'native-agent.mjs')
   const stagedPath=resolve(root,`native-agent.mjs.next-${randomUUID()}`)
   const backupPath=resolve(root,'native-agent.mjs.previous')
   mkdirSync(extractDir,{mode:0o700})
   try{
-    writeFileSync(archivePath,archiveBytes,{flag:'wx',mode:0o600})
+    const responseMeta=downloadManagedArchive(config,archivePath,headersPath)
+    if(responseMeta.sha256&&responseMeta.sha256.toLowerCase()!==managed.sha256.toLowerCase())throw new Error('Update response checksum does not match release metadata.')
+    if(responseMeta.version&&responseMeta.version!==managed.version)throw new Error('Update response version does not match release metadata.')
+    const actualHash=createHash('sha256').update(readFileSync(archivePath)).digest('hex')
+    if(actualHash.toLowerCase()!==managed.sha256.toLowerCase())throw new Error('Downloaded update failed SHA-256 verification.')
     if(platform()==='win32'){
       const safeArchive=archivePath.replaceAll("'","''"),safeExtract=extractDir.replaceAll("'","''")
       powershell(`Expand-Archive -LiteralPath '${safeArchive}' -DestinationPath '${safeExtract}' -Force`)

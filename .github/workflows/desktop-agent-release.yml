@@ -1,18 +1,10 @@
 name: Desktop Agent Standalone Build
-
 on:
   workflow_dispatch:
   push:
-    branches:
-      - feat/m13-agent-lifecycle-self-update
     tags: ['agent-v*']
-
-permissions:
-  contents: write
-
 jobs:
   build:
-    if: github.ref_type == 'tag' || github.event_name == 'workflow_dispatch'
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
@@ -30,34 +22,3 @@ jobs:
         with:
           name: workintel-agent-${{ runner.os }}
           path: desktop-agent/standalone/dist/WorkIntelAgent*
-
-  m13-finalize:
-    name: Finalize M13 1.2.1 security release
-    if: github.ref == 'refs/heads/feat/m13-agent-lifecycle-self-update'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: feat/m13-agent-lifecycle-self-update
-          fetch-depth: 0
-      - name: Apply M13 security finalizer
-        run: python3 tools/m13-finalize.py
-      - name: Validate source contracts
-        run: |
-          node --check desktop-agent/native-agent.mjs
-          node --test tests/frontend/agent-lifecycle-m13.test.mjs
-      - name: Rebuild deployment releases
-        run: python3 tools/build-releases.py
-      - name: Restore permanent workflow state and commit
-        shell: bash
-        run: |
-          set -euo pipefail
-          git fetch origin main
-          git show origin/main:.github/workflows/code-quality.yml > .github/workflows/code-quality.yml
-          git show origin/main:.github/workflows/desktop-agent-release.yml > .github/workflows/desktop-agent-release.yml
-          rm -f .github/workflows/m13-security-hardening.yml tools/m13-finalize.py
-          git add -A
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'fix(m13): publish hardened agent 1.2.1 release'
-          git push origin HEAD:feat/m13-agent-lifecycle-self-update

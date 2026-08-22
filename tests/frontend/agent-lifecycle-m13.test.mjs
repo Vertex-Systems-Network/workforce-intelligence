@@ -9,8 +9,11 @@ const read=file=>fs.readFileSync(file,'utf8')
 test('M13 native agent exposes verified managed self-update without arbitrary update URLs',()=>{
   const agent=read('desktop-agent/native-agent.mjs')
   execFileSync(process.execPath,['--check','desktop-agent/native-agent.mjs'],{stdio:'pipe'})
-  for(const token of ["const VERSION = '1.2.0'","'self_update'","'/api/v1/agent/release'","'/api/v1/agent/release/download'",'createHash','Downloaded update failed SHA-256 verification.','native-agent.mjs.previous',"['--check',candidate]"])assert.ok(agent.includes(token),token)
-  for(const token of ['trustedRequestUrl','redirect:\'error\'','mkdtempSync',"flag:'wx'","mode:0o600",'Agent request origin is not trusted.'])assert.ok(agent.includes(token),token)
+  for(const token of ["const VERSION = '1.2.1'","'self_update'","'/api/v1/agent/release'","'/api/v1/agent/release/download'",'createHash','Downloaded update failed SHA-256 verification.','native-agent.mjs.previous',"['--check',candidate]"])assert.ok(agent.includes(token),token)
+  for(const token of ['trustedRequestUrl','redirect:\'error\'','mkdtempSync',"openSync(archivePath,'wx',0o600)","spawnSync('curl'","'--header','@-'",'Agent request origin is not trusted.'])assert.ok(agent.includes(token),token)
+  assert.ok(!agent.includes('writeFileSync(archivePath'))
+  assert.ok(!agent.includes('response.arrayBuffer()'))
+  assert.ok(!agent.includes("'--location'"))
   assert.ok(!agent.includes('Install the latest release package from Downloads or managed deployment.'))
   assert.ok(!agent.includes('command.payload.url'))
   assert.ok(!agent.includes('fetch(`${config.server_url}${managed.download_path}`'))
@@ -27,7 +30,11 @@ test('M13 agent release endpoint is device-authenticated platform-scoped and fai
 
 test('M13 Windows Scheduled Task preserves enrolled state and restarts after managed replacement',()=>{
   const installer=read('desktop-agent/installers/windows/install.ps1')
-  for(const token of ["$stateDir = Join-Path $InstallDir 'state'",'$env:WORKINTEL_AGENT_HOME = $stateDir',"$runnerPath = Join-Path $InstallDir 'run-agent.ps1'",'while (`$true)','Start-Sleep -Seconds 3','-File `"$runnerPath`"'])assert.ok(installer.includes(token),token)
+  for(const token of ["$stateDir = Join-Path $InstallDir 'state'",'$env:WORKINTEL_AGENT_HOME = $stateDir',"$runnerPath = Join-Path $InstallDir 'run-agent.ps1'",'while (`$true)','Start-Sleep -Seconds 3','-File `"$runnerPath`"','Get-Command curl.exe'])assert.ok(installer.includes(token),token)
+})
+
+test('M13 managed-update deployment packages require curl across supported platforms',()=>{
+  for(const file of ['desktop-agent/installers/windows/install.ps1','desktop-agent/installers/macos/install.command','desktop-agent/installers/linux/install.sh'])assert.ok(read(file).includes('curl'),file)
 })
 
 test('M13 legacy agents are never presented as remotely self-updatable',()=>{
@@ -40,9 +47,9 @@ test('M13 release version stays aligned with native source and runtime defaults'
   const build=read('tools/build-releases.py')
   const config=read('config/workintel.php')
   const env=read('.env.example')
-  assert.match(agent,/const VERSION = '1\.2\.0'/)
+  assert.match(agent,/const VERSION = '1\.2\.1'/)
   assert.ok(build.includes("agent_match=re.search"))
   assert.ok(build.includes("agent_version=agent_match.group(1)"))
-  assert.ok(config.includes("WORKINTEL_AGENT_LATEST_VERSION', '1.2.0'"))
-  assert.ok(env.includes('WORKINTEL_AGENT_LATEST_VERSION=1.2.0'))
+  assert.ok(config.includes("WORKINTEL_AGENT_LATEST_VERSION', '1.2.1'"))
+  assert.ok(env.includes('WORKINTEL_AGENT_LATEST_VERSION=1.2.1'))
 })

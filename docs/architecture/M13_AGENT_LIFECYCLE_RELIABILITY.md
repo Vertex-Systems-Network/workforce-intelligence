@@ -11,6 +11,7 @@ M13 is a post-M12 productization/hardening phase. It does not retroactively chan
 1. The Devices & Agents surface could queue `update_agent`, but the production native agent only acknowledged the command and instructed the operator to install a package manually.
 2. The Windows installer enrolled with `WORKINTEL_AGENT_HOME=<install>\state`, but its Scheduled Task did not preserve that environment value. A later task start could therefore read the default `storage-native` directory instead of the enrolled device state.
 3. Native agent, release builder, server runtime defaults, and deployment documentation did not have a single regression contract preventing release-version drift.
+4. Agent 1.2.0 initially staged verified response bytes through a JavaScript network-to-file sink. Agent 1.2.1 removes that sink while retaining checksum verification before extraction.
 
 ### Managed update trust model
 
@@ -18,6 +19,7 @@ M13 is a post-M12 productization/hardening phase. It does not retroactively chan
 - The server maps the enrolled device platform to one fixed stable release slug: Windows, macOS, or Linux.
 - `update_agent` command payloads cannot select a URL, hostname, path, or package.
 - The agent accepts only the same-origin `/api/v1/agent/release/download` path returned by the server.
+- Managed package transfer does not follow redirects; the bearer token is supplied to curl over stdin and the archive is streamed into an exclusive descriptor inside a random private temporary directory.
 - The server verifies the release binary against the SHA-256 stored in its release manifest before serving it.
 - The agent independently verifies the response metadata and downloaded SHA-256 before extraction.
 - The extracted candidate must contain `desktop-agent/native-agent.mjs`, must declare the expected release version, and must pass `node --check` before replacement.
@@ -32,7 +34,7 @@ M13 is a post-M12 productization/hardening phase. It does not retroactively chan
 
 ### Compatibility boundary
 
-Version 1.2.0 is the first native agent that advertises `self_update`. Existing agents without that capability require one verified manual upgrade before remote managed updates become available. The application must not represent legacy agents as remotely self-updatable when the capability is absent.
+Version 1.2.0 is the first native agent that advertises `self_update`. Existing agents without that capability require one verified manual upgrade before remote managed updates become available. The application must not represent legacy agents as remotely self-updatable when the capability is absent. Version 1.2.1 is the security-hardening patch release so deployed 1.2.0 agents can receive the hardened updater through the managed channel.
 
 ## Automated acceptance
 

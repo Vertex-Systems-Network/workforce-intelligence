@@ -1,4 +1,4 @@
-# WorkIntel Native Agent 1.2.0
+# WorkIntel Native Agent 1.2.1
 
 `native-agent.mjs` is the production desktop runtime. It uses Node.js built-ins plus operating-system commands and remains a single cross-platform agent source for Windows, macOS, and Linux.
 
@@ -24,13 +24,13 @@ The supplied packages are deployment packages, not vendor-signed MSI/PKG artifac
 
 ## Managed update lifecycle
 
-Agent 1.2.0 advertises the `self_update` capability. When an Admin sends `update_agent`, the running agent requests release metadata through its existing device token. The server chooses the release slug from the enrolled device platform; the command payload cannot provide an arbitrary update URL.
+Agent 1.2.0 introduced the `self_update` capability; 1.2.1 hardens the managed download trust boundary. When an Admin sends `update_agent`, the running agent requests release metadata through its existing device token. The server chooses the release slug from the enrolled device platform; the command payload cannot provide an arbitrary update URL.
 
-The agent accepts only the same-origin `/api/v1/agent/release/download` path, verifies the release metadata checksum format, downloads with its device token, verifies the response version and SHA-256, extracts into an isolated temporary directory, checks that the candidate contains the expected `desktop-agent/native-agent.mjs`, verifies the candidate version and runs `node --check` before replacing the installed source.
+The agent accepts only the same-origin `/api/v1/agent/release/download` path, verifies the release metadata checksum format, and requires the operating-system `curl` command for managed downloads. The bearer token is passed to curl through standard input rather than process arguments; curl streams the archive into an exclusive file descriptor inside an isolated random temporary directory. The agent verifies response metadata and the downloaded SHA-256 before extraction, then checks that the candidate contains the expected `desktop-agent/native-agent.mjs`, verifies the candidate version and runs `node --check` before replacing the installed source.
 
 Before replacement, the current source is copied to `native-agent.mjs.previous`. A replacement failure restores that copy. After a successful replacement the command is acknowledged and the process exits so the platform supervisor starts the new source. Windows uses the installed `run-agent.ps1` supervisor loop; macOS uses LaunchAgent `KeepAlive`; Linux uses systemd-user `Restart=always`.
 
-Agents older than 1.2.0 do not advertise `self_update`. They require one manual upgrade from the verified Downloads & Installation Center package before managed updates can be used.
+Agents older than 1.2.0 do not advertise `self_update`. They require one manual upgrade from the verified Downloads & Installation Center package before managed updates can be used. Agent 1.2.0 can self-update normally to the 1.2.1 security hardening release.
 
 ## Windows state continuity
 

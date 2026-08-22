@@ -9,6 +9,8 @@ $node = (Get-Command node -ErrorAction SilentlyContinue).Source
 if (-not $node) { Fail 'Node.js 20+ is required. Install Node.js LTS first.' }
 $version = (& $node --version).TrimStart('v').Split('.')[0]
 if ([int]$version -lt 20) { Fail "Node.js 20+ required. Found $(& $node --version)." }
+$curl = (Get-Command curl.exe -ErrorAction SilentlyContinue).Source
+if (-not $curl) { Fail 'curl is required for managed agent updates.' }
 
 $stateDir = Join-Path $InstallDir 'state'
 $agentPath = Join-Path $InstallDir 'native-agent.mjs'

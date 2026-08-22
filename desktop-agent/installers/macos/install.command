@@ -7,6 +7,7 @@ NODE_BIN="$(command -v node || true)"
 if [[ -z "$NODE_BIN" ]]; then echo "Node.js 20+ is required."; exit 1; fi
 MAJOR="$($NODE_BIN -p 'process.versions.node.split(".")[0]')"
 if (( MAJOR < 20 )); then echo "Node.js 20+ required."; exit 1; fi
+command -v curl >/dev/null 2>&1 || { echo "curl is required for managed agent updates."; exit 1; }
 INSTALL_DIR="$HOME/Library/Application Support/WorkIntelAgent"
 STATE_DIR="$INSTALL_DIR/state"
 PLIST="$HOME/Library/LaunchAgents/com.workintel.agent.plist"
