@@ -16,6 +16,7 @@ import { ToastViewport } from './design-system/toast'
 import { ConfirmProvider } from './design-system'
 import '../css/app.css'
 import '../css/professional-ui.css'
+import '../css/professional-ui-responsive.css'
 
 const rootElement = document.getElementById('root')
 
