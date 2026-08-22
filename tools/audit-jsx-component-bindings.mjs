@@ -14,13 +14,28 @@ function filesIn(dir){
   return rows
 }
 
-/** Load TypeScript from the project first, then from a global npm installation when available. */
+/** Normalize an imported module and require the TypeScript 6-style compiler API used by this audit. */
+function compilerApi(module){
+  const candidates=[module,module?.default]
+  return candidates.find(ts=>
+    ts&&typeof ts.createSourceFile==='function'&&typeof ts.forEachChild==='function'&&
+    ts.ScriptTarget?.Latest!==undefined&&ts.ScriptKind?.TSX!==undefined
+  )??null
+}
+
+/** Load a compiler-API capable TypeScript module, preferring the project compatibility package. */
 async function loadTypeScript(){
-  try{return await import('typescript')}catch{}
+  try{
+    const local=compilerApi(await import('typescript'))
+    if(local)return local
+  }catch{}
   try{
     const root=execSync('npm root -g',{stdio:['ignore','pipe','ignore']}).toString().trim()
     const candidate=path.join(root,'typescript','lib','typescript.js')
-    if(fs.existsSync(candidate))return await import(pathToFileURL(candidate).href)
+    if(fs.existsSync(candidate)){
+      const global=compilerApi(await import(pathToFileURL(candidate).href))
+      if(global)return global
+    }
   }catch{}
   return null
 }
@@ -65,7 +80,7 @@ async function auditWithTypeScript(ts,files){
   return failures
 }
 
-/** Conservative dependency-free fallback used only when TypeScript cannot be loaded. */
+/** Conservative dependency-free fallback used only when no compiler API can be loaded. */
 function auditFallback(files){
   const failures=[]
   for(const file of files){
