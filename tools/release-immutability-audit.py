@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Prove published release bytes cannot drift under an unchanged semantic version."""
+"""Prove published release bytes cannot drift or partially publish on failed validation."""
 
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -43,7 +44,7 @@ def run_builder(work_root: Path, expect_success: bool) -> subprocess.CompletedPr
     if expect_success and result.returncode != 0:
         raise SystemExit(f'Release builder unexpectedly failed:\n{result.stdout}\n{result.stderr}')
     if not expect_success and result.returncode == 0:
-        raise SystemExit('Release builder accepted a same-version published-content mutation.')
+        raise SystemExit('Release builder unexpectedly accepted an invalid publication attempt.')
     return result
 
 
@@ -93,6 +94,41 @@ def assert_manifest_integrity_is_authoritative() -> None:
             raise SystemExit('Builder modified release state while rejecting a corrupted published artifact.')
 
 
+def assert_mixed_version_validation_is_transactional() -> None:
+    """A valid new agent version must not publish if a later same-version browser package fails validation."""
+    with tempfile.TemporaryDirectory(prefix='workintel-release-transactional-mixed-') as temporary:
+        work_root = copy_fixture(Path(temporary))
+        before = release_snapshot(work_root)
+
+        agent = work_root / 'desktop-agent/native-agent.mjs'
+        source = agent.read_text(encoding='utf-8')
+        match = re.search(r"const VERSION = ['\"](\d+)\.(\d+)\.(\d+)['\"]", source)
+        if not match:
+            raise SystemExit('Could not find semantic agent version for transactional release audit.')
+        current = match.group(0)
+        next_version = f'{match.group(1)}.{match.group(2)}.{int(match.group(3)) + 1}'
+        replacement = current.replace(match.group(1) + '.' + match.group(2) + '.' + match.group(3), next_version)
+        agent.write_text(source.replace(current, replacement, 1), encoding='utf-8')
+
+        browser = work_root / 'browser-extension/popup.css'
+        browser.write_bytes(browser.read_bytes() + b'\nM13_TRANSACTIONAL_BROWSER_DRIFT\n')
+
+        result = run_builder(work_root, expect_success=False)
+        output = f'{result.stdout}\n{result.stderr}'
+        if 'changed without a version bump' not in output:
+            raise SystemExit(f'Mixed-version transaction failed for the wrong reason:\n{output}')
+
+        after = release_snapshot(work_root)
+        if after != before:
+            changed = sorted(set(before) | set(after))
+            changed = [name for name in changed if before.get(name) != after.get(name)]
+            raise SystemExit(f'Failed mixed-version validation partially published release state: {changed}')
+
+        unexpected = sorted((work_root / 'storage/app/releases').glob(f'WorkIntel-Agent-*-{next_version}.zip'))
+        if unexpected:
+            raise SystemExit(f'Failed mixed-version validation left new agent artifacts behind: {[path.name for path in unexpected]}')
+
+
 assert_unchanged_rebuild()
 for packaged_source in [
     'desktop-agent/PRODUCTION_AGENT.md',
@@ -101,5 +137,6 @@ for packaged_source in [
 ]:
     assert_same_version_mutation_rejected(packaged_source)
 assert_manifest_integrity_is_authoritative()
+assert_mixed_version_validation_is_transactional()
 
-print('Release immutability audit passed: no-op rebuild preserved bytes; agent/browser drift and manifest corruption were rejected.')
+print('Release immutability audit passed: no-op rebuild preserved bytes; drift/corruption were rejected; mixed-version validation remained transactional.')
