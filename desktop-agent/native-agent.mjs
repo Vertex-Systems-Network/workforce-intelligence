@@ -1,12 +1,13 @@
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { arch, hostname, platform, release, tmpdir } from 'node:os'
-import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync, chmodSync, openSync, closeSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync, chmodSync, openSync, closeSync, renameSync, rmSync } from 'node:fs'
 import { dirname, resolve, basename } from 'node:path'
 import { execFileSync, spawnSync } from 'node:child_process'
 
-const VERSION = '1.1.0'
+const VERSION = '1.2.0'
 const POLL_MS = 5000
 const MAX_SESSION_SECONDS = 300
+const AGENT_CAPABILITIES = ['heartbeat','offline_sync','commands','app_tracking','screenshots','idle_detection','native_service','self_update']
 const root = dirname(new URL(import.meta.url).pathname.replace(/^\/(.:)/, '$1'))
 const stateDir = resolve(process.env.WORKINTEL_AGENT_HOME || resolve(root, 'storage-native'))
 const configFile = resolve(stateDir, 'device.json')
@@ -55,6 +56,78 @@ mkdirSync(stateDir, { recursive: true })
   const payload = await response.json().catch(() => null)
   if (!response.ok) throw new Error(payload?.message || `HTTP ${response.status}`)
   return payload
+}
+
+/** Compares stable semantic versions without trusting package-provided executable code. */ function compareVersions(left, right) {
+  const parse = value => {
+    const match = String(value || '').match(/^(\d+)\.(\d+)\.(\d+)(?:[-+][0-9A-Za-z.-]+)?$/)
+    if (!match) throw new Error(`Invalid agent version: ${value}`)
+    return match.slice(1, 4).map(Number)
+  }
+  const a=parse(left),b=parse(right)
+  for(let i=0;i<3;i++){if(a[i]!==b[i])return a[i]>b[i]?1:-1}
+  return 0
+}
+
+/** Downloads, verifies, stages, and atomically replaces the managed native-agent source. */ async function installManagedUpdate(config) {
+  const metadata=await jsonRequest(config,'/api/v1/agent/release')
+  const managed=metadata?.release
+  if(!managed||typeof managed.version!=='string'||typeof managed.sha256!=='string')throw new Error('Managed release metadata is incomplete.')
+  if(managed.download_path!=='/api/v1/agent/release/download')throw new Error('Managed release download path is not trusted.')
+  if(!/^[a-f0-9]{64}$/i.test(managed.sha256))throw new Error('Managed release checksum is invalid.')
+  if(compareVersions(managed.version,VERSION)<=0)return {updated:false,from:VERSION,to:managed.version,sha256:managed.sha256}
+
+  const response=await fetch(`${config.server_url}${managed.download_path}`,{headers:{Accept:'application/zip','Authorization':`Bearer ${config.access_token}`}})
+  if(!response.ok){const payload=await response.json().catch(()=>null);throw new Error(payload?.message||`Update download failed with HTTP ${response.status}`)}
+  const headerHash=response.headers.get('x-release-sha256')
+  const headerVersion=response.headers.get('x-workintel-version')
+  if(headerHash&&!headerHash.localeCompare(managed.sha256,undefined,{sensitivity:'accent'})===0)throw new Error('Update response checksum does not match release metadata.')
+  if(headerVersion&&headerVersion!==managed.version)throw new Error('Update response version does not match release metadata.')
+  const archiveBytes=Buffer.from(await response.arrayBuffer())
+  const actualHash=createHash('sha256').update(archiveBytes).digest('hex')
+  if(actualHash.toLowerCase()!==managed.sha256.toLowerCase())throw new Error('Downloaded update failed SHA-256 verification.')
+
+  const updateDir=resolve(tmpdir(),`workintel-update-${randomUUID()}`)
+  const archivePath=resolve(updateDir,'release.zip')
+  const extractDir=resolve(updateDir,'extract')
+  const currentPath=resolve(root,'native-agent.mjs')
+  const stagedPath=resolve(root,'native-agent.mjs.next')
+  const backupPath=resolve(root,'native-agent.mjs.previous')
+  mkdirSync(extractDir,{recursive:true})
+  try{
+    writeFileSync(archivePath,archiveBytes)
+    if(platform()==='win32'){
+      const safeArchive=archivePath.replaceAll("'","''"),safeExtract=extractDir.replaceAll("'","''")
+      powershell(`Expand-Archive -LiteralPath '${safeArchive}' -DestinationPath '${safeExtract}' -Force`)
+    }else{
+      if(!commandExists('unzip'))throw new Error('The unzip command is required for managed agent updates.')
+      execFileSync('unzip',['-q',archivePath,'-d',extractDir],{stdio:'pipe',timeout:30000})
+    }
+    const candidate=resolve(extractDir,'desktop-agent','native-agent.mjs')
+    if(!existsSync(candidate))throw new Error('Managed release does not contain desktop-agent/native-agent.mjs.')
+    const candidateSource=readFileSync(candidate,'utf8')
+    const candidateVersion=candidateSource.match(/const VERSION = ['"]([^'"]+)['"]/u)?.[1]
+    if(candidateVersion!==managed.version)throw new Error('Managed release source version does not match release metadata.')
+    execFileSync(process.execPath,['--check',candidate],{stdio:'pipe',timeout:15000})
+
+    if(existsSync(stagedPath))unlinkSync(stagedPath)
+    copyFileSync(candidate,stagedPath)
+    if(platform()!=='win32')chmodSync(stagedPath,0o755)
+    if(existsSync(backupPath))unlinkSync(backupPath)
+    copyFileSync(currentPath,backupPath)
+    try{
+      unlinkSync(currentPath)
+      renameSync(stagedPath,currentPath)
+      if(platform()!=='win32')chmodSync(currentPath,0o755)
+    }catch(error){
+      try{copyFileSync(backupPath,currentPath)}catch{}
+      throw error
+    }
+    return {updated:true,from:VERSION,to:managed.version,sha256:actualHash}
+  }finally{
+    try{if(existsSync(stagedPath))unlinkSync(stagedPath)}catch{}
+    try{rmSync(updateDir,{recursive:true,force:true})}catch{}
+  }
 }
 
 /** Handles the powershell operation for the WorkIntel application. */ function powershell(command) {
@@ -124,7 +197,7 @@ let screenshotNotificationShown=false
   const payload=await jsonRequest(temp,'/api/v1/agent/enroll',{method:'POST',body:JSON.stringify({
     enrollment_code:code,installation_id:installationId,name:hostname(),platform:platform()==='win32'?'windows':platform()==='darwin'?'macos':'linux',
     os_name:platform()==='win32'?'Windows':platform()==='darwin'?'macOS':'Linux',os_version:release(),architecture:arch(),agent_version:VERSION,
-    capabilities:['heartbeat','offline_sync','commands','app_tracking','screenshots','idle_detection','native_service']
+    capabilities:AGENT_CAPABILITIES
   })})
   const config={server_url:serverUrl,installation_id:installationId,device_uuid:payload.device.uuid,access_token:payload.access_token,heartbeat_interval_seconds:payload.config.heartbeat_interval_seconds,tracking_status:'active',remote_activity_config:payload.config.activity,remote_screenshot_config:payload.config.screenshots,enrolled_at:new Date().toISOString()}
   saveConfig(config); queueEvent('agent.enrolled',{device_uuid:payload.device.uuid,version:VERSION}); log(`Enrolled ${payload.device.name} (${payload.device.uuid})`)
@@ -143,13 +216,23 @@ let screenshotNotificationShown=false
       if(command.command_type==='pause_tracking')config.tracking_status='paused'
       else if(command.command_type==='resume_tracking')config.tracking_status='active'
       else if(command.command_type==='restart_agent'){await ack(config,command,'acknowledged',{message:'Supervisor restart requested.'});saveConfig(config);process.exit(0)}
-      else if(command.command_type==='update_agent'){await ack(config,command,'acknowledged',{message:'Update command received. Install the latest release package from Downloads or managed deployment.'});continue}
+      else if(command.command_type==='update_agent'){
+        const result=await installManagedUpdate(config)
+        if(result.updated){
+          queueEvent('agent.updated',{from:result.from,to:result.to,sha256:result.sha256})
+          await ack(config,command,'acknowledged',{message:`Agent updated from ${result.from} to ${result.to}. Restarting under the installation supervisor.`,...result})
+          saveConfig(config)
+          process.exit(0)
+        }
+        await ack(config,command,'acknowledged',{message:`Agent ${VERSION} is already current for the managed stable channel.`,...result})
+        continue
+      }
       saveConfig(config);await ack(config,command,'acknowledged',{tracking_status:config.tracking_status})
     }catch(error){try{await ack(config,command,'failed',{message:error.message})}catch{}}
   }
 }
 /** Handles the heartbeat operation for the WorkIntel application. */ async function heartbeat(config, context, idle) {
-  const result=await jsonRequest(config,'/api/v1/agent/heartbeat',{method:'POST',body:JSON.stringify({agent_version:VERSION,tracking_status:config.tracking_status,is_idle:idle,offline_queue_size:getQueue().length,os_version:release(),capabilities:['heartbeat','offline_sync','commands','app_tracking','screenshots','idle_detection','native_service'],metadata:{hostname:hostname()},current_app:context?.app||null,activity_percent:idle?0:100})})
+  const result=await jsonRequest(config,'/api/v1/agent/heartbeat',{method:'POST',body:JSON.stringify({agent_version:VERSION,tracking_status:config.tracking_status,is_idle:idle,offline_queue_size:getQueue().length,os_version:release(),capabilities:AGENT_CAPABILITIES,metadata:{hostname:hostname()},current_app:context?.app||null,activity_percent:idle?0:100})})
   config.heartbeat_interval_seconds=result.config.heartbeat_interval_seconds;config.remote_activity_config=result.config.activity;config.remote_screenshot_config=result.config.screenshots;saveConfig(config);await commands(config,result.commands)
 }
 
