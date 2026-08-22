@@ -81,7 +81,7 @@ mkdirSync(stateDir, { recursive: true })
   if(!response.ok){const payload=await response.json().catch(()=>null);throw new Error(payload?.message||`Update download failed with HTTP ${response.status}`)}
   const headerHash=response.headers.get('x-release-sha256')
   const headerVersion=response.headers.get('x-workintel-version')
-  if(headerHash&&!headerHash.localeCompare(managed.sha256,undefined,{sensitivity:'accent'})===0)throw new Error('Update response checksum does not match release metadata.')
+  if(headerHash&&headerHash.toLowerCase()!==managed.sha256.toLowerCase())throw new Error('Update response checksum does not match release metadata.')
   if(headerVersion&&headerVersion!==managed.version)throw new Error('Update response version does not match release metadata.')
   const archiveBytes=Buffer.from(await response.arrayBuffer())
   const actualHash=createHash('sha256').update(archiveBytes).digest('hex')
