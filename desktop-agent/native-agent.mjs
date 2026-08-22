@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto'
 import { arch, hostname, platform, release, tmpdir } from 'node:os'
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync, chmodSync, openSync, closeSync, renameSync, rmSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, unlinkSync, chmodSync, openSync, closeSync, renameSync, rmSync } from 'node:fs'
 import { dirname, resolve, basename } from 'node:path'
 import { execFileSync, spawnSync } from 'node:child_process'
 
@@ -28,11 +28,29 @@ mkdirSync(stateDir, { recursive: true })
 /** Handles the validate server url operation for the WorkIntel application. */ function validateServerUrl(value) {
   const url = new URL(String(value || '').trim())
   if (!['http:','https:'].includes(url.protocol)) throw new Error('Server must use http:// or https://')
+  if (url.username || url.password) throw new Error('Server URL must not contain credentials.')
   const local = ['localhost','127.0.0.1','::1'].includes(url.hostname)
   if (url.protocol !== 'https:' && !local && process.env.WORKINTEL_ALLOW_INSECURE_HTTP !== 'true') {
     throw new Error('HTTPS is required for non-local servers. Set WORKINTEL_ALLOW_INSECURE_HTTP=true only for trusted development networks.')
   }
+  url.hash = ''
+  url.search = ''
   return url.toString().replace(/\/$/, '')
+}
+
+/** Resolves one API path against the validated enrolled origin and rejects origin changes. */ function trustedRequestUrl(config, path) {
+  if (typeof path !== 'string' || !path.startsWith('/api/v1/')) throw new Error('Agent request path is not trusted.')
+  const serverUrl = validateServerUrl(config?.server_url)
+  const base = new URL(`${serverUrl}/`)
+  const endpoint = new URL(path.replace(/^\//, ''), base)
+  if (endpoint.origin !== base.origin || endpoint.username || endpoint.password) throw new Error('Agent request origin is not trusted.')
+  return endpoint
+}
+
+/** Performs one authenticated request without following redirects away from the enrolled server. */ async function authenticatedRequest(config, path, options = {}) {
+  const headers = new Headers(options.headers || {})
+  if (config?.access_token) headers.set('Authorization', `Bearer ${config.access_token}`)
+  return fetch(trustedRequestUrl(config, path), {...options, headers, redirect:'error'})
 }
 
 /** Handles the acquire lock operation for the WorkIntel application. */ function acquireLock() {
@@ -50,9 +68,8 @@ mkdirSync(stateDir, { recursive: true })
 /** Handles the json request operation for the WorkIntel application. */ async function jsonRequest(config, path, options = {}) {
   const headers = new Headers(options.headers || {})
   headers.set('Accept','application/json')
-  if (!(options.body instanceof FormData)) headers.set('Content-Type','application/json')
-  if (config?.access_token) headers.set('Authorization', `Bearer ${config.access_token}`)
-  const response = await fetch(`${config.server_url}${path}`, {...options, headers})
+  if (options.body !== undefined && !(options.body instanceof FormData)) headers.set('Content-Type','application/json')
+  const response = await authenticatedRequest(config, path, {...options, headers})
   const payload = await response.json().catch(() => null)
   if (!response.ok) throw new Error(payload?.message || `HTTP ${response.status}`)
   return payload
@@ -77,7 +94,7 @@ mkdirSync(stateDir, { recursive: true })
   if(!/^[a-f0-9]{64}$/i.test(managed.sha256))throw new Error('Managed release checksum is invalid.')
   if(compareVersions(managed.version,VERSION)<=0)return {updated:false,from:VERSION,to:managed.version,sha256:managed.sha256}
 
-  const response=await fetch(`${config.server_url}${managed.download_path}`,{headers:{Accept:'application/zip','Authorization':`Bearer ${config.access_token}`}})
+  const response=await authenticatedRequest(config,'/api/v1/agent/release/download',{headers:{Accept:'application/zip'}})
   if(!response.ok){const payload=await response.json().catch(()=>null);throw new Error(payload?.message||`Update download failed with HTTP ${response.status}`)}
   const headerHash=response.headers.get('x-release-sha256')
   const headerVersion=response.headers.get('x-workintel-version')
@@ -87,15 +104,15 @@ mkdirSync(stateDir, { recursive: true })
   const actualHash=createHash('sha256').update(archiveBytes).digest('hex')
   if(actualHash.toLowerCase()!==managed.sha256.toLowerCase())throw new Error('Downloaded update failed SHA-256 verification.')
 
-  const updateDir=resolve(tmpdir(),`workintel-update-${randomUUID()}`)
+  const updateDir=mkdtempSync(resolve(tmpdir(),'workintel-update-'))
   const archivePath=resolve(updateDir,'release.zip')
   const extractDir=resolve(updateDir,'extract')
   const currentPath=resolve(root,'native-agent.mjs')
-  const stagedPath=resolve(root,'native-agent.mjs.next')
+  const stagedPath=resolve(root,`native-agent.mjs.next-${randomUUID()}`)
   const backupPath=resolve(root,'native-agent.mjs.previous')
-  mkdirSync(extractDir,{recursive:true})
+  mkdirSync(extractDir,{mode:0o700})
   try{
-    writeFileSync(archivePath,archiveBytes)
+    writeFileSync(archivePath,archiveBytes,{flag:'wx',mode:0o600})
     if(platform()==='win32'){
       const safeArchive=archivePath.replaceAll("'","''"),safeExtract=extractDir.replaceAll("'","''")
       powershell(`Expand-Archive -LiteralPath '${safeArchive}' -DestinationPath '${safeExtract}' -Force`)
@@ -110,7 +127,6 @@ mkdirSync(stateDir, { recursive: true })
     if(candidateVersion!==managed.version)throw new Error('Managed release source version does not match release metadata.')
     execFileSync(process.execPath,['--check',candidate],{stdio:'pipe',timeout:15000})
 
-    if(existsSync(stagedPath))unlinkSync(stagedPath)
     copyFileSync(candidate,stagedPath)
     if(platform()!=='win32')chmodSync(stagedPath,0o755)
     if(existsSync(backupPath))unlinkSync(backupPath)
@@ -270,6 +286,7 @@ let currentSession=null
 
 /** Handles the run operation for the WorkIntel application. */ async function run() {
   acquireLock();const config=getConfig();if(!config?.access_token||!config?.server_url)throw new Error('Agent is not enrolled. Run enroll first.')
+  validateServerUrl(config.server_url)
   queueEvent('agent.started',{version:VERSION,platform:platform(),architecture:arch()});let offline=false;let lastHeartbeat=0;let screenshotDue=nextScreenshotAt(config)
   while(true){
     const context=foreground();const idleThreshold=Math.max(60,Number(config.remote_activity_config?.idle_threshold_seconds||300))*1000;const idle=idleMilliseconds()>=idleThreshold
@@ -289,6 +306,6 @@ try{
   if(command==='enroll')await enroll(a,b)
   else if(command==='run')await run()
   else if(command==='status')status()
-  else if(command==='once'){const c=getConfig();if(!c?.access_token)throw new Error('Not enrolled.');const ctx=foreground();const idle=idleMilliseconds()>=Math.max(60,Number(c.remote_activity_config?.idle_threshold_seconds||300))*1000;await heartbeat(c,ctx,idle);await sync(c);status()}
+  else if(command==='once'){const c=getConfig();if(!c?.access_token)throw new Error('Not enrolled.');validateServerUrl(c.server_url);const ctx=foreground();const idle=idleMilliseconds()>=Math.max(60,Number(c.remote_activity_config?.idle_threshold_seconds||300))*1000;await heartbeat(c,ctx,idle);await sync(c);status()}
   else {console.log(`WorkIntel Native Agent ${VERSION}\n\nCommands:\n  node native-agent.mjs enroll https://your-server.example WI-XXXX-XXXX-XXXX\n  node native-agent.mjs run\n  node native-agent.mjs once\n  node native-agent.mjs status`)}
 }catch(error){console.error(error instanceof Error?error.message:String(error));process.exit(1)}
