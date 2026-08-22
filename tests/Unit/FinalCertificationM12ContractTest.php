@@ -16,22 +16,12 @@ class FinalCertificationM12ContractTest extends TestCase
         foreach(['media_renditions','website_preview_tokens','document_brand_kits','document_batch_jobs','chat_activity_states'] as $marker)$this->assertStringContainsString($marker,$production);
 
         $windowsCi=(string)file_get_contents($root.'/.github/workflows/windows-certification.yml');
-        foreach(['self-hosted','Windows','X64','Report selected self-hosted runner','RUNNER_NAME','cancel-in-progress: true','ExecutionPolicy Bypass','Bootstrap PowerShell 7 for setup-php','PowerShell/PowerShell/releases/latest','curl.exe','--max-time 300','pdo_sqlite, sqlite3, fileinfo, gd, zip','Provision Mozilla Firefox certification browser','firefox-latest-ssl','Firefox-latest-x64.exe','/InstallDirectoryPath=','/MaintenanceService=false','WORKINTEL_E2E_FIREFOX_EXECUTABLE','Parse Laragon release certification script','System.Management.Automation.Language.Parser','Actual Chrome Edge Firefox accessibility certification','test:e2e:cross-browser'] as $marker)$this->assertStringContainsString($marker,$windowsCi);
+        $this->assertStringContainsString('runs-on: windows-latest',$windowsCi);
+        $this->assertStringContainsString('Report selected GitHub-hosted runner',$windowsCi);
+        $this->assertStringNotContainsString('self-hosted',$windowsCi);
+        foreach(['RUNNER_NAME','cancel-in-progress: true','ExecutionPolicy Bypass','Bootstrap PowerShell 7 for setup-php','PowerShell/PowerShell/releases/latest','curl.exe','--max-time 300','pdo_sqlite, sqlite3, fileinfo, gd, zip','Require installed Chrome Edge Firefox','Actual Chrome Edge Firefox accessibility certification','test:e2e:cross-browser'] as $marker)$this->assertStringContainsString($marker,$windowsCi);
 
         $browserHelper=(string)file_get_contents($root.'/tools/e2e-browser.mjs');
         foreach(['findFirefoxExecutable','WORKINTEL_E2E_FIREFOX_EXECUTABLE'] as $marker)$this->assertStringContainsString($marker,$browserHelper);
-
-        $laragonPreflight=(string)file_get_contents($root.'/tools/laragon-release-preflight.php');
-        foreach(['PHP_OS_FAMILY','pdo_mysql','gd','DB_CONNECTION=mysql',"DB::connection('mysql')",'SELECT VERSION() AS version'] as $marker)$this->assertStringContainsString($marker,$laragonPreflight);
-
-        $laragonRunner=(string)file_get_contents($root.'/tools/run-laragon-release.ps1');
-        foreach(['Start-Transcript','Stop-Transcript','Add-Content','Get-Content -Path $logFile -Tail 1','WORKINTEL_REQUIRE_CROSS_BROWSER','e2e-browser-doctor.mjs --require-all','verify-release.cmd','LARAGON RELEASE CERTIFICATION PASSED'] as $marker)$this->assertStringContainsString($marker,$laragonRunner);
-        $this->assertMatchesRegularExpression('/Stop-Transcript.*Add-Content.*Get-Content -Path \$logFile -Tail 1/s',$laragonRunner);
-
-        $laragonCmd=(string)file_get_contents($root.'/verify-laragon-release.cmd');
-        $this->assertStringContainsString('run-laragon-release.ps1',$laragonCmd);
-
-        $laragonDoc=(string)file_get_contents($root.'/docs/architecture/LARAGON_RELEASE_CERTIFICATION.md');
-        foreach(['combined Windows + MySQL','verify-laragon-release.cmd','non-destructive','storage/logs/certification'] as $marker)$this->assertStringContainsString($marker,$laragonDoc);
     }
 }

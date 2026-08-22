@@ -3,6 +3,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -96,3 +99,37 @@ jobs:
         run: php artisan migrate:fresh --seed --force
       - run: php artisan route:list > /dev/null
       - run: php artisan schedule:list
+
+  governance:
+    name: governance
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify repository governance source contract
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for path in \
+            apply-main-branch-protection.cmd \
+            tools/apply-main-branch-protection.ps1 \
+            tests/Unit/MainBranchProtectionContractTest.php
+          do
+            if [ -e "$path" ]; then
+              echo "Obsolete branch-protection artifact is still present: $path"
+              exit 1
+            fi
+          done
+
+          grep -Fq 'runs-on: windows-latest' .github/workflows/windows-certification.yml
+          if grep -Fq 'self-hosted' .github/workflows/windows-certification.yml; then
+            echo 'Windows certification must remain GitHub-hosted.'
+            exit 1
+          fi
+
+          grep -Fq 'not part of the active repository governance scope' docs/architecture/REPOSITORY_GOVERNANCE.md
+          grep -Fq 'no branch-protection requirement' docs/architecture/REPOSITORY_GOVERNANCE.md
+          grep -Fq 'branch protection was explicitly removed from the active governance scope' docs/architecture/MODULAR_MATURITY_STATUS.md
+
+          echo 'Repository governance source contract passed.'

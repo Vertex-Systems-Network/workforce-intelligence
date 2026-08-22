@@ -1,6 +1,6 @@
 # Contributing to WorkIntel
 
-WorkIntel uses pull-request-first delivery for all repository changes.
+WorkIntel uses pull-request-first delivery for routine repository changes.
 
 ## Branch policy
 
@@ -10,22 +10,24 @@ WorkIntel uses pull-request-first delivery for all repository changes.
 - Do not force-push or rewrite `main` history.
 - Do not delete `main`.
 
-GitHub branch protection is tracked in Issue #8. Until that repository setting is enabled, this file is policy documentation rather than a substitute for enforcement.
+GitHub technical branch-protection rules are not an active repository requirement. The policy above remains the expected contribution discipline.
 
 ## Required validation
 
-Before merge, the pull-request head must pass the repository certification workflows, including:
+Before merge, run and review the applicable repository certification workflows when execution capacity is available, including:
 
 - WorkIntel CI job: `test`
 - WorkIntel Windows Certification job: `windows-certification`
 
 Changes that affect runtime, database, browser behavior, release verification, security, accessibility, or architecture must preserve the relevant existing doctors, audits, tests, migration/seed guarantees, and browser certification gates.
 
+A GitHub Actions quota/capacity failure must not be described as a passing run.
+
 ## Database safety
 
 - Production/live verification must be non-destructive.
-- Never use `migrate:fresh` or `verify-clean-install.cmd` against a live workstation database.
-- The final Laragon release verifier is `verify-laragon-release.cmd` and its acceptance process is tracked in Issue #6.
+- Never use `migrate:fresh` or `verify-clean-install.cmd` against a live database.
+- Physical Laragon + MySQL acceptance is not part of the active release scope; any Laragon verifier that remains in the repository is optional diagnostic tooling only.
 
 ## Pull requests
 
@@ -35,6 +37,6 @@ A pull request should explain:
 2. why the change is required;
 3. relevant safety or migration impact;
 4. the tests/certification evidence used to validate it;
-5. any remaining external or physical acceptance gate.
+5. any remaining external or environment-specific limitation.
 
-Do not label hosted CI as proof of a physical target-runtime condition that hosted runners cannot actually prove.
+Do not claim evidence that was not actually executed.

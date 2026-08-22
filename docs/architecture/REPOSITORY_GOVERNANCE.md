@@ -1,56 +1,46 @@
 # WorkIntel Repository Governance
 
-Updated: 2026-08-21
+Updated: 2026-08-22
 
 ## Purpose
 
-This document defines the repository-side governance contract for WorkIntel. It is intentionally separate from application maturity: repository settings cannot be represented as complete merely because source files describe the desired policy.
+This document defines the repository-side governance contract for WorkIntel. Repository governance is intentionally separate from application maturity and release certification.
 
-## Main branch protection contract
+## Branch policy
 
-The `main` branch must be protected with at least the following controls:
+WorkIntel uses pull-request-first development as a repository policy:
 
-- require a pull request before merging;
-- require at least one approving review;
-- dismiss stale approvals when new commits are pushed;
-- require conversation resolution before merging;
-- require status checks to pass before merging;
-- require the branch to be up to date before merging;
-- require status check `test` from WorkIntel CI;
-- require status check `windows-certification` from WorkIntel Windows Certification;
-- enforce the rule for administrators for routine changes;
-- disallow force pushes;
-- disallow deletion of `main`;
-- do not require linear history while certified merge commits remain the repository's accepted merge strategy.
+- routine changes should be made on focused feature/fix branches;
+- pull requests should remain scoped to one coherent change;
+- applicable tests and certification should be reviewed before merge;
+- `main` history must not be rewritten;
+- force pushes to `main` and deletion of `main` are prohibited by policy;
+- accidental direct writes should be repaired with normal forward commits so audit history remains intact.
 
-`CODEOWNERS` requests repository-owner review. Code-owner review is not itself required by the protection operator. Because this policy requires one approval and also enforces protection for administrators, the operator performs a reviewer-safety preflight and refuses to enable the rule unless at least one additional write-capable reviewer is visible to GitHub. This prevents an accidental single-maintainer merge deadlock.
+GitHub technical branch-protection rules are **not part of the active repository governance scope** as of 2026-08-22 by explicit repository-owner decision. No branch-protection operator, required-rule contract, or branch-protection completion gate is maintained by this repository.
 
-## Applying the protection rule
-
-On an authenticated administrator workstation, install GitHub CLI, authenticate with repository `Administration: write`, then run:
-
-`apply-main-branch-protection.cmd`
-
-The command calls `tools/apply-main-branch-protection.ps1`. It first verifies that another eligible reviewer exists, then applies the complete policy through GitHub's branch-protection API, and finally reads the branch and protection APIs back. It exits non-zero unless the reviewer preflight and all required controls are confirmed. Successful completion prints:
-
-`MAIN BRANCH PROTECTION CERTIFICATION PASSED`
-
-This command does not use `GITHUB_TOKEN` or a lower-privilege workflow token because branch-protection mutation requires repository Administration write.
-
-## Current enforcement state
-
-At the time this document was introduced, GitHub's branch API reported `main` as `protected: false`. Issue #8 is the canonical external repository-setting gate. This document, CODEOWNERS, CONTRIBUTING, SECURITY policy and pull-request template improve governance but do not substitute for the actual GitHub branch-protection setting.
-
-Issue #8 may close only after the branch API reports `protected: true` and the enforced required checks include `test` and `windows-certification`.
+`CODEOWNERS` remains informational ownership metadata so GitHub can request the repository owner on changes. It is not coupled to mandatory branch-protection enforcement.
 
 ## Pull-request-first development
 
-Routine repository changes must be made on focused branches and merged through pull requests after applicable certification passes. Direct writes to `main`, history rewrites, and force pushes are governance violations even while GitHub's technical protection setting remains pending.
+Routine repository changes should be made on focused branches and merged through pull requests after applicable validation. The absence of GitHub branch-protection rules does not authorize history rewrites, destructive branch operations, unrelated changes, or bypassing review discipline.
 
-If an accidental direct write occurs before protection is enabled, preserve auditability: repair it with a normal forward commit instead of rewriting branch history, and document the event when material.
+If an accidental direct write occurs, preserve auditability: repair it with a normal forward commit instead of rewriting branch history, and document the event when material.
 
-## Certification boundaries
+## Validation
 
-Hosted Linux/MySQL and Windows browser certification prove hosted release dimensions. They do not prove the combined physical Laragon Windows + configured MySQL environment. Physical target-runtime acceptance remains governed by Issue #6 and `verify-laragon-release.cmd`.
+The repository retains its automated validation surfaces, including:
 
-Repository governance completion and physical runtime certification are independent gates; neither should be used to bypass the other.
+- WorkIntel CI job `test` where GitHub Actions capacity is available;
+- WorkIntel Windows Certification job `windows-certification` on GitHub-hosted `windows-latest`;
+- PHPUnit, migrations/seeds, production/final doctors, responsive E2E, accessibility and cross-browser certification where applicable.
+
+A quota/capacity failure must never be relabeled as a passing run. Historical successful certification evidence remains valid evidence for the commits on which it executed.
+
+## Release-scope boundaries
+
+Active modular maturity is 100% under the release scope recorded in `docs/architecture/MODULAR_MATURITY_STATUS.md`.
+
+Physical Laragon + MySQL acceptance was explicitly withdrawn from the active release scope on 2026-08-22. The Laragon verifier may remain as an optional diagnostic, but it is not a release-completion or repository-governance gate.
+
+Repository governance is complete under this documented policy with no branch-protection requirement.
