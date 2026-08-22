@@ -139,3 +139,9 @@ jobs:
             echo 'Windows certification must remain GitHub-hosted.'
             exit 1
           fi
+
+          grep -Fq 'not part of the active repository governance scope' docs/architecture/REPOSITORY_GOVERNANCE.md
+          grep -Fq 'no branch-protection requirement' docs/architecture/REPOSITORY_GOVERNANCE.md
+          grep -Fq 'branch protection was explicitly removed from the active governance scope' docs/architecture/MODULAR_MATURITY_STATUS.md
+
+          echo 'Repository governance source contract passed.'
