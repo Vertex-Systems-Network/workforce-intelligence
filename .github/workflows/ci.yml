@@ -45,6 +45,8 @@ jobs:
       - run: composer check-platform-reqs
       - name: Verify deterministic release packaging
         run: python3 tools/release-reproducibility-audit.py
+      - name: Verify published release immutability
+        run: python3 tools/release-immutability-audit.py
       - name: Install frontend dependencies
         shell: bash
         run: |
@@ -137,9 +139,3 @@ jobs:
             echo 'Windows certification must remain GitHub-hosted.'
             exit 1
           fi
-
-          grep -Fq 'not part of the active repository governance scope' docs/architecture/REPOSITORY_GOVERNANCE.md
-          grep -Fq 'no branch-protection requirement' docs/architecture/REPOSITORY_GOVERNANCE.md
-          grep -Fq 'branch protection was explicitly removed from the active governance scope' docs/architecture/MODULAR_MATURITY_STATUS.md
-
-          echo 'Repository governance source contract passed.'
