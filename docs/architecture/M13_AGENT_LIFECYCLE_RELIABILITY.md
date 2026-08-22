@@ -1,6 +1,6 @@
 # M13 — Agent Lifecycle Reliability
 
-Updated: 2026-08-22
+Updated: 2026-08-23
 
 M13 is a post-M12 productization/hardening phase. It does not retroactively change the completed M0–M12 weighted maturity model. Its purpose is to remove production lifecycle gaps that were discovered after the original modular roadmap reached its active-scope closure.
 
@@ -41,7 +41,7 @@ Version 1.2.0 is the first native agent that advertises `self_update`. Existing 
 The phase is protected by:
 
 - `tests/Feature/AgentReleaseUpdateFlowTest.php` for device-token authentication, platform scoping, release metadata, download headers, and fail-closed tamper detection.
-- `tests/frontend/agent-lifecycle-m13.test.mjs` for native-agent syntax, trusted route/source contracts, Windows state continuity, supervisor behavior, and release-version alignment.
+- `tests/frontend/agent-lifecycle-m13.test.mjs` for native-agent syntax, trusted route/source contracts, Windows state continuity, supervisor behavior, secure managed-download behavior, and release-version alignment.
 - Existing repository quality gates: PHP documentation audit, JavaScript documentation audit, frontend contracts, TypeScript, accessibility/source audits, Laravel Pint for changed PHP, CodeQL, PHPUnit, production build, and browser certification.
 
-No M13 item is considered certified until the exact final PR head passes the repository's required CI and code-quality workflows.
+Agent 1.2.1 is the M13 certification candidate. Merge remains blocked until the exact final PR head passes WorkIntel Code Quality, WorkIntel CI, and WorkIntel Windows Certification with no current unresolved security review findings.
