@@ -1,4 +1,8 @@
-/* Responsive refinements that intentionally load after the core professional UI layer. */
+/* Refinements that intentionally load after the core professional UI layer. */
+.marketing-product-navline--0 { width: 58%; }
+.marketing-product-navline--1 { width: 70%; }
+.marketing-product-navline--2 { width: 82%; }
+
 @media (max-width: 760px) {
   .marketing-header__inner {
     min-height: 0;
