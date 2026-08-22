@@ -10,8 +10,10 @@ test('M13 native agent exposes verified managed self-update without arbitrary up
   const agent=read('desktop-agent/native-agent.mjs')
   execFileSync(process.execPath,['--check','desktop-agent/native-agent.mjs'],{stdio:'pipe'})
   for(const token of ["const VERSION = '1.2.0'","'self_update'","'/api/v1/agent/release'","'/api/v1/agent/release/download'",'createHash','Downloaded update failed SHA-256 verification.','native-agent.mjs.previous',"['--check',candidate]"])assert.ok(agent.includes(token),token)
+  for(const token of ['trustedRequestUrl','redirect:\'error\'','mkdtempSync',"flag:'wx'","mode:0o600",'Agent request origin is not trusted.'])assert.ok(agent.includes(token),token)
   assert.ok(!agent.includes('Install the latest release package from Downloads or managed deployment.'))
   assert.ok(!agent.includes('command.payload.url'))
+  assert.ok(!agent.includes('fetch(`${config.server_url}${managed.download_path}`'))
 })
 
 test('M13 agent release endpoint is device-authenticated platform-scoped and fail-closed on checksum mismatch',()=>{
