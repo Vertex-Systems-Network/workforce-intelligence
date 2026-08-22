@@ -22,27 +22,22 @@ async function expectNoViewportOverflow(page) {
   expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.width + 2)
 }
 
-/** Open the responsive navigation drawer when a sidebar destination is off-canvas, then activate it. */
+/** Open the responsive navigation drawer when required, then activate a destination that is actually in the viewport. */
 async function clickWorkspaceDestination(page, accessibleName) {
   const destination = page.getByRole('button', { name: accessibleName })
   await expect(destination).toBeVisible()
-  const inViewport = await destination.evaluate(element => {
-    const rect = element.getBoundingClientRect()
-    return rect.width > 0
-      && rect.height > 0
-      && rect.bottom > 0
-      && rect.right > 0
-      && rect.top < window.innerHeight
-      && rect.left < window.innerWidth
-  })
 
-  if (!inViewport) {
-    const openNavigation = page.getByRole('button', { name: /^Open navigation$/i })
-    await expect(openNavigation).toBeVisible()
-    await openNavigation.click()
-    await expect(destination).toBeInViewport()
+  const openNavigation = page.getByRole('button', { name: /^Open navigation$/i })
+  if (await openNavigation.isVisible()) {
+    const sidebar = page.locator('.ui-sidebar')
+    const mobileDrawerOpen = await sidebar.evaluate(element => element.classList.contains('is-mobile-open'))
+    if (!mobileDrawerOpen) {
+      await openNavigation.click()
+      await expect(sidebar).toHaveClass(/is-mobile-open/)
+    }
   }
 
+  await expect(destination).toBeInViewport()
   await destination.click()
 }
 
