@@ -99,6 +99,32 @@ for (const file of files.filter(file => /\.[jt]sx?$/.test(file))) {
 }
 if (debugResidue.length) failures.push(`Production debug residue: ${debugResidue.join(', ')}`)
 
+/** Scan versioned runtime/source areas for editor backups, rejected patches and empty public placeholders. */
+function repositoryHygiene() {
+  const scanRoots = ['public', 'resources', 'app', 'routes', 'config', 'database', 'tools', 'tests', 'docs']
+  const junkNames = /(?:~|\.bak|\.backup|\.old|\.orig|\.rej|\.tmp|\.temp|\.swp|\.swo)$/i
+  const exactJunk = new Set(['.DS_Store', 'Thumbs.db', 'desktop.ini'])
+  const junk = []
+  const emptyPublic = []
+  const visit = directory => {
+    if (!fs.existsSync(directory)) return
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const full = path.join(directory, entry.name)
+      if (entry.isDirectory()) {
+        visit(full)
+        continue
+      }
+      const repoPath = path.relative(root, full).replaceAll(path.sep, '/')
+      if (junkNames.test(entry.name) || exactJunk.has(entry.name)) junk.push(repoPath)
+      if (repoPath.startsWith('public/') && fs.statSync(full).size === 0) emptyPublic.push(repoPath)
+    }
+  }
+  for (const directory of scanRoots) visit(path.join(root, directory))
+  if (junk.length) failures.push(`Junk/editor artifacts committed: ${junk.sort().join(', ')}`)
+  if (emptyPublic.length) failures.push(`Empty public runtime assets committed: ${emptyPublic.sort().join(', ')}`)
+}
+repositoryHygiene()
+
 const peopleSource = fs.readFileSync(path.join(sourceRoot, 'pages/People.tsx'), 'utf8')
 for (const marker of ['setMemberAvatar', 'openSecurity', 'profile photo']) {
   if (!peopleSource.includes(marker)) failures.push(`Canonical People ownership marker missing: ${marker}`)
