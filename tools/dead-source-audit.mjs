@@ -90,14 +90,21 @@ if (unreachable.length) failures.push(`Unreachable browser source files: ${unrea
 for (const retired of retiredPaths) if (fs.existsSync(path.join(root, retired))) failures.push(`Retired source returned: ${retired}`)
 
 const debugResidue = []
+const interactionResidue = []
 for (const file of files.filter(file => /\.[jt]sx?$/.test(file))) {
   const source = fs.readFileSync(file, 'utf8')
   const lines = source.split(/\r?\n/)
   lines.forEach((line, index) => {
-    if (/\bconsole\.(?:log|debug)\s*\(/.test(line) || /\bdebugger\s*;?/.test(line)) debugResidue.push(`${relative(file)}:${index + 1}`)
+    const location = `${relative(file)}:${index + 1}`
+    if (/\bconsole\.(?:log|debug)\s*\(/.test(line) || /\bdebugger\s*;?/.test(line)) debugResidue.push(location)
+    if (/href\s*=\s*["'](?:#|javascript:void\(0\))["']/.test(line)) interactionResidue.push(`${location} dummy-link`)
+    if (/\bwindow\.(?:alert|confirm|prompt)\s*\(/.test(line)) interactionResidue.push(`${location} browser-native-dialog`)
+    if (/on(?:Click|Submit|Change)\s*=\s*\{\s*\(?.*?\)?\s*=>\s*\{\s*\}\s*\}/.test(line)) interactionResidue.push(`${location} empty-handler`)
+    if (/\/\/\s*(?:TODO|FIXME|HACK)\b|\/\*\s*(?:TODO|FIXME|HACK)\b/i.test(line)) interactionResidue.push(`${location} unfinished-comment`)
   })
 }
 if (debugResidue.length) failures.push(`Production debug residue: ${debugResidue.join(', ')}`)
+if (interactionResidue.length) failures.push(`Production interaction/source residue: ${interactionResidue.join(', ')}`)
 
 /** Scan versioned runtime/source areas and repository root for accidental editor/temp placeholders. */
 function repositoryHygiene() {
@@ -138,7 +145,7 @@ for (const marker of ['setMemberAvatar', 'openSecurity', 'profile photo']) {
 
 console.log(`DEV-08 dead-source audit: ${runtimeReachable.size} runtime source files reachable from app.tsx`)
 console.log(`Intentional standalone roots: ${standaloneRoots.size ? [...standaloneRoots].join(', ') : 'none'}`)
-console.log(`Unreachable source debt: ${unreachable.length}; production console.log/debugger debt: ${debugResidue.length}`)
+console.log(`Unreachable source debt: ${unreachable.length}; production console.log/debugger debt: ${debugResidue.length}; interaction residue: ${interactionResidue.length}`)
 if (failures.length) {
   console.error(`DEV-08 dead-source audit: FAIL (${failures.length})`)
   for (const failure of failures) console.error(` - ${failure}`)

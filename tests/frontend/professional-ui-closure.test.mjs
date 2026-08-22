@@ -101,10 +101,14 @@ test('repository exposes unified local quality and real opt-in WAVE commands', (
   assert.ok(wave.includes('WAVE_MAX_CONTRAST_ERRORS'))
 })
 
-test('source hygiene rejects temporary root placeholders as well as nested editor junk', () => {
+test('source hygiene rejects temporary root placeholders and dead interaction patterns', () => {
   assert.ok(hygieneAudit.includes("'__noop__'"))
   assert.ok(hygieneAudit.includes("fs.readdirSync(root, { withFileTypes: true })"))
   assert.ok(hygieneAudit.includes('Empty public runtime assets committed'))
+  assert.ok(hygieneAudit.includes('dummy-link'))
+  assert.ok(hygieneAudit.includes('browser-native-dialog'))
+  assert.ok(hygieneAudit.includes('empty-handler'))
+  assert.ok(hygieneAudit.includes('unfinished-comment'))
 })
 
 test('browser history traversal is synchronized with hash-addressable shell state', () => {
