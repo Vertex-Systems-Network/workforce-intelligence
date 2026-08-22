@@ -99,13 +99,19 @@ for (const file of files.filter(file => /\.[jt]sx?$/.test(file))) {
 }
 if (debugResidue.length) failures.push(`Production debug residue: ${debugResidue.join(', ')}`)
 
-/** Scan versioned runtime/source areas for editor backups, rejected patches and empty public placeholders. */
+/** Scan versioned runtime/source areas and repository root for accidental editor/temp placeholders. */
 function repositoryHygiene() {
   const scanRoots = ['public', 'resources', 'app', 'routes', 'config', 'database', 'tools', 'tests', 'docs']
   const junkNames = /(?:~|\.bak|\.backup|\.old|\.orig|\.rej|\.tmp|\.temp|\.swp|\.swo)$/i
-  const exactJunk = new Set(['.DS_Store', 'Thumbs.db', 'desktop.ini'])
+  const exactJunk = new Set(['.DS_Store', 'Thumbs.db', 'desktop.ini', '__noop__'])
   const junk = []
   const emptyPublic = []
+
+  for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
+    if (!entry.isFile()) continue
+    if (junkNames.test(entry.name) || exactJunk.has(entry.name)) junk.push(entry.name)
+  }
+
   const visit = directory => {
     if (!fs.existsSync(directory)) return
     for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
@@ -120,7 +126,7 @@ function repositoryHygiene() {
     }
   }
   for (const directory of scanRoots) visit(path.join(root, directory))
-  if (junk.length) failures.push(`Junk/editor artifacts committed: ${junk.sort().join(', ')}`)
+  if (junk.length) failures.push(`Junk/editor artifacts committed: ${[...new Set(junk)].sort().join(', ')}`)
   if (emptyPublic.length) failures.push(`Empty public runtime assets committed: ${emptyPublic.sort().join(', ')}`)
 }
 repositoryHygiene()

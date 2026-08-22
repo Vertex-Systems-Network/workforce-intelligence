@@ -14,6 +14,7 @@ const packageJson = JSON.parse(read('package.json'))
 const shellNavigation = read('resources/js/shellNavigation.ts')
 const blade = read('resources/views/app.blade.php')
 const architecture = read('docs/architecture/SYSTEM_ARCHITECTURE_AND_FLOW.md')
+const hygieneAudit = read('tools/dead-source-audit.mjs')
 
 /** Marketing information architecture must represent every owner-level product area. */
 test('marketing website represents every owner navigation area', () => {
@@ -69,11 +70,15 @@ test('professional UI establishes readable primary typography and control sizing
   assert.ok(professionalCss.includes('@media (forced-colors: active)'))
 })
 
-test('secondary UI text and mobile marketing navigation stay readable without hidden horizontal navigation', () => {
+test('secondary and operational UI text stays readable across marketing, auth, chat and commerce', () => {
   for (const marker of [
     '.marketing-product-kpi span { font-size: 12px; }',
     '.marketing-visual-card small { font-size: 12px; }',
     '.marketing-security-card p { font-size: 13px; }',
+    '.auth-check { font-size: 13px; }',
+    '.chat-message-text { font-size: 14px; line-height: 1.6; }',
+    '.seller-capability-row small { font: 500 12px/1.45 var(--font-mono); }',
+    '.client-payment-method small,',
     'grid-template-columns: repeat(2, minmax(0, 1fr))',
     'min-height: 44px',
   ]) assert.ok(responsiveCss.includes(marker), `missing responsive readability contract: ${marker}`)
@@ -88,6 +93,12 @@ test('repository exposes unified local quality and real opt-in WAVE commands', (
   assert.ok(wave.includes('https://wave.webaim.org/api/request'))
   assert.ok(wave.includes('Hosted WAVE requires a publicly reachable URL'))
   assert.ok(wave.includes('WAVE_MAX_CONTRAST_ERRORS'))
+})
+
+test('source hygiene rejects temporary root placeholders as well as nested editor junk', () => {
+  assert.ok(hygieneAudit.includes("'__noop__'"))
+  assert.ok(hygieneAudit.includes("fs.readdirSync(root, { withFileTypes: true })"))
+  assert.ok(hygieneAudit.includes('Empty public runtime assets committed'))
 })
 
 test('browser history traversal is synchronized with hash-addressable shell state', () => {
