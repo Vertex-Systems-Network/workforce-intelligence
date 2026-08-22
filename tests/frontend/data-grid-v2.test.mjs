@@ -10,7 +10,7 @@ function read(relative){return fs.readFileSync(path.join(root,relative),'utf8')}
 test('DataGrid V2 uses TanStack stable React table primitives',()=>{
   const pkg=JSON.parse(read('package.json'))
   const ui=read('resources/js/design-system/index.tsx')
-  assert.equal(pkg.dependencies['@tanstack/react-table'],'^8.21.3')
+  assert.equal(pkg.dependencies['@tanstack/react-table'],'^9.1.2')
   for(const token of ['useReactTable','getCoreRowModel','getFilteredRowModel','getSortedRowModel','getPaginationRowModel','flexRender'])assert.ok(ui.includes(token),token)
 })
 
