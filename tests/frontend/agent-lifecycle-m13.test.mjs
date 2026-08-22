@@ -28,6 +28,14 @@ test('M13 Windows Scheduled Task preserves enrolled state and restarts after man
   for(const token of ["$stateDir = Join-Path $InstallDir 'state'",'$env:WORKINTEL_AGENT_HOME = $stateDir',"$runnerPath = Join-Path $InstallDir 'run-agent.ps1'",'while (`$true)','Start-Sleep -Seconds 3','-File `"$runnerPath`"'])assert.ok(installer.includes(token),token)
 })
 
+test('M13 legacy agents are never presented as remotely self-updatable',()=>{
+  const devices=read('resources/js/pages/Devices.tsx')
+  const controller=read('app/Http/Controllers/Api/V1/DeviceController.php')
+  for(const token of ["row.capabilities.includes('self_update')",'Manual upgrade','Manual update required'])assert.ok(devices.includes(token),token)
+  assert.ok(controller.includes("in_array('self_update', $device->capabilities ?? [], true)"))
+  assert.ok(controller.includes('Managed update commands do not accept custom payloads.'))
+})
+
 test('M13 release version stays aligned with native source and runtime defaults',()=>{
   const agent=read('desktop-agent/native-agent.mjs')
   const build=read('tools/build-releases.py')
