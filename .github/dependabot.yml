@@ -28,6 +28,12 @@ updates:
         dependency-type: "production"
         update-types:
           - "patch"
+    # Keep Node declaration files on the same runtime major that WorkIntel
+    # certifies in package.json and CI. Security updates remain unaffected.
+    ignore:
+      - dependency-name: "@types/node"
+        update-types:
+          - "version-update:semver-major"
     commit-message:
       prefix: "chore"
       include: "scope"
