@@ -3,31 +3,34 @@
 require_once __DIR__.'/runtime.php';
 workintel_prepare_runtime_directories(dirname(__DIR__));
 
+use App\Http\Middleware\ApplyRequestLocale;
+use App\Http\Middleware\AuthenticateBrowserConnection;
+use App\Http\Middleware\AuthenticateClientPortal;
+use App\Http\Middleware\AuthenticateDeviceAgent;
+use App\Http\Middleware\AuthenticateMobileClient;
+use App\Http\Middleware\AuthenticatePartnerApiKey;
+use App\Http\Middleware\AuthenticateScimToken;
+use App\Http\Middleware\AuthenticateWorkspaceApiKey;
+use App\Http\Middleware\AuditWorkspaceRequest;
+use App\Http\Middleware\ObserveRequest;
+use App\Http\Middleware\RequireAnyWorkspacePermission;
+use App\Http\Middleware\RequireApiScope;
+use App\Http\Middleware\RequirePartnerScope;
+use App\Http\Middleware\RequirePlatformOperator;
+use App\Http\Middleware\RequireScimScope;
+use App\Http\Middleware\RequireWorkspaceAttributePolicy;
+use App\Http\Middleware\RequireWorkspaceEntitlement;
+use App\Http\Middleware\RequireWorkspaceModule;
+use App\Http\Middleware\RequireWorkspacePermission;
+use App\Http\Middleware\SecurityHeaders;
+use App\Services\Observability\ObservabilityService;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\RequireWorkspacePermission;
-use App\Http\Middleware\RequireAnyWorkspacePermission;
-use App\Http\Middleware\RequireWorkspaceEntitlement;
-use App\Http\Middleware\AuthenticateDeviceAgent;
-use App\Http\Middleware\AuthenticateBrowserConnection;
-use App\Http\Middleware\AuthenticateClientPortal;
-use App\Http\Middleware\RequireApiScope;
-use App\Http\Middleware\AuthenticateWorkspaceApiKey;
-use App\Http\Middleware\AuditWorkspaceRequest;
-use App\Http\Middleware\SecurityHeaders;
-use App\Http\Middleware\AuthenticateMobileClient;
-use App\Http\Middleware\AuthenticateScimToken;
-use App\Http\Middleware\RequireScimScope;
-use App\Http\Middleware\RequireWorkspaceAttributePolicy;
-use App\Http\Middleware\AuthenticatePartnerApiKey;
-use App\Http\Middleware\RequirePartnerScope;
-use App\Http\Middleware\RequireWorkspaceModule;
-use App\Http\Middleware\ApplyRequestLocale;
-use App\Http\Middleware\RequirePlatformOperator;
-use App\Http\Middleware\ObserveRequest;
-use App\Services\Observability\ObservabilityService;
+use Illuminate\Http\Exceptions\PostTooLargeException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Throwable;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -71,13 +74,19 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->shouldRenderJsonWhen(fn (\Illuminate\Http\Request $request, \Throwable $exception): bool => $request->is('api/*') || $request->expectsJson());
-        $exceptions->render(function (\Illuminate\Http\Exceptions\PostTooLargeException $exception, \Illuminate\Http\Request $request) {
-            if (! $request->is('api/*') && ! $request->expectsJson()) return null;
+        $exceptions->shouldRenderJsonWhen(fn (Request $request, Throwable $exception): bool => $request->is('api/*') || $request->expectsJson());
+        $exceptions->render(function (PostTooLargeException $exception, Request $request) {
+            if (! $request->is('api/*') && ! $request->expectsJson()) {
+                return null;
+            }
+
             return response()->json(['message' => 'The upload exceeds the server POST size limit. Increase post_max_size/upload_max_filesize or choose a smaller file.'], 413);
         });
         // Report unhandled exceptions into the privacy-safe observability ledger without changing Laravel's response contract.
-        $exceptions->report(function (\Throwable $exception): void {
-            try { app(ObservabilityService::class)->recordException($exception); } catch (\Throwable) {}
+        $exceptions->report(function (Throwable $exception): void {
+            try {
+                app(ObservabilityService::class)->recordException($exception);
+            } catch (Throwable) {
+            }
         });
     })->create();
