@@ -182,6 +182,8 @@ def commit_release_transaction(plans: list[dict], manifest_bytes: bytes, checksu
             if candidate is None:
                 continue
             destination = plan['destination']
+            if destination.exists():
+                raise RuntimeError(f'Refusing to overwrite release binary that appeared after validation: {destination.name}')
             os.replace(candidate, destination)
             published.append(destination)
 
