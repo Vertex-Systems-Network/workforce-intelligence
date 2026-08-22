@@ -15,6 +15,7 @@ import { RequestProgress } from './components/LoadingStates'
 import { ToastViewport } from './design-system/toast'
 import { ConfirmProvider } from './design-system'
 import '../css/app.css'
+import '../css/professional-ui.css'
 
 const rootElement = document.getElementById('root')
 
