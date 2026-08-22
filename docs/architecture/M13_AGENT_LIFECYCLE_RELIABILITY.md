@@ -36,12 +36,33 @@ M13 is a post-M12 productization/hardening phase. It does not retroactively chan
 
 Version 1.2.0 is the first native agent that advertises `self_update`. Existing agents without that capability require one verified manual upgrade before remote managed updates become available. The application must not represent legacy agents as remotely self-updatable when the capability is absent. Version 1.2.1 is the security-hardening patch release so deployed 1.2.0 agents can receive the hardened updater through the managed channel.
 
+## Batch 2 — Deterministic release packaging
+
+### Defect closed
+
+The release builder previously used `ZipFile.write()`, which copied checkout-dependent file timestamps and filesystem metadata into generated ZIPs. Rebuilding unchanged browser-extension sources in a fresh checkout could therefore produce a different package SHA-256 even though the source bytes were identical. That weakens checksum stability, creates noisy release-catalog churn, and prevents package hashes from serving as reproducible supply-chain evidence.
+
+### Reproducible package contract
+
+- Every archive entry is sorted by its normalized archive path before writing.
+- ZIP entry timestamps are fixed to the ZIP epoch instead of inheriting checkout mtimes.
+- Release archives use stored ZIP entries so package bytes do not depend on zlib implementation/version differences.
+- Unix file modes are normalized to `0644`, with shell/command installers explicitly normalized to `0755`.
+- Archive entries are written through `ZipInfo` + `writestr`; raw `ZipFile.write()` is forbidden by the source contract.
+- `tools/release-reproducibility-audit.py` builds all packages twice in an isolated repository fixture, deliberately changes every source mtime between builds, and requires every ZIP SHA-256 to remain identical.
+- The same audit verifies `manifest.json` and `SHA256SUMS.txt` exactly match the generated package bytes.
+- WorkIntel CI runs the functional reproducibility audit before the frontend/browser matrix, so timestamp-dependent packaging cannot merge unnoticed.
+
+Already-published 1.2.1 artifacts are not silently rewritten under the same semantic version merely to adopt the deterministic container format. The deterministic writer applies to subsequent release builds; any package-content change intended for publication must use the appropriate new agent or browser-extension release version rather than mutating a published artifact in place.
+
 ## Automated acceptance
 
 The phase is protected by:
 
 - `tests/Feature/AgentReleaseUpdateFlowTest.php` for device-token authentication, platform scoping, release metadata, download headers, and fail-closed tamper detection.
 - `tests/frontend/agent-lifecycle-m13.test.mjs` for native-agent syntax, trusted route/source contracts, Windows state continuity, supervisor behavior, secure managed-download behavior, and release-version alignment.
+- `tests/frontend/release-packaging-m13.test.mjs` for deterministic ZIP source invariants and CI wiring.
+- `tools/release-reproducibility-audit.py` for actual repeated-build hash stability plus manifest/checksum consistency.
 - Existing repository quality gates: PHP documentation audit, JavaScript documentation audit, frontend contracts, TypeScript, accessibility/source audits, Laravel Pint for changed PHP, CodeQL, PHPUnit, production build, and browser certification.
 
-Agent 1.2.1 is the M13 certification candidate. Merge remains blocked until the exact final PR head passes WorkIntel Code Quality, WorkIntel CI, and WorkIntel Windows Certification with no current unresolved security review findings.
+Batch 1 is merged and certified on `main` through PR #17 with agent 1.2.1. Batch 2 is considered certified only after its exact final PR head passes WorkIntel Code Quality, WorkIntel CI, and WorkIntel Windows Certification with no current unresolved security review findings.

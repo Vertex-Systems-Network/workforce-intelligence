@@ -43,6 +43,8 @@ jobs:
       - run: php tools/runtime-closure-smoke.php
       - run: composer validate --no-check-publish
       - run: composer check-platform-reqs
+      - name: Verify deterministic release packaging
+        run: python3 tools/release-reproducibility-audit.py
       - name: Install frontend dependencies
         shell: bash
         run: |
