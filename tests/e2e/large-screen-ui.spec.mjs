@@ -22,7 +22,10 @@ async function shellMetrics(page, surfaceSelector) {
     const main = document.querySelector('#workintel-main')
     const surface = document.querySelector(selector)
     if (!shell || !content || !main || !surface) throw new Error(`Missing large-screen surface ${selector}`)
-    const rect = element => element.getBoundingClientRect()
+    const rect = element => {
+      const value = element.getBoundingClientRect()
+      return { x: value.x, y: value.y, width: value.width, height: value.height, right: value.right, bottom: value.bottom }
+    }
     const font = selectorValue => {
       const element = document.querySelector(selectorValue)
       return element ? Number.parseFloat(getComputedStyle(element).fontSize) : null
@@ -51,10 +54,10 @@ async function shellMetrics(page, surfaceSelector) {
 function expectFullWidth(metrics) {
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.innerWidth + 2)
   expect(Math.abs(metrics.shell.x)).toBeLessThanOrEqual(2)
-  expect(Math.abs((metrics.shell.x + metrics.shell.width) - metrics.innerWidth)).toBeLessThanOrEqual(2)
-  expect(Math.abs((metrics.content.x + metrics.content.width) - metrics.innerWidth)).toBeLessThanOrEqual(2)
-  expect(Math.abs((metrics.main.x + metrics.main.width) - metrics.innerWidth)).toBeLessThanOrEqual(2)
-  expect(Math.abs((metrics.surface.x + metrics.surface.width) - metrics.innerWidth)).toBeLessThanOrEqual(2)
+  expect(Math.abs(metrics.shell.right - metrics.innerWidth)).toBeLessThanOrEqual(2)
+  expect(Math.abs(metrics.content.right - metrics.innerWidth)).toBeLessThanOrEqual(2)
+  expect(Math.abs(metrics.main.right - metrics.innerWidth)).toBeLessThanOrEqual(2)
+  expect(Math.abs(metrics.surface.right - metrics.innerWidth)).toBeLessThanOrEqual(2)
   expect(metrics.surface.width).toBeGreaterThan(metrics.content.width * 0.98)
 }
 
