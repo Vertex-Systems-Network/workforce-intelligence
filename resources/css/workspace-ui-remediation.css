@@ -1,0 +1,430 @@
+/* Post-release authenticated workspace remediation.
+ * Scoped to the private shell so marketing, client portal and public renderers keep
+ * their own density contracts. This layer intentionally loads last.
+ */
+html[data-workintel-private-shell="true"] {
+  --wi-control-h-sm: 36px;
+  --wi-control-h: 40px;
+  --wi-control-h-lg: 44px;
+  --wi-workspace-gutter: clamp(24px, 2vw, 44px);
+  --wi-workspace-block-gap: 20px;
+}
+
+html[data-workintel-private-shell="true"],
+html[data-workintel-private-shell="true"] body,
+html[data-workintel-private-shell="true"] #root {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+html[data-workintel-private-shell="true"] body {
+  min-width: 320px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+html[data-workintel-private-shell="true"] .ui-app-shell {
+  width: 100vw !important;
+  max-width: none !important;
+}
+
+html[data-workintel-private-shell="true"] .ui-app-shell__content,
+html[data-workintel-private-shell="true"] #workintel-main,
+html[data-workintel-private-shell="true"] .ui-page,
+html[data-workintel-private-shell="true"] .settings-center-layout,
+html[data-workintel-private-shell="true"] .settings-center-content {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+/* Page hierarchy and whitespace. */
+html[data-workintel-private-shell="true"] .ui-page {
+  padding: clamp(24px, 1.65vw, 36px) var(--wi-workspace-gutter);
+}
+
+html[data-workintel-private-shell="true"] .ui-page--narrow {
+  width: min(100%, 1360px);
+  max-width: 1360px;
+  margin-inline: auto;
+}
+
+html[data-workintel-private-shell="true"] .ui-page-header {
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+html[data-workintel-private-shell="true"] .ui-page-title {
+  font-size: 24px;
+  line-height: 1.22;
+  font-weight: 650;
+  letter-spacing: -.02em;
+}
+
+html[data-workintel-private-shell="true"] .ui-page-description {
+  max-width: 78ch;
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Shared readable typography: operational UI never depends on 8-11px microcopy. */
+html[data-workintel-private-shell="true"] .ui-card-title,
+html[data-workintel-private-shell="true"] .ui-form-section__header h3 {
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+html[data-workintel-private-shell="true"] .ui-card-description,
+html[data-workintel-private-shell="true"] .ui-form-section__header p,
+html[data-workintel-private-shell="true"] .ui-setting-row__copy span,
+html[data-workintel-private-shell="true"] .ui-empty__text {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+html[data-workintel-private-shell="true"] .ui-label,
+html[data-workintel-private-shell="true"] .ui-stat-card__label {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+html[data-workintel-private-shell="true"] .ui-hint,
+html[data-workintel-private-shell="true"] .ui-stat-card__sub,
+html[data-workintel-private-shell="true"] .ui-refresh-control small {
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* Controls and form rhythm. */
+html[data-workintel-private-shell="true"] .ui-button {
+  min-height: var(--wi-control-h);
+  padding: 8px 14px;
+  gap: 8px;
+  font-size: 14px;
+}
+
+html[data-workintel-private-shell="true"] .ui-button--sm {
+  min-height: var(--wi-control-h-sm);
+  padding: 7px 11px;
+  font-size: 13px;
+}
+
+html[data-workintel-private-shell="true"] .ui-button--lg {
+  min-height: var(--wi-control-h-lg);
+  padding: 10px 17px;
+  font-size: 14px;
+}
+
+html[data-workintel-private-shell="true"] .ui-button--icon {
+  width: var(--wi-control-h);
+  min-width: var(--wi-control-h);
+}
+
+html[data-workintel-private-shell="true"] .ui-button--sm.ui-button--icon {
+  width: var(--wi-control-h-sm);
+  min-width: var(--wi-control-h-sm);
+}
+
+html[data-workintel-private-shell="true"] .ui-field {
+  gap: 7px;
+}
+
+html[data-workintel-private-shell="true"] .ui-input,
+html[data-workintel-private-shell="true"] .ui-select,
+html[data-workintel-private-shell="true"] .ui-select-trigger,
+html[data-workintel-private-shell="true"] .ui-textarea {
+  min-height: var(--wi-control-h);
+  padding-block: 9px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+html[data-workintel-private-shell="true"] .ui-form-section,
+html[data-workintel-private-shell="true"] .ui-form-section__body,
+html[data-workintel-private-shell="true"] .ui-form-grid {
+  gap: 18px;
+}
+
+html[data-workintel-private-shell="true"] .ui-card__header {
+  padding: 18px 20px;
+}
+
+html[data-workintel-private-shell="true"] .ui-card__body {
+  padding: 20px;
+}
+
+html[data-workintel-private-shell="true"] .ui-card__footer {
+  padding: 14px 20px;
+}
+
+/* Shell navigation and context. */
+html[data-workintel-private-shell="true"] .ui-sidebar__brand {
+  min-height: 68px;
+}
+
+html[data-workintel-private-shell="true"] .ui-sidebar__brand-name {
+  font-size: 15px;
+}
+
+html[data-workintel-private-shell="true"] .ui-sidebar__brand-plan,
+html[data-workintel-private-shell="true"] .ui-sidebar__module-count,
+html[data-workintel-private-shell="true"] .ui-sidebar__module-meta,
+html[data-workintel-private-shell="true"] .ui-sidebar__favorites-title,
+html[data-workintel-private-shell="true"] .ui-sidebar__section-label {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+html[data-workintel-private-shell="true"] .ui-nav-item {
+  min-height: 40px;
+  gap: 11px;
+  padding: 9px 10px;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+html[data-workintel-private-shell="true"] .ui-sidebar__module {
+  min-height: 40px;
+  padding: 8px 9px;
+}
+
+html[data-workintel-private-shell="true"] .ui-sidebar__module-label {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+html[data-workintel-private-shell="true"] .ui-topbar {
+  min-height: 62px;
+  height: 62px;
+  gap: 10px;
+  padding-inline: 18px;
+}
+
+html[data-workintel-private-shell="true"] .ui-topbar__crumb,
+html[data-workintel-private-shell="true"] .ui-shell-context__module-link,
+html[data-workintel-private-shell="true"] .ui-shell-context__description {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+html[data-workintel-private-shell="true"] .ui-shell-context {
+  min-height: 58px;
+  padding: 10px 20px;
+}
+
+/* Tabs, menus and status affordances. */
+html[data-workintel-private-shell="true"] .ui-tab,
+html[data-workintel-private-shell="true"] .ui-segmented__item,
+html[data-workintel-private-shell="true"] .ui-select-option,
+html[data-workintel-private-shell="true"] .ui-menu-item {
+  font-size: 13px;
+}
+
+html[data-workintel-private-shell="true"] .ui-tab {
+  min-height: 40px;
+  padding: 10px 13px;
+}
+
+html[data-workintel-private-shell="true"] .ui-menu-item,
+html[data-workintel-private-shell="true"] .ui-select-option {
+  min-height: 38px;
+  padding-block: 8px;
+}
+
+html[data-workintel-private-shell="true"] .ui-menu-label,
+html[data-workintel-private-shell="true"] .ui-menu-item__meta,
+html[data-workintel-private-shell="true"] .ui-data-grid__footer,
+html[data-workintel-private-shell="true"] .ui-data-grid__columns > strong,
+html[data-workintel-private-shell="true"] .ui-data-grid__columns label,
+html[data-workintel-private-shell="true"] .ui-data-grid-v2__footer,
+html[data-workintel-private-shell="true"] .ui-data-grid-v2__filters > strong,
+html[data-workintel-private-shell="true"] .ui-data-grid-v2__views > strong,
+html[data-workintel-private-shell="true"] .ui-data-grid-v2__saved-view > button,
+html[data-workintel-private-shell="true"] .ui-data-grid-v2__bulk > strong {
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+html[data-workintel-private-shell="true"] .ui-badge {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Tables and collections. */
+html[data-workintel-private-shell="true"] .ui-data-grid-v2,
+html[data-workintel-private-shell="true"] .ui-data-grid {
+  gap: 12px;
+}
+
+html[data-workintel-private-shell="true"] .ui-data-grid-v2__toolbar,
+html[data-workintel-private-shell="true"] .ui-data-grid-v2__footer {
+  padding: 10px 12px;
+}
+
+html[data-workintel-private-shell="true"] .ui-table thead th,
+html[data-workintel-private-shell="true"] .ui-table th,
+html[data-workintel-private-shell="true"] .tbl th {
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.35;
+  letter-spacing: .03em;
+}
+
+html[data-workintel-private-shell="true"] .ui-table td,
+html[data-workintel-private-shell="true"] .tbl td {
+  min-height: 44px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+html[data-workintel-private-shell="true"] .ui-data-grid-v2__page-wrap button {
+  width: 34px;
+  height: 34px;
+  font-size: 12px;
+}
+
+/* Dialog readability. */
+html[data-workintel-private-shell="true"] .ui-modal {
+  width: min(640px, calc(100vw - 32px));
+}
+
+html[data-workintel-private-shell="true"] .ui-modal--lg {
+  width: min(900px, calc(100vw - 32px));
+}
+
+html[data-workintel-private-shell="true"] .ui-modal--xl {
+  width: min(1200px, calc(100vw - 32px));
+}
+
+html[data-workintel-private-shell="true"] .ui-modal__header {
+  padding: 20px 22px;
+}
+
+html[data-workintel-private-shell="true"] .ui-modal__body {
+  padding: 22px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+html[data-workintel-private-shell="true"] .ui-modal__footer {
+  padding: 15px 22px;
+}
+
+html[data-workintel-private-shell="true"] .ui-modal code,
+html[data-workintel-private-shell="true"] .ui-modal .ui-card-description {
+  font-size: 13px;
+}
+
+/* Settings is a full-height split surface. Keep its navigation useful while allowing
+ * the actual workspace configuration to use the available desktop width. */
+html[data-workintel-private-shell="true"] .settings-center-nav {
+  width: 252px !important;
+  min-width: 252px;
+  padding: 20px 10px !important;
+}
+
+html[data-workintel-private-shell="true"] .settings-center-content {
+  padding: 32px var(--wi-workspace-gutter) !important;
+}
+
+html[data-workintel-private-shell="true"] .settings-center-content > * {
+  width: 100%;
+  max-width: 2200px;
+  margin-inline: auto;
+}
+
+html[data-workintel-private-shell="true"] .settings-center-content .ui-form {
+  gap: var(--wi-workspace-block-gap) !important;
+}
+
+html[data-workintel-private-shell="true"] .settings-center-content .ui-grid {
+  column-gap: 20px !important;
+  row-gap: 16px !important;
+}
+
+/* Wide monitors should reveal more workspace, not magnify the UI. */
+@media (min-width: 1600px) {
+  html[data-workintel-private-shell="true"] {
+    --wi-workspace-gutter: clamp(32px, 2.2vw, 52px);
+  }
+
+  html[data-workintel-private-shell="true"] .ui-page-title {
+    font-size: 25px;
+  }
+
+  html[data-workintel-private-shell="true"] .ui-data-grid-v2__toolbar-main > .ui-search {
+    width: min(460px, 100%);
+    max-width: 460px;
+  }
+}
+
+@media (min-width: 2560px) {
+  html[data-workintel-private-shell="true"] {
+    --wi-workspace-gutter: clamp(48px, 2.4vw, 72px);
+  }
+
+  html[data-workintel-private-shell="true"] .settings-center-content > * {
+    max-width: 2400px;
+  }
+}
+
+/* Preserve compact responsive behavior without bringing desktop microcopy back. */
+@media (max-width: 900px) {
+  html[data-workintel-private-shell="true"] .ui-page {
+    padding: 22px 20px;
+  }
+
+  html[data-workintel-private-shell="true"] .settings-center-layout {
+    display: block !important;
+    height: auto !important;
+  }
+
+  html[data-workintel-private-shell="true"] .settings-center-nav {
+    width: 100% !important;
+    min-width: 0;
+    max-height: none;
+    padding: 12px !important;
+    border-inline-end: 0 !important;
+    border-bottom: 1px solid var(--border);
+  }
+
+  html[data-workintel-private-shell="true"] .settings-center-content {
+    padding: 22px 20px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html[data-workintel-private-shell="true"] .ui-page-header {
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  html[data-workintel-private-shell="true"] .ui-page-title {
+    font-size: 21px;
+  }
+
+  html[data-workintel-private-shell="true"] .ui-page-actions > .ui-button {
+    flex: 1 1 140px;
+  }
+}
+
+@media (pointer: coarse), (any-pointer: coarse) {
+  html[data-workintel-private-shell="true"] .ui-button,
+  html[data-workintel-private-shell="true"] .ui-input,
+  html[data-workintel-private-shell="true"] .ui-select,
+  html[data-workintel-private-shell="true"] .ui-select-trigger,
+  html[data-workintel-private-shell="true"] .ui-nav-item,
+  html[data-workintel-private-shell="true"] .ui-menu-item,
+  html[data-workintel-private-shell="true"] .ui-select-option {
+    min-height: 44px;
+  }
+
+  html[data-workintel-private-shell="true"] .ui-button--icon,
+  html[data-workintel-private-shell="true"] .ui-button--sm.ui-button--icon {
+    width: 44px;
+    min-width: 44px;
+  }
+}

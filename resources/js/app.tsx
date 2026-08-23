@@ -17,6 +17,7 @@ import { ConfirmProvider } from './design-system'
 import '../css/app.css'
 import '../css/professional-ui.css'
 import '../css/professional-ui-responsive.css'
+import '../css/workspace-ui-remediation.css'
 
 const rootElement = document.getElementById('root')
 
