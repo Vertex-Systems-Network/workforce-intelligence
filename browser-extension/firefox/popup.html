@@ -4,8 +4,8 @@
 <body><main>
 <header><div class="mark">W</div><div><strong>WorkIntel</strong><span>Browser Tracker</span></div></header>
 <section id="connect-view">
-  <label>Workforce server URL<input id="server" type="url" placeholder="https://team.example.com"></label>
-  <label>Enrollment code<input id="code" placeholder="WI-XXXX-XXXX-XXXX or WB-XXXX-XXXX-XXXX"></label>
+  <div class="metric"><span>Configured server</span><strong id="configured-server">Loading…</strong></div>
+  <label>Enrollment code<input id="code" autocomplete="off" placeholder="WI-XXXX-XXXX-XXXX or WB-XXXX-XXXX-XXXX"><small class="help">The server address is already bound to this package by WorkIntel Downloads. Enter only your one-time enrollment code.</small></label>
   <button id="connect">Connect browser</button>
 </section>
 <section id="status-view" hidden>
@@ -16,5 +16,5 @@
   <p class="privacy">Domain only. URL paths, queries, form data and typed content are not collected. Incognito/private tabs are ignored.</p>
   <button id="sync" class="secondary">Sync now</button><button id="disconnect" class="danger">Disconnect locally</button>
 </section>
-<p id="message"></p>
+<p id="message" role="status" aria-live="polite"></p>
 </main><script src="popup.js"></script></body></html>

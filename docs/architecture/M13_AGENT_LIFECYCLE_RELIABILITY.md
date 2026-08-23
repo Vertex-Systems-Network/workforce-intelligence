@@ -1,6 +1,6 @@
 # M13 — Agent Lifecycle Reliability
 
-Updated: 2026-08-23
+Updated: 2026-08-24
 
 M13 is a post-M12 productization/hardening phase. It does not retroactively change the completed M0–M12 weighted maturity model. Its purpose is to remove production lifecycle gaps that were discovered after the original modular roadmap reached its active-scope closure.
 
@@ -22,7 +22,7 @@ M13 is a post-M12 productization/hardening phase. It does not retroactively chan
 - Managed package transfer does not follow redirects; the bearer token is supplied to curl over stdin and the archive is streamed into an exclusive descriptor inside a random private temporary directory.
 - The server verifies the release binary against the SHA-256 stored in its release manifest before serving it.
 - The agent independently verifies the response metadata and downloaded SHA-256 before extraction.
-- The extracted candidate must contain `desktop-agent/native-agent.mjs`, must declare the expected release version, and must pass `node --check` before replacement.
+- The extracted candidate must contain the expected `desktop-agent/native-agent.mjs`, must declare the expected release version, and must pass `node --check` before replacing the installed source.
 - The current source is retained as `native-agent.mjs.previous`; replacement failures restore the previous source.
 - A successful update is acknowledged before process exit. The installation supervisor is responsible for restarting the agent.
 
@@ -34,7 +34,7 @@ M13 is a post-M12 productization/hardening phase. It does not retroactively chan
 
 ### Compatibility boundary
 
-Version 1.2.0 is the first native agent that advertises `self_update`. Existing agents without that capability require one verified manual upgrade before remote managed updates become available. The application must not represent legacy agents as remotely self-updatable when the capability is absent. Version 1.2.1 is the security-hardening patch release so deployed 1.2.0 agents can receive the hardened updater through the managed channel.
+Version 1.2.0 is the first native agent that advertises `self_update`. Existing agents without that capability require one verified manual upgrade before remote managed updates become available. The application must not represent legacy agents as remotely self-updatable when the capability is absent. Version 1.2.1 is the security-hardening patch release so deployed 1.2.0 agents can receive the hardened updater through the managed channel. Version 1.2.2 preserves that trust model and adds the server-bound deployment bootstrap described in Batch 6.
 
 ## Batch 2 — Deterministic release packaging
 
@@ -53,7 +53,7 @@ The release builder previously used `ZipFile.write()`, which copied checkout-dep
 - The same audit verifies `manifest.json` and `SHA256SUMS.txt` exactly match the generated package bytes.
 - WorkIntel CI runs the functional reproducibility audit before the frontend/browser matrix, so timestamp-dependent packaging cannot merge unnoticed.
 
-Already-published 1.2.1 artifacts are not silently rewritten under the same semantic version merely to adopt the deterministic container format. The deterministic writer applies to subsequent release builds; any package-content change intended for publication must use the appropriate new agent or browser-extension release version rather than mutating a published artifact in place.
+Already-published artifacts are not silently rewritten under the same semantic version merely to adopt a new container format or deployment behavior. Any package-content change intended for publication must use the appropriate new agent or browser-extension release version rather than mutating a published artifact in place.
 
 ## Batch 3 — Published release immutability
 
@@ -71,9 +71,10 @@ Batch 2 made future ZIP generation deterministic, but the builder still deleted 
 - If packaged content is unchanged, the existing published ZIP bytes and original `released_at` value are retained.
 - A target filename that already exists without a matching manifest/version record is treated as untracked release state and is never overwritten automatically.
 - `tools/release-immutability-audit.py` proves that unchanged rebuilds are byte-for-byte no-ops, agent/Chrome/Firefox same-version source changes are rejected without release-state mutation, and manifest/binary integrity mismatches are not silently repaired.
+- The corruption fixture resolves the active Windows package filename from the authoritative manifest instead of hard-coding a historical release version.
 - WorkIntel CI runs both the deterministic reproducibility audit and the published-release immutability audit before dependency installation and the browser matrix.
 
-This contract applies to the currently published agent 1.2.1 and browser-extension 1.0.0 artifacts and to subsequent releases. Package-content changes require a semantic version change before publication.
+This contract applies to the currently published agent 1.2.2 and browser-extension 1.0.1 artifacts and to subsequent releases. Package-content changes require a semantic version change before publication.
 
 ## Batch 4 — Transactional release publication
 
@@ -90,7 +91,7 @@ Batch 3 validated each release before writing that release, but validation and p
 - Commit-time target existence is rechecked so an untracked file that appears after validation is not overwritten by `os.replace`.
 - If a filesystem error occurs during the commit phase, newly-created ZIPs are removed and any catalog file already replaced is restored from its pre-commit bytes.
 - Obsolete ZIP cleanup happens only after the new package/catalog transaction has committed successfully.
-- The functional immutability audit now exercises a mixed transaction: it bumps the desktop-agent patch version while also mutating an unchanged-version browser package. The later browser rejection must leave the complete release directory byte-for-byte identical and must not leave any new-version agent ZIP behind.
+- The functional immutability audit exercises a mixed transaction: it bumps the desktop-agent patch version while also mutating an unchanged-version browser package. The later browser rejection must leave the complete release directory byte-for-byte identical and must not leave any new-version agent ZIP behind.
 
 This closes validation-time partial publication while preserving the same immutable semantic-version and deterministic-byte guarantees established by Batches 2 and 3.
 
@@ -111,15 +112,43 @@ The release builder previously hard-coded `browser_version = '1.0.0'` independen
 
 This makes the package catalog, release filenames, and browser manifests share one explicit version authority instead of requiring operators to synchronize a third hard-coded value manually.
 
+## Batch 6 — Runtime-bound deployment packages and code-only enrollment
+
+### Defects closed
+
+1. The Devices/Installation UI exposed enrollment API endpoints while desktop/browser clients expected a server origin, making it easy to produce duplicated paths such as `/api/v1/agent/enroll/api/v1/browser/enroll`.
+2. Operators had to manually type or copy the WorkIntel server URL even when downloading the installer from that exact WorkIntel deployment.
+3. The browser popup used valuable space for an editable server URL that the application already knows at authenticated download time.
+4. Local/enterprise HTTPS could be trusted by Windows and the browser while Node still used only its bundled CA set.
+
+### Server-bound deployment contract
+
+- Canonical agent 1.2.2 and browser 1.0.1 ZIPs remain immutable and server-agnostic in `storage/app/releases`.
+- Authenticated Downloads requests verify the canonical ZIP against the manifest before deriving a deployment copy.
+- The deployment copy contains only the request-time WorkIntel origin in `workintel-server.txt` (or `desktop-agent/workintel-server.txt` for agents).
+- Enrollment codes, device/browser access tokens, user identifiers and other secrets are never written into the downloaded package.
+- Runtime-bound bundle bytes intentionally differ from the canonical release bytes. Response metadata exposes both the derived deployment SHA and canonical provenance SHA.
+- Deployment bundles are temporary, private, `no-store` responses and are deleted after serving.
+- Windows/macOS/Linux installers read the embedded origin automatically; normal installation therefore requires only the one-time enrollment code. Explicit server arguments remain a legacy/raw-canonical fallback.
+- Chrome/Edge and Firefox popups read the embedded origin and ask the user only for the enrollment code. Raw unpacked source retains a manual server fallback for development.
+- The browser requests optional host permission only for the configured WorkIntel origin.
+- Windows enables Node `--use-system-ca` when the installed Node version supports it, preserving TLS verification while honoring certificates trusted by the Windows system store.
+
+### UI and large-screen remediation coupled to this batch
+
+The same post-release remediation removes avoidable 8–11px operational text and fixes private-shell large-screen utilization. Automated browser coverage includes representative authenticated Settings and Enterprise surfaces at 1280, 1440, 1920, 2560 and 3840 pixel widths so the application does not collapse into a narrow left-aligned column with large unused right-side space.
+
 ## Automated acceptance
 
 The phase is protected by:
 
 - `tests/Feature/AgentReleaseUpdateFlowTest.php` for device-token authentication, platform scoping, release metadata, download headers, and fail-closed tamper detection.
+- `tests/Feature/InstallationCenterFlowTest.php` for runtime-origin binding, canonical hash preservation, secret-free deployment config and authenticated server-bound download behavior.
 - `tests/frontend/agent-lifecycle-m13.test.mjs` for native-agent syntax, trusted route/source contracts, Windows state continuity, supervisor behavior, secure managed-download behavior, and release-version alignment.
 - `tests/frontend/release-packaging-m13.test.mjs` for deterministic ZIP invariants, published-release immutability, transactional publication, browser-version authority, and CI wiring.
+- `tests/frontend/enrollment-server-url-contract.test.mjs` for code-only installer/browser configuration and safe legacy URL normalization.
 - `tools/release-reproducibility-audit.py` for actual repeated-build hash stability plus manifest/checksum consistency.
-- `tools/release-immutability-audit.py` for same-version no-op preservation, packaged-content drift rejection, published binary integrity enforcement, failed mixed-version transaction rollback, and browser manifest version synchronization/derivation.
+- `tools/release-immutability-audit.py` for same-version no-op preservation, packaged-content drift rejection, current-manifest binary integrity enforcement, failed mixed-version transaction rollback, and browser manifest version synchronization/derivation.
 - Existing repository quality gates: PHP documentation audit, JavaScript documentation audit, frontend contracts, TypeScript, accessibility/source audits, Laravel Pint for changed PHP, CodeQL, PHPUnit, production build, and browser certification.
 
-Batch 1 is merged and certified on `main` through PR #17 with agent 1.2.1. Batch 2 is merged and exact-head certified on `main` through PR #18. Batch 3 is merged and exact-head certified on `main` through PR #20. Batch 4 is merged and exact-head certified on `main` through PR #30. Batch 5 is merged and exact-head certified on `main` through PR #31.
+Batches 1–5 are merged and certified on `main` through PRs #17, #18, #20, #30 and #31 respectively. Batch 6 is the active post-release remediation in PR #37 and must not be described as accepted until the exact final PR head passes Code Quality, CI/governance, and GitHub-hosted Windows Chrome/Edge/Firefox certification. The currently published 1.2.2/1.0.1 artifacts are candidate bytes on the PR branch until that acceptance completes.

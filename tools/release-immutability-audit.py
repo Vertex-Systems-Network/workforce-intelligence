@@ -69,6 +69,15 @@ def write_json(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, indent=2) + '\n', encoding='utf-8')
 
 
+def release_filename(work_root: Path, slug: str) -> str:
+    """Resolve the current published filename for one release slug from the authoritative manifest."""
+    catalog = read_json(work_root / 'storage/app/releases/manifest.json')
+    for release in catalog.get('releases', []):
+        if release.get('slug') == slug and release.get('filename'):
+            return str(release['filename'])
+    raise SystemExit(f'Published release slug is missing from manifest: {slug}')
+
+
 def assert_unchanged_rebuild() -> None:
     """An unchanged same-version rebuild must preserve every published byte and catalog timestamp."""
     with tempfile.TemporaryDirectory(prefix='workintel-release-immutable-noop-') as temporary:
@@ -104,7 +113,7 @@ def assert_manifest_integrity_is_authoritative() -> None:
     """A committed release binary that no longer matches its manifest must never be silently repaired."""
     with tempfile.TemporaryDirectory(prefix='workintel-release-immutable-corrupt-') as temporary:
         work_root = copy_fixture(Path(temporary))
-        package = work_root / 'storage/app/releases/WorkIntel-Agent-Windows-1.2.1.zip'
+        package = work_root / 'storage/app/releases' / release_filename(work_root, 'agent-windows-x64')
         package.write_bytes(package.read_bytes() + b'corruption')
         before = release_snapshot(work_root)
         result = run_builder(work_root, expect_success=False)

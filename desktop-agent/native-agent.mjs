@@ -4,7 +4,7 @@ import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFi
 import { dirname, resolve, basename } from 'node:path'
 import { execFileSync, spawnSync } from 'node:child_process'
 
-const VERSION = '1.2.1'
+const VERSION = '1.2.2'
 const POLL_MS = 5000
 const MAX_SESSION_SECONDS = 300
 const AGENT_CAPABILITIES = ['heartbeat','offline_sync','commands','app_tracking','screenshots','idle_detection','native_service','self_update']
@@ -21,7 +21,7 @@ mkdirSync(stateDir, { recursive: true })
 /** Returns get config data required by the current workflow. */ function getConfig() { return readJson(configFile, null) }
 /** Handles the save config operation for the WorkIntel application. */ function saveConfig(config) { writeJson(configFile, config) }
 /** Returns get queue data required by the current workflow. */ function getQueue() { return readJson(queueFile, []) }
-/** Handles the save queue operation for the WorkIntel application. */ function saveQueue(queue) { writeJson(queueFile, queue.slice(-10000)) }
+/** Handles the save queue state for the WorkIntel application. */ function saveQueue(queue) { writeJson(queueFile, queue.slice(-10000)) }
 /** Handles the queue event operation for the WorkIntel application. */ function queueEvent(type, payload = {}) { const q=getQueue(); q.push({event_id:randomUUID(),type,occurred_at:new Date().toISOString(),payload}); saveQueue(q) }
 /** Handles the sleep operation for the WorkIntel application. */ function sleep(ms) { return new Promise(resolvePromise => setTimeout(resolvePromise, ms)) }
 

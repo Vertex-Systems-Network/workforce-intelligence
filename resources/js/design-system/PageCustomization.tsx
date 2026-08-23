@@ -31,7 +31,7 @@ const PageCustomizationContext = createContext<ContextValue | null>(null)
 function defaultsFor(page: string): PageCustomizationSettings {
   return {
     density: 'comfortable',
-    content_width: ['chat','tasks','schedule'].includes(page) ? 'full' : 'balanced',
+    content_width: ['chat','tasks','schedule','enterprise'].includes(page) ? 'full' : 'balanced',
     motion: 'full',
     table_density: tablePages.has(page) ? 'compact' : 'comfortable',
     sticky_header: false,

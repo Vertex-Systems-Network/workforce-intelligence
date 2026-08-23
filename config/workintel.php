@@ -7,7 +7,7 @@ return [
         'enrollment_minutes' => (int) env('WORKINTEL_AGENT_ENROLLMENT_MINUTES', 10),
         'token_days' => (int) env('WORKINTEL_AGENT_TOKEN_DAYS', 365),
         'sync_batch_max' => (int) env('WORKINTEL_AGENT_SYNC_BATCH_MAX', 500),
-        'latest_version' => env('WORKINTEL_AGENT_LATEST_VERSION', '1.2.1'),
+        'latest_version' => env('WORKINTEL_AGENT_LATEST_VERSION', '1.2.2'),
         'minimum_supported_version' => env('WORKINTEL_AGENT_MINIMUM_VERSION', '1.0.0'),
     ],
     'screenshots' => [
@@ -19,7 +19,7 @@ return [
         'timeline_max_days' => (int) env('WORKINTEL_TIMELINE_MAX_DAYS', 31),
     ],
     'reports' => [
-        'disk' => env('WORKINTEL_REPORT_DISK', env('FILESYSTEM_DISK', 'local')),
+        'disk' => env('WORKINTEL_REPORT_DISK', 'local'),
         'preview_rows' => (int) env('WORKINTEL_REPORT_PREVIEW_ROWS', 200),
         'max_rows' => (int) env('WORKINTEL_REPORT_MAX_ROWS', 20000),
         'max_range_days' => (int) env('WORKINTEL_REPORT_MAX_RANGE_DAYS', 730),
