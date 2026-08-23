@@ -73,7 +73,7 @@ jobs:
           find storage/app/private/e2e-results -type f -name 'error-context.md' -exec sh -c 'echo "--- $1"; sed -n "1,240p" "$1"' _ {} \; 2>/dev/null || true
       - name: Upload browser certification failure artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: workintel-e2e-failure-${{ github.run_id }}-${{ github.run_attempt }}
           path: storage/app/private/e2e-results
@@ -94,7 +94,7 @@ jobs:
           find storage/app/private/e2e-results -type f -name 'error-context.md' -exec sh -c 'echo "--- $1"; sed -n "1,240p" "$1"' _ {} \; 2>/dev/null || true
       - name: Upload accessibility browser certification failure artifacts
         if: failure() && steps.accessibility_e2e.outcome == 'failure'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: workintel-accessibility-e2e-failure-${{ github.run_id }}-${{ github.run_attempt }}
           path: storage/app/private/e2e-results
