@@ -87,11 +87,29 @@ Batch 3 validated each release before writing that release, but validation and p
 - Every candidate must pass filename, manifest-integrity, same-version payload, and untracked-target validation before the commit phase starts.
 - Catalog rows, `manifest.json`, and `SHA256SUMS.txt` are derived from the fully validated staged/existing package set before publication.
 - New ZIPs are committed only after validation of the complete catalog succeeds.
+- Commit-time target existence is rechecked so an untracked file that appears after validation is not overwritten by `os.replace`.
 - If a filesystem error occurs during the commit phase, newly-created ZIPs are removed and any catalog file already replaced is restored from its pre-commit bytes.
 - Obsolete ZIP cleanup happens only after the new package/catalog transaction has committed successfully.
 - The functional immutability audit now exercises a mixed transaction: it bumps the desktop-agent patch version while also mutating an unchanged-version browser package. The later browser rejection must leave the complete release directory byte-for-byte identical and must not leave any new-version agent ZIP behind.
 
 This closes validation-time partial publication while preserving the same immutable semantic-version and deterministic-byte guarantees established by Batches 2 and 3.
+
+## Batch 5 — Browser release version authority
+
+### Defect closed
+
+The release builder previously hard-coded `browser_version = '1.0.0'` independently from both extension manifests. A future Chrome/Edge or Firefox manifest version bump could therefore leave the package filename/catalog on an old version, or the two browser variants could silently describe different versions while being published under one shared release version.
+
+### Browser version contract
+
+- `browser-extension/manifest.json` and `browser-extension/firefox/manifest.json` are the browser release version sources.
+- Both manifest versions must be valid numeric extension versions and must match exactly before package staging begins.
+- The shared browser package version is derived from the synchronized manifests; the release builder no longer carries an independent hard-coded browser version.
+- A Chrome/Firefox manifest mismatch fails before any new release artifact or catalog byte is published.
+- When both manifests move together to a new version, that version must drive both browser ZIP filenames and both extension rows in `manifest.json`.
+- The functional release audit covers both the fail-closed mismatch and a successful matched manifest bump in an isolated fixture.
+
+This makes the package catalog, release filenames, and browser manifests share one explicit version authority instead of requiring operators to synchronize a third hard-coded value manually.
 
 ## Automated acceptance
 
@@ -99,9 +117,9 @@ The phase is protected by:
 
 - `tests/Feature/AgentReleaseUpdateFlowTest.php` for device-token authentication, platform scoping, release metadata, download headers, and fail-closed tamper detection.
 - `tests/frontend/agent-lifecycle-m13.test.mjs` for native-agent syntax, trusted route/source contracts, Windows state continuity, supervisor behavior, secure managed-download behavior, and release-version alignment.
-- `tests/frontend/release-packaging-m13.test.mjs` for deterministic ZIP invariants, published-release immutability, transactional publication source contracts, and CI wiring.
+- `tests/frontend/release-packaging-m13.test.mjs` for deterministic ZIP invariants, published-release immutability, transactional publication, browser-version authority, and CI wiring.
 - `tools/release-reproducibility-audit.py` for actual repeated-build hash stability plus manifest/checksum consistency.
-- `tools/release-immutability-audit.py` for same-version no-op preservation, packaged-content drift rejection, published binary integrity enforcement, and failed mixed-version transaction rollback.
+- `tools/release-immutability-audit.py` for same-version no-op preservation, packaged-content drift rejection, published binary integrity enforcement, failed mixed-version transaction rollback, and browser manifest version synchronization/derivation.
 - Existing repository quality gates: PHP documentation audit, JavaScript documentation audit, frontend contracts, TypeScript, accessibility/source audits, Laravel Pint for changed PHP, CodeQL, PHPUnit, production build, and browser certification.
 
-Batch 1 is merged and certified on `main` through PR #17 with agent 1.2.1. Batch 2 is merged and exact-head certified on `main` through PR #18. Batch 3 is considered certified only after its exact final PR head passes WorkIntel Code Quality, WorkIntel CI including both release audits, and WorkIntel Windows Certification with no current unresolved security review findings. Batch 4 remains stacked on Batch 3 until Batch 3 is merged, then requires its own exact-head certification before merge.
+Batch 1 is merged and certified on `main` through PR #17 with agent 1.2.1. Batch 2 is merged and exact-head certified on `main` through PR #18. Batch 3 is considered certified only after its exact final PR head passes WorkIntel Code Quality, WorkIntel CI including both release audits, and WorkIntel Windows Certification with no current unresolved security review findings. Batch 4 remains stacked on Batch 3 until Batch 3 is merged and then requires its own exact-head certification. Batch 5 remains stacked on Batch 4 and requires the same exact-head certification before merge.
