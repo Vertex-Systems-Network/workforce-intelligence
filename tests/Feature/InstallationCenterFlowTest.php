@@ -92,7 +92,7 @@ use Tests\TestCase;
     {
         $user = User::where('email', 'owner@acme.test')->firstOrFail();
         Sanctum::actingAs($user);
-        $this->withServerVariables(['HTTPS' => 'on', 'HTTP_HOST' => 'runtime.example.test'])->get('/api/v1/releases/browser-chrome-edge/download')
+        $this->get('https://runtime.example.test/api/v1/releases/browser-chrome-edge/download')
             ->assertOk()->assertHeader('X-WorkIntel-Configured-Server', 'https://runtime.example.test')->assertHeader('Cache-Control', 'private, no-store');
     }
 }
