@@ -75,15 +75,34 @@ Batch 2 made future ZIP generation deterministic, but the builder still deleted 
 
 This contract applies to the currently published agent 1.2.1 and browser-extension 1.0.0 artifacts and to subsequent releases. Package-content changes require a semantic version change before publication.
 
+## Batch 4 — Transactional release publication
+
+### Defect closed
+
+Batch 3 validated each release before writing that release, but validation and publication were still interleaved across the five-package catalog. In a mixed build, an earlier package with a legitimate version bump could therefore be published before a later same-version package failed immutability validation. The command would fail while leaving a new unreferenced ZIP behind, which violated the release directory's all-or-nothing expectation.
+
+### Transactional publication contract
+
+- All Windows, macOS, Linux, Chrome/Edge, and Firefox candidates are built into one private staging directory before any new release ZIP is written to `storage/app/releases`.
+- Every candidate must pass filename, manifest-integrity, same-version payload, and untracked-target validation before the commit phase starts.
+- Catalog rows, `manifest.json`, and `SHA256SUMS.txt` are derived from the fully validated staged/existing package set before publication.
+- New ZIPs are committed only after validation of the complete catalog succeeds.
+- Commit-time target existence is rechecked so an untracked file that appears after validation is not overwritten by `os.replace`.
+- If a filesystem error occurs during the commit phase, newly-created ZIPs are removed and any catalog file already replaced is restored from its pre-commit bytes.
+- Obsolete ZIP cleanup happens only after the new package/catalog transaction has committed successfully.
+- The functional immutability audit now exercises a mixed transaction: it bumps the desktop-agent patch version while also mutating an unchanged-version browser package. The later browser rejection must leave the complete release directory byte-for-byte identical and must not leave any new-version agent ZIP behind.
+
+This closes validation-time partial publication while preserving the same immutable semantic-version and deterministic-byte guarantees established by Batches 2 and 3.
+
 ## Automated acceptance
 
 The phase is protected by:
 
 - `tests/Feature/AgentReleaseUpdateFlowTest.php` for device-token authentication, platform scoping, release metadata, download headers, and fail-closed tamper detection.
 - `tests/frontend/agent-lifecycle-m13.test.mjs` for native-agent syntax, trusted route/source contracts, Windows state continuity, supervisor behavior, secure managed-download behavior, and release-version alignment.
-- `tests/frontend/release-packaging-m13.test.mjs` for deterministic ZIP invariants, published-release immutability source contracts, and CI wiring.
+- `tests/frontend/release-packaging-m13.test.mjs` for deterministic ZIP invariants, published-release immutability, transactional publication, and CI wiring.
 - `tools/release-reproducibility-audit.py` for actual repeated-build hash stability plus manifest/checksum consistency.
-- `tools/release-immutability-audit.py` for same-version no-op preservation, packaged-content drift rejection, and published binary integrity enforcement.
+- `tools/release-immutability-audit.py` for same-version no-op preservation, packaged-content drift rejection, published binary integrity enforcement, and failed mixed-version transaction rollback.
 - Existing repository quality gates: PHP documentation audit, JavaScript documentation audit, frontend contracts, TypeScript, accessibility/source audits, Laravel Pint for changed PHP, CodeQL, PHPUnit, production build, and browser certification.
 
-Batch 1 is merged and certified on `main` through PR #17 with agent 1.2.1. Batch 2 is merged and exact-head certified on `main` through PR #18. Batch 3 is merged and exact-head certified on `main` through PR #20.
+Batch 1 is merged and certified on `main` through PR #17 with agent 1.2.1. Batch 2 is merged and exact-head certified on `main` through PR #18. Batch 3 is merged and exact-head certified on `main` through PR #20. Batch 4 requires its own exact-head certification before merge.

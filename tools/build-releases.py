@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'storage/app/releases'
 OUT.mkdir(parents=True, exist_ok=True)
 MANIFEST_PATH = OUT / 'manifest.json'
+CHECKSUMS_PATH = OUT / 'SHA256SUMS.txt'
 ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
 
 
@@ -100,70 +101,35 @@ def verify_published_binary(package: Path, previous: dict) -> None:
         raise RuntimeError(f'Published release binary does not match manifest integrity metadata: {package.name}')
 
 
-def publish_zip(slug: str, name: str, version: str, entries):
-    """Preserve same-version published bytes or atomically publish a new-version package."""
+def prepare_zip(staging: Path, slug: str, name: str, version: str, entries) -> dict:
+    """Build and validate one release candidate without publishing any new bytes."""
     destination = OUT / name
     previous = PREVIOUS_BY_SLUG.get(slug)
+    candidate = staging / name
+    write_candidate(candidate, entries)
 
-    with tempfile.TemporaryDirectory(prefix='workintel-release-candidate-') as temporary:
-        candidate = Path(temporary) / name
-        write_candidate(candidate, entries)
+    if previous and str(previous.get('version')) == version:
+        previous_name = str(previous.get('filename') or previous.get('file') or '')
+        if previous_name != name:
+            raise RuntimeError(f'Published release filename changed without a version bump for {slug}.')
+        verify_published_binary(destination, previous)
+        if archive_payload(destination) != archive_payload(candidate):
+            raise RuntimeError(
+                f'Published release content changed without a version bump for {slug} {version}. '
+                'Bump the release version before rebuilding.'
+            )
+        candidate.unlink()
+        return {'slug': slug, 'destination': destination, 'candidate': None, 'previous': previous}
 
-        if previous and str(previous.get('version')) == version:
-            previous_name = str(previous.get('filename') or previous.get('file') or '')
-            if previous_name != name:
-                raise RuntimeError(f'Published release filename changed without a version bump for {slug}.')
-            verify_published_binary(destination, previous)
-            if archive_payload(destination) != archive_payload(candidate):
-                raise RuntimeError(
-                    f'Published release content changed without a version bump for {slug} {version}. '
-                    'Bump the release version before rebuilding.'
-                )
-            return destination, previous
+    if destination.exists() and (not previous or str(previous.get('version')) != version):
+        raise RuntimeError(f'Refusing to overwrite untracked release binary: {destination.name}')
 
-        if destination.exists() and (not previous or str(previous.get('version')) != version):
-            raise RuntimeError(f'Refusing to overwrite untracked release binary: {destination.name}')
-
-        os.replace(candidate, destination)
-        return destination, None
+    return {'slug': slug, 'destination': destination, 'candidate': candidate, 'previous': None}
 
 
-common = [
-    (Path('desktop-agent/native-agent.mjs'), 'desktop-agent/native-agent.mjs'),
-    (Path('desktop-agent/PRODUCTION_AGENT.md'), 'desktop-agent/PRODUCTION_AGENT.md'),
-]
-
-windows, windows_previous = publish_zip(
-    'agent-windows-x64',
-    f'WorkIntel-Agent-Windows-{agent_version}.zip',
-    agent_version,
-    common + [(Path('desktop-agent/installers/windows'), 'desktop-agent/installers/windows')],
-)
-macos, macos_previous = publish_zip(
-    'agent-macos',
-    f'WorkIntel-Agent-macOS-{agent_version}.zip',
-    agent_version,
-    common + [(Path('desktop-agent/installers/macos'), 'desktop-agent/installers/macos')],
-)
-linux, linux_previous = publish_zip(
-    'agent-linux',
-    f'WorkIntel-Agent-Linux-{agent_version}.zip',
-    agent_version,
-    common + [(Path('desktop-agent/installers/linux'), 'desktop-agent/installers/linux')],
-)
-chrome, chrome_previous = publish_zip(
-    'browser-chrome-edge',
-    f'WorkIntel-Browser-Chrome-Edge-{browser_version}.zip',
-    browser_version,
-    [(Path('browser-extension') / name, name) for name in ['manifest.json', 'service-worker.js', 'popup.html', 'popup.js', 'popup.css', 'README.md']],
-)
-firefox, firefox_previous = publish_zip(
-    'browser-firefox',
-    f'WorkIntel-Browser-Firefox-{browser_version}.zip',
-    browser_version,
-    [(Path('browser-extension/firefox') / name, name) for name in ['manifest.json', 'service-worker.js', 'popup.html', 'popup.js', 'popup.css']]
-    + [(Path('browser-extension/README.md'), 'README.md')],
-)
+def package_for(plan: dict) -> Path:
+    """Return the validated bytes used to construct catalog metadata before publication."""
+    return plan['candidate'] if plan['candidate'] is not None else plan['destination']
 
 
 def release_row(slug, platform, kind, package, version, requirements, notes, guide_key, previous=None):
@@ -187,27 +153,121 @@ def release_row(slug, platform, kind, package, version, requirements, notes, gui
     }
 
 
-rows = [
-    release_row('agent-windows-x64', 'Windows 10/11', 'agent', windows, agent_version, 'Windows 10/11, Node.js 20+, PowerShell 5+, curl', 'Per-user Scheduled Task installer with persistent state and managed self-update supervisor.', 'windows-agent', windows_previous),
-    release_row('agent-macos', 'macOS', 'agent', macos, agent_version, 'macOS 12+, Node.js 20+, curl', 'Per-user LaunchAgent installer with managed self-update.', 'macos-agent', macos_previous),
-    release_row('agent-linux', 'Linux', 'agent', linux, agent_version, 'Modern Linux desktop, Node.js 20+, curl, systemd user session', 'systemd-user installer with managed self-update.', 'linux-agent', linux_previous),
-    release_row('browser-chrome-edge', 'Chrome / Microsoft Edge', 'extension', chrome, browser_version, 'Chromium Manifest V3', 'Domain-only browser tracker package.', 'chrome-edge-extension', chrome_previous),
-    release_row('browser-firefox', 'Mozilla Firefox', 'extension', firefox, browser_version, 'Firefox 128+', 'Firefox Manifest V3 domain-only tracker package.', 'firefox-extension', firefox_previous),
+def atomic_restore(path: Path, previous: bytes | None, staging: Path) -> None:
+    """Restore one catalog file during a failed commit without exposing partial bytes."""
+    if previous is None:
+        path.unlink(missing_ok=True)
+        return
+    rollback = staging / f'rollback-{path.name}'
+    rollback.write_bytes(previous)
+    os.replace(rollback, path)
+
+
+def commit_release_transaction(plans: list[dict], manifest_bytes: bytes, checksums_bytes: bytes, staging: Path) -> None:
+    """Publish validated packages and catalogs together, rolling back newly-created outputs on commit failure."""
+    manifest_candidate = staging / 'manifest.json'
+    checksums_candidate = staging / 'SHA256SUMS.txt'
+    manifest_candidate.write_bytes(manifest_bytes)
+    checksums_candidate.write_bytes(checksums_bytes)
+
+    old_manifest = MANIFEST_PATH.read_bytes() if MANIFEST_PATH.exists() else None
+    old_checksums = CHECKSUMS_PATH.read_bytes() if CHECKSUMS_PATH.exists() else None
+    published: list[Path] = []
+    manifest_replaced = False
+    checksums_replaced = False
+
+    try:
+        for plan in plans:
+            candidate = plan['candidate']
+            if candidate is None:
+                continue
+            destination = plan['destination']
+            if destination.exists():
+                raise RuntimeError(f'Refusing to overwrite release binary that appeared after validation: {destination.name}')
+            os.replace(candidate, destination)
+            published.append(destination)
+
+        os.replace(manifest_candidate, MANIFEST_PATH)
+        manifest_replaced = True
+        os.replace(checksums_candidate, CHECKSUMS_PATH)
+        checksums_replaced = True
+    except Exception:
+        for destination in reversed(published):
+            destination.unlink(missing_ok=True)
+        if manifest_replaced:
+            atomic_restore(MANIFEST_PATH, old_manifest, staging)
+        if checksums_replaced:
+            atomic_restore(CHECKSUMS_PATH, old_checksums, staging)
+        raise
+
+
+common = [
+    (Path('desktop-agent/native-agent.mjs'), 'desktop-agent/native-agent.mjs'),
+    (Path('desktop-agent/PRODUCTION_AGENT.md'), 'desktop-agent/PRODUCTION_AGENT.md'),
 ]
 
-previous_rows = PREVIOUS_MANIFEST.get('releases', [])
-generated_at = PREVIOUS_MANIFEST.get('generated_at') if previous_rows == rows else utc_now()
-manifest = {'version': 2, 'generated_at': generated_at, 'releases': rows}
-MANIFEST_PATH.write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
-(OUT / 'SHA256SUMS.txt').write_text(
-    ''.join(f"{row['sha256']}  {row['filename']}\n" for row in rows),
-    encoding='utf-8',
-)
+with tempfile.TemporaryDirectory(prefix='.workintel-release-transaction-', dir=OUT) as temporary:
+    staging = Path(temporary)
+    plans = [
+        prepare_zip(
+            staging,
+            'agent-windows-x64',
+            f'WorkIntel-Agent-Windows-{agent_version}.zip',
+            agent_version,
+            common + [(Path('desktop-agent/installers/windows'), 'desktop-agent/installers/windows')],
+        ),
+        prepare_zip(
+            staging,
+            'agent-macos',
+            f'WorkIntel-Agent-macOS-{agent_version}.zip',
+            agent_version,
+            common + [(Path('desktop-agent/installers/macos'), 'desktop-agent/installers/macos')],
+        ),
+        prepare_zip(
+            staging,
+            'agent-linux',
+            f'WorkIntel-Agent-Linux-{agent_version}.zip',
+            agent_version,
+            common + [(Path('desktop-agent/installers/linux'), 'desktop-agent/installers/linux')],
+        ),
+        prepare_zip(
+            staging,
+            'browser-chrome-edge',
+            f'WorkIntel-Browser-Chrome-Edge-{browser_version}.zip',
+            browser_version,
+            [(Path('browser-extension') / name, name) for name in ['manifest.json', 'service-worker.js', 'popup.html', 'popup.js', 'popup.css', 'README.md']],
+        ),
+        prepare_zip(
+            staging,
+            'browser-firefox',
+            f'WorkIntel-Browser-Firefox-{browser_version}.zip',
+            browser_version,
+            [(Path('browser-extension/firefox') / name, name) for name in ['manifest.json', 'service-worker.js', 'popup.html', 'popup.js', 'popup.css']]
+            + [(Path('browser-extension/README.md'), 'README.md')],
+        ),
+    ]
+
+    by_slug = {plan['slug']: plan for plan in plans}
+    rows = [
+        release_row('agent-windows-x64', 'Windows 10/11', 'agent', package_for(by_slug['agent-windows-x64']), agent_version, 'Windows 10/11, Node.js 20+, PowerShell 5+, curl', 'Per-user Scheduled Task installer with persistent state and managed self-update supervisor.', 'windows-agent', by_slug['agent-windows-x64']['previous']),
+        release_row('agent-macos', 'macOS', 'agent', package_for(by_slug['agent-macos']), agent_version, 'macOS 12+, Node.js 20+, curl', 'Per-user LaunchAgent installer with managed self-update.', 'macos-agent', by_slug['agent-macos']['previous']),
+        release_row('agent-linux', 'Linux', 'agent', package_for(by_slug['agent-linux']), agent_version, 'Modern Linux desktop, Node.js 20+, curl, systemd user session', 'systemd-user installer with managed self-update.', 'linux-agent', by_slug['agent-linux']['previous']),
+        release_row('browser-chrome-edge', 'Chrome / Microsoft Edge', 'extension', package_for(by_slug['browser-chrome-edge']), browser_version, 'Chromium Manifest V3', 'Domain-only browser tracker package.', 'chrome-edge-extension', by_slug['browser-chrome-edge']['previous']),
+        release_row('browser-firefox', 'Mozilla Firefox', 'extension', package_for(by_slug['browser-firefox']), browser_version, 'Firefox 128+', 'Firefox Manifest V3 domain-only tracker package.', 'firefox-extension', by_slug['browser-firefox']['previous']),
+    ]
+
+    previous_rows = PREVIOUS_MANIFEST.get('releases', [])
+    generated_at = PREVIOUS_MANIFEST.get('generated_at') if previous_rows == rows else utc_now()
+    manifest = {'version': 2, 'generated_at': generated_at, 'releases': rows}
+    manifest_bytes = (json.dumps(manifest, indent=2) + '\n').encode('utf-8')
+    checksums_bytes = ''.join(f"{row['sha256']}  {row['filename']}\n" for row in rows).encode('utf-8')
+
+    commit_release_transaction(plans, manifest_bytes, checksums_bytes, staging)
 
 referenced = {row['filename'] for row in rows}
 for package in OUT.glob('*.zip'):
     if package.name not in referenced:
         package.unlink()
 
-preserved = sum(previous is not None for previous in [windows_previous, macos_previous, linux_previous, chrome_previous, firefox_previous])
-print(f'Built release catalog with {preserved} immutable published package(s) preserved and {len(rows) - preserved} new package(s) published.')
+preserved = sum(plan['previous'] is not None for plan in plans)
+print(f'Built release catalog transaction with {preserved} immutable published package(s) preserved and {len(rows) - preserved} new package(s) published.')
