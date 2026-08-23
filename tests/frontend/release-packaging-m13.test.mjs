@@ -68,3 +68,20 @@ test('M13 release publication validates the whole catalog before committing new 
     "glob(f'WorkIntel-Agent-*-{next_version}.zip')",
   ]) assert.ok(audit.includes(token), token)
 })
+
+test('M13 browser release versions are derived from synchronized extension manifests', () => {
+  const builder = read('tools/build-releases.py')
+  const audit = read('tools/release-immutability-audit.py')
+  for (const token of [
+    "read_extension_version('browser-extension/manifest.json')",
+    "read_extension_version('browser-extension/firefox/manifest.json')",
+    'Browser extension manifest versions do not match',
+    'browser_version = chrome_browser_version',
+  ]) assert.ok(builder.includes(token), token)
+  for (const token of [
+    'assert_browser_manifest_version_parity()',
+    'assert_browser_version_bump_is_derived()',
+    'Browser manifest version mismatch mutated published release state',
+    'Browser version bump did not publish expected derived artifact',
+  ]) assert.ok(audit.includes(token), token)
+})
