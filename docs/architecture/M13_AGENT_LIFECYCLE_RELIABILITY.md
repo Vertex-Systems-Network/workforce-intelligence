@@ -22,7 +22,7 @@ M13 is a post-M12 productization/hardening phase. It does not retroactively chan
 - Managed package transfer does not follow redirects; the bearer token is supplied to curl over stdin and the archive is streamed into an exclusive descriptor inside a random private temporary directory.
 - The server verifies the release binary against the SHA-256 stored in its release manifest before serving it.
 - The agent independently verifies the response metadata and downloaded SHA-256 before extraction.
-- The extracted candidate must contain `desktop-agent/native-agent.mjs`, must declare the expected release version, and must pass `node --check` before replacing the installed source.
+- The extracted candidate must contain the expected `desktop-agent/native-agent.mjs`, must declare the expected release version, and must pass `node --check` before replacing the installed source.
 - The current source is retained as `native-agent.mjs.previous`; replacement failures restore the previous source.
 - A successful update is acknowledged before process exit. The installation supervisor is responsible for restarting the agent.
 
