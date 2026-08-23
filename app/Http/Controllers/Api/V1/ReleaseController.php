@@ -12,13 +12,15 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /** Provides release controller behavior within the WorkIntel application. */ class ReleaseController extends Controller
 {
-    /** Returns the requested resource collection. */ public function index(ReleaseCatalogService $catalog): JsonResponse
+    /** Returns the requested resource collection. */
+    public function index(ReleaseCatalogService $catalog): JsonResponse
     {
         return response()->json(['data' => collect($catalog->all())->map(function ($release) use ($catalog) {
             $path = $catalog->absolutePath($release);
             unset($release['file']);
             $release['available'] = (bool) ($path && is_file($path));
             $release['download_url'] = url('/api/v1/releases/'.$release['slug'].'/download');
+
             return $release;
         })->values()]);
     }
