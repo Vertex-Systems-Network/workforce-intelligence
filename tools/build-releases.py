@@ -33,6 +33,19 @@ def read_previous_manifest() -> dict:
     return payload
 
 
+def read_extension_version(relative_manifest: str) -> str:
+    """Read and validate one browser-extension manifest version."""
+    path = ROOT / relative_manifest
+    try:
+        payload = json.loads(path.read_text(encoding='utf-8'))
+    except (OSError, json.JSONDecodeError) as error:
+        raise RuntimeError(f'Could not read browser extension manifest version: {relative_manifest}') from error
+    version = payload.get('version') if isinstance(payload, dict) else None
+    if not isinstance(version, str) or not re.fullmatch(r'\d+(?:\.\d+){0,3}', version):
+        raise RuntimeError(f'Browser extension manifest has an invalid numeric version: {relative_manifest}')
+    return version
+
+
 PREVIOUS_MANIFEST = read_previous_manifest()
 PREVIOUS_BY_SLUG = {row['slug']: row for row in PREVIOUS_MANIFEST['releases'] if isinstance(row, dict) and row.get('slug')}
 
@@ -42,7 +55,14 @@ if not agent_match:
     raise RuntimeError('Could not determine native agent VERSION.')
 
 agent_version = agent_match.group(1)
-browser_version = '1.0.0'
+chrome_browser_version = read_extension_version('browser-extension/manifest.json')
+firefox_browser_version = read_extension_version('browser-extension/firefox/manifest.json')
+if chrome_browser_version != firefox_browser_version:
+    raise RuntimeError(
+        'Browser extension manifest versions do not match: '
+        f'Chrome/Edge {chrome_browser_version}, Firefox {firefox_browser_version}.'
+    )
+browser_version = chrome_browser_version
 
 
 def archive_mode(path: Path) -> int:
