@@ -2,6 +2,7 @@
 """Prove published release bytes cannot drift or partially publish on failed validation."""
 
 from pathlib import Path
+import json
 import re
 import shutil
 import subprocess
@@ -46,6 +47,26 @@ def run_builder(work_root: Path, expect_success: bool) -> subprocess.CompletedPr
     if not expect_success and result.returncode == 0:
         raise SystemExit('Release builder unexpectedly accepted an invalid publication attempt.')
     return result
+
+
+def bump_numeric_version(version: str) -> str:
+    """Return the next numeric extension version while preserving segment count."""
+    parts = [int(part) for part in version.split('.')]
+    parts[-1] += 1
+    return '.'.join(str(part) for part in parts)
+
+
+def read_json(path: Path) -> dict:
+    """Read one JSON object used by a release audit fixture."""
+    payload = json.loads(path.read_text(encoding='utf-8'))
+    if not isinstance(payload, dict):
+        raise SystemExit(f'Expected JSON object in {path}')
+    return payload
+
+
+def write_json(path: Path, payload: dict) -> None:
+    """Write stable readable JSON for one mutated audit fixture."""
+    path.write_text(json.dumps(payload, indent=2) + '\n', encoding='utf-8')
 
 
 def assert_unchanged_rebuild() -> None:
@@ -129,6 +150,52 @@ def assert_mixed_version_validation_is_transactional() -> None:
             raise SystemExit(f'Failed mixed-version validation left new agent artifacts behind: {[path.name for path in unexpected]}')
 
 
+def assert_browser_manifest_version_parity() -> None:
+    """Chrome/Edge and Firefox manifests must never describe different release versions."""
+    with tempfile.TemporaryDirectory(prefix='workintel-release-browser-version-drift-') as temporary:
+        work_root = copy_fixture(Path(temporary))
+        before = release_snapshot(work_root)
+        chrome_path = work_root / 'browser-extension/manifest.json'
+        firefox_path = work_root / 'browser-extension/firefox/manifest.json'
+        chrome = read_json(chrome_path)
+        firefox = read_json(firefox_path)
+        firefox['version'] = bump_numeric_version(str(chrome['version']))
+        write_json(firefox_path, firefox)
+
+        result = run_builder(work_root, expect_success=False)
+        output = f'{result.stdout}\n{result.stderr}'
+        if 'Browser extension manifest versions do not match' not in output:
+            raise SystemExit(f'Browser manifest version mismatch failed for the wrong reason:\n{output}')
+        if release_snapshot(work_root) != before:
+            raise SystemExit('Browser manifest version mismatch mutated published release state.')
+
+
+def assert_browser_version_bump_is_derived() -> None:
+    """A matched manifest version bump must drive both browser package filenames and catalog rows."""
+    with tempfile.TemporaryDirectory(prefix='workintel-release-browser-version-bump-') as temporary:
+        work_root = copy_fixture(Path(temporary))
+        manifest_paths = [
+            work_root / 'browser-extension/manifest.json',
+            work_root / 'browser-extension/firefox/manifest.json',
+        ]
+        current = str(read_json(manifest_paths[0])['version'])
+        next_version = bump_numeric_version(current)
+        for manifest_path in manifest_paths:
+            payload = read_json(manifest_path)
+            payload['version'] = next_version
+            write_json(manifest_path, payload)
+
+        run_builder(work_root, expect_success=True)
+        catalog = read_json(work_root / 'storage/app/releases/manifest.json')
+        browser_rows = [row for row in catalog.get('releases', []) if row.get('kind') == 'extension']
+        if len(browser_rows) != 2 or {row.get('version') for row in browser_rows} != {next_version}:
+            raise SystemExit(f'Browser catalog rows did not derive version {next_version}: {browser_rows}')
+        for row in browser_rows:
+            filename = str(row.get('filename') or '')
+            if next_version not in filename or not (work_root / 'storage/app/releases' / filename).is_file():
+                raise SystemExit(f'Browser version bump did not publish expected derived artifact: {row}')
+
+
 assert_unchanged_rebuild()
 for packaged_source in [
     'desktop-agent/PRODUCTION_AGENT.md',
@@ -138,5 +205,7 @@ for packaged_source in [
     assert_same_version_mutation_rejected(packaged_source)
 assert_manifest_integrity_is_authoritative()
 assert_mixed_version_validation_is_transactional()
+assert_browser_manifest_version_parity()
+assert_browser_version_bump_is_derived()
 
-print('Release immutability audit passed: no-op rebuild preserved bytes; drift/corruption were rejected; mixed-version validation remained transactional.')
+print('Release immutability audit passed: no-op rebuild preserved bytes; drift/corruption were rejected; mixed-version validation stayed transactional; browser versions are manifest-derived and synchronized.')
