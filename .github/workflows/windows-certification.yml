@@ -26,7 +26,7 @@ jobs:
           Write-Host "GitHub-hosted runner: $env:RUNNER_NAME"
           Write-Host "Image OS: $env:RUNNER_OS"
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Bootstrap PowerShell 7 for setup-php
         env:
