@@ -56,7 +56,7 @@ test('M13 release publication validates the whole catalog before committing new 
   for (const token of [
     'def prepare_zip(staging: Path, slug: str, name: str, version: str, entries)',
     'def commit_release_transaction(plans: list[dict], manifest_bytes: bytes, checksums_bytes: bytes, staging: Path)',
-    "with tempfile.TemporaryDirectory(prefix='workintel-release-transaction-')",
+    "with tempfile.TemporaryDirectory(prefix='.workintel-release-transaction-', dir=OUT)",
     'for plan in plans:',
     'Refusing to overwrite release binary that appeared after validation',
     'atomic_restore(MANIFEST_PATH, old_manifest, staging)',
