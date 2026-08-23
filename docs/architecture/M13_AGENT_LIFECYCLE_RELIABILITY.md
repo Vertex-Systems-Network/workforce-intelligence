@@ -86,4 +86,4 @@ The phase is protected by:
 - `tools/release-immutability-audit.py` for same-version no-op preservation, packaged-content drift rejection, and published binary integrity enforcement.
 - Existing repository quality gates: PHP documentation audit, JavaScript documentation audit, frontend contracts, TypeScript, accessibility/source audits, Laravel Pint for changed PHP, CodeQL, PHPUnit, production build, and browser certification.
 
-Batch 1 is merged and certified on `main` through PR #17 with agent 1.2.1. Batch 2 is merged and exact-head certified on `main` through PR #18. Batch 3 is considered certified only after its exact final PR head passes WorkIntel Code Quality, WorkIntel CI including both release audits, and WorkIntel Windows Certification with no current unresolved security review findings.
+Batch 1 is merged and certified on `main` through PR #17 with agent 1.2.1. Batch 2 is merged and exact-head certified on `main` through PR #18. Batch 3 is merged and exact-head certified on `main` through PR #20.
