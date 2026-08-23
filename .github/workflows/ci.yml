@@ -34,7 +34,7 @@ jobs:
           php-version: '8.3'
           extensions: mbstring, dom, xml, xmlwriter, pdo_mysql, pdo_sqlite, sqlite3, fileinfo
           coverage: none
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
       - run: composer install --prefer-dist --no-interaction
