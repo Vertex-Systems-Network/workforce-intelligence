@@ -206,7 +206,7 @@ common = [
     (Path('desktop-agent/PRODUCTION_AGENT.md'), 'desktop-agent/PRODUCTION_AGENT.md'),
 ]
 
-with tempfile.TemporaryDirectory(prefix='workintel-release-transaction-') as temporary:
+with tempfile.TemporaryDirectory(prefix='.workintel-release-transaction-', dir=OUT) as temporary:
     staging = Path(temporary)
     plans = [
         prepare_zip(
