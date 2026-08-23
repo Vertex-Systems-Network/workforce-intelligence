@@ -28,6 +28,19 @@ updates:
         dependency-type: "production"
         update-types:
           - "patch"
+    ignore:
+      # Runtime baseline is Node 22; keep declaration majors aligned until the runtime moves.
+      - dependency-name: "@types/node"
+        update-types:
+          - "version-update:semver-major"
+      # TypeScript 7 uses the native compiler and is incompatible with the current JS compiler-API audit.
+      - dependency-name: "typescript"
+        versions:
+          - "7.x"
+      # TanStack Table 9 requires an intentional API migration rather than an automated major bump.
+      - dependency-name: "@tanstack/react-table"
+        versions:
+          - "9.x"
     commit-message:
       prefix: "chore"
       include: "scope"
