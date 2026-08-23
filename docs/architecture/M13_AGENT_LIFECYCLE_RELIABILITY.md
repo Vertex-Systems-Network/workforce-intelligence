@@ -55,14 +55,35 @@ The release builder previously used `ZipFile.write()`, which copied checkout-dep
 
 Already-published 1.2.1 artifacts are not silently rewritten under the same semantic version merely to adopt the deterministic container format. The deterministic writer applies to subsequent release builds; any package-content change intended for publication must use the appropriate new agent or browser-extension release version rather than mutating a published artifact in place.
 
+## Batch 3 — Published release immutability
+
+### Defect closed
+
+Batch 2 made future ZIP generation deterministic, but the builder still deleted and rebuilt every package in `storage/app/releases`. That meant an operator could accidentally change packaged source while leaving the semantic version unchanged and then replace a published binary and checksum under the same version. Documentation prohibited that behavior, but the release tool itself did not enforce the boundary.
+
+### Immutable publication contract
+
+- The existing release manifest is authoritative for a published slug/version pair.
+- Before a same-version release can be reused, the committed ZIP must match the manifest SHA-256 and byte size. Corruption or manual binary replacement fails closed.
+- New candidate ZIPs are built only in an isolated temporary path until publication eligibility is known.
+- Same-version candidates are compared by normalized archive entry names and payload bytes, allowing legacy container metadata to differ while forbidding actual packaged-content drift.
+- If packaged content differs under the same semantic version, the builder aborts and requires a version bump. It does not rewrite the existing ZIP, manifest, or checksum catalog.
+- If packaged content is unchanged, the existing published ZIP bytes and original `released_at` value are retained.
+- A target filename that already exists without a matching manifest/version record is treated as untracked release state and is never overwritten automatically.
+- `tools/release-immutability-audit.py` proves that unchanged rebuilds are byte-for-byte no-ops, agent/Chrome/Firefox same-version source changes are rejected without release-state mutation, and manifest/binary integrity mismatches are not silently repaired.
+- WorkIntel CI runs both the deterministic reproducibility audit and the published-release immutability audit before dependency installation and the browser matrix.
+
+This contract applies to the currently published agent 1.2.1 and browser-extension 1.0.0 artifacts and to subsequent releases. Package-content changes require a semantic version change before publication.
+
 ## Automated acceptance
 
 The phase is protected by:
 
 - `tests/Feature/AgentReleaseUpdateFlowTest.php` for device-token authentication, platform scoping, release metadata, download headers, and fail-closed tamper detection.
 - `tests/frontend/agent-lifecycle-m13.test.mjs` for native-agent syntax, trusted route/source contracts, Windows state continuity, supervisor behavior, secure managed-download behavior, and release-version alignment.
-- `tests/frontend/release-packaging-m13.test.mjs` for deterministic ZIP source invariants and CI wiring.
+- `tests/frontend/release-packaging-m13.test.mjs` for deterministic ZIP invariants, published-release immutability source contracts, and CI wiring.
 - `tools/release-reproducibility-audit.py` for actual repeated-build hash stability plus manifest/checksum consistency.
+- `tools/release-immutability-audit.py` for same-version no-op preservation, packaged-content drift rejection, and published binary integrity enforcement.
 - Existing repository quality gates: PHP documentation audit, JavaScript documentation audit, frontend contracts, TypeScript, accessibility/source audits, Laravel Pint for changed PHP, CodeQL, PHPUnit, production build, and browser certification.
 
-Batch 1 is merged and certified on `main` through PR #17 with agent 1.2.1. Batch 2 is considered certified only after its exact final PR head passes WorkIntel Code Quality, WorkIntel CI, and WorkIntel Windows Certification with no current unresolved security review findings.
+Batch 1 is merged and certified on `main` through PR #17 with agent 1.2.1. Batch 2 is merged and exact-head certified on `main` through PR #18. Batch 3 is considered certified only after its exact final PR head passes WorkIntel Code Quality, WorkIntel CI including both release audits, and WorkIntel Windows Certification with no current unresolved security review findings.
