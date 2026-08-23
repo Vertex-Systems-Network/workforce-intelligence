@@ -1,0 +1,28 @@
+name: WorkIntel Release Artifact Staging
+
+on:
+  push:
+    branches:
+      - fix/global-ui-large-screen-readability
+
+permissions:
+  contents: read
+
+jobs:
+  build-release-artifacts:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v7
+      - name: Build deterministic release catalog
+        run: python3 tools/build-releases.py
+      - name: Verify deterministic release reproduction
+        run: python3 tools/release-reproducibility-audit.py
+      - name: Upload generated release directory
+        uses: actions/upload-artifact@v7
+        with:
+          name: workintel-release-staging-${{ github.sha }}
+          path: storage/app/releases
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
