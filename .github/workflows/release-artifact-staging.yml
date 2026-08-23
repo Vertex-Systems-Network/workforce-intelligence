@@ -1,32 +1,43 @@
 name: WorkIntel Release Artifact Staging
 
 on:
-  push:
-    branches:
-      - fix/global-ui-large-screen-readability
   pull_request:
     branches:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-release-artifacts:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout exact PR source
+      - name: Checkout PR branch
         uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
       - name: Build deterministic release catalog
         run: python3 tools/build-releases.py
       - name: Verify deterministic release reproduction
         run: python3 tools/release-reproducibility-audit.py
+      - name: Commit generated release directory
+        shell: bash
+        run: |
+          git add -A storage/app/releases
+          if git diff --cached --quiet; then
+            echo "Release catalog is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: publish agent 1.2.2 and browser 1.0.1 releases"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
       - name: Upload generated release directory
         uses: actions/upload-artifact@v7
         with:
-          name: workintel-release-staging-${{ github.event.pull_request.head.sha || github.sha }}
+          name: workintel-release-staging-${{ github.event.pull_request.head.sha }}
           path: storage/app/releases
           if-no-files-found: error
           retention-days: 1
