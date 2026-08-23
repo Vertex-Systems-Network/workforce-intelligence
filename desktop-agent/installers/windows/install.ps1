@@ -1,5 +1,5 @@
 param(
-  [Parameter(Mandatory=$true)][string]$ServerUrl,
+  [Parameter(Mandatory=$false)][string]$ServerUrl = '',
   [Parameter(Mandatory=$true)][string]$EnrollmentCode,
   [string]$InstallDir = "$env:LOCALAPPDATA\WorkIntelAgent"
 )
@@ -17,6 +17,19 @@ function Normalize-ServerUrl([string]$Value) {
   $baseUrl = $uri.GetLeftPart([System.UriPartial]::Authority)
   if ($knownEnrollmentPaths -contains $path) { Write-Host "Normalized enrollment endpoint to server URL: $baseUrl" }
   return $baseUrl
+}
+function Get-BoundServerUrl {
+  $agentRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
+  $configPath = Join-Path $agentRoot 'workintel-server.txt'
+  if (-not (Test-Path -LiteralPath $configPath -PathType Leaf)) { return '' }
+  return (Get-Content -LiteralPath $configPath -Raw).Trim()
+}
+if ([string]::IsNullOrWhiteSpace($ServerUrl)) {
+  $ServerUrl = Get-BoundServerUrl
+  if ([string]::IsNullOrWhiteSpace($ServerUrl)) {
+    Fail 'This package is not bound to a WorkIntel server. Download it from WorkIntel Downloads or pass -ServerUrl explicitly.'
+  }
+  Write-Host "Using server configured by WorkIntel Downloads: $ServerUrl"
 }
 $ServerUrl = Normalize-ServerUrl $ServerUrl
 $node = (Get-Command node -ErrorAction SilentlyContinue).Source

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Services\Installation\ConfiguredReleaseBundleService;
 use App\Services\Releases\ReleaseCatalogService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /** Provides release controller behavior within the WorkIntel application. */ class ReleaseController extends Controller
@@ -20,18 +22,26 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
         })->values()]);
     }
 
-    /** Handles the download operation for the current WorkIntel workflow. */ public function download(string $slug, ReleaseCatalogService $catalog): BinaryFileResponse
+    /** Download a temporary server-bound deployment bundle while leaving the canonical release bytes untouched. */
+    public function download(Request $request, string $slug, ConfiguredReleaseBundleService $bundles): BinaryFileResponse
     {
-        $release = $catalog->find($slug);
-        abort_unless($release, 404);
-        $path = $catalog->absolutePath($release);
-        abort_unless($path && is_file($path), 404, 'Release file is not available on this server.');
-        return response()->download($path, $release['filename'] ?? basename($path), [
-            'Content-Type' => $release['mime_type'] ?? 'application/octet-stream',
+        try {
+            $bundle = $bundles->build($slug, $request->getSchemeAndHttpHost());
+        } catch (\RuntimeException $error) {
+            abort(404, $error->getMessage());
+        }
+
+        /** @var array<string,mixed> $release */
+        $release = $bundle['release'];
+
+        return response()->download($bundle['path'], $bundle['name'], [
+            'Content-Type' => $bundle['mime'],
             'X-Content-Type-Options' => 'nosniff',
-            'X-Release-SHA256' => $release['sha256'] ?? '',
+            'Cache-Control' => 'private, no-store, max-age=0',
+            'X-Deployment-SHA256' => $bundle['sha256'],
+            'X-Canonical-Release-SHA256' => $release['sha256'] ?? '',
             'X-WorkIntel-Version' => $release['version'] ?? '',
-            'ETag' => isset($release['sha256']) ? '"'.$release['sha256'].'"' : '',
-        ]);
+            'X-WorkIntel-Configured-Server' => $bundle['server_url'],
+        ])->deleteFileAfterSend(true);
     }
 }

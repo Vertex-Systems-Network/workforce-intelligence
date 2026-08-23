@@ -17,8 +17,8 @@ use Illuminate\Validation\Rule;
 {
     /** Returns the requested resource collection. */ public function index(Request $request,InstallationGuideService $guides):JsonResponse
     {
-        $workspace=$request->attributes->get('workspace');$member=$request->attributes->get('workspaceMember');
-        return response()->json(['guides'=>$guides->list($workspace,$member,$request->getSchemeAndHttpHost()),'status'=>$this->statusPayload($workspace->id,$member->id)]);
+        $workspace=$request->attributes->get('workspace');$member=$request->attributes->get('workspaceMember');$serverUrl=$request->getSchemeAndHttpHost();
+        return response()->json(['server_url'=>$serverUrl,'guides'=>$guides->list($workspace,$member,$serverUrl),'status'=>$this->statusPayload($workspace->id,$member->id)]);
     }
     /** Returns details for the requested resource. */ public function show(Request $request,string $guideKey,InstallationGuideService $guides):JsonResponse
     {

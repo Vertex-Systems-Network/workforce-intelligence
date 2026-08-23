@@ -4,8 +4,8 @@
 <body><main>
 <header><div class="mark">W</div><div><strong>WorkIntel</strong><span>Browser Tracker</span></div></header>
 <section id="connect-view">
-  <label>Workforce server base URL<input id="server" type="url" placeholder="https://team.example.com"><small class="help">Use the site address only. If you paste a WorkIntel enrollment endpoint, it will be reduced safely to the server address.</small></label>
-  <label>Enrollment code<input id="code" placeholder="WI-XXXX-XXXX-XXXX or WB-XXXX-XXXX-XXXX"></label>
+  <div class="metric"><span>Configured server</span><strong id="configured-server">Loading…</strong></div>
+  <label>Enrollment code<input id="code" autocomplete="off" placeholder="WI-XXXX-XXXX-XXXX or WB-XXXX-XXXX-XXXX"><small class="help">The server address is already bound to this package by WorkIntel Downloads. Enter only your one-time enrollment code.</small></label>
   <button id="connect">Connect browser</button>
 </section>
 <section id="status-view" hidden>
