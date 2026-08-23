@@ -2,6 +2,8 @@
 
 Requirements: Windows 10/11, PowerShell 5+, Node.js 20+, and curl.
 
+`-ServerUrl` is the **Workforce server base URL**, not an API endpoint. For example, use `https://time.example.com`, not `https://time.example.com/api/v1/agent/enroll`. Current installers also normalize the WorkIntel desktop/browser enrollment endpoints back to the server base URL so copying an endpoint from the Devices & Agents dialog does not create a malformed request.
+
 From an elevated or normal user PowerShell (the agent runs in the signed-in user's desktop session so it can observe foreground applications):
 
 ```powershell

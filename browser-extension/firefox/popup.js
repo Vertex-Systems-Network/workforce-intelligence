@@ -2,10 +2,22 @@ const ext = globalThis.browser ?? globalThis.chrome
 /** Handles the $ operation for the WorkIntel application. */ const $ = id => document.getElementById(id)
 /** Handles the message operation for the WorkIntel application. */ async function message(type, payload) { return await ext.runtime.sendMessage({ type, payload }) }
 /** Formats format date data for output. */ function formatDate(value) { return value ? new Date(value).toLocaleString() : 'Never' }
-/** Handles the origin pattern operation for the WorkIntel application. */ function originPattern(value) {
-  const url = new URL(value)
+/** Normalize a server/base URL and safely accept the enrollment endpoints shown by WorkIntel. */ function normalizeServerUrl(value) {
+  let url
+  try { url = new URL(String(value || '').trim()) } catch { throw new Error('Enter a valid Workforce server URL, for example https://team.example.com') }
   if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Server URL must use http:// or https://')
-  return `${url.protocol}//${url.host}/*`
+  if (url.username || url.password) throw new Error('Server URL must not contain credentials.')
+  const path = url.pathname.replace(/\/+$/, '') || '/'
+  const enrollmentPaths = new Set(['/api/v1/agent/enroll', '/api/v1/browser/enroll'])
+  if (path !== '/' && !enrollmentPaths.has(path)) throw new Error('Use the Workforce server base URL, not an API path.')
+  url.pathname = '/'
+  url.search = ''
+  url.hash = ''
+  return url.origin
+}
+/** Handles the origin pattern operation for the WorkIntel application. */ function originPattern(value) {
+  const url = new URL(normalizeServerUrl(value))
+  return `${url.origin}/*`
 }
 /** Handles the ensure server permission operation for the WorkIntel application. */ async function ensureServerPermission(serverUrl) {
   const pattern = originPattern(serverUrl)
@@ -28,7 +40,8 @@ const ext = globalThis.browser ?? globalThis.chrome
 $('connect').addEventListener('click', async () => {
   try {
     $('message').textContent = 'Requesting server access…'
-    const serverUrl = $('server').value.trim().replace(/\/$/, '')
+    const serverUrl = normalizeServerUrl($('server').value)
+    $('server').value = serverUrl
     const granted = await ensureServerPermission(serverUrl)
     if (!granted) throw new Error('Permission to connect to this server was not granted.')
     $('message').textContent = 'Connecting…'

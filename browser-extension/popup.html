@@ -4,7 +4,7 @@
 <body><main>
 <header><div class="mark">W</div><div><strong>WorkIntel</strong><span>Browser Tracker</span></div></header>
 <section id="connect-view">
-  <label>Workforce server URL<input id="server" type="url" placeholder="https://team.example.com"></label>
+  <label>Workforce server base URL<input id="server" type="url" placeholder="https://team.example.com"><small class="help">Use the site address only. If you paste a WorkIntel enrollment endpoint, it will be reduced safely to the server address.</small></label>
   <label>Enrollment code<input id="code" placeholder="WI-XXXX-XXXX-XXXX or WB-XXXX-XXXX-XXXX"></label>
   <button id="connect">Connect browser</button>
 </section>
@@ -16,5 +16,5 @@
   <p class="privacy">Domain only. URL paths, queries, form data and typed content are not collected. Incognito/private tabs are ignored.</p>
   <button id="sync" class="secondary">Sync now</button><button id="disconnect" class="danger">Disconnect locally</button>
 </section>
-<p id="message"></p>
+<p id="message" role="status" aria-live="polite"></p>
 </main><script src="popup.js"></script></body></html>

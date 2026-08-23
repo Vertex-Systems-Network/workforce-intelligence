@@ -5,6 +5,20 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 function Fail($m){ Write-Error $m; exit 1 }
+function Normalize-ServerUrl([string]$Value) {
+  try { $uri = [System.Uri]::new($Value.Trim()) } catch { Fail 'ServerUrl must be a valid absolute http:// or https:// URL.' }
+  if (-not $uri.IsAbsoluteUri -or ($uri.Scheme -ne 'http' -and $uri.Scheme -ne 'https')) { Fail 'ServerUrl must use http:// or https://.' }
+  if (-not [string]::IsNullOrWhiteSpace($uri.UserInfo)) { Fail 'ServerUrl must not contain credentials.' }
+  $path = $uri.AbsolutePath.TrimEnd('/')
+  $knownEnrollmentPaths = @('/api/v1/agent/enroll', '/api/v1/browser/enroll')
+  if ($path -and $path -ne '' -and $knownEnrollmentPaths -notcontains $path) {
+    Fail 'ServerUrl must be the Workforce server base URL (for example https://team.example.com), not an API path.'
+  }
+  $baseUrl = $uri.GetLeftPart([System.UriPartial]::Authority)
+  if ($knownEnrollmentPaths -contains $path) { Write-Host "Normalized enrollment endpoint to server URL: $baseUrl" }
+  return $baseUrl
+}
+$ServerUrl = Normalize-ServerUrl $ServerUrl
 $node = (Get-Command node -ErrorAction SilentlyContinue).Source
 if (-not $node) { Fail 'Node.js 20+ is required. Install Node.js LTS first.' }
 $version = (& $node --version).TrimStart('v').Split('.')[0]
@@ -19,6 +33,7 @@ New-Item -ItemType Directory -Force -Path $InstallDir, $stateDir | Out-Null
 Copy-Item "$PSScriptRoot\..\..\native-agent.mjs" $agentPath -Force
 
 $env:WORKINTEL_AGENT_HOME = $stateDir
+Write-Host "Enrolling WorkIntel Agent with $ServerUrl ..."
 & $node $agentPath enroll $ServerUrl $EnrollmentCode
 if ($LASTEXITCODE -ne 0) { Fail 'Enrollment failed. The service was not installed.' }
 
@@ -43,6 +58,7 @@ schtasks /Run /TN $taskName | Out-Null
 if ($LASTEXITCODE -ne 0) { Fail 'The WorkIntel Agent Scheduled Task was created but could not be started.' }
 
 Write-Host "WorkIntel Agent installed for the current Windows user."
+Write-Host "ServerUrl: $ServerUrl"
 Write-Host "InstallDir: $InstallDir"
 Write-Host "StateDir: $stateDir"
 Write-Host "Task: $taskName"

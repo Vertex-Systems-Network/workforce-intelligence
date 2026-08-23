@@ -1,6 +1,6 @@
 # WorkIntel Browser Tracker
 
-The browser tracker is server-agnostic. The user enters the Workforce Intelligence server URL at enrollment time and the extension requests permission only for that origin.
+The browser tracker is server-agnostic. The user enters the Workforce Intelligence **server base URL** at enrollment time and the extension requests permission only for that origin. Use a value such as `https://team.company.com`, not an API route. If a WorkIntel desktop/browser enrollment endpoint is pasted, the popup safely reduces it to the server origin before requesting permission or enrolling.
 
 ## Chromium (Chrome / Edge)
 
@@ -26,4 +26,4 @@ The requested optional host permission is scoped to that exact server origin.
 
 ## Unified enrollment codes (Milestone 13)
 
-The Browser Tracker now accepts both `WB-...` browser codes and `WI-...` Devices & Agents codes. A WI code may be used once by a browser and once by a desktop agent before the code expires; the two uses are tracked separately. Reload the unpacked extension after updating to version `0.2.0`.
+The Browser Tracker accepts both `WB-...` browser codes and `WI-...` Devices & Agents codes. A WI code may be used once by a browser and once by a desktop agent before the code expires; the two uses are tracked separately. Reload the unpacked extension after updating its source.
