@@ -7,6 +7,7 @@ use App\Services\Installation\ConfiguredReleaseBundleService;
 use App\Services\Releases\ReleaseCatalogService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /** Provides release controller behavior within the WorkIntel application. */ class ReleaseController extends Controller
@@ -23,12 +24,14 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
     }
 
     /** Download a temporary server-bound deployment bundle while leaving the canonical release bytes untouched. */
-    public function download(Request $request, string $slug, ConfiguredReleaseBundleService $bundles): BinaryFileResponse
+    public function download(Request $request, string $slug, ReleaseCatalogService $catalog, ConfiguredReleaseBundleService $bundles): BinaryFileResponse
     {
+        abort_unless($catalog->find($slug), 404, 'Release not found.');
         try {
             $bundle = $bundles->build($slug, $request->getSchemeAndHttpHost());
-        } catch (\RuntimeException $error) {
-            abort(404, $error->getMessage());
+        } catch (RuntimeException $error) {
+            report($error);
+            abort(503, 'The server-bound release package could not be prepared.');
         }
 
         /** @var array<string,mixed> $release */

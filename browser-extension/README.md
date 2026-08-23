@@ -1,29 +1,32 @@
 # WorkIntel Browser Tracker
 
-The browser tracker is server-agnostic. The user enters the Workforce Intelligence **server base URL** at enrollment time and the extension requests permission only for that origin. Use a value such as `https://team.company.com`, not an API route. If a WorkIntel desktop/browser enrollment endpoint is pasted, the popup safely reduces it to the server origin before requesting permission or enrolling.
+WorkIntel Browser Tracker 1.0.1 uses a **server-bound deployment package** when downloaded from the authenticated WorkIntel Downloads & Installation Center. The application writes only the current WorkIntel origin into `workintel-server.txt` inside the downloaded copy. The one-time enrollment code is never embedded in the package.
+
+The extension popup therefore asks the end user for only the enrollment code. It reads the configured server origin from the package, requests browser host permission only for that exact origin, and calls `/api/v1/browser/enroll` through the existing background enrollment contract.
+
+The canonical published browser ZIP remains server-agnostic and immutable. WorkIntel creates a temporary server-bound copy at download time rather than rewriting the canonical release bytes or checksum.
 
 ## Chromium (Chrome / Edge)
 
-Load `browser-extension/` as an unpacked Manifest V3 extension. The Chromium manifest uses a service worker.
+Download the Chrome / Edge package from WorkIntel, extract it, then load the extracted folder as an unpacked Manifest V3 extension. The Chromium manifest uses a service worker.
 
 ## Firefox
 
-Load `browser-extension/firefox/manifest.json` from `about:debugging` during development. The Firefox build uses a non-persistent Manifest V3 background script and includes a Gecko extension ID/data-collection declaration for signing readiness.
+Download the Firefox package from WorkIntel, extract it, then load `manifest.json` from `about:debugging` during development. The Firefox build uses a non-persistent Manifest V3 background script and includes a Gecko extension ID/data-collection declaration for signing readiness.
+
+## Enrollment
+
+1. Generate a one-time enrollment code in WorkIntel Downloads or Devices & Agents.
+2. Open the installed extension popup.
+3. Confirm the read-only configured server shown by the popup.
+4. Enter only the enrollment code and choose **Connect browser**.
+
+A `WI-...` unified code may be used once by a browser and once by a desktop agent before it expires; browser-specific `WB-...` codes remain supported by the enrollment API.
 
 ## Privacy contract
 
 The extension sends domain-only sessions. It does not send URL paths, query strings, fragments, page content, form values, clipboard values, passwords or typed text. Incognito/private tabs are ignored.
 
-## Any deployment domain
+## Raw canonical package fallback
 
-The extension has no baked-in server domain. At enrollment enter, for example:
-
-- `https://team.company.com`
-- `https://time.example.net:8443`
-- `http://192.168.1.20:8080` for an internal development server
-
-The requested optional host permission is scoped to that exact server origin.
-
-## Unified enrollment codes (Milestone 13)
-
-The Browser Tracker accepts both `WB-...` browser codes and `WI-...` Devices & Agents codes. A WI code may be used once by a browser and once by a desktop agent before the code expires; the two uses are tracked separately. Reload the unpacked extension after updating its source.
+The canonical release artifact is intentionally not bound to any tenant/server because it also serves immutable release and supply-chain verification. Normal users should download through WorkIntel. Operators working directly with a raw canonical artifact must add a valid `workintel-server.txt` at the package root before loading it; no enrollment secret belongs in that file.
