@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
         return response()->download($bundle['path'], $bundle['name'], [
             'Content-Type' => $bundle['mime'],
             'X-Content-Type-Options' => 'nosniff',
-            'Cache-Control' => 'private, no-store, max-age=0',
+            'Cache-Control' => 'private, no-store',
             'X-Deployment-SHA256' => $bundle['sha256'],
             'X-Canonical-Release-SHA256' => $release['sha256'] ?? '',
             'X-WorkIntel-Version' => $release['version'] ?? '',
