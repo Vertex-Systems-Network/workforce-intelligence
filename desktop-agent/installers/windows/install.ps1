@@ -21,10 +21,22 @@ function Normalize-ServerUrl([string]$Value) {
 $ServerUrl = Normalize-ServerUrl $ServerUrl
 $node = (Get-Command node -ErrorAction SilentlyContinue).Source
 if (-not $node) { Fail 'Node.js 20+ is required. Install Node.js LTS first.' }
-$version = (& $node --version).TrimStart('v').Split('.')[0]
+$nodeVersion = (& $node --version).TrimStart('v')
+$version = $nodeVersion.Split('.')[0]
 if ([int]$version -lt 20) { Fail "Node.js 20+ required. Found $(& $node --version)." }
 $curl = (Get-Command curl.exe -ErrorAction SilentlyContinue).Source
 if (-not $curl) { Fail 'curl is required for managed agent updates.' }
+
+# Node normally uses its bundled CA set. Newer Node releases can additionally use
+# the Windows trusted certificate store, which is important for enterprise/local
+# HTTPS certificates that Chrome/Edge already trust. Detect the flag rather than
+# assuming a particular Node minor release so the Node 20+ contract remains valid.
+$nodeHelp = (& $node --help | Out-String)
+$nodeTlsArgs = @()
+if ($nodeHelp -match '--use-system-ca') {
+  $nodeTlsArgs += '--use-system-ca'
+  Write-Host 'Node system CA trust enabled for Windows enrollment/runtime.'
+}
 
 $stateDir = Join-Path $InstallDir 'state'
 $agentPath = Join-Path $InstallDir 'native-agent.mjs'
@@ -34,17 +46,18 @@ Copy-Item "$PSScriptRoot\..\..\native-agent.mjs" $agentPath -Force
 
 $env:WORKINTEL_AGENT_HOME = $stateDir
 Write-Host "Enrolling WorkIntel Agent with $ServerUrl ..."
-& $node $agentPath enroll $ServerUrl $EnrollmentCode
-if ($LASTEXITCODE -ne 0) { Fail 'Enrollment failed. The service was not installed.' }
+& $node @nodeTlsArgs $agentPath enroll $ServerUrl $EnrollmentCode
+if ($LASTEXITCODE -ne 0) { Fail 'Enrollment failed. The service was not installed. If this is a locally trusted HTTPS server, confirm its CA is installed in the Windows Trusted Root store.' }
 
 $escapedNode = $node.Replace("'", "''")
 $escapedAgent = $agentPath.Replace("'", "''")
 $escapedState = $stateDir.Replace("'", "''")
+$nodeTlsFlag = if ($nodeTlsArgs.Count -gt 0) { ' --use-system-ca' } else { '' }
 $runner = @"
 `$ErrorActionPreference = 'Continue'
 `$env:WORKINTEL_AGENT_HOME = '$escapedState'
 while (`$true) {
-  & '$escapedNode' '$escapedAgent' run
+  & '$escapedNode'$nodeTlsFlag '$escapedAgent' run
   Start-Sleep -Seconds 3
 }
 "@
@@ -59,6 +72,7 @@ if ($LASTEXITCODE -ne 0) { Fail 'The WorkIntel Agent Scheduled Task was created 
 
 Write-Host "WorkIntel Agent installed for the current Windows user."
 Write-Host "ServerUrl: $ServerUrl"
+Write-Host "Node: $nodeVersion"
 Write-Host "InstallDir: $InstallDir"
 Write-Host "StateDir: $stateDir"
 Write-Host "Task: $taskName"

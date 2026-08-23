@@ -26,3 +26,12 @@ test('Windows installer normalizes displayed enrollment endpoints before invokin
   assert.match(installer, /\$ServerUrl = Normalize-ServerUrl \$ServerUrl/)
   assert.match(installer, /native-agent\.mjs' \$agentPath -Force/)
 })
+
+test('Windows installer uses the Windows trusted CA store when the installed Node supports it', () => {
+  const installer = read('desktop-agent/installers/windows/install.ps1')
+  assert.match(installer, /\$nodeHelp = \(& \$node --help \| Out-String\)/)
+  assert.match(installer, /\$nodeHelp -match '--use-system-ca'/)
+  assert.match(installer, /& \$node @nodeTlsArgs \$agentPath enroll/)
+  assert.match(installer, /\$nodeTlsFlag = if \(\$nodeTlsArgs\.Count -gt 0\)/)
+  assert.match(installer, /Trusted Root store/)
+})
