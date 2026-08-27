@@ -11,11 +11,13 @@ use Illuminate\Support\Carbon;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-/** Provides client portal invoice flow test behavior within the WorkIntel application. */ class ClientPortalInvoiceFlowTest extends TestCase
+/** Provides client portal invoice flow test behavior within the WorkIntel application. */
+class ClientPortalInvoiceFlowTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** Handles the test client portal is scoped and client invoicing workflow is available operation for the current WorkIntel workflow. */ public function test_client_portal_is_scoped_and_client_invoicing_workflow_is_available(): void
+    /** Handles the test client portal is scoped and client invoicing workflow is available operation for the current WorkIntel workflow. */
+    public function test_client_portal_is_scoped_and_client_invoicing_workflow_is_available(): void
     {
         $this->seed(DatabaseSeeder::class);
 
@@ -114,7 +116,8 @@ use Tests\TestCase;
         ], $headers)->assertUnprocessable();
     }
 
-    /** Handles the test client portal invite can only be activated once operation for the current WorkIntel workflow. */ public function test_client_portal_invite_can_only_be_activated_once(): void
+    /** Handles the test client portal invite can only be activated once operation for the current WorkIntel workflow. */
+    public function test_client_portal_invite_can_only_be_activated_once(): void
     {
         $this->seed(DatabaseSeeder::class);
         $owner = User::where('email', 'owner@acme.test')->firstOrFail();
