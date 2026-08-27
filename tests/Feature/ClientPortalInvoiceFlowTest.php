@@ -7,14 +7,17 @@ use App\Models\Project;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-/** Provides client portal invoice flow test behavior within the WorkIntel application. */ class ClientPortalInvoiceFlowTest extends TestCase
+/** Provides client portal invoice flow test behavior within the WorkIntel application. */
+class ClientPortalInvoiceFlowTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** Handles the test client portal is scoped and client invoicing workflow is available operation for the current WorkIntel workflow. */ public function test_client_portal_is_scoped_and_client_invoicing_workflow_is_available(): void
+    /** Handles the test client portal is scoped and client invoicing workflow is available operation for the current WorkIntel workflow. */
+    public function test_client_portal_is_scoped_and_client_invoicing_workflow_is_available(): void
     {
         $this->seed(DatabaseSeeder::class);
 
@@ -51,13 +54,18 @@ use Tests\TestCase;
             ->assertOk()
             ->assertJsonPath('data.status', 'sent');
 
-        $this->postJson('/api/v1/client-invoices/'.$invoiceId.'/payments', [
-            'amount' => 250,
-            'currency' => 'USD',
-            'method' => 'bank_transfer',
-            'reference' => 'TEST-PARTIAL',
-            'paid_on' => '2026-08-12',
-        ], $headers)->assertCreated()->assertJsonPath('invoice.status', 'partial');
+        Carbon::setTestNow('2026-08-13 12:00:00');
+        try {
+            $this->postJson('/api/v1/client-invoices/'.$invoiceId.'/payments', [
+                'amount' => 250,
+                'currency' => 'USD',
+                'method' => 'bank_transfer',
+                'reference' => 'TEST-PARTIAL',
+                'paid_on' => '2026-08-12',
+            ], $headers)->assertCreated()->assertJsonPath('invoice.status', 'partial');
+        } finally {
+            Carbon::setTestNow();
+        }
 
         $report = $this->postJson('/api/v1/client-reports', [
             'client_id' => $techCorp->id,
@@ -108,7 +116,8 @@ use Tests\TestCase;
         ], $headers)->assertUnprocessable();
     }
 
-    /** Handles the test client portal invite can only be activated once operation for the current WorkIntel workflow. */ public function test_client_portal_invite_can_only_be_activated_once(): void
+    /** Handles the test client portal invite can only be activated once operation for the current WorkIntel workflow. */
+    public function test_client_portal_invite_can_only_be_activated_once(): void
     {
         $this->seed(DatabaseSeeder::class);
         $owner = User::where('email', 'owner@acme.test')->firstOrFail();
