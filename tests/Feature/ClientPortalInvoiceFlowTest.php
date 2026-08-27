@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -51,13 +52,18 @@ use Tests\TestCase;
             ->assertOk()
             ->assertJsonPath('data.status', 'sent');
 
-        $this->postJson('/api/v1/client-invoices/'.$invoiceId.'/payments', [
-            'amount' => 250,
-            'currency' => 'USD',
-            'method' => 'bank_transfer',
-            'reference' => 'TEST-PARTIAL',
-            'paid_on' => '2026-08-12',
-        ], $headers)->assertCreated()->assertJsonPath('invoice.status', 'partial');
+        Carbon::setTestNow('2026-08-13 12:00:00');
+        try {
+            $this->postJson('/api/v1/client-invoices/'.$invoiceId.'/payments', [
+                'amount' => 250,
+                'currency' => 'USD',
+                'method' => 'bank_transfer',
+                'reference' => 'TEST-PARTIAL',
+                'paid_on' => '2026-08-12',
+            ], $headers)->assertCreated()->assertJsonPath('invoice.status', 'partial');
+        } finally {
+            Carbon::setTestNow();
+        }
 
         $report = $this->postJson('/api/v1/client-reports', [
             'client_id' => $techCorp->id,
