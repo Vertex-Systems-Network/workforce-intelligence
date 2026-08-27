@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Client;
 use App\Models\Project;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -16,6 +17,7 @@ use Tests\TestCase;
 
     /** Handles the test client portal is scoped and client invoicing workflow is available operation for the current WorkIntel workflow. */ public function test_client_portal_is_scoped_and_client_invoicing_workflow_is_available(): void
     {
+        $this->travelTo(CarbonImmutable::parse('2026-08-12 12:00:00'));
         $this->seed(DatabaseSeeder::class);
 
         $owner = User::where('email', 'owner@acme.test')->firstOrFail();
