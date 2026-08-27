@@ -1,0 +1,93 @@
+name: PHPUnit Failure Diagnostics
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Verify exact checkout identity
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          test "$actual_sha" = "$EXPECTED_SHA"
+          echo "Exact source checkout verified: $actual_sha"
+
+      - name: PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, xml, xmlwriter, pdo_sqlite, sqlite3, fileinfo
+          coverage: none
+
+      - name: Node 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress --no-ansi
+
+      - name: Prepare application runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Build frontend prerequisite
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund
+          else
+            npm install --no-audit --no-fund
+          fi
+          npm run build
+
+      - name: Reproduce seed preconditions
+        shell: bash
+        run: |
+          set -euo pipefail
+          php artisan migrate:fresh --seed --force
+          php artisan db:seed --force
+
+      - name: Capture first PHPUnit failure exactly
+        shell: bash
+        run: |
+          set +e
+          mkdir -p .ci-artifacts
+          php artisan test --stop-on-failure --no-ansi > .ci-artifacts/phpunit-failure.log 2>&1
+          test_exit=$?
+          set -e
+
+          echo "PHPUNIT_EXIT=$test_exit"
+          echo "--- captured PHPUnit tail ---"
+          tail -n 240 .ci-artifacts/phpunit-failure.log || true
+          echo "--- end captured PHPUnit tail ---"
+
+          exit "$test_exit"
+
+      - name: Upload exact PHPUnit diagnostic log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: workintel-phpunit-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci-artifacts/phpunit-failure.log
+          if-no-files-found: error
+          retention-days: 7
