@@ -1,0 +1,72 @@
+name: Access Control Seed Diagnostics
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, xml, xmlwriter, pdo_sqlite, sqlite3, fileinfo
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Prepare SQLite runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Reproduce seed failure and capture identity state
+        shell: bash
+        run: |
+          set +e
+          php artisan migrate:fresh --seed --force
+          seed_exit=$?
+          set -e
+
+          php -r '
+          require "vendor/autoload.php";
+          $app = require "bootstrap/app.php";
+          $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+          $workspace = App\Models\Workspace::where("slug", "acme-corp")->first();
+          $coordinator = App\Models\User::where("email", "coordinator@acme.test")->first();
+          $owner = $workspace ? App\Models\User::find($workspace->owner_id) : null;
+          $member = ($workspace && $coordinator)
+              ? App\Models\WorkspaceMember::where("workspace_id", $workspace->id)->where("user_id", $coordinator->id)->first()
+              : null;
+
+          $payload = [
+              "workspace_id" => $workspace?->id,
+              "workspace_owner_id" => $workspace?->owner_id,
+              "owner_user_id" => $owner?->id,
+              "owner_email" => $owner?->email,
+              "coordinator_user_id" => $coordinator?->id,
+              "coordinator_email" => $coordinator?->email,
+              "coordinator_member_id" => $member?->id,
+              "coordinator_member_user_id" => $member?->user_id,
+              "same_user_id" => $workspace && $coordinator ? (int) $workspace->owner_id === (int) $coordinator->id : null,
+          ];
+
+          fwrite(STDERR, "ACCESS_CONTROL_SEED_DIAGNOSTIC=".json_encode($payload, JSON_UNESCAPED_SLASHES).PHP_EOL);
+          '
+
+          exit "$seed_exit"
