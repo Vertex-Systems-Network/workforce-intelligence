@@ -39,7 +39,9 @@ jobs:
         run: node build.mjs
       - name: Verify standalone artifact contract
         working-directory: desktop-agent/standalone
-        run: node --input-type=commonjs -e "const fs=require('node:fs');const crypto=require('node:crypto');const expected=process.platform==='win32'?'WorkIntelAgent.exe':'WorkIntelAgent';const file='dist/'+expected;if(!fs.existsSync(file)||!fs.statSync(file).isFile()||fs.statSync(file).size===0)throw new Error('Missing or empty standalone artifact: '+file);const hash=crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');console.log(expected+' sha256='+hash+' bytes='+fs.statSync(file).size);"
+        run: >-
+          node --input-type=commonjs -e
+          "const fs=require('node:fs');const crypto=require('node:crypto');const expected=process.platform==='win32'?'WorkIntelAgent.exe':'WorkIntelAgent';const file='dist/'+expected;if(!fs.existsSync(file)||!fs.statSync(file).isFile()||fs.statSync(file).size===0)throw new Error('Missing or empty standalone artifact: '+file);const hash=crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');console.log(expected+' sha256='+hash+' bytes='+fs.statSync(file).size);"
       - name: Upload standalone artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
