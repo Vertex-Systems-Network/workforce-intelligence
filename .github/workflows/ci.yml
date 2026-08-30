@@ -47,10 +47,10 @@ jobs:
         run: python3 tools/release-reproducibility-audit.py
       - name: Verify published release immutability
         run: python3 tools/release-immutability-audit.py
-      - name: Install frontend dependencies
-        shell: bash
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+      - name: Install locked frontend dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Audit locked frontend dependency graph
+        run: npm audit --audit-level=high
       - run: npx playwright install --with-deps chromium firefox
       - run: npm test
       - run: npm run typecheck
@@ -137,6 +137,16 @@ jobs:
           grep -Fq 'runs-on: windows-latest' .github/workflows/windows-certification.yml
           if grep -Fq 'self-hosted' .github/workflows/windows-certification.yml; then
             echo 'Windows certification must remain GitHub-hosted.'
+            exit 1
+          fi
+
+          test -s package-lock.json
+          grep -Fq 'npm ci --no-audit --no-fund' .github/workflows/ci.yml
+          grep -Fq 'npm ci --no-audit --no-fund' .github/workflows/windows-certification.yml
+          unlocked_command='npm install'
+          unlocked_flags='--no-audit --no-fund'
+          if grep -Fq -- "${unlocked_command} ${unlocked_flags}" .github/workflows/ci.yml .github/workflows/windows-certification.yml; then
+            echo 'Certification workflows must not fall back to unlocked npm install.'
             exit 1
           fi
 
