@@ -1,1 +1,155 @@
-x
+name: WorkIntel CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workintel-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: workforce
+          MYSQL_ROOT_PASSWORD: root
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, xml, xmlwriter, pdo_mysql, pdo_sqlite, sqlite3, fileinfo
+          coverage: none
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: composer install --prefer-dist --no-interaction
+      - run: cp .env.example .env && php artisan key:generate
+      - run: php tools/runtime-closure-preflight.php
+      - run: php tools/runtime-closure-smoke.php
+      - run: composer validate --no-check-publish
+      - run: composer check-platform-reqs
+      - name: Verify deterministic release packaging
+        run: python3 tools/release-reproducibility-audit.py
+      - name: Verify published release immutability
+        run: python3 tools/release-immutability-audit.py
+      - name: Install locked frontend dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Audit locked frontend dependency graph
+        run: npm audit --audit-level=high
+      - run: npx playwright install --with-deps chromium firefox
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run performance:audit:build
+      - run: php artisan migrate:fresh --seed --force
+      - run: php artisan db:seed --force
+      - run: php artisan test
+      - run: php artisan workintel:production-doctor --json --require-build
+      - run: php artisan workintel:final-certification --json --require-build
+      - run: npm run test:e2e:full
+        env:
+          WORKINTEL_RATE_AUTH_LOGIN: 120
+      - name: Summarize browser certification failure
+        if: failure()
+        shell: bash
+        run: |
+          echo "Playwright failure artifacts:"
+          find storage/app/private/e2e-results -type f -maxdepth 4 -print 2>/dev/null || true
+          find storage/app/private/e2e-results -type f -name 'error-context.md' -exec sh -c 'echo "--- $1"; sed -n "1,240p" "$1"' _ {} \; 2>/dev/null || true
+      - name: Upload browser certification failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: workintel-e2e-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: storage/app/private/e2e-results
+          if-no-files-found: warn
+          retention-days: 7
+      - run: npm run accessibility:audit
+      - run: php artisan workintel:accessibility-doctor --json --require-build
+      - id: accessibility_e2e
+        run: npm run test:e2e:accessibility
+        env:
+          WORKINTEL_RATE_AUTH_LOGIN: 120
+      - name: Summarize accessibility browser certification failure
+        if: failure() && steps.accessibility_e2e.outcome == 'failure'
+        shell: bash
+        run: |
+          echo "Accessibility Playwright failure artifacts:"
+          find storage/app/private/e2e-results -type f -maxdepth 4 -print 2>/dev/null || true
+          find storage/app/private/e2e-results -type f -name 'error-context.md' -exec sh -c 'echo "--- $1"; sed -n "1,240p" "$1"' _ {} \; 2>/dev/null || true
+      - name: Upload accessibility browser certification failure artifacts
+        if: failure() && steps.accessibility_e2e.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: workintel-accessibility-e2e-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: storage/app/private/e2e-results
+          if-no-files-found: warn
+          retention-days: 7
+      - name: MySQL migration and seed smoke test
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: workforce
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: php artisan migrate:fresh --seed --force
+      - run: php artisan route:list > /dev/null
+      - run: php artisan schedule:list
+
+  governance:
+    name: governance
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify repository governance source contract
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for path in \
+            apply-main-branch-protection.cmd \
+            tools/apply-main-branch-protection.ps1 \
+            tests/Unit/MainBranchProtectionContractTest.php
+          do
+            if [ -e "$path" ]; then
+              echo "Obsolete branch-protection artifact is still present: $path"
+              exit 1
+            fi
+          done
+
+          grep -Fq 'runs-on: windows-latest' .github/workflows/windows-certification.yml
+          if grep -Fq 'self-hosted' .github/workflows/windows-certification.yml; then
+            echo 'Windows certification must remain GitHub-hosted.'
+            exit 1
+          fi
+
+          test -s package-lock.json
+          grep -Fq 'npm ci --no-audit --no-fund' .github/workflows/ci.yml
+          grep -Fq 'npm ci --no-audit --no-fund' .github/workflows/windows-certification.yml
+          if grep -Fq 'npm install --no-audit --no-fund' .github/workflows/ci.yml .github/workflows/windows-certification.yml; then
+            echo 'Certification workflows must not fall back to unlocked npm install.'
+            exit 1
+          fi
+
+          grep -Fq 'not part of the active repository governance scope' docs/architecture/REPOSITORY_GOVERNANCE.md
+          grep -Fq 'no branch-protection requirement' docs/architecture/REPOSITORY_GOVERNANCE.md
+          grep -Fq 'branch protection was explicitly removed from the active governance scope' docs/architecture/MODULAR_MATURITY_STATUS.md
+
+          echo 'Repository governance source contract passed.'
