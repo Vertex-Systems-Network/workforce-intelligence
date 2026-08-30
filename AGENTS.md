@@ -14,7 +14,7 @@ Repository-native authority outranks chat memory, generated plans, Linear commen
 
 A lower layer cannot broaden a higher layer. One repository cannot authorize changes in another repository.
 
-At the current post-M13 checkpoint, no repository-native M14 product implementation authority exists. GitHub Issue #40 is governance/planning authority only. Do not invent M14 features, migrations, APIs, UI, release changes or product scope until an explicit owner decision or pre-existing repository authority names the scope, acceptance evidence and exact starting Git state.
+At the current post-M13 checkpoint, no repository-native M14 product implementation authority exists. GitHub Issue #50 is the current planning/product-authority gate only; it authorizes no product implementation until a concrete owner-approved scope names the acceptance evidence and exact starting Git state. Do not invent M14 features, migrations, APIs, UI, release changes or product scope until that authority exists.
 
 ## Start / resume protocol
 
