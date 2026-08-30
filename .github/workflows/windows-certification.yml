@@ -94,13 +94,8 @@ jobs:
           composer validate --no-check-publish
           composer check-platform-reqs
 
-      - name: Install frontend dependencies
-        run: |
-          if (Test-Path package-lock.json) {
-            npm ci --no-audit --no-fund
-          } else {
-            npm install --no-audit --no-fund
-          }
+      - name: Install locked frontend dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Require installed Chrome Edge Firefox
         run: node tools/e2e-browser-doctor.mjs --require-all
