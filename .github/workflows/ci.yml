@@ -140,7 +140,7 @@ jobs:
             exit 1
           fi
 
-          test -f package-lock.json
+          test -s package-lock.json
           grep -Fq 'npm ci --no-audit --no-fund' .github/workflows/ci.yml
           grep -Fq 'npm ci --no-audit --no-fund' .github/workflows/windows-certification.yml
           if grep -Fq 'npm install --no-audit --no-fund' .github/workflows/ci.yml .github/workflows/windows-certification.yml; then
