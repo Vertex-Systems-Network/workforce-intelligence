@@ -17,15 +17,15 @@ Never treat an embedded SHA below as live truth after the repository has moved. 
 ## Current checkpoint — 2026-08-30
 
 - **Repository:** `Vertex-Systems-Network/workforce-intelligence`
-- **Observed protected main at checkpoint creation:** `0b6dc357ba5cec09c5ba9aae8d8acc861737491f`
+- **Observed protected main at checkpoint refresh:** `84c380a01eda56d4aa3105633064e6c00cec9175`
 - **Product authority state:** `AWAITING_PRODUCT_AUTHORITY`
 - **Current product authority issue:** `#50 NEXT-AUTH — Define post-M13 WorkIntel product authority`
-- **Current governance hardening issue:** `#51 GOV-HARDEN — Complete AI-native module, checkpoint, and operations contracts`
+- **Completed governance hardening:** `#51 GOV-HARDEN` completed through merged PR #52; its module-specification, resumable-checkpoint, and production-operations contracts are now part of protected `main`.
 - **Last accepted product milestone:** M13 closeout; no repository-native M14 product implementation authority is active.
-- **Dependency maintenance:** PR #39 was merged independently before this checkpoint; do not fold dependency maintenance into future product scope.
+- **Dependency maintenance:** PR #39 was merged independently before this checkpoint; no open dependency-maintenance PR is currently part of the product lane.
 - **Known product blocker:** concrete post-M13 milestone/module scope, acceptance criteria, security/data impact and exact starting main must be owner-approved in repository authority before product code starts.
-- **Current safe write lane:** documentation/governance hardening authorized by #51 only.
-- **Exact next product-safe action:** complete #51 and certify its exact PR head; then return to #50. If #50 still lacks a concrete owner-approved package, remain planning/governance-only.
+- **Current product write state:** no product implementation lane is authorized. Planning/governance may continue under #50; separately authorized maintenance/correction work must remain isolated and cannot self-promote product scope.
+- **Exact next product-safe action:** complete the authority package in #50 and obtain explicit owner approval for a concrete milestone/module. Only then bind a dedicated implementation branch to the then-current protected `main`. Until that happens, do not create M14 product code, migrations, APIs, UI, or release changes.
 
 ## Required session checkpoint fields
 
