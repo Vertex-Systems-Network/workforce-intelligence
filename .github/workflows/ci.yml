@@ -143,7 +143,9 @@ jobs:
           test -s package-lock.json
           grep -Fq 'npm ci --no-audit --no-fund' .github/workflows/ci.yml
           grep -Fq 'npm ci --no-audit --no-fund' .github/workflows/windows-certification.yml
-          if grep -Fq 'npm install --no-audit --no-fund' .github/workflows/ci.yml .github/workflows/windows-certification.yml; then
+          unlocked_command='npm install'
+          unlocked_flags='--no-audit --no-fund'
+          if grep -Fq -- "${unlocked_command} ${unlocked_flags}" .github/workflows/ci.yml .github/workflows/windows-certification.yml; then
             echo 'Certification workflows must not fall back to unlocked npm install.'
             exit 1
           fi
