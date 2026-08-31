@@ -52,6 +52,14 @@ test('M14 release authority binds source, tag version and immutable publication'
   assert.ok(!workflow.includes('--clobber'))
 })
 
+test('M14 rejects reused semantic versions before signing environments can run', () => {
+  const manifestGuard = workflow.indexOf("fs.readFileSync('storage/app/releases/manifest.json','utf8')")
+  const buildTrustJob = workflow.indexOf('\n  build-and-trust:')
+  assert.ok(manifestGuard > 0, 'canonical release-manifest version guard is missing')
+  assert.ok(buildTrustJob > manifestGuard, 'version guard must run in authorize before build-and-trust')
+  assert.ok(workflow.includes('bump the native-agent version before signing/notarizing new bytes.'))
+})
+
 test('M14 trusted tag publication cannot reuse an already-published agent semantic version', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-version-immutability-'))
   try {
