@@ -61,6 +61,10 @@ jobs:
             echo 'Manual trusted release candidates must bind to the current protected-main head.'
             exit 1
           fi
+          if [ "$GITHUB_EVENT_NAME" = 'push' ] && [ "$source_sha" != "$main_sha" ]; then
+            echo 'Trusted release tags must point at the current protected-main head; stale main ancestors are not releasable.'
+            exit 1
+          fi
 
           git checkout --detach "$source_sha"
           version="$(node --input-type=commonjs -e "const fs=require('node:fs');const s=fs.readFileSync('desktop-agent/native-agent.mjs','utf8');const m=s.match(/const VERSION = ['\"]([^'\"]+)['\"]/);if(!m)process.exit(2);process.stdout.write(m[1]);")"
@@ -372,6 +376,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          assert_live_release_refs() {
+            git fetch --no-tags origin main
+            git fetch --force origin "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
+            current_main="$(git rev-parse origin/main)"
+            current_tag="$(git rev-list -n 1 "$RELEASE_TAG")"
+            if [ "$current_main" != "$SOURCE_SHA" ]; then
+              echo "Protected main moved after release authorization: expected $SOURCE_SHA, found $current_main."
+              exit 1
+            fi
+            if [ "$current_tag" != "$SOURCE_SHA" ]; then
+              echo "Release tag moved after authorization: expected $SOURCE_SHA, found $current_tag."
+              exit 1
+            fi
+          }
+
+          assert_live_release_refs
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             echo "Refusing to overwrite existing GitHub Release: $RELEASE_TAG"
             exit 1
@@ -398,6 +418,7 @@ jobs:
             exit 1
           fi
 
+          assert_live_release_refs
           gh release edit "$RELEASE_TAG" --draft=false
           published=1
           trap - EXIT
