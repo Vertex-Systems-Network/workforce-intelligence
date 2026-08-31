@@ -5,6 +5,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 
+const publishedReleaseManifest = new URL('../storage/app/releases/manifest.json', import.meta.url)
+
 function fail(message) {
   console.error(`release-trust-receipt: ${message}`)
   process.exit(1)
@@ -49,6 +51,32 @@ function readReceipt(file) {
   return payload
 }
 
+function readPublishedReleaseManifest() {
+  let payload
+  try {
+    payload = JSON.parse(fs.readFileSync(publishedReleaseManifest, 'utf8'))
+  } catch (error) {
+    fail(`Could not read canonical published release manifest: ${error.message}`)
+  }
+  if (!payload || !Array.isArray(payload.releases)) fail('Canonical published release manifest is invalid')
+  return payload
+}
+
+function enforceTrustedPublicationVersionImmutability(releaseVersion) {
+  if (process.env.GITHUB_WORKFLOW !== 'Desktop Agent Trusted Release' || process.env.GITHUB_EVENT_NAME !== 'push') return
+
+  const manifest = readPublishedReleaseManifest()
+  const alreadyPublished = manifest.releases.some(release => (
+    release
+    && release.kind === 'agent'
+    && String(release.version || '') === releaseVersion
+  ))
+
+  if (alreadyPublished) {
+    fail(`Refusing trusted release for already-published agent semantic version ${releaseVersion}; bump the native-agent version before creating new signed/notarized bytes`)
+  }
+}
+
 function validateReceiptShape(receipt) {
   if (receipt.schema_version !== 1) fail('Unsupported receipt schema version')
   if (!['Windows', 'macOS', 'Linux'].includes(receipt.platform)) fail('Invalid platform')
@@ -90,6 +118,7 @@ function createReceipt(args) {
   if (!/^\d+(?:\.\d+){1,3}$/.test(releaseVersion)) fail('Invalid release version')
   if (!['Windows', 'macOS', 'Linux'].includes(platform)) fail('Invalid platform')
   if (!['HASH_VERIFIED', 'SIGNED', 'NOTARIZED'].includes(trustState)) fail('Invalid trust state')
+  enforceTrustedPublicationVersionImmutability(releaseVersion)
 
   const finalSha = sha256(artifact)
   const changed = unsignedSha !== finalSha
