@@ -52,6 +52,42 @@ test('M14 release authority binds source, tag version and immutable publication'
   assert.ok(!workflow.includes('--clobber'))
 })
 
+test('M14 trusted tag publication cannot reuse an already-published agent semantic version', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-version-immutability-'))
+  try {
+    const artifact = path.join(root, 'WorkIntelAgent-Linux-1.2.2')
+    const bytes = Buffer.from('existing-version-candidate')
+    fs.writeFileSync(artifact, bytes)
+    const digest = sha256(bytes)
+
+    const result = spawnSync(process.execPath, [
+      receiptTool,
+      'create',
+      '--artifact', artifact,
+      '--output', `${artifact}.receipt.json`,
+      '--platform', 'Linux',
+      '--trust-state', 'HASH_VERIFIED',
+      '--source-sha', '0123456789abcdef0123456789abcdef01234567',
+      '--release-version', '1.2.2',
+      '--unsigned-sha256', digest,
+      '--verification-method', 'test checksum provenance',
+    ], {
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        GITHUB_WORKFLOW: 'Desktop Agent Trusted Release',
+        GITHUB_EVENT_NAME: 'push',
+      },
+    })
+
+    assert.notEqual(result.status, 0)
+    assert.match(result.stderr, /already-published agent semantic version 1\.2\.2/)
+    assert.ok(!fs.existsSync(`${artifact}.receipt.json`))
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
 test('M14 Windows and macOS trust operations fail closed on missing organization credentials', () => {
   for (const token of [
     'WORKINTEL_WINDOWS_SIGNING_PFX_B64',
@@ -67,7 +103,7 @@ test('M14 Windows and macOS trust operations fail closed on missing organization
     'codesign --force --options runtime --timestamp',
     'codesign --verify --strict --verbose=2',
     'xcrun notarytool submit',
-    "notary_status" ,
+    'notary_status',
     "!= 'Accepted'",
   ]) assert.ok(workflow.includes(token), token)
 })
