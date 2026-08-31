@@ -20,9 +20,28 @@ Before traffic:
 - [ ] screenshot/report storage selected for deployment topology
 - [ ] webhook private-network access remains disabled unless intentionally required
 - [ ] manual SaaS invoice settlement remains disabled unless this is an internal deployment
-- [ ] desktop/browser release checksums verified
-- [ ] native executables/packages signed/notarized before enterprise distribution
+- [ ] desktop/browser canonical release checksums verified
+- [ ] trusted standalone artifact source SHA matches the intended release revision
+- [ ] Windows standalone distribution has a verified Authenticode signature and RFC 3161 timestamp when Windows enterprise distribution is in scope
+- [ ] macOS standalone distribution has a verified Developer ID signature and an accepted Apple notarization result when macOS enterprise distribution is in scope
+- [ ] Linux standalone distribution has final SHA-256/provenance evidence and is not described as platform-signed unless such signing actually occurred
+- [ ] every trusted standalone artifact has a machine-readable M14 receipt whose final digest matches the distributed bytes
+- [ ] M13 canonical ZIP bytes/version immutability remains unchanged by trusted standalone distribution
 - [ ] backup and rollback procedure tested
+- [ ] backup-to-restore evidence exists before recovery is described as `restore verified`
+
+## Release-state truthfulness
+
+Do not collapse these evidence states:
+
+- `BUILT` — deterministic source build completed;
+- `HASH_VERIFIED` — final artifact checksum/provenance verified;
+- `SIGNED` — platform signature actually applied and verified;
+- `NOTARIZED` — Apple notary service actually returned an accepted result for the macOS distribution;
+- `RELEASED` — the intended immutable distribution assets were actually published;
+- `PRODUCTION_VERIFIED` — the exact released revision/artifact was actually verified on the stated real target.
+
+Hosted CI or a merged PR can prove source/build contracts but cannot, by itself, prove signing credentials existed, Apple notarization ran, a release was published, or a production target was healthy. Missing evidence remains `Not Verified`.
 
 ## Block I certification
 
