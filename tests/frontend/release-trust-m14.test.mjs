@@ -57,6 +57,10 @@ test('M14 rejects reused semantic versions before signing environments can run',
   const buildTrustJob = workflow.indexOf('\n  build-and-trust:')
   assert.ok(manifestGuard > 0, 'canonical release-manifest version guard is missing')
   assert.ok(buildTrustJob > manifestGuard, 'version guard must run in authorize before build-and-trust')
+  assert.ok(workflow.includes('published_agent_version="$(node --input-type=commonjs'))
+  assert.ok(workflow.includes("throw new Error('Canonical release manifest has no releases array')"))
+  assert.ok(workflow.includes("if [ \"$published_agent_version\" != 'no' ]; then"))
+  assert.ok(!workflow.includes('if node --input-type=commonjs -e "const fs=require'))
   assert.ok(workflow.includes('bump the native-agent version before signing/notarizing new bytes.'))
 })
 
