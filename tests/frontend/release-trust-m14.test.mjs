@@ -41,6 +41,7 @@ test('M14 release authority binds source, tag version and immutable publication'
   for (const token of [
     'git merge-base --is-ancestor "$source_sha" "$main_sha"',
     'Manual trusted release candidates must bind to the current protected-main head.',
+    'Trusted release tags must point at the current protected-main head; stale main ancestors are not releasable.',
     'release_tag" != "agent-v${version}"',
     'ref: ${{ needs.authorize.outputs.source_sha }}',
     "if: github.event_name == 'push'",
@@ -50,6 +51,16 @@ test('M14 release authority binds source, tag version and immutable publication'
     'gh release edit "$RELEASE_TAG" --draft=false',
   ]) assert.ok(workflow.includes(token), token)
   assert.ok(!workflow.includes('--clobber'))
+})
+
+test('M14 publication rechecks live main and tag refs before exposure', () => {
+  assert.ok(workflow.includes('assert_live_release_refs()'))
+  assert.ok(workflow.includes('git fetch --force origin "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"'))
+  assert.ok(workflow.includes('current_main="$(git rev-parse origin/main)"'))
+  assert.ok(workflow.includes('current_tag="$(git rev-list -n 1 "$RELEASE_TAG")"'))
+  assert.ok(workflow.includes('Protected main moved after release authorization'))
+  assert.ok(workflow.includes('Release tag moved after authorization'))
+  assert.ok(workflow.indexOf('assert_live_release_refs\n          gh release edit "$RELEASE_TAG" --draft=false') > 0)
 })
 
 test('M14 rejects reused semantic versions before signing environments can run', () => {
