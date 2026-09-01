@@ -181,6 +181,23 @@ test('M14 Windows and macOS trust operations fail closed on missing organization
   ]) assert.ok(workflow.includes(token), token)
 })
 
+test('M14 Windows signing selects exactly one newly imported private-key Code Signing certificate', () => {
+  for (const token of [
+    "$certificateStorePath = 'Cert:\\CurrentUser\\My'",
+    '$certificateStoreBefore = @(Get-ChildItem $certificateStorePath',
+    '$importedCertificates = @(Import-PfxCertificate',
+    '$newCertificates = @(Get-ChildItem $certificateStorePath',
+    '$codeSigningCandidates = @($newCertificates',
+    "1.3.6.1.5.5.7.3.3",
+    '$_.HasPrivateKey',
+    'Expected exactly one newly imported Code Signing certificate with a private key',
+    '$certificateThumbprint = [string]$codeSigningCandidates[0].Thumbprint',
+    'foreach ($thumbprint in $importedThumbprints)',
+    'Remove-Item "$certificateStorePath\\$thumbprint"',
+  ]) assert.ok(workflow.includes(token), token)
+  assert.ok(!workflow.includes('$certificateThumbprint = $certificate.Thumbprint'))
+})
+
 test('M14 platform receipts distinguish truthful trust states', () => {
   for (const token of [
     '--platform Windows',
