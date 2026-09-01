@@ -383,7 +383,17 @@ jobs:
             exit 1
           fi
           for receipt in trusted-release-assets/*.receipt.json; do
-            node tools/release-trust-receipt.mjs verify --receipt "$receipt" --artifact-root trusted-release-assets
+            node tools/release-trust-receipt.mjs verify \
+              --receipt "$receipt" \
+              --artifact-root trusted-release-assets \
+              --expected-source-sha "$SOURCE_SHA" \
+              --expected-release-version "$VERSION" \
+              --expected-repository "$GITHUB_REPOSITORY" \
+              --expected-workflow "$GITHUB_WORKFLOW" \
+              --expected-run-id "$GITHUB_RUN_ID" \
+              --expected-run-attempt "$GITHUB_RUN_ATTEMPT" \
+              --expected-event-name "$GITHUB_EVENT_NAME" \
+              --expected-ref "$GITHUB_REF"
           done
       - name: Create and atomically expose new trusted release
         shell: bash
