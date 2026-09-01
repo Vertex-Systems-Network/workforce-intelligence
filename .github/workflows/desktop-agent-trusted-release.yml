@@ -40,6 +40,11 @@ jobs:
           git fetch --no-tags origin main
           main_sha="$(git rev-parse origin/main)"
 
+          if [ "$GITHUB_EVENT_NAME" = 'workflow_dispatch' ] && [ "$GITHUB_REF" != 'refs/heads/main' ]; then
+            echo 'Manual trusted release workflows must be dispatched from refs/heads/main.'
+            exit 1
+          fi
+
           if [ "$GITHUB_EVENT_NAME" = 'push' ]; then
             source_sha="${GITHUB_SHA,,}"
             release_tag="$GITHUB_REF_NAME"
@@ -397,22 +402,25 @@ jobs:
             exit 1
           fi
 
+          release_owner_marker="workintel-release-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-$(uuidgen)"
           created=0
           cleanup() {
             if [ "$created" -eq 1 ]; then
               release_is_draft="$(gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft' 2>/dev/null || true)"
-              if [ "$release_is_draft" = 'true' ]; then
+              release_body="$(gh release view "$RELEASE_TAG" --json body --jq '.body' 2>/dev/null || true)"
+              if [ "$release_is_draft" = 'true' ] && printf '%s' "$release_body" | grep -Fq "<!-- ${release_owner_marker} -->"; then
                 gh release delete "$RELEASE_TAG" --yes || true
               fi
             fi
           }
           trap cleanup EXIT
 
+          release_notes="$(printf '%s\n\n<!-- %s -->' "Trusted standalone distribution for source ${SOURCE_SHA}. Windows is Authenticode signed/timestamped, macOS is Developer ID signed/notarized, and Linux carries checksum/provenance evidence. Machine-readable receipts are attached for every platform artifact." "$release_owner_marker")"
           gh release create "$RELEASE_TAG" trusted-release-assets/* \
             --verify-tag \
             --draft \
             --title "WorkIntel Agent ${VERSION}" \
-            --notes "Trusted standalone distribution for source ${SOURCE_SHA}. Windows is Authenticode signed/timestamped, macOS is Developer ID signed/notarized, and Linux carries checksum/provenance evidence. Machine-readable receipts are attached for every platform artifact."
+            --notes "$release_notes"
           created=1
 
           mapfile -t uploaded < <(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name' | sort)
