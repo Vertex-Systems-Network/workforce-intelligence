@@ -23,10 +23,11 @@ test('M14 trusted release lane is structurally isolated from pull requests', () 
   assert.ok(!workflow.includes('id-token: write'))
 })
 
-test('M14 release-critical actions and build graph remain immutable', () => {
+test('M14 release-critical actions and Node trust runtime remain immutable', () => {
+  const setupNodePin = 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020'
   for (const token of [
     'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1',
-    'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020',
+    setupNodePin,
     'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a',
     'actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131',
     "node-version: '22.23.2'",
@@ -35,6 +36,19 @@ test('M14 release-critical actions and build graph remain immutable', () => {
   ]) assert.ok(workflow.includes(token), token)
   assert.ok(!workflow.includes('npm install'))
   assert.ok(!/uses:\s+actions\/(checkout|setup-node|upload-artifact|download-artifact)@v\d+/.test(workflow))
+
+  assert.equal(workflow.split(setupNodePin).length - 1, 3, 'authorize, build-and-trust and publish must each pin setup-node')
+  assert.equal(workflow.split("node-version: '22.23.2'").length - 1, 3, 'every Node-using trust job must pin Node 22.23.2')
+
+  const authorizeJob = workflow.indexOf('\n  authorize:')
+  const authorizeSetup = workflow.indexOf(setupNodePin, authorizeJob)
+  const authorityScript = workflow.indexOf('- id: source', authorizeJob)
+  assert.ok(authorizeSetup > authorizeJob && authorizeSetup < authorityScript, 'authorize must pin Node before source/version authority parsing')
+
+  const publishJob = workflow.indexOf('\n  publish:')
+  const publishSetup = workflow.indexOf(setupNodePin, publishJob)
+  const receiptVerification = workflow.indexOf('Verify exact trusted asset set and receipts', publishJob)
+  assert.ok(publishSetup > publishJob && publishSetup < receiptVerification, 'publish must pin Node before receipt verification')
 })
 
 test('M14 release authority binds source, dispatch ref, tag version and immutable publication', () => {
