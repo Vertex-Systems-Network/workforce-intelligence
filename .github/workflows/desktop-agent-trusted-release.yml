@@ -216,13 +216,29 @@ jobs:
 
           $artifact = Resolve-Path 'desktop-agent/standalone/dist/WorkIntelAgent.exe'
           $certificatePath = Join-Path $env:RUNNER_TEMP 'workintel-release-signing.pfx'
+          $certificateStorePath = 'Cert:\CurrentUser\My'
+          $certificateStoreBefore = @(Get-ChildItem $certificateStorePath | ForEach-Object { $_.Thumbprint })
+          $importedThumbprints = @()
           $certificateThumbprint = $null
           try {
             [IO.File]::WriteAllBytes($certificatePath, [Convert]::FromBase64String($env:WINDOWS_SIGNING_PFX_B64))
             $securePassword = ConvertTo-SecureString $env:WINDOWS_SIGNING_PFX_PASSWORD -AsPlainText -Force
-            $certificate = Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\CurrentUser\My -Password $securePassword -Exportable:$false
-            if (-not $certificate) { throw 'Windows signing certificate import failed.' }
-            $certificateThumbprint = $certificate.Thumbprint
+            $importedCertificates = @(Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation $certificateStorePath -Password $securePassword -Exportable:$false)
+            if ($importedCertificates.Count -eq 0) { throw 'Windows signing certificate import failed.' }
+
+            $newCertificates = @(Get-ChildItem $certificateStorePath | Where-Object {
+              $_.Thumbprint -and $_.Thumbprint -notin $certificateStoreBefore
+            })
+            $importedThumbprints = @($newCertificates | ForEach-Object { $_.Thumbprint } | Sort-Object -Unique)
+            $codeSigningCandidates = @($newCertificates | Where-Object {
+              $ekuOids = @($_.EnhancedKeyUsageList | ForEach-Object { $_.ObjectId.Value })
+              $_.HasPrivateKey -and ($ekuOids -contains '1.3.6.1.5.5.7.3.3')
+            })
+            if ($codeSigningCandidates.Count -ne 1) {
+              throw "Expected exactly one newly imported Code Signing certificate with a private key; found $($codeSigningCandidates.Count)."
+            }
+            $certificateThumbprint = [string]$codeSigningCandidates[0].Thumbprint
+            if ([string]::IsNullOrWhiteSpace($certificateThumbprint)) { throw 'Windows signing certificate thumbprint is unavailable.' }
 
             $signTool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin" -Filter signtool.exe -Recurse -ErrorAction SilentlyContinue |
               Where-Object { $_.FullName -match '\\x64\\signtool\.exe$' } |
@@ -236,8 +252,10 @@ jobs:
             if ($LASTEXITCODE -ne 0) { throw 'Authenticode verification failed.' }
           }
           finally {
-            if ($certificateThumbprint) {
-              Remove-Item "Cert:\CurrentUser\My\$certificateThumbprint" -Force -ErrorAction SilentlyContinue
+            foreach ($thumbprint in $importedThumbprints) {
+              if (-not [string]::IsNullOrWhiteSpace($thumbprint)) {
+                Remove-Item "$certificateStorePath\$thumbprint" -Force -ErrorAction SilentlyContinue
+              }
             }
             Remove-Item $certificatePath -Force -ErrorAction SilentlyContinue
           }
