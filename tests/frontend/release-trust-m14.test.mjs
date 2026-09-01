@@ -83,6 +83,19 @@ test('M14 publication rechecks live main and tag refs before exposure', () => {
   assert.ok(workflow.indexOf('assert_live_release_refs\n          gh release edit "$RELEASE_TAG" --draft=false') > 0)
 })
 
+test('M14 publication verifies receipts against the exact release run', () => {
+  for (const token of [
+    '--expected-source-sha "$SOURCE_SHA"',
+    '--expected-release-version "$VERSION"',
+    '--expected-repository "$GITHUB_REPOSITORY"',
+    '--expected-workflow "$GITHUB_WORKFLOW"',
+    '--expected-run-id "$GITHUB_RUN_ID"',
+    '--expected-run-attempt "$GITHUB_RUN_ATTEMPT"',
+    '--expected-event-name "$GITHUB_EVENT_NAME"',
+    '--expected-ref "$GITHUB_REF"',
+  ]) assert.ok(workflow.includes(token), token)
+})
+
 test('M14 release rollback only deletes a draft owned by the current run', () => {
   const createRelease = workflow.indexOf('gh release create "$RELEASE_TAG" trusted-release-assets/*')
   const markCreated = workflow.indexOf('created=1', createRelease)
@@ -263,7 +276,7 @@ test('release trust receipt rejects a platform trust-state mismatch', () => {
       '--artifact-root', root,
     ], { encoding: 'utf8' })
     assert.notEqual(verify.status, 0)
-    assert.match(verify.stderr, /Invalid trust state for Linux: expected HASH_VERIFIED/)
+    assert.match(verify.stderr, /Artifact name does not match Linux release version 1\.2\.3|Invalid trust state for Linux/)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
@@ -313,6 +326,121 @@ test('release trust receipt requires byte-changing evidence for signed states', 
     ], { encoding: 'utf8' })
     assert.notEqual(result.status, 0)
     assert.match(result.stderr, /SIGNED artifact did not change/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('release trust receipt pairs artifact filename and receipt filename', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-receipt-pairing-'))
+  try {
+    const wrongArtifact = path.join(root, 'unexpected-linux-name')
+    fs.writeFileSync(wrongArtifact, 'linux-bytes')
+    const wrongArtifactCreate = spawnSync(process.execPath, [
+      receiptTool,
+      'create',
+      '--artifact', wrongArtifact,
+      '--output', `${wrongArtifact}.receipt.json`,
+      '--platform', 'Linux',
+      '--trust-state', 'HASH_VERIFIED',
+      '--source-sha', '0123456789abcdef0123456789abcdef01234567',
+      '--release-version', '1.2.3',
+      '--unsigned-sha256', sha256(Buffer.from('linux-bytes')),
+      '--verification-method', 'test checksum provenance',
+    ], { encoding: 'utf8' })
+    assert.notEqual(wrongArtifactCreate.status, 0)
+    assert.match(wrongArtifactCreate.stderr, /Artifact name does not match Linux release version 1\.2\.3/)
+
+    const artifact = path.join(root, 'WorkIntelAgent-Linux-1.2.3')
+    const receipt = `${artifact}.receipt.json`
+    fs.writeFileSync(artifact, 'linux-bytes')
+    const create = spawnSync(process.execPath, [
+      receiptTool,
+      'create',
+      '--artifact', artifact,
+      '--output', receipt,
+      '--platform', 'Linux',
+      '--trust-state', 'HASH_VERIFIED',
+      '--source-sha', '0123456789abcdef0123456789abcdef01234567',
+      '--release-version', '1.2.3',
+      '--unsigned-sha256', sha256(Buffer.from('linux-bytes')),
+      '--verification-method', 'test checksum provenance',
+    ], { encoding: 'utf8' })
+    assert.equal(create.status, 0, create.stderr || create.stdout)
+
+    const detached = path.join(root, 'detached.receipt.json')
+    fs.renameSync(receipt, detached)
+    const verify = spawnSync(process.execPath, [
+      receiptTool,
+      'verify',
+      '--receipt', detached,
+      '--artifact-root', root,
+    ], { encoding: 'utf8' })
+    assert.notEqual(verify.status, 0)
+    assert.match(verify.stderr, /Receipt filename does not pair exactly with its artifact/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('release trust receipt publication expectations bind source and workflow run', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-publication-binding-'))
+  try {
+    const artifact = path.join(root, 'WorkIntelAgent-Linux-1.2.3')
+    const receipt = `${artifact}.receipt.json`
+    const bytes = Buffer.from('linux-publication-bytes')
+    const sourceSha = '0123456789abcdef0123456789abcdef01234567'
+    fs.writeFileSync(artifact, bytes)
+    const workflowEnv = {
+      ...process.env,
+      GITHUB_REPOSITORY: 'Vertex-Systems-Network/workforce-intelligence',
+      GITHUB_WORKFLOW: 'Desktop Agent Trusted Release',
+      GITHUB_RUN_ID: '123456789',
+      GITHUB_RUN_ATTEMPT: '2',
+      GITHUB_EVENT_NAME: 'workflow_dispatch',
+      GITHUB_REF: 'refs/heads/main',
+    }
+
+    const create = spawnSync(process.execPath, [
+      receiptTool,
+      'create',
+      '--artifact', artifact,
+      '--output', receipt,
+      '--platform', 'Linux',
+      '--trust-state', 'HASH_VERIFIED',
+      '--source-sha', sourceSha,
+      '--release-version', '1.2.3',
+      '--unsigned-sha256', sha256(bytes),
+      '--verification-method', 'test checksum provenance',
+    ], { encoding: 'utf8', env: workflowEnv })
+    assert.equal(create.status, 0, create.stderr || create.stdout)
+
+    const expectedArgs = [
+      '--receipt', receipt,
+      '--artifact-root', root,
+      '--expected-source-sha', sourceSha,
+      '--expected-release-version', '1.2.3',
+      '--expected-repository', workflowEnv.GITHUB_REPOSITORY,
+      '--expected-workflow', workflowEnv.GITHUB_WORKFLOW,
+      '--expected-run-id', workflowEnv.GITHUB_RUN_ID,
+      '--expected-run-attempt', workflowEnv.GITHUB_RUN_ATTEMPT,
+      '--expected-event-name', workflowEnv.GITHUB_EVENT_NAME,
+      '--expected-ref', workflowEnv.GITHUB_REF,
+    ]
+    const verify = spawnSync(process.execPath, [receiptTool, 'verify', ...expectedArgs], { encoding: 'utf8' })
+    assert.equal(verify.status, 0, verify.stderr || verify.stdout)
+
+    const wrongSourceArgs = [...expectedArgs]
+    wrongSourceArgs[wrongSourceArgs.indexOf('--expected-source-sha') + 1] = 'fedcba9876543210fedcba9876543210fedcba98'
+    const wrongSource = spawnSync(process.execPath, [receiptTool, 'verify', ...wrongSourceArgs], { encoding: 'utf8' })
+    assert.notEqual(wrongSource.status, 0)
+    assert.match(wrongSource.stderr, /Receipt source SHA does not match the authorized publication source/)
+
+    const wrongRunArgs = [...expectedArgs]
+    wrongRunArgs[wrongRunArgs.indexOf('--expected-run-id') + 1] = '987654321'
+    const wrongRun = spawnSync(process.execPath, [receiptTool, 'verify', ...wrongRunArgs], { encoding: 'utf8' })
+    assert.notEqual(wrongRun.status, 0)
+    assert.match(wrongRun.stderr, /Receipt workflow run id does not match the authorized publication run/)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
