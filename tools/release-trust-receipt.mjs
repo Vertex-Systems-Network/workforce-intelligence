@@ -89,7 +89,20 @@ function validateReceiptShape(receipt) {
   if (typeof receipt.byte_changed_by_trust !== 'boolean') fail('Invalid byte_changed_by_trust')
   if (!receipt.artifact || path.basename(receipt.artifact) !== receipt.artifact) fail('Invalid artifact name')
   if (!receipt.verification || typeof receipt.verification.method !== 'string' || !receipt.verification.method) fail('Missing verification method')
+  if (receipt.verification.external_evidence_id !== null && typeof receipt.verification.external_evidence_id !== 'string') fail('Invalid external evidence id')
   if (!receipt.workflow || typeof receipt.workflow !== 'object') fail('Missing workflow evidence')
+
+  const expectedTrustState = {
+    Windows: 'SIGNED',
+    macOS: 'NOTARIZED',
+    Linux: 'HASH_VERIFIED',
+  }[receipt.platform]
+  if (receipt.trust_state !== expectedTrustState) {
+    fail(`Invalid trust state for ${receipt.platform}: expected ${expectedTrustState}`)
+  }
+  if (receipt.trust_state === 'NOTARIZED' && !receipt.verification.external_evidence_id) {
+    fail('NOTARIZED receipt requires external evidence id')
+  }
 
   if (receipt.trust_state === 'HASH_VERIFIED' && receipt.byte_changed_by_trust) {
     fail('HASH_VERIFIED receipt cannot claim trust processing changed bytes')
