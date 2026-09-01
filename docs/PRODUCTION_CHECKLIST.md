@@ -22,9 +22,12 @@ Before traffic:
 - [ ] manual SaaS invoice settlement remains disabled unless this is an internal deployment
 - [ ] desktop/browser canonical release checksums verified
 - [ ] trusted standalone artifact source SHA matches the intended release revision
-- [ ] an active repository/organization tag ruleset is externally verified to apply to authorized `agent-v*` release tags with both tag-update and tag-deletion restrictions and **no bypass actors**
+- [ ] one dedicated active repository/organization tag ruleset is externally verified to apply to authorized `agent-v*` release tags with both tag-update and tag-deletion restrictions and **no bypass actors**
+- [ ] the exact audited ruleset ID and GitHub `updated_at` snapshot are recorded in `docs/operations/M14_RELEASE_TAG_RULESET_ATTESTATION.json` with `status=VERIFIED`, `no_bypass_actors_attested=true`, auditor identity and an audit timestamp at or after the ruleset snapshot
+- [ ] the attestation update itself is committed through normal exact-head source certification and required independent review; do not edit release trust evidence directly on protected `main`
 - [ ] release-tag creation authority is restricted to the intended operator/process; tag creation policy is reviewed separately from post-creation update/deletion immutability
-- [ ] the trusted tag workflow's automated tag-protection proof passes before any `production-release` signing/notary job can start
+- [ ] the trusted tag workflow's automated proof succeeds using the ordinary metadata-read GitHub token; no repository-Administration/ruleset-write PAT or App token is exposed to the unprivileged authorization job
+- [ ] automated proof matches the attested ruleset ID and exact `updated_at`, verifies active tag/ref applicability plus update/deletion restrictions, and fails closed if the snapshot changes; if GitHub exposes `bypass_actors` to the caller it must also be empty
 - [ ] `production-release` environment deployment rules are externally verified to allow only the intended `main` manual-dispatch branch and authorized `agent-v*` release tags before signing/notary secrets are attached; environment deployment rules do not substitute for tag immutability rules
 - [ ] `production-release` environment required-reviewer policy is configured for privileged release jobs, with self-review prevention and administrator bypass disabled where the repository plan/policy supports those controls
 - [ ] environment signing/notary secrets are unavailable until the configured deployment protection rules pass
@@ -47,7 +50,7 @@ Do not collapse these evidence states:
 - `RELEASED` — the intended immutable distribution assets were actually published;
 - `PRODUCTION_VERIFIED` — the exact released revision/artifact was actually verified on the stated real target.
 
-Hosted CI or a merged PR can prove source/build contracts but cannot, by itself, prove signing credentials existed, Apple notarization ran, a release was published, release-tag protections are configured correctly, the `production-release` environment is correctly protected, or a production target was healthy. Missing evidence remains `Not Verified`.
+Hosted CI or a merged PR can prove source/build contracts but cannot, by itself, prove signing credentials existed, Apple notarization ran, a release was published, release-tag protections/attestation are configured correctly, the `production-release` environment is correctly protected, or a production target was healthy. Missing evidence remains `Not Verified`.
 
 ## Block I certification
 
