@@ -37,9 +37,11 @@ test('M14 release-critical actions and build graph remain immutable', () => {
   assert.ok(!/uses:\s+actions\/(checkout|setup-node|upload-artifact|download-artifact)@v\d+/.test(workflow))
 })
 
-test('M14 release authority binds source, tag version and immutable publication', () => {
+test('M14 release authority binds source, dispatch ref, tag version and immutable publication', () => {
   for (const token of [
     'git merge-base --is-ancestor "$source_sha" "$main_sha"',
+    "[ \"$GITHUB_EVENT_NAME\" = 'workflow_dispatch' ] && [ \"$GITHUB_REF\" != 'refs/heads/main' ]",
+    'Manual trusted release workflows must be dispatched from refs/heads/main.',
     'Manual trusted release candidates must bind to the current protected-main head.',
     'Trusted release tags must point at the current protected-main head; stale main ancestors are not releasable.',
     'release_tag" != "agent-v${version}"',
@@ -51,6 +53,10 @@ test('M14 release authority binds source, tag version and immutable publication'
     'gh release edit "$RELEASE_TAG" --draft=false',
   ]) assert.ok(workflow.includes(token), token)
   assert.ok(!workflow.includes('--clobber'))
+
+  const dispatchRefGuard = workflow.indexOf('Manual trusted release workflows must be dispatched from refs/heads/main.')
+  const buildTrustJob = workflow.indexOf('\n  build-and-trust:')
+  assert.ok(dispatchRefGuard > 0 && dispatchRefGuard < buildTrustJob, 'dispatch ref must fail closed before signing/notarization jobs')
 })
 
 test('M14 publication rechecks live main and tag refs before exposure', () => {
@@ -63,16 +69,18 @@ test('M14 publication rechecks live main and tag refs before exposure', () => {
   assert.ok(workflow.indexOf('assert_live_release_refs\n          gh release edit "$RELEASE_TAG" --draft=false') > 0)
 })
 
-test('M14 release rollback only deletes a draft created by the current run', () => {
+test('M14 release rollback only deletes a draft owned by the current run', () => {
   const createRelease = workflow.indexOf('gh release create "$RELEASE_TAG" trusted-release-assets/*')
   const markCreated = workflow.indexOf('created=1', createRelease)
   const publishRelease = workflow.indexOf('gh release edit "$RELEASE_TAG" --draft=false')
   const clearCreated = workflow.indexOf('created=0', publishRelease)
 
-  assert.ok(workflow.includes('created=0'))
+  assert.ok(workflow.includes('release_owner_marker="workintel-release-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-$(uuidgen)"'))
   assert.ok(workflow.includes('if [ "$created" -eq 1 ]; then'))
   assert.ok(workflow.includes("release_is_draft=\"$(gh release view \"$RELEASE_TAG\" --json isDraft --jq '.isDraft' 2>/dev/null || true)\""))
-  assert.ok(workflow.includes("if [ \"$release_is_draft\" = 'true' ]; then"))
+  assert.ok(workflow.includes("release_body=\"$(gh release view \"$RELEASE_TAG\" --json body --jq '.body' 2>/dev/null || true)\""))
+  assert.ok(workflow.includes('grep -Fq "<!-- ${release_owner_marker} -->"'))
+  assert.ok(workflow.includes("release_notes=\"$(printf '%s\\n\\n<!-- %s -->'"))
   assert.ok(markCreated > createRelease, 'release ownership flag must only be set after create succeeds')
   assert.ok(clearCreated > publishRelease, 'rollback ownership must be cleared after publication succeeds')
   assert.ok(!workflow.includes('if [ "$published" -eq 0 ] && gh release view'))
