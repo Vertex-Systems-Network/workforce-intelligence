@@ -123,6 +123,37 @@ jobs:
             -f per_page=100 \
             | node tools/verify-release-source-certification.mjs --source-sha "$SOURCE_SHA"
 
+      - name: Require immutable release tag protections
+        if: github.event_name == 'push'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.source.outputs.release_tag }}
+        run: |
+          set -euo pipefail
+          ruleset_file="$RUNNER_TEMP/workintel-release-tag-rulesets-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.jsonl"
+          : > "$ruleset_file"
+          while IFS= read -r ruleset_id; do
+            [ -n "$ruleset_id" ] || continue
+            gh api --method GET \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/${GITHUB_REPOSITORY}/rulesets/${ruleset_id}" \
+              -f includes_parents=true >> "$ruleset_file"
+            printf '\n' >> "$ruleset_file"
+          done < <(
+            gh api --paginate --method GET \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/${GITHUB_REPOSITORY}/rulesets" \
+              -f includes_parents=true \
+              -f targets=tag \
+              -f per_page=100 \
+              --jq '.[].id'
+          )
+          jq -s '.' "$ruleset_file" | node tools/verify-release-tag-protection.mjs --tag "$RELEASE_TAG"
+          rm -f "$ruleset_file"
+
   build-and-trust:
     name: Trust ${{ matrix.platform }} artifact
     needs: authorize
@@ -418,6 +449,31 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          assert_immutable_release_tag_rules() {
+            local ruleset_file="$RUNNER_TEMP/workintel-publish-tag-rulesets-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.jsonl"
+            : > "$ruleset_file"
+            while IFS= read -r ruleset_id; do
+              [ -n "$ruleset_id" ] || continue
+              gh api --method GET \
+                -H 'Accept: application/vnd.github+json' \
+                -H 'X-GitHub-Api-Version: 2022-11-28' \
+                "repos/${GITHUB_REPOSITORY}/rulesets/${ruleset_id}" \
+                -f includes_parents=true >> "$ruleset_file"
+              printf '\n' >> "$ruleset_file"
+            done < <(
+              gh api --paginate --method GET \
+                -H 'Accept: application/vnd.github+json' \
+                -H 'X-GitHub-Api-Version: 2022-11-28' \
+                "repos/${GITHUB_REPOSITORY}/rulesets" \
+                -f includes_parents=true \
+                -f targets=tag \
+                -f per_page=100 \
+                --jq '.[].id'
+            )
+            jq -s '.' "$ruleset_file" | node tools/verify-release-tag-protection.mjs --tag "$RELEASE_TAG"
+            rm -f "$ruleset_file"
+          }
+
           assert_live_release_refs() {
             git fetch --no-tags origin main
             git fetch --force origin "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
@@ -433,6 +489,7 @@ jobs:
             fi
           }
 
+          assert_immutable_release_tag_rules
           assert_live_release_refs
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             echo "Refusing to overwrite existing GitHub Release: $RELEASE_TAG"
@@ -474,6 +531,7 @@ jobs:
             exit 1
           fi
 
+          assert_immutable_release_tag_rules
           assert_live_release_refs
           gh release edit "$RELEASE_TAG" --draft=false
           created=0

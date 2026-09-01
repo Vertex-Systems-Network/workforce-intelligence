@@ -29,6 +29,8 @@ Trusted release invariants:
 - source-certification evidence is matched by canonical workflow name/path, `push` event, `main` branch, exact SHA and completed/success state; missing, pending, failed or substituted evidence fails closed;
 - manual trusted candidates must equal the current protected-main head;
 - tag publication requires `agent-v<version>` to match the version declared by `native-agent.mjs`;
+- before tag-triggered signing/notarization can reach the privileged release environment, active applicable tag rulesets must prove update and deletion restrictions with no bypass actors; the publication job rechecks those protections before exposing the release;
+- tag creation authority remains an external operator/repository policy boundary and must be restricted to the intended release process;
 - Windows requires organization-owned Authenticode certificate material plus an RFC 3161 timestamp URL, then verifies the resulting signature;
 - macOS requires an organization-owned Developer ID certificate and Apple notarization credentials, then requires an accepted `notarytool` result;
 - Linux remains checksum/provenance based and does not claim a platform signing service that has not been configured;
@@ -42,4 +44,4 @@ The repository does not contain signing certificates, private keys or notary cre
 
 The M13 canonical ZIP catalog under `storage/app/releases` remains a separate immutable provenance anchor. M14 trusted standalone executables are separately named distribution outputs and do not rewrite canonical ZIP bytes, manifest rows or same-version checksums.
 
-A source/PR merge does not itself prove that production signing, Apple notarization or real-target deployment verification has occurred. Those evidence classes remain `Not Verified` until the trusted workflow and any required production-target checks actually run successfully.
+A source/PR merge does not itself prove that release-tag protections, production signing, Apple notarization or real-target deployment verification have occurred. Those evidence classes remain `Not Verified` until the trusted workflow and any required external/production-target checks actually run successfully.
