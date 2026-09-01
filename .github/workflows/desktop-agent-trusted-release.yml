@@ -21,6 +21,9 @@ jobs:
   authorize:
     name: Authorize exact release source
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
     outputs:
       source_sha: ${{ steps.source.outputs.source_sha }}
       version: ${{ steps.source.outputs.version }}
@@ -103,6 +106,22 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
           echo "Authorized trusted release source: $source_sha version=$version"
+
+      - name: Require exact-source main certification
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ steps.source.outputs.source_sha }}
+        run: |
+          set -euo pipefail
+          gh api --method GET \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "repos/${GITHUB_REPOSITORY}/actions/runs" \
+            -f head_sha="$SOURCE_SHA" \
+            -f event=push \
+            -f per_page=100 \
+            | node tools/verify-release-source-certification.mjs --source-sha "$SOURCE_SHA"
 
   build-and-trust:
     name: Trust ${{ matrix.platform }} artifact
