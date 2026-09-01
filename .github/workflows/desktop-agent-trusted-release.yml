@@ -397,10 +397,13 @@ jobs:
             exit 1
           fi
 
-          published=0
+          created=0
           cleanup() {
-            if [ "$published" -eq 0 ] && gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-              gh release delete "$RELEASE_TAG" --yes || true
+            if [ "$created" -eq 1 ]; then
+              release_is_draft="$(gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft' 2>/dev/null || true)"
+              if [ "$release_is_draft" = 'true' ]; then
+                gh release delete "$RELEASE_TAG" --yes || true
+              fi
             fi
           }
           trap cleanup EXIT
@@ -410,6 +413,7 @@ jobs:
             --draft \
             --title "WorkIntel Agent ${VERSION}" \
             --notes "Trusted standalone distribution for source ${SOURCE_SHA}. Windows is Authenticode signed/timestamped, macOS is Developer ID signed/notarized, and Linux carries checksum/provenance evidence. Machine-readable receipts are attached for every platform artifact."
+          created=1
 
           mapfile -t uploaded < <(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name' | sort)
           mapfile -t local_assets < <(find trusted-release-assets -maxdepth 1 -type f -printf '%f\n' | sort)
@@ -420,6 +424,6 @@ jobs:
 
           assert_live_release_refs
           gh release edit "$RELEASE_TAG" --draft=false
-          published=1
+          created=0
           trap - EXIT
           echo "Published trusted release $RELEASE_TAG from exact source $SOURCE_SHA"
