@@ -22,6 +22,9 @@ Before traffic:
 - [ ] manual SaaS invoice settlement remains disabled unless this is an internal deployment
 - [ ] desktop/browser canonical release checksums verified
 - [ ] trusted standalone artifact source SHA matches the intended release revision
+- [ ] `production-release` environment deployment rules are externally verified to allow only the intended `main` manual-dispatch branch and authorized `agent-v*` release tags before signing/notary secrets are attached
+- [ ] `production-release` environment required-reviewer policy is configured for privileged release jobs, with self-review prevention and administrator bypass disabled where the repository plan/policy supports those controls
+- [ ] environment signing/notary secrets are unavailable until the configured deployment protection rules pass
 - [ ] Windows standalone distribution has a verified Authenticode signature and RFC 3161 timestamp when Windows enterprise distribution is in scope
 - [ ] macOS standalone distribution has a verified Developer ID signature and an accepted Apple notarization result when macOS enterprise distribution is in scope
 - [ ] Linux standalone distribution has final SHA-256/provenance evidence and is not described as platform-signed unless such signing actually occurred
@@ -41,7 +44,7 @@ Do not collapse these evidence states:
 - `RELEASED` — the intended immutable distribution assets were actually published;
 - `PRODUCTION_VERIFIED` — the exact released revision/artifact was actually verified on the stated real target.
 
-Hosted CI or a merged PR can prove source/build contracts but cannot, by itself, prove signing credentials existed, Apple notarization ran, a release was published, or a production target was healthy. Missing evidence remains `Not Verified`.
+Hosted CI or a merged PR can prove source/build contracts but cannot, by itself, prove signing credentials existed, Apple notarization ran, a release was published, the `production-release` environment is correctly protected, or a production target was healthy. Missing evidence remains `Not Verified`.
 
 ## Block I certification
 
