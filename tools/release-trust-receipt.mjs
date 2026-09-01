@@ -41,6 +41,13 @@ function requireSha(value, label, length = 64) {
   if (!pattern.test(value)) fail(`${label} must be a lowercase ${length}-hex digest`)
 }
 
+function expectedArtifactName(platform, releaseVersion) {
+  if (platform === 'Windows') return `WorkIntelAgent-Windows-${releaseVersion}.exe`
+  if (platform === 'macOS') return `WorkIntelAgent-macOS-${releaseVersion}.zip`
+  if (platform === 'Linux') return `WorkIntelAgent-Linux-${releaseVersion}`
+  fail('Invalid platform')
+}
+
 function readReceipt(file) {
   let payload
   try {
@@ -88,6 +95,9 @@ function validateReceiptShape(receipt) {
   if (!Number.isInteger(receipt.final_size_bytes) || receipt.final_size_bytes <= 0) fail('Invalid final_size_bytes')
   if (typeof receipt.byte_changed_by_trust !== 'boolean') fail('Invalid byte_changed_by_trust')
   if (!receipt.artifact || path.basename(receipt.artifact) !== receipt.artifact) fail('Invalid artifact name')
+  if (receipt.artifact !== expectedArtifactName(receipt.platform, receipt.release_version)) {
+    fail(`Artifact name does not match ${receipt.platform} release version ${receipt.release_version}`)
+  }
   if (!receipt.verification || typeof receipt.verification.method !== 'string' || !receipt.verification.method) fail('Missing verification method')
   if (receipt.verification.external_evidence_id !== null && typeof receipt.verification.external_evidence_id !== 'string') fail('Invalid external evidence id')
   if (!receipt.workflow || typeof receipt.workflow !== 'object') fail('Missing workflow evidence')
@@ -112,6 +122,34 @@ function validateReceiptShape(receipt) {
   }
 }
 
+function validateExpectedPublicationEvidence(args, receipt) {
+  if (args['expected-source-sha']) {
+    const expectedSourceSha = args['expected-source-sha'].toLowerCase()
+    requireSha(expectedSourceSha, 'expected_source_sha', 40)
+    if (receipt.source_sha !== expectedSourceSha) fail('Receipt source SHA does not match the authorized publication source')
+  }
+
+  if (args['expected-release-version']) {
+    const expectedReleaseVersion = args['expected-release-version']
+    if (!/^\d+(?:\.\d+){1,3}$/.test(expectedReleaseVersion)) fail('Invalid expected release version')
+    if (receipt.release_version !== expectedReleaseVersion) fail('Receipt release version does not match the authorized publication version')
+  }
+
+  const workflowExpectations = [
+    ['expected-repository', 'repository', 'repository'],
+    ['expected-workflow', 'workflow', 'workflow'],
+    ['expected-run-id', 'run_id', 'run id'],
+    ['expected-run-attempt', 'run_attempt', 'run attempt'],
+    ['expected-event-name', 'event_name', 'event name'],
+    ['expected-ref', 'ref', 'ref'],
+  ]
+  for (const [argument, field, label] of workflowExpectations) {
+    if (args[argument] && String(receipt.workflow[field] || '') !== args[argument]) {
+      fail(`Receipt workflow ${label} does not match the authorized publication run`)
+    }
+  }
+}
+
 function createReceipt(args) {
   const artifact = path.resolve(requireArg(args, 'artifact'))
   const output = path.resolve(requireArg(args, 'output'))
@@ -131,6 +169,12 @@ function createReceipt(args) {
   if (!/^\d+(?:\.\d+){1,3}$/.test(releaseVersion)) fail('Invalid release version')
   if (!['Windows', 'macOS', 'Linux'].includes(platform)) fail('Invalid platform')
   if (!['HASH_VERIFIED', 'SIGNED', 'NOTARIZED'].includes(trustState)) fail('Invalid trust state')
+  if (path.basename(artifact) !== expectedArtifactName(platform, releaseVersion)) {
+    fail(`Artifact name does not match ${platform} release version ${releaseVersion}`)
+  }
+  if (path.basename(output) !== `${path.basename(artifact)}.receipt.json`) {
+    fail('Receipt output name must pair exactly with the artifact name')
+  }
   enforceTrustedPublicationVersionImmutability(releaseVersion)
 
   const finalSha = sha256(artifact)
@@ -174,6 +218,11 @@ function verifyReceipt(args) {
   const artifactRoot = path.resolve(args['artifact-root'] || path.dirname(receiptFile))
   const receipt = readReceipt(receiptFile)
   validateReceiptShape(receipt)
+
+  if (path.basename(receiptFile) !== `${receipt.artifact}.receipt.json`) {
+    fail('Receipt filename does not pair exactly with its artifact')
+  }
+  validateExpectedPublicationEvidence(args, receipt)
 
   const artifact = path.join(artifactRoot, receipt.artifact)
   if (!fs.existsSync(artifact) || !fs.statSync(artifact).isFile()) fail(`Receipt artifact is missing: ${artifact}`)
