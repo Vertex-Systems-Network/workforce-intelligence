@@ -208,6 +208,69 @@ test('release trust receipt creation and verification are tamper evident', () =>
   }
 })
 
+test('release trust receipt rejects a platform trust-state mismatch', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-platform-state-'))
+  try {
+    const artifact = path.join(root, 'WorkIntelAgent-Windows-1.2.3.exe')
+    const receipt = `${artifact}.receipt.json`
+    const finalBytes = Buffer.from('signed-windows-bytes')
+    fs.writeFileSync(artifact, finalBytes)
+
+    const create = spawnSync(process.execPath, [
+      receiptTool,
+      'create',
+      '--artifact', artifact,
+      '--output', receipt,
+      '--platform', 'Windows',
+      '--trust-state', 'SIGNED',
+      '--source-sha', '0123456789abcdef0123456789abcdef01234567',
+      '--release-version', '1.2.3',
+      '--unsigned-sha256', sha256(Buffer.from('unsigned-windows-bytes')),
+      '--verification-method', 'test Authenticode verification',
+    ], { encoding: 'utf8' })
+    assert.equal(create.status, 0, create.stderr || create.stdout)
+
+    const payload = JSON.parse(fs.readFileSync(receipt, 'utf8'))
+    payload.platform = 'Linux'
+    fs.writeFileSync(receipt, `${JSON.stringify(payload, null, 2)}\n`)
+
+    const verify = spawnSync(process.execPath, [
+      receiptTool,
+      'verify',
+      '--receipt', receipt,
+      '--artifact-root', root,
+    ], { encoding: 'utf8' })
+    assert.notEqual(verify.status, 0)
+    assert.match(verify.stderr, /Invalid trust state for Linux: expected HASH_VERIFIED/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('release trust receipt requires notarization evidence id', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-notary-evidence-'))
+  try {
+    const artifact = path.join(root, 'WorkIntelAgent-macOS-1.2.3.zip')
+    fs.writeFileSync(artifact, 'notarized-macos-bytes')
+    const result = spawnSync(process.execPath, [
+      receiptTool,
+      'create',
+      '--artifact', artifact,
+      '--output', `${artifact}.receipt.json`,
+      '--platform', 'macOS',
+      '--trust-state', 'NOTARIZED',
+      '--source-sha', '0123456789abcdef0123456789abcdef01234567',
+      '--release-version', '1.2.3',
+      '--unsigned-sha256', sha256(Buffer.from('unsigned-macos-bytes')),
+      '--verification-method', 'test Apple notarytool Accepted',
+    ], { encoding: 'utf8' })
+    assert.notEqual(result.status, 0)
+    assert.match(result.stderr, /NOTARIZED receipt requires external evidence id/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
 test('release trust receipt requires byte-changing evidence for signed states', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-signed-receipt-'))
   try {
