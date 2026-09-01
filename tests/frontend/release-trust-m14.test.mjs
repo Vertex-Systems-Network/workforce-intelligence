@@ -63,6 +63,21 @@ test('M14 publication rechecks live main and tag refs before exposure', () => {
   assert.ok(workflow.indexOf('assert_live_release_refs\n          gh release edit "$RELEASE_TAG" --draft=false') > 0)
 })
 
+test('M14 release rollback only deletes a draft created by the current run', () => {
+  const createRelease = workflow.indexOf('gh release create "$RELEASE_TAG" trusted-release-assets/*')
+  const markCreated = workflow.indexOf('created=1', createRelease)
+  const publishRelease = workflow.indexOf('gh release edit "$RELEASE_TAG" --draft=false')
+  const clearCreated = workflow.indexOf('created=0', publishRelease)
+
+  assert.ok(workflow.includes('created=0'))
+  assert.ok(workflow.includes('if [ "$created" -eq 1 ]; then'))
+  assert.ok(workflow.includes('release_is_draft="$(gh release view "$RELEASE_TAG" --json isDraft --jq \'\.isDraft\' 2>/dev/null || true)"'))
+  assert.ok(workflow.includes('if [ "$release_is_draft" = \'true\' ]; then'))
+  assert.ok(markCreated > createRelease, 'release ownership flag must only be set after create succeeds')
+  assert.ok(clearCreated > publishRelease, 'rollback ownership must be cleared after publication succeeds')
+  assert.ok(!workflow.includes('if [ "$published" -eq 0 ] && gh release view'))
+})
+
 test('M14 rejects reused semantic versions before signing environments can run', () => {
   const manifestGuard = workflow.indexOf("fs.readFileSync('storage/app/releases/manifest.json','utf8')")
   const buildTrustJob = workflow.indexOf('\n  build-and-trust:')
