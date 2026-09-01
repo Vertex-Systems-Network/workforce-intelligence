@@ -25,6 +25,8 @@ Trusted release invariants:
 
 - every build is checked out from one exact source SHA;
 - the source SHA must be contained by protected `main`;
+- before any `production-release` environment/signing authority is reached, that exact source SHA must have successful `main` push runs for `WorkIntel CI`, `WorkIntel Code Quality`, and `WorkIntel Windows Certification`;
+- source-certification evidence is matched by canonical workflow name/path, `push` event, `main` branch, exact SHA and completed/success state; missing, pending, failed or substituted evidence fails closed;
 - manual trusted candidates must equal the current protected-main head;
 - tag publication requires `agent-v<version>` to match the version declared by `native-agent.mjs`;
 - Windows requires organization-owned Authenticode certificate material plus an RFC 3161 timestamp URL, then verifies the resulting signature;
