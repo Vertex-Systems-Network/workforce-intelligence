@@ -170,6 +170,47 @@ jobs:
             exit 1
           fi
 
+          test -s .github/workflows/desktop-agent-trusted-release.yml
+          test -s tools/release-trust-receipt.mjs
+          test -s tests/frontend/release-trust-m14.test.mjs
+          grep -Fq "tags: ['agent-v*']" .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'environment: production-release' .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq "node-version: '22.23.2'" .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'npm ci --no-audit --no-fund' .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'npm audit --audit-level=high' .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a' .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131' .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'WORKINTEL_WINDOWS_SIGNING_PFX_B64' .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'WORKINTEL_APPLE_DEVELOPER_ID_P12_B64' .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'xcrun notarytool submit' .github/workflows/desktop-agent-trusted-release.yml
+          grep -Fq 'release-trust-receipt.mjs verify' .github/workflows/desktop-agent-trusted-release.yml
+          if grep -Fq 'pull_request:' .github/workflows/desktop-agent-trusted-release.yml; then
+            echo 'Trusted desktop release must never be triggered by pull_request.'
+            exit 1
+          fi
+          if grep -Fq 'self-hosted' .github/workflows/desktop-agent-trusted-release.yml; then
+            echo 'Trusted desktop release must remain GitHub-hosted.'
+            exit 1
+          fi
+          if grep -Fq 'id-token: write' .github/workflows/desktop-agent-trusted-release.yml; then
+            echo 'Trusted release must not request OIDC authority until an approved provider integration actually uses it.'
+            exit 1
+          fi
+          if grep -Fq -- '--clobber' .github/workflows/desktop-agent-trusted-release.yml; then
+            echo 'Trusted release publication must never overwrite existing release assets.'
+            exit 1
+          fi
+          if grep -Eq 'uses: actions/(checkout|setup-node|upload-artifact|download-artifact)@v[0-9]+' .github/workflows/desktop-agent-trusted-release.yml; then
+            echo 'Trusted release actions must remain pinned to immutable commits.'
+            exit 1
+          fi
+          if grep -Fq 'npm install' .github/workflows/desktop-agent-trusted-release.yml; then
+            echo 'Trusted release must not use unlocked npm install.'
+            exit 1
+          fi
+
           grep -Fq 'not part of the active repository governance scope' docs/architecture/REPOSITORY_GOVERNANCE.md
           grep -Fq 'no branch-protection requirement' docs/architecture/REPOSITORY_GOVERNANCE.md
           grep -Fq 'branch protection was explicitly removed from the active governance scope' docs/architecture/MODULAR_MATURITY_STATUS.md
