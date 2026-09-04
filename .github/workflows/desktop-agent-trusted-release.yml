@@ -1,0 +1,557 @@
+name: Desktop Agent Trusted Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact protected-main SHA to certify as a trusted release candidate
+        required: true
+        type: string
+  push:
+    tags: ['agent-v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workintel-trusted-release-${{ github.ref }}-${{ inputs.source_sha || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  authorize:
+    name: Authorize exact release source
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      source_sha: ${{ steps.source.outputs.source_sha }}
+      version: ${{ steps.source.outputs.version }}
+      release_tag: ${{ steps.source.outputs.release_tag }}
+    steps:
+      - name: Checkout release authority source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - name: Set up exact Node runtime
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22.23.2'
+      - id: source
+        name: Bind trusted release to protected main
+        shell: bash
+        env:
+          DISPATCH_SOURCE_SHA: ${{ inputs.source_sha }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          main_sha="$(git rev-parse origin/main)"
+
+          if [ "$GITHUB_EVENT_NAME" = 'workflow_dispatch' ] && [ "$GITHUB_REF" != 'refs/heads/main' ]; then
+            echo 'Manual trusted release workflows must be dispatched from refs/heads/main.'
+            exit 1
+          fi
+
+          if [ "$GITHUB_EVENT_NAME" = 'push' ]; then
+            source_sha="${GITHUB_SHA,,}"
+            release_tag="$GITHUB_REF_NAME"
+          else
+            source_sha="$(printf '%s' "$DISPATCH_SOURCE_SHA" | tr '[:upper:]' '[:lower:]')"
+            release_tag=''
+          fi
+
+          if ! [[ "$source_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'Trusted release source must be one exact 40-hex Git commit SHA.'
+            exit 1
+          fi
+          git cat-file -e "${source_sha}^{commit}"
+          if ! git merge-base --is-ancestor "$source_sha" "$main_sha"; then
+            echo 'Trusted release source is not contained by protected main.'
+            exit 1
+          fi
+          if [ "$GITHUB_EVENT_NAME" = 'workflow_dispatch' ] && [ "$source_sha" != "$main_sha" ]; then
+            echo 'Manual trusted release candidates must bind to the current protected-main head.'
+            exit 1
+          fi
+          if [ "$GITHUB_EVENT_NAME" = 'push' ] && [ "$source_sha" != "$main_sha" ]; then
+            echo 'Trusted release tags must point at the current protected-main head; stale main ancestors are not releasable.'
+            exit 1
+          fi
+
+          git checkout --detach "$source_sha"
+          version="$(node --input-type=commonjs -e "const fs=require('node:fs');const s=fs.readFileSync('desktop-agent/native-agent.mjs','utf8');const m=s.match(/const VERSION = ['\"]([^'\"]+)['\"]/);if(!m)process.exit(2);process.stdout.write(m[1]);")"
+          if ! [[ "$version" =~ ^[0-9]+(\.[0-9]+){1,3}$ ]]; then
+            echo 'Native-agent source version is invalid.'
+            exit 1
+          fi
+
+          if [ "$GITHUB_EVENT_NAME" = 'push' ] && [ "$release_tag" != "agent-v${version}" ]; then
+            echo "Release tag ${release_tag} does not match native-agent version ${version}."
+            exit 1
+          fi
+
+          if [ "$GITHUB_EVENT_NAME" = 'push' ]; then
+            published_agent_version="$(node --input-type=commonjs -e "const fs=require('node:fs');const version=process.argv[1];const manifest=JSON.parse(fs.readFileSync('storage/app/releases/manifest.json','utf8'));if(!Array.isArray(manifest.releases))throw new Error('Canonical release manifest has no releases array');process.stdout.write(manifest.releases.some(row=>row&&row.kind==='agent'&&String(row.version||'')===version)?'yes':'no');" "$version")"
+            if [ "$published_agent_version" = 'yes' ]; then
+              echo "Refusing trusted release for already-published agent semantic version ${version}; bump the native-agent version before signing/notarizing new bytes."
+              exit 1
+            fi
+            if [ "$published_agent_version" != 'no' ]; then
+              echo 'Canonical release manifest version guard returned an invalid result.'
+              exit 1
+            fi
+          fi
+
+          echo "source_sha=$source_sha" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
+          echo "Authorized trusted release source: $source_sha version=$version"
+
+      - name: Require exact-source main certification
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ steps.source.outputs.source_sha }}
+        run: |
+          set -euo pipefail
+          gh api --method GET \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "repos/${GITHUB_REPOSITORY}/actions/runs" \
+            -f head_sha="$SOURCE_SHA" \
+            -f event=push \
+            -f per_page=100 \
+            | node tools/verify-release-source-certification.mjs --source-sha "$SOURCE_SHA"
+
+      - name: Require immutable release tag protections
+        if: github.event_name == 'push'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.source.outputs.release_tag }}
+        run: |
+          set -euo pipefail
+          ruleset_file="$RUNNER_TEMP/workintel-release-tag-rulesets-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.jsonl"
+          : > "$ruleset_file"
+          while IFS= read -r ruleset_id; do
+            [ -n "$ruleset_id" ] || continue
+            gh api --method GET \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/${GITHUB_REPOSITORY}/rulesets/${ruleset_id}" \
+              -f includes_parents=true >> "$ruleset_file"
+            printf '\n' >> "$ruleset_file"
+          done < <(
+            gh api --paginate --method GET \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/${GITHUB_REPOSITORY}/rulesets" \
+              -f includes_parents=true \
+              -f targets=tag \
+              -f per_page=100 \
+              --jq '.[].id'
+          )
+          jq -s '.' "$ruleset_file" | node tools/verify-release-tag-protection.mjs --tag "$RELEASE_TAG"
+          rm -f "$ruleset_file"
+
+  build-and-trust:
+    name: Trust ${{ matrix.platform }} artifact
+    needs: authorize
+    environment: production-release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: Windows
+          - os: macos-latest
+            platform: macOS
+          - os: ubuntu-latest
+            platform: Linux
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    env:
+      SOURCE_SHA: ${{ needs.authorize.outputs.source_sha }}
+      VERSION: ${{ needs.authorize.outputs.version }}
+    steps:
+      - name: Checkout exact authorized source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.authorize.outputs.source_sha }}
+      - name: Set up exact Node runtime
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22.23.2'
+      - name: Install locked standalone build dependencies
+        working-directory: desktop-agent/standalone
+        run: npm ci --no-audit --no-fund
+      - name: Audit locked standalone build graph
+        working-directory: desktop-agent/standalone
+        run: npm audit --audit-level=high
+      - name: Build deterministic standalone agent
+        working-directory: desktop-agent/standalone
+        run: node build.mjs
+
+      - name: Prepare Windows unsigned digest
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $artifact = Resolve-Path 'desktop-agent/standalone/dist/WorkIntelAgent.exe'
+          if ((Get-Item $artifact).Length -le 0) { throw 'Windows standalone artifact is empty.' }
+          $unsigned = (Get-FileHash -Algorithm SHA256 $artifact).Hash.ToLowerInvariant()
+          "UNSIGNED_SHA=$unsigned" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Authenticode sign and verify Windows executable
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          WINDOWS_SIGNING_PFX_B64: ${{ secrets.WORKINTEL_WINDOWS_SIGNING_PFX_B64 }}
+          WINDOWS_SIGNING_PFX_PASSWORD: ${{ secrets.WORKINTEL_WINDOWS_SIGNING_PFX_PASSWORD }}
+          WINDOWS_TIMESTAMP_URL: ${{ vars.WORKINTEL_WINDOWS_TIMESTAMP_URL }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:WINDOWS_SIGNING_PFX_B64)) { throw 'Windows signing certificate secret is unavailable.' }
+          if ([string]::IsNullOrWhiteSpace($env:WINDOWS_SIGNING_PFX_PASSWORD)) { throw 'Windows signing certificate password is unavailable.' }
+          if ([string]::IsNullOrWhiteSpace($env:WINDOWS_TIMESTAMP_URL)) { throw 'Windows RFC3161 timestamp URL is unavailable.' }
+
+          $artifact = Resolve-Path 'desktop-agent/standalone/dist/WorkIntelAgent.exe'
+          $certificatePath = Join-Path $env:RUNNER_TEMP 'workintel-release-signing.pfx'
+          $certificateStorePath = 'Cert:\CurrentUser\My'
+          $certificateStoreBefore = @(Get-ChildItem $certificateStorePath | ForEach-Object { $_.Thumbprint })
+          $importedThumbprints = @()
+          $certificateThumbprint = $null
+          try {
+            [IO.File]::WriteAllBytes($certificatePath, [Convert]::FromBase64String($env:WINDOWS_SIGNING_PFX_B64))
+            $securePassword = ConvertTo-SecureString $env:WINDOWS_SIGNING_PFX_PASSWORD -AsPlainText -Force
+            $importedCertificates = @(Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation $certificateStorePath -Password $securePassword -Exportable:$false)
+            if ($importedCertificates.Count -eq 0) { throw 'Windows signing certificate import failed.' }
+
+            $newCertificates = @(Get-ChildItem $certificateStorePath | Where-Object {
+              $_.Thumbprint -and $_.Thumbprint -notin $certificateStoreBefore
+            })
+            $importedThumbprints = @($newCertificates | ForEach-Object { $_.Thumbprint } | Sort-Object -Unique)
+            $codeSigningCandidates = @($newCertificates | Where-Object {
+              $ekuOids = @($_.EnhancedKeyUsageList | ForEach-Object { $_.ObjectId.Value })
+              $_.HasPrivateKey -and ($ekuOids -contains '1.3.6.1.5.5.7.3.3')
+            })
+            if ($codeSigningCandidates.Count -ne 1) {
+              throw "Expected exactly one newly imported Code Signing certificate with a private key; found $($codeSigningCandidates.Count)."
+            }
+            $certificateThumbprint = [string]$codeSigningCandidates[0].Thumbprint
+            if ([string]::IsNullOrWhiteSpace($certificateThumbprint)) { throw 'Windows signing certificate thumbprint is unavailable.' }
+
+            $signTool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin" -Filter signtool.exe -Recurse -ErrorAction SilentlyContinue |
+              Where-Object { $_.FullName -match '\\x64\\signtool\.exe$' } |
+              Sort-Object FullName -Descending |
+              Select-Object -First 1
+            if (-not $signTool) { throw 'SignTool x64 was not found on the GitHub-hosted Windows runner.' }
+
+            & $signTool.FullName sign /sha1 $certificateThumbprint /fd SHA256 /tr $env:WINDOWS_TIMESTAMP_URL /td SHA256 $artifact
+            if ($LASTEXITCODE -ne 0) { throw 'Authenticode signing failed.' }
+            & $signTool.FullName verify /pa /all /v $artifact
+            if ($LASTEXITCODE -ne 0) { throw 'Authenticode verification failed.' }
+          }
+          finally {
+            foreach ($thumbprint in $importedThumbprints) {
+              if (-not [string]::IsNullOrWhiteSpace($thumbprint)) {
+                Remove-Item "$certificateStorePath\$thumbprint" -Force -ErrorAction SilentlyContinue
+              }
+            }
+            Remove-Item $certificatePath -Force -ErrorAction SilentlyContinue
+          }
+
+      - name: Package Windows trusted distribution and receipt
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $trusted = 'desktop-agent/standalone/trusted-dist'
+          New-Item -ItemType Directory -Force -Path $trusted | Out-Null
+          $artifact = Join-Path $trusted "WorkIntelAgent-Windows-$env:VERSION.exe"
+          Copy-Item 'desktop-agent/standalone/dist/WorkIntelAgent.exe' $artifact -Force
+          node tools/release-trust-receipt.mjs create `
+            --artifact $artifact `
+            --output "$artifact.receipt.json" `
+            --platform Windows `
+            --trust-state SIGNED `
+            --source-sha $env:SOURCE_SHA `
+            --release-version $env:VERSION `
+            --unsigned-sha256 $env:UNSIGNED_SHA `
+            --verification-method 'Authenticode SignTool SHA256 with RFC3161 timestamp verification'
+          node tools/release-trust-receipt.mjs verify --receipt "$artifact.receipt.json" --artifact-root $trusted
+
+      - name: Prepare macOS unsigned distribution digest
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
+          artifact='desktop-agent/standalone/dist/WorkIntelAgent'
+          test -s "$artifact"
+          unsigned_archive="$RUNNER_TEMP/WorkIntelAgent-macOS-${VERSION}.unsigned.zip"
+          ditto -c -k --keepParent "$artifact" "$unsigned_archive"
+          echo "UNSIGNED_SHA=$(shasum -a 256 "$unsigned_archive" | awk '{print $1}')" >> "$GITHUB_ENV"
+
+      - name: Developer ID sign, verify and notarize macOS distribution
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          APPLE_DEVELOPER_ID_P12_B64: ${{ secrets.WORKINTEL_APPLE_DEVELOPER_ID_P12_B64 }}
+          APPLE_DEVELOPER_ID_P12_PASSWORD: ${{ secrets.WORKINTEL_APPLE_DEVELOPER_ID_P12_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.WORKINTEL_APPLE_SIGNING_IDENTITY }}
+          APPLE_NOTARY_KEY_P8_B64: ${{ secrets.WORKINTEL_APPLE_NOTARY_KEY_P8_B64 }}
+          APPLE_NOTARY_KEY_ID: ${{ secrets.WORKINTEL_APPLE_NOTARY_KEY_ID }}
+          APPLE_NOTARY_ISSUER_ID: ${{ secrets.WORKINTEL_APPLE_NOTARY_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          for variable in APPLE_DEVELOPER_ID_P12_B64 APPLE_DEVELOPER_ID_P12_PASSWORD APPLE_SIGNING_IDENTITY APPLE_NOTARY_KEY_P8_B64 APPLE_NOTARY_KEY_ID APPLE_NOTARY_ISSUER_ID; do
+            if [ -z "${!variable:-}" ]; then
+              echo "Required macOS release credential reference is unavailable: $variable"
+              exit 1
+            fi
+          done
+
+          artifact='desktop-agent/standalone/dist/WorkIntelAgent'
+          trusted='desktop-agent/standalone/trusted-dist'
+          mkdir -p "$trusted"
+          final_archive="$trusted/WorkIntelAgent-macOS-${VERSION}.zip"
+          p12_path="$RUNNER_TEMP/workintel-developer-id.p12"
+          notary_key_path="$RUNNER_TEMP/AuthKey_${APPLE_NOTARY_KEY_ID}.p8"
+          keychain="$RUNNER_TEMP/workintel-release.keychain-db"
+          keychain_password="$(uuidgen)"
+
+          cleanup() {
+            security delete-keychain "$keychain" >/dev/null 2>&1 || true
+            rm -f "$p12_path" "$notary_key_path" "$RUNNER_TEMP/workintel-notary.json"
+          }
+          trap cleanup EXIT
+
+          P12_PATH="$p12_path" node --input-type=commonjs -e "const fs=require('node:fs');fs.writeFileSync(process.env.P12_PATH,Buffer.from(process.env.APPLE_DEVELOPER_ID_P12_B64,'base64'));"
+          NOTARY_KEY_PATH="$notary_key_path" node --input-type=commonjs -e "const fs=require('node:fs');fs.writeFileSync(process.env.NOTARY_KEY_PATH,Buffer.from(process.env.APPLE_NOTARY_KEY_P8_B64,'base64'));"
+          chmod 600 "$p12_path" "$notary_key_path"
+
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          security import "$p12_path" -k "$keychain" -P "$APPLE_DEVELOPER_ID_P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain"
+
+          codesign --force --options runtime --timestamp --sign "$APPLE_SIGNING_IDENTITY" --keychain "$keychain" "$artifact"
+          codesign --verify --strict --verbose=2 "$artifact"
+          ditto -c -k --keepParent "$artifact" "$final_archive"
+
+          xcrun notarytool submit "$final_archive" \
+            --key "$notary_key_path" \
+            --key-id "$APPLE_NOTARY_KEY_ID" \
+            --issuer "$APPLE_NOTARY_ISSUER_ID" \
+            --wait \
+            --output-format json > "$RUNNER_TEMP/workintel-notary.json"
+
+          notary_status="$(node --input-type=commonjs -e "const j=JSON.parse(require('node:fs').readFileSync(process.argv[1],'utf8'));process.stdout.write(String(j.status||''));" "$RUNNER_TEMP/workintel-notary.json")"
+          notary_id="$(node --input-type=commonjs -e "const j=JSON.parse(require('node:fs').readFileSync(process.argv[1],'utf8'));process.stdout.write(String(j.id||''));" "$RUNNER_TEMP/workintel-notary.json")"
+          if [ "$notary_status" != 'Accepted' ] || [ -z "$notary_id" ]; then
+            echo "Apple notarization was not accepted (status=${notary_status:-missing})."
+            exit 1
+          fi
+          echo "NOTARY_ID=$notary_id" >> "$GITHUB_ENV"
+
+      - name: Create macOS trust receipt
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
+          trusted='desktop-agent/standalone/trusted-dist'
+          artifact="$trusted/WorkIntelAgent-macOS-${VERSION}.zip"
+          node tools/release-trust-receipt.mjs create \
+            --artifact "$artifact" \
+            --output "$artifact.receipt.json" \
+            --platform macOS \
+            --trust-state NOTARIZED \
+            --source-sha "$SOURCE_SHA" \
+            --release-version "$VERSION" \
+            --unsigned-sha256 "$UNSIGNED_SHA" \
+            --verification-method 'Developer ID codesign verification and Apple notarytool Accepted' \
+            --external-evidence-id "$NOTARY_ID"
+          node tools/release-trust-receipt.mjs verify --receipt "$artifact.receipt.json" --artifact-root "$trusted"
+
+      - name: Package Linux checksum-provenance distribution and receipt
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          trusted='desktop-agent/standalone/trusted-dist'
+          mkdir -p "$trusted"
+          artifact="$trusted/WorkIntelAgent-Linux-${VERSION}"
+          cp desktop-agent/standalone/dist/WorkIntelAgent "$artifact"
+          chmod 755 "$artifact"
+          unsigned_sha="$(sha256sum "$artifact" | awk '{print $1}')"
+          node tools/release-trust-receipt.mjs create \
+            --artifact "$artifact" \
+            --output "$artifact.receipt.json" \
+            --platform Linux \
+            --trust-state HASH_VERIFIED \
+            --source-sha "$SOURCE_SHA" \
+            --release-version "$VERSION" \
+            --unsigned-sha256 "$unsigned_sha" \
+            --verification-method 'SHA-256 deterministic build provenance'
+          node tools/release-trust-receipt.mjs verify --receipt "$artifact.receipt.json" --artifact-root "$trusted"
+
+      - name: Upload trusted candidate evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: trusted-release-${{ matrix.platform }}
+          path: desktop-agent/standalone/trusted-dist/*
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Publish immutable trusted release
+    if: github.event_name == 'push'
+    needs: [authorize, build-and-trust]
+    environment: production-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_SHA: ${{ needs.authorize.outputs.source_sha }}
+      VERSION: ${{ needs.authorize.outputs.version }}
+      RELEASE_TAG: ${{ needs.authorize.outputs.release_tag }}
+    steps:
+      - name: Checkout exact authorized source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.authorize.outputs.source_sha }}
+      - name: Set up exact Node runtime
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22.23.2'
+      - name: Download trusted platform artifacts
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: trusted-release-*
+          path: trusted-release-assets
+          merge-multiple: true
+      - name: Verify exact trusted asset set and receipts
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected=(
+            "WorkIntelAgent-Linux-${VERSION}"
+            "WorkIntelAgent-Linux-${VERSION}.receipt.json"
+            "WorkIntelAgent-Windows-${VERSION}.exe"
+            "WorkIntelAgent-Windows-${VERSION}.exe.receipt.json"
+            "WorkIntelAgent-macOS-${VERSION}.zip"
+            "WorkIntelAgent-macOS-${VERSION}.zip.receipt.json"
+          )
+          mapfile -t actual < <(find trusted-release-assets -maxdepth 1 -type f -printf '%f\n' | sort)
+          mapfile -t wanted < <(printf '%s\n' "${expected[@]}" | sort)
+          if [ "$(printf '%s\n' "${actual[@]}")" != "$(printf '%s\n' "${wanted[@]}")" ]; then
+            echo 'Trusted release asset set does not match the expected immutable publication set.'
+            printf 'Expected:\n%s\n' "$(printf '%s\n' "${wanted[@]}")"
+            printf 'Actual:\n%s\n' "$(printf '%s\n' "${actual[@]}")"
+            exit 1
+          fi
+          for receipt in trusted-release-assets/*.receipt.json; do
+            node tools/release-trust-receipt.mjs verify \
+              --receipt "$receipt" \
+              --artifact-root trusted-release-assets \
+              --expected-source-sha "$SOURCE_SHA" \
+              --expected-release-version "$VERSION" \
+              --expected-repository "$GITHUB_REPOSITORY" \
+              --expected-workflow "$GITHUB_WORKFLOW" \
+              --expected-run-id "$GITHUB_RUN_ID" \
+              --expected-run-attempt "$GITHUB_RUN_ATTEMPT" \
+              --expected-event-name "$GITHUB_EVENT_NAME" \
+              --expected-ref "$GITHUB_REF"
+          done
+      - name: Create and atomically expose new trusted release
+        shell: bash
+        run: |
+          set -euo pipefail
+          assert_immutable_release_tag_rules() {
+            local ruleset_file="$RUNNER_TEMP/workintel-publish-tag-rulesets-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.jsonl"
+            : > "$ruleset_file"
+            while IFS= read -r ruleset_id; do
+              [ -n "$ruleset_id" ] || continue
+              gh api --method GET \
+                -H 'Accept: application/vnd.github+json' \
+                -H 'X-GitHub-Api-Version: 2022-11-28' \
+                "repos/${GITHUB_REPOSITORY}/rulesets/${ruleset_id}" \
+                -f includes_parents=true >> "$ruleset_file"
+              printf '\n' >> "$ruleset_file"
+            done < <(
+              gh api --paginate --method GET \
+                -H 'Accept: application/vnd.github+json' \
+                -H 'X-GitHub-Api-Version: 2022-11-28' \
+                "repos/${GITHUB_REPOSITORY}/rulesets" \
+                -f includes_parents=true \
+                -f targets=tag \
+                -f per_page=100 \
+                --jq '.[].id'
+            )
+            jq -s '.' "$ruleset_file" | node tools/verify-release-tag-protection.mjs --tag "$RELEASE_TAG"
+            rm -f "$ruleset_file"
+          }
+
+          assert_live_release_refs() {
+            git fetch --no-tags origin main
+            git fetch --force origin "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
+            current_main="$(git rev-parse origin/main)"
+            current_tag="$(git rev-list -n 1 "$RELEASE_TAG")"
+            if [ "$current_main" != "$SOURCE_SHA" ]; then
+              echo "Protected main moved after release authorization: expected $SOURCE_SHA, found $current_main."
+              exit 1
+            fi
+            if [ "$current_tag" != "$SOURCE_SHA" ]; then
+              echo "Release tag moved after authorization: expected $SOURCE_SHA, found $current_tag."
+              exit 1
+            fi
+          }
+
+          assert_immutable_release_tag_rules
+          assert_live_release_refs
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Refusing to overwrite existing GitHub Release: $RELEASE_TAG"
+            exit 1
+          fi
+
+          release_owner_marker="workintel-release-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-$(uuidgen)"
+          created=0
+          create_attempted=0
+          cleanup_owned_draft() {
+            release_is_draft="$(gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft' 2>/dev/null || true)"
+            release_body="$(gh release view "$RELEASE_TAG" --json body --jq '.body' 2>/dev/null || true)"
+            if [ "$release_is_draft" = 'true' ] && printf '%s' "$release_body" | grep -Fq "<!-- ${release_owner_marker} -->"; then
+              gh release delete "$RELEASE_TAG" --yes || true
+            fi
+          }
+          cleanup() {
+            if [ "$created" -eq 1 ]; then
+              cleanup_owned_draft
+            elif [ "$create_attempted" -eq 1 ]; then
+              cleanup_owned_draft
+            fi
+          }
+          trap cleanup EXIT
+
+          release_notes="$(printf '%s\n\n<!-- %s -->' "Trusted standalone distribution for source ${SOURCE_SHA}. Windows is Authenticode signed/timestamped, macOS is Developer ID signed/notarized, and Linux carries checksum/provenance evidence. Machine-readable receipts are attached for every platform artifact." "$release_owner_marker")"
+          create_attempted=1
+          gh release create "$RELEASE_TAG" trusted-release-assets/* \
+            --verify-tag \
+            --draft \
+            --title "WorkIntel Agent ${VERSION}" \
+            --notes "$release_notes"
+          created=1
+
+          mapfile -t uploaded < <(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name' | sort)
+          mapfile -t local_assets < <(find trusted-release-assets -maxdepth 1 -type f -printf '%f\n' | sort)
+          if [ "$(printf '%s\n' "${uploaded[@]}")" != "$(printf '%s\n' "${local_assets[@]}")" ]; then
+            echo 'Draft release asset verification failed.'
+            exit 1
+          fi
+
+          assert_immutable_release_tag_rules
+          assert_live_release_refs
+          gh release edit "$RELEASE_TAG" --draft=false
+          created=0
+          trap - EXIT
+          echo "Published trusted release $RELEASE_TAG from exact source $SOURCE_SHA"
