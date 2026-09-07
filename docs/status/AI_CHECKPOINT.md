@@ -14,18 +14,22 @@ When this file conflicts with observed repository state, use the authority order
 
 Never treat an embedded SHA below as live truth after the repository has moved. Rehydrate the current branch/PR/main before every material write sequence.
 
-## Current checkpoint — 2026-08-30
+## Current checkpoint — 2026-08-31
 
 - **Repository:** `Vertex-Systems-Network/workforce-intelligence`
-- **Observed protected main at checkpoint refresh:** `84c380a01eda56d4aa3105633064e6c00cec9175`
-- **Product authority state:** `AWAITING_PRODUCT_AUTHORITY`
+- **Observed protected main at M14 promotion:** `7f46f9542bbab6fa210a5c9d30acb07d44b91fb4`
+- **Product authority state:** `IMPLEMENTING`
 - **Current product authority issue:** `#50 NEXT-AUTH — Define post-M13 WorkIntel product authority`
-- **Completed governance hardening:** `#51 GOV-HARDEN` completed through merged PR #52; its module-specification, resumable-checkpoint, and production-operations contracts are now part of protected `main`.
-- **Last accepted product milestone:** M13 closeout; no repository-native M14 product implementation authority is active.
-- **Dependency maintenance:** PR #39 was merged independently before this checkpoint; no open dependency-maintenance PR is currently part of the product lane.
-- **Known product blocker:** concrete post-M13 milestone/module scope, acceptance criteria, security/data impact and exact starting main must be owner-approved in repository authority before product code starts.
-- **Current product write state:** no product implementation lane is authorized. Planning/governance may continue under #50; separately authorized maintenance/correction work must remain isolated and cannot self-promote product scope.
-- **Exact next product-safe action:** complete the authority package in #50 and obtain explicit owner approval for a concrete milestone/module. Only then bind a dedicated implementation branch to the then-current protected `main`. Until that happens, do not create M14 product code, migrations, APIs, UI, or release changes.
+- **Authorized work package:** `M14-RELEASE-TRUST` — Production Release Trust & Real-Target Readiness.
+- **Owner approval:** `OWNER APPROVAL: M14-RELEASE-TRUST APPROVED FOR IMPLEMENTATION`, persisted to Issue #50 on 2026-08-31.
+- **Canonical M14 specification:** `docs/architecture/M14_RELEASE_TRUST_READINESS.md`.
+- **Implementation branch:** `m14/release-trust-readiness`, created from exact protected-main SHA `7f46f9542bbab6fa210a5c9d30acb07d44b91fb4` after the required impact/security/change-budget self-audit.
+- **Last accepted completed product milestone:** M13.
+- **M14 scope boundary:** release trust/signing/notarization/provenance plus real-target evidence contract only; no new tenant feature, application-role change, database migration, tracking semantic change, payroll/timekeeping change, or M13 canonical ZIP rewrite.
+- **M14 risk:** HIGH. Independent review is required. Real-target evidence is required before `PRODUCTION_VERIFIED` / M14 `DONE`.
+- **Current implementation direction:** preserve the existing deterministic unsigned PR build lane; add a separate trusted release workflow with no `pull_request` trigger, exact-source binding, fail-closed organization signing/notary credentials, machine-readable final-digest receipts, immutable publication and truthful external-evidence states.
+- **Not verified at this checkpoint:** actual organization signing identities/secrets, Windows signed/timestamped release evidence, Apple Developer ID/notary evidence, trusted GitHub release execution, production/release-candidate target, and restore-tested target evidence.
+- **Exact next product-safe action:** complete the approved M14 source implementation on the dedicated branch, open a PR, certify the exact final PR head, obtain independent review, merge only the certified head, and keep unavailable external release/real-target evidence explicitly `Not Verified` rather than declaring M14 `DONE`.
 
 ## Required session checkpoint fields
 

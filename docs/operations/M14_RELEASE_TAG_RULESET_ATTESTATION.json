@@ -1,0 +1,10 @@
+{
+  "schema": "workintel.release-tag-ruleset-attestation.v1",
+  "status": "NOT_CONFIGURED",
+  "ruleset_id": null,
+  "ruleset_updated_at": null,
+  "no_bypass_actors_attested": false,
+  "audited_by": "",
+  "audited_at": null,
+  "notes": "Fail-closed placeholder. After Issue #62 administrator configuration, record one dedicated active agent-v* tag ruleset only after an administrator with ruleset write visibility verifies that the exact ruleset has update and deletion restrictions, applies to the intended release tags, and has no bypass actors. Copy the exact GitHub ruleset id and updated_at value from that audited snapshot, set status to VERIFIED and no_bypass_actors_attested to true, identify the auditor, and commit the attestation through normal review/certification. Any later ruleset mutation changes updated_at and invalidates the snapshot."
+}
