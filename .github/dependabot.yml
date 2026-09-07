@@ -23,9 +23,19 @@ updates:
         update-types:
           - "minor"
           - "patch"
+      tiptap-family:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        patterns:
+          - "@tiptap/*"
+        update-types:
+          - "minor"
+          - "patch"
       production-patches:
         applies-to: "version-updates"
         dependency-type: "production"
+        exclude-patterns:
+          - "@tiptap/*"
         update-types:
           - "patch"
     ignore:
