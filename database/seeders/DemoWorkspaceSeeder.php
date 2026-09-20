@@ -71,6 +71,10 @@ use Illuminate\Support\Facades\Schema;
 {
     /** Handles the run operation for the current WorkIntel workflow. */ public function run(): void
     {
+        if (app()->environment('production')) {
+            throw new \RuntimeException('DemoWorkspaceSeeder is forbidden in production because it creates known demo credentials.');
+        }
+
         DB::transaction(function () {
             $owner = $this->user('Sarah', 'Chen', 'owner@acme.test', 'Asia/Dubai');
 
