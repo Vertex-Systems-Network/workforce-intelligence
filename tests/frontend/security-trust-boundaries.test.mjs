@@ -11,12 +11,14 @@ test('production builds cannot activate or render static demo authentication', (
   const config = read('config/workintel.php')
   const env = read('.env.example')
 
-  assert.match(authService, /import\.meta\.env\?\.DEV\s*&&\s*import\.meta\.env\.VITE_AUTH_MODE === 'demo'/)
-  assert.match(login, /runtimeDemos\.length > 0 \|\| authService\.mode === 'demo'/)
-  assert.match(login, /authService\.mode === 'demo' \? 'owner@acme\.test' : ''/)
+  assert.match(authService, /const AUTH_MODE = 'laravel' as const/)
+  assert.doesNotMatch(authService, /DEMO_ACCOUNTS|VITE_AUTH_MODE|workintel-demo-session/)
+  assert.match(login, /runtimeDemos\.length > 0/)
+  assert.doesNotMatch(login, /DEMO_ACCOUNTS|CLIENT_PORTAL_DEMO|owner@acme\.test|authService\.mode/)
   assert.match(controller, /app\(\)->environment\('production'\) \|\| ! config\('workintel\.demo_accounts'\)/)
   assert.match(config, /env\('APP_ENV', 'production'\) !== 'production'[\s\S]*WORKINTEL_SHOW_DEMO_ACCOUNTS/)
   assert.match(env, /WORKINTEL_SHOW_DEMO_ACCOUNTS=false/)
+  assert.equal(fs.existsSync('resources/js/auth/demoData.ts'), false)
 })
 
 test('outbound URL guard validates IPv4 and IPv6 and pins hostnames before requests', () => {
