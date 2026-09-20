@@ -155,8 +155,8 @@ use Illuminate\Validation\ValidationException;
 
     /** Handles the webhook action operation for the current WorkIntel workflow. */ private function webhookAction(array $config,int $timeout): array
     {
-        $url=(string)($config['url']??'');$this->urlGuard->assertSafe($url);$headers=is_array($config['headers']??null)?$config['headers']:[];$body=$config['body']??[];if(!is_array($body))$body=['value'=>$body];
-        $response=Http::timeout(max(3,min(30,$timeout)))->withHeaders($headers)->post($url,$body);
+        $url=(string)($config['url']??'');$httpOptions=$this->urlGuard->httpOptions($url);$headers=is_array($config['headers']??null)?$config['headers']:[];$body=$config['body']??[];if(!is_array($body))$body=['value'=>$body];
+        $response=Http::withOptions($httpOptions)->timeout(max(3,min(30,$timeout)))->withHeaders($headers)->post($url,$body);
         if(!$response->successful())throw new \RuntimeException('Webhook action failed with HTTP '.$response->status().': '.Str::limit($response->body(),700,''));
         return ['ok'=>true,'status'=>$response->status(),'body'=>Str::limit($response->body(),1200,'')];
     }
