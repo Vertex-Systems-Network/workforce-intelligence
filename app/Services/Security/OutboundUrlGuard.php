@@ -128,6 +128,7 @@ class OutboundUrlGuard
         return array_values(array_unique($ips));
     }
 
+    /** Return whether the address is globally routable rather than private or reserved. */
     private function isPublicIp(string $ip): bool
     {
         return filter_var(
@@ -137,6 +138,7 @@ class OutboundUrlGuard
         ) !== false;
     }
 
+    /** Reject an unsafe outbound destination using the validation error contract. */
     private function reject(string $message): never
     {
         throw ValidationException::withMessages(['url' => [$message]]);
