@@ -8,6 +8,12 @@ use Illuminate\Database\Seeder;
 {
     /** Handles the run operation for the current WorkIntel workflow. */ public function run(): void
     {
+        if (app()->environment('production')) {
+            throw new \RuntimeException(
+                'DatabaseSeeder contains demo identities and must never run in production. Run only the explicitly reviewed production-safe seeders required by the deployment.'
+            );
+        }
+
         $this->call([
             PermissionSeeder::class,
             SubscriptionPlanSeeder::class,
