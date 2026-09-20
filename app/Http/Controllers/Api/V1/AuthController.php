@@ -32,7 +32,7 @@ use Illuminate\Validation\ValidationException;
 {
     /** Handles the demo accounts operation for the current WorkIntel workflow. */ public function demoAccounts(): JsonResponse
     {
-        if (! config('workintel.demo_accounts')) return response()->json(['data' => []]);
+        if (app()->environment('production') || ! config('workintel.demo_accounts')) return response()->json(['data' => []]);
         $workspace = Workspace::query()->where('slug', 'acme-corp')->first();
         if (! $workspace) return response()->json(['data' => []]);
         $rows = WorkspaceMember::query()->with(['user:id,first_name,last_name,email','roles:id,name,slug,status'])
