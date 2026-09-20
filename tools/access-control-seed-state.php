@@ -28,12 +28,14 @@ $pdo = new PDO('sqlite:'.$dbPath, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE
 $tableExists = static function (PDO $pdo, string $table): bool {
     $stmt = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = :name LIMIT 1");
     $stmt->execute(['name' => $table]);
+
     return (bool) $stmt->fetchColumn();
 };
 
 $fetchAll = static function (PDO $pdo, string $sql, array $bindings = []): array {
     $stmt = $pdo->prepare($sql);
     $stmt->execute($bindings);
+
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 };
 
