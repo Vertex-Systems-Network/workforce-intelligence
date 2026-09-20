@@ -39,6 +39,58 @@ class ProductionCertificationDoctor extends Command
         $checks['production_debug'] = ['ok' => $productionDebugSafe, 'detail' => $productionDebugSafe ? 'APP_DEBUG policy is safe for this environment.' : 'APP_DEBUG must be false in production.'];
         if (! $productionDebugSafe) $failed = true;
 
+        if (app()->environment('production')) {
+            $securityChecks = [
+                'production_https' => [
+                    str_starts_with(strtolower((string) config('app.url')), 'https://'),
+                    'APP_URL must use HTTPS in production.',
+                ],
+                'production_demo_accounts' => [
+                    ! (bool) config('workintel.demo_accounts'),
+                    'Demo accounts must be disabled in production.',
+                ],
+                'production_private_outbound' => [
+                    ! (bool) config('workintel.outbound.allow_private', false),
+                    'Private outbound destinations must remain disabled in production.',
+                ],
+                'production_csp' => [
+                    (bool) config('workintel_security.headers.csp_enabled') && ! (bool) config('workintel_security.headers.csp_report_only'),
+                    'Enforced Content Security Policy is required in production.',
+                ],
+                'production_hsts' => [
+                    (int) config('workintel.production.hsts_seconds', 0) > 0,
+                    'A positive HSTS duration is required after production HTTPS is configured.',
+                ],
+                'production_secure_cookie' => [
+                    (bool) config('session.secure'),
+                    'Production session cookies must use the Secure flag.',
+                ],
+                'production_http_only_cookie' => [
+                    (bool) config('session.http_only'),
+                    'Production session cookies must remain HttpOnly.',
+                ],
+                'production_encrypted_session' => [
+                    (bool) config('session.encrypt'),
+                    'Production sessions must be encrypted.',
+                ],
+                'production_malware_scanning' => [
+                    (bool) config('workintel_security.uploads.malware_required')
+                        && strtolower((string) config('workintel_security.uploads.malware_driver', 'none')) !== 'none',
+                    'Production upload malware scanning must be required and configured.',
+                ],
+                'production_operator_identity' => [
+                    config('workintel.commerce.operator_emails', []) === []
+                        || config('workintel.commerce.operator_user_ids', []) !== [],
+                    'Configured production platform operators require stable user IDs as well as verified email addresses.',
+                ],
+            ];
+
+            foreach ($securityChecks as $name => [$ok, $failureDetail]) {
+                $checks[$name] = ['ok' => $ok, 'detail' => $ok ? 'Production security policy satisfied.' : $failureDetail];
+                if (! $ok) $failed = true;
+            }
+        }
+
         $routeUris = collect(Route::getRoutes())->map(fn ($route) => $route->uri())->all();
         $missingRoutes = array_values(array_filter(ProductionCertificationCatalog::REQUIRED_ROUTE_URIS, fn ($uri) => ! in_array($uri, $routeUris, true)));
         $checks['routes'] = ['ok' => $missingRoutes === [], 'detail' => $missingRoutes === [] ? 'Critical route landmarks registered.' : 'Missing routes: '.implode(', ', $missingRoutes)];
