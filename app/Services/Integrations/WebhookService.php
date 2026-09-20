@@ -34,10 +34,11 @@ use Illuminate\Support\Str;
         $delivery->loadMissing('endpoint');$endpoint=$delivery->endpoint;
         if(!$endpoint||$endpoint->status!=='active'){$delivery->update(['status'=>'failed','failed_at'=>now()]);return false;}
         try{
-            app(OutboundUrlGuard::class)->assertSafe($endpoint->url);
+            $outbound = app(OutboundUrlGuard::class);
+            $httpOptions = $outbound->httpOptions($endpoint->url);
             $body=json_encode($delivery->payload,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)?:'{}';
             $timestamp=(string)now()->timestamp;$secret=Crypt::decryptString($endpoint->secret_encrypted);$signature=hash_hmac('sha256',$timestamp.'.'.$body,$secret);
-            $response=Http::timeout(config('workintel_security.webhooks.timeout_seconds',10))->withHeaders(['Content-Type'=>'application/json','User-Agent'=>'WorkIntel-Webhooks/1.0','X-WorkIntel-Event'=>$delivery->event_type,'X-WorkIntel-Delivery'=>$delivery->uuid,'X-WorkIntel-Timestamp'=>$timestamp,'X-WorkIntel-Signature'=>'v1='.$signature])->withBody($body,'application/json')->post($endpoint->url);
+            $response=Http::withOptions($httpOptions)->timeout(config('workintel_security.webhooks.timeout_seconds',10))->withHeaders(['Content-Type'=>'application/json','User-Agent'=>'WorkIntel-Webhooks/1.0','X-WorkIntel-Event'=>$delivery->event_type,'X-WorkIntel-Delivery'=>$delivery->uuid,'X-WorkIntel-Timestamp'=>$timestamp,'X-WorkIntel-Signature'=>'v1='.$signature])->withBody($body,'application/json')->post($endpoint->url);
             $delivery->attempts++;
             $delivery->last_status_code=$response->status();$delivery->last_response_excerpt=Str::limit($response->body(),config('workintel_security.webhooks.max_response_excerpt',900),'');
             if($response->successful()){$delivery->status='delivered';$delivery->delivered_at=now();$delivery->next_attempt_at=null;$endpoint->update(['last_success_at'=>now()]);$delivery->save();return true;}
