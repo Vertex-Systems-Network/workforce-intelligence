@@ -29,6 +29,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         $this->seed(DatabaseSeeder::class);
     }
 
+    /** An allowlisted email cannot grant operator access until the account is verified. */
     public function test_unverified_allowlisted_platform_operator_is_denied(): void
     {
         $owner = User::where('email', 'owner@acme.test')->firstOrFail();
@@ -44,6 +45,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         $this->assertFalse($operators->isOperator($owner->fresh()));
     }
 
+    /** User-controlled outbound destinations cannot target local/private/reserved networks or embed credentials. */
     public function test_outbound_guard_rejects_private_reserved_ipv6_and_embedded_credentials(): void
     {
         config(['workintel.outbound.allow_private' => false]);
@@ -68,6 +70,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         $this->assertFalse($options['allow_redirects']);
     }
 
+    /** A valid signed ID token with matching nonce and UserInfo subject completes the OIDC flow. */
     public function test_oidc_accepts_only_signed_nonce_bound_identity_with_matching_userinfo_subject(): void
     {
         [$provider, $state, $idToken] = $this->oidcFixture('oidc-subject-123');
@@ -85,6 +88,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         $this->assertDatabaseMissing('enterprise_sso_states', ['state_hash' => hash('sha256', $state)]);
     }
 
+    /** UserInfo cannot substitute another subject after a valid ID token has been signed. */
     public function test_oidc_rejects_userinfo_subject_mismatch_even_with_valid_signed_id_token(): void
     {
         [$provider, $state, $idToken] = $this->oidcFixture('signed-subject');
@@ -103,6 +107,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         }
     }
 
+    /** OIDC login fails unless UserInfo explicitly asserts email_verified=true. */
     public function test_oidc_requires_explicit_verified_email_claim(): void
     {
         [$provider, $state, $idToken] = $this->oidcFixture('oidc-subject-verified-email');
@@ -178,6 +183,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         return [$provider, $state, $idToken];
     }
 
+    /** Fake one complete OIDC provider response set without external network access. */
     private function fakeOidcProvider(string $idToken, string $userinfoSubject, bool $emailVerified): void
     {
         $issuer = 'https://1.1.1.1';
@@ -230,6 +236,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         ]];
     }
 
+    /** Create one RS256 JWT fixture using the generated test key. */
     private function signedJwt(array $claims, \OpenSSLAsymmetricKey $privateKey): string
     {
         $header = $this->base64UrlEncode(json_encode(['alg' => 'RS256', 'typ' => 'JWT', 'kid' => 'test-key-1'], JSON_THROW_ON_ERROR));
@@ -241,6 +248,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         return $input.'.'.$this->base64UrlEncode($signature);
     }
 
+    /** Encode fixture bytes using unpadded base64url. */
     private function base64UrlEncode(string $value): string
     {
         return rtrim(strtr(base64_encode($value), '+/', '-_'), '=');
