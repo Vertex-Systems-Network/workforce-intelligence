@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 /** Provides standards-oriented OIDC authorization-code authentication with PKCE and signed ID-token verification. */
 class OidcService
 {
+    /** Initialize the OIDC service with the outbound destination validator. */
     public function __construct(private readonly OutboundUrlGuard $guard) {}
 
     /** Return the decrypted provider configuration. */
@@ -358,6 +359,7 @@ class OidcService
         return $claims;
     }
 
+    /** Require the minimum configuration needed for a verifiable OIDC authorization-code flow. */
     private function assertRequiredConfig(array $config): void
     {
         foreach (['client_id', 'issuer', 'authorization_endpoint', 'token_endpoint', 'userinfo_endpoint'] as $key) {
@@ -365,6 +367,7 @@ class OidcService
         }
     }
 
+    /** Require a transport-safe OIDC endpoint and enforce HTTPS outside local testing. */
     private function assertOidcEndpoint(string $url): void
     {
         $parts = parse_url($url);
@@ -385,6 +388,7 @@ class OidcService
         return count(array_intersect($methods, ['mfa', 'otp', 'totp', 'hwk', 'swk'])) > 0;
     }
 
+    /** Decode one strict base64url JWT/JWK segment or abort the authentication flow. */
     private function base64UrlDecode(string $value): string
     {
         $padding = (4 - strlen($value) % 4) % 4;
@@ -418,6 +422,7 @@ class OidcService
             "-----END PUBLIC KEY-----\n";
     }
 
+    /** Encode a positive ASN.1 INTEGER for an RSA public key. */
     private function asn1Integer(string $bytes): string
     {
         $bytes = ltrim($bytes, "\x00");
@@ -431,11 +436,13 @@ class OidcService
         return "\x02".$this->asn1Length(strlen($bytes)).$bytes;
     }
 
+    /** Encode an ASN.1 SEQUENCE wrapper. */
     private function asn1Sequence(string $bytes): string
     {
         return "\x30".$this->asn1Length(strlen($bytes)).$bytes;
     }
 
+    /** Encode an ASN.1 BIT STRING with zero unused bits. */
     private function asn1BitString(string $bytes): string
     {
         $value = "\x00".$bytes;
@@ -443,6 +450,7 @@ class OidcService
         return "\x03".$this->asn1Length(strlen($value)).$value;
     }
 
+    /** Encode an ASN.1 DER length field. */
     private function asn1Length(int $length): string
     {
         if ($length < 128) {
