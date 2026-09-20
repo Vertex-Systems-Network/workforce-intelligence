@@ -61,9 +61,9 @@ use Illuminate\Validation\ValidationException;
             'slack','teams'=>$this->execute('message.send',$config,['text'=>'WorkIntel connection test'], $timeoutSeconds),
             'google_workspace'=>$this->response(Http::timeout($timeoutSeconds)->withToken($config['access_token'])->get('https://www.googleapis.com/calendar/v3/users/me/calendarList',['maxResults'=>1])) ,
             'microsoft365'=>$this->response(Http::timeout($timeoutSeconds)->withToken($config['access_token'])->get('https://graph.microsoft.com/v1.0/me')),
-            'jira'=>$this->response(Http::timeout($timeoutSeconds)->withBasicAuth($config['email'],$config['api_token'])->get(rtrim($config['base_url'],'/').'/rest/api/3/myself')),
+            'jira'=>$this->response(Http::withOptions($this->guard->httpOptions(rtrim($config['base_url'],'/').'/rest/api/3/myself'))->timeout($timeoutSeconds)->withBasicAuth($config['email'],$config['api_token'])->get(rtrim($config['base_url'],'/').'/rest/api/3/myself')),
             'github'=>$this->response(Http::timeout($timeoutSeconds)->withToken($config['token'])->withHeaders(['User-Agent'=>'WorkIntel-Automations'])->get('https://api.github.com/user')),
-            'gitlab'=>$this->response(Http::timeout($timeoutSeconds)->withHeaders(['PRIVATE-TOKEN'=>$config['token']])->get(rtrim($config['base_url']??'https://gitlab.com','/').'/api/v4/user')),
+            'gitlab'=>$this->response(Http::withOptions($this->guard->httpOptions(rtrim($config['base_url']??'https://gitlab.com','/').'/api/v4/user'))->timeout($timeoutSeconds)->withHeaders(['PRIVATE-TOKEN'=>$config['token']])->get(rtrim($config['base_url']??'https://gitlab.com','/').'/api/v4/user')),
             'clickup'=>$this->response(Http::timeout($timeoutSeconds)->withHeaders(['Authorization'=>$config['token']])->get('https://api.clickup.com/api/v2/user')),
             'asana'=>$this->response(Http::timeout($timeoutSeconds)->withToken($config['token'])->get('https://app.asana.com/api/1.0/users/me')),
             'monday'=>$this->response(Http::timeout($timeoutSeconds)->withHeaders(['Authorization'=>$config['token'],'API-Version'=>'2024-10'])->post('https://api.monday.com/v2',['query'=>'query { me { id name } }'])),
@@ -80,19 +80,19 @@ use Illuminate\Validation\ValidationException;
         $allowed=collect($this->catalog()['actions'])->pluck('key')->all();
         if(!in_array($actionKey,$allowed,true)) throw ValidationException::withMessages(['action_key'=>["Action {$actionKey} is not supported by {$this->provider}."]]);
         return match($this->provider){
-            'slack'=>$this->response(Http::timeout($timeoutSeconds)->post($config['webhook_url'],array_filter(['text'=>(string)($input['text']??''),'blocks'=>$input['blocks']??null],fn($v)=>$v!==null))),
-            'teams'=>$this->response(Http::timeout($timeoutSeconds)->post($config['webhook_url'],['type'=>'message','attachments'=>[['contentType'=>'application/vnd.microsoft.card.adaptive','contentUrl'=>null,'content'=>['$schema'=>'http://adaptivecards.io/schemas/adaptive-card.json','type'=>'AdaptiveCard','version'=>'1.4','body'=>[['type'=>'TextBlock','text'=>(string)($input['title']??'WorkIntel'),'weight'=>'Bolder'],['type'=>'TextBlock','text'=>(string)($input['text']??''),'wrap'=>true]]]]]])),
+            'slack'=>$this->response(Http::withOptions($this->guard->httpOptions($config['webhook_url']))->timeout($timeoutSeconds)->post($config['webhook_url'],array_filter(['text'=>(string)($input['text']??''),'blocks'=>$input['blocks']??null],fn($v)=>$v!==null))),
+            'teams'=>$this->response(Http::withOptions($this->guard->httpOptions($config['webhook_url']))->timeout($timeoutSeconds)->post($config['webhook_url'],['type'=>'message','attachments'=>[['contentType'=>'application/vnd.microsoft.card.adaptive','contentUrl'=>null,'content'=>['$schema'=>'http://adaptivecards.io/schemas/adaptive-card.json','type'=>'AdaptiveCard','version'=>'1.4','body'=>[['type'=>'TextBlock','text'=>(string)($input['title']??'WorkIntel'),'weight'=>'Bolder'],['type'=>'TextBlock','text'=>(string)($input['text']??''),'wrap'=>true]]]]]])),
             'google_workspace'=>$this->executeGoogle($actionKey,$config,$input,$timeoutSeconds),
             'microsoft365'=>$this->executeMicrosoft365($actionKey,$config,$input,$timeoutSeconds),
             'jira'=>$this->executeJira($actionKey,$config,$input,$timeoutSeconds),
             'github'=>$this->executeGitHub($actionKey,$config,$input,$timeoutSeconds),
-            'gitlab'=>$this->response(Http::timeout($timeoutSeconds)->withHeaders(['PRIVATE-TOKEN'=>$config['token']])->post(rtrim($config['base_url']??'https://gitlab.com','/').'/api/v4/projects/'.rawurlencode($config['project_id']).'/issues',['title'=>$input['title']??'WorkIntel item','description'=>$input['description']??null,'labels'=>is_array($input['labels']??null)?implode(',',$input['labels']):($input['labels']??null)])),
+            'gitlab'=>$this->response(Http::withOptions($this->guard->httpOptions(rtrim($config['base_url']??'https://gitlab.com','/').'/api/v4/projects/'.rawurlencode($config['project_id']).'/issues'))->timeout($timeoutSeconds)->withHeaders(['PRIVATE-TOKEN'=>$config['token']])->post(rtrim($config['base_url']??'https://gitlab.com','/').'/api/v4/projects/'.rawurlencode($config['project_id']).'/issues',['title'=>$input['title']??'WorkIntel item','description'=>$input['description']??null,'labels'=>is_array($input['labels']??null)?implode(',',$input['labels']):($input['labels']??null)])),
             'clickup'=>$this->response(Http::timeout($timeoutSeconds)->withHeaders(['Authorization'=>$config['token']])->post('https://api.clickup.com/api/v2/list/'.rawurlencode($config['list_id']).'/task',array_filter(['name'=>$input['name']??'WorkIntel task','description'=>$input['description']??null,'priority'=>$input['priority']??null,'due_date'=>$input['due_date']??null],fn($v)=>$v!==null))),
             'asana'=>$this->response(Http::timeout($timeoutSeconds)->withToken($config['token'])->post('https://app.asana.com/api/1.0/tasks',['data'=>array_filter(['name'=>$input['name']??'WorkIntel task','notes'=>$input['notes']??null,'due_on'=>$input['due_on']??null,'projects'=>[$config['project_gid']]],fn($v)=>$v!==null)])),
             'monday'=>$this->executeMonday($config,$input,$timeoutSeconds),
             'quickbooks'=>$this->response(Http::timeout($timeoutSeconds)->withToken($config['access_token'])->acceptJson()->post($this->quickBooksBase($config).'/v3/company/'.rawurlencode($config['realm_id']).'/journalentry?minorversion=75',$input['journal']??[])),
             'xero'=>$this->response(Http::timeout($timeoutSeconds)->withToken($config['access_token'])->withHeaders(['xero-tenant-id'=>$config['tenant_id']])->post('https://api.xero.com/api.xro/2.0/ManualJournals',['ManualJournals'=>[$input['journal']??[]]])),
-            'generic_webhook'=>$this->response(Http::timeout($timeoutSeconds)->withHeaders(array_merge(is_array($input['headers']??null)?$input['headers']:[],!empty($config['bearer_token'])?['Authorization'=>'Bearer '.$config['bearer_token']]:[]))->post($config['url'],$this->jsonBody($input['body']??$input))),
+            'generic_webhook'=>$this->response(Http::withOptions($this->guard->httpOptions($config['url']))->timeout($timeoutSeconds)->withHeaders(array_merge(is_array($input['headers']??null)?$input['headers']:[],!empty($config['bearer_token'])?['Authorization'=>'Bearer '.$config['bearer_token']]:[]))->post($config['url'],$this->jsonBody($input['body']??$input))),
             default=>throw new \RuntimeException('Unsupported connector provider.'),
         };
     }
@@ -119,7 +119,7 @@ use Illuminate\Validation\ValidationException;
 
     /** Handles the execute jira operation for the current WorkIntel workflow. */ private function executeJira(string $action,array $config,array $input,int $timeout): array
     {
-        $http=Http::timeout($timeout)->withBasicAuth($config['email'],$config['api_token'])->acceptJson();$base=rtrim($config['base_url'],'/').'/rest/api/3';
+        $base=rtrim($config['base_url'],'/').'/rest/api/3';$http=Http::withOptions($this->guard->httpOptions($base))->timeout($timeout)->withBasicAuth($config['email'],$config['api_token'])->acceptJson();
         if($action==='comment.create') return $this->response($http->post($base.'/issue/'.rawurlencode($input['issue_key']??'').'/comment',['body'=>$this->jiraDoc((string)($input['body']??''))]));
         return $this->response($http->post($base.'/issue',['fields'=>['project'=>['key'=>$config['project_key']],'summary'=>$input['summary']??'WorkIntel item','description'=>$this->jiraDoc((string)($input['description']??'')),'issuetype'=>['name'=>$input['issue_type']??'Task']]]));
     }
