@@ -73,11 +73,13 @@ test('aggregate and demo seeders are forbidden in production', () => {
   const databaseSeeder = read('database/seeders/DatabaseSeeder.php')
   const demoSeeder = read('database/seeders/DemoWorkspaceSeeder.php')
   const accessSeeder = read('database/seeders/AccessControlSeeder.php')
+  const identitySeeder = read('database/seeders/IdentitySeeder.php')
   const doctor = read('app/Console/Commands/ProductionCertificationDoctor.php')
 
   assert.match(databaseSeeder, /environment\('production'\)[\s\S]*must never run in production/)
   assert.match(demoSeeder, /environment\('production'\)[\s\S]*known demo credentials/)
   assert.match(accessSeeder, /environment\('production'\)[\s\S]*forbidden in production/)
+  assert.match(identitySeeder, /environment\('production'\)[\s\S]*forbidden in production/)
   assert.match(doctor, /production_demo_identities/)
   assert.match(doctor, /production_demo_portal_identities/)
 })
