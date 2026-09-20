@@ -71,6 +71,7 @@ return [
     ],
 
     'commerce' => [
+        'operator_user_ids' => array_values(array_filter(array_map('intval', explode(',', (string) env('WORKINTEL_PLATFORM_OPERATOR_USER_IDS', ''))))),
         'operator_emails' => array_values(array_filter(array_map('trim', explode(',', (string) ((trim((string) env('WORKINTEL_PLATFORM_OPERATOR_EMAILS', '')) !== '') ? env('WORKINTEL_PLATFORM_OPERATOR_EMAILS') : (env('APP_ENV', 'production') !== 'production' ? 'owner@acme.test' : '')))))),
         'dunning_max_attempts' => (int) env('WORKINTEL_DUNNING_MAX_ATTEMPTS', 4),
     ],
