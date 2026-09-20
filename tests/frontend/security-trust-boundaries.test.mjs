@@ -66,3 +66,27 @@ test('production doctor fails closed on unsafe security posture', () => {
     'production_operator_identity',
   ]) assert.ok(doctor.includes(token), token)
 })
+
+
+test('aggregate and demo seeders are forbidden in production', () => {
+  const databaseSeeder = read('database/seeders/DatabaseSeeder.php')
+  const demoSeeder = read('database/seeders/DemoWorkspaceSeeder.php')
+  const accessSeeder = read('database/seeders/AccessControlSeeder.php')
+  const doctor = read('app/Console/Commands/ProductionCertificationDoctor.php')
+
+  assert.match(databaseSeeder, /environment\('production'\)[\s\S]*must never run in production/)
+  assert.match(demoSeeder, /environment\('production'\)[\s\S]*known demo credentials/)
+  assert.match(accessSeeder, /environment\('production'\)[\s\S]*forbidden in production/)
+  assert.match(doctor, /production_demo_identities/)
+  assert.match(doctor, /production_demo_portal_identities/)
+})
+
+test('platform operator access is bound to verified email plus stable production user ID', () => {
+  const service = read('app/Services/Commerce/PlatformOperatorService.php')
+  const config = read('config/workintel.php')
+
+  assert.match(service, /email_verified_at/)
+  assert.match(service, /environment\('production'\)/)
+  assert.match(service, /operator_user_ids/)
+  assert.match(config, /WORKINTEL_PLATFORM_OPERATOR_USER_IDS/)
+})
