@@ -1,0 +1,35 @@
+name: Temporary Pint Format Preview
+
+on:
+  push:
+    branches:
+      - security/harden-auth-ssrf-oidc-2026-09-21
+
+permissions:
+  contents: read
+
+jobs:
+  pint-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Format changed PHP files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only --diff-filter=ACMRT 9ea4d90bea31d4bf13ebf095a15468e3c75ea39c...HEAD -- '*.php' > /tmp/php-files.txt
+          vendor/bin/pint $(cat /tmp/php-files.txt)
+          tar -czf /tmp/pint-formatted.tar.gz -T /tmp/php-files.txt
+          git diff --stat
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pint-formatted-${{ github.sha }}
+          path: /tmp/pint-formatted.tar.gz
+          retention-days: 1
