@@ -459,7 +459,7 @@ class OidcService
 
         $encoded = '';
         while ($length > 0) {
-            $encoded = chr($length & 0xff).$encoded;
+            $encoded = chr($length & 0xFF).$encoded;
             $length >>= 8;
         }
 

@@ -2,74 +2,74 @@
 
 namespace Database\Seeders;
 
-use App\Services\Approvals\ApprovalEngine;
-
 use App\Enums\MemberStatus;
-use App\Models\Client;
-use App\Services\ClientPortal\ClientReportService;
-use App\Services\ClientPortal\ClientInvoiceService;
-use App\Models\ClientReport;
-use App\Models\ClientInvoice;
-use App\Models\ClientPortalAccount;
-use App\Services\Payroll\PayrollCalculator;
-use App\Services\Attendance\AttendancePolicyService;
-use App\Models\PayrollRun;
-use App\Models\PayrollAdjustment;
-use App\Models\PayrollAction;
-use App\Models\CompensationProfile;
 use App\Models\ActivityTrackingSetting;
-use App\Models\Screenshot;
-use App\Models\SavedReport;
-use App\Models\ReportSchedule;
-use App\Services\Reporting\ReportScheduleService;
-use App\Services\Billing\SubscriptionService;
-use Illuminate\Support\Str;
-use App\Models\ScreenshotSetting;
-use App\Models\ApplicationSession;
-use App\Models\BrowserConnection;
-use App\Models\ProductivityRule;
-use App\Models\TrackingExclusion;
-use App\Models\WebsiteSession;
-use App\Models\Department;
-use App\Models\Device;
 use App\Models\AgentEvent;
 use App\Models\AgentSyncBatch;
+use App\Models\ApplicationSession;
 use App\Models\AttendanceBreak;
 use App\Models\AttendanceRecord;
+use App\Models\BrowserConnection;
+use App\Models\Client;
+use App\Models\ClientInvoice;
+use App\Models\ClientPortalAccount;
+use App\Models\ClientReport;
+use App\Models\CompensationProfile;
+use App\Models\Department;
+use App\Models\Device;
 use App\Models\Holiday;
 use App\Models\JobTitle;
 use App\Models\LeavePolicy;
 use App\Models\LeaveRequest;
 use App\Models\LeaveType;
-use App\Models\Permission;
-use App\Models\Project;
-use App\Models\ProjectExpense;
-use App\Models\Role;
-use App\Models\Shift;
-use App\Models\ShiftAssignment;
-use App\Models\SchedulingSetting;
 use App\Models\MemberAvailability;
 use App\Models\OpenShift;
+use App\Models\PayrollAction;
+use App\Models\PayrollAdjustment;
+use App\Models\PayrollRun;
+use App\Models\Permission;
+use App\Models\ProductivityRule;
+use App\Models\Project;
+use App\Models\ProjectExpense;
+use App\Models\ReportSchedule;
+use App\Models\Role;
+use App\Models\SavedReport;
+use App\Models\SchedulingSetting;
+use App\Models\Screenshot;
+use App\Models\ScreenshotSetting;
+use App\Models\SecurityEvent;
+use App\Models\Shift;
+use App\Models\ShiftAssignment;
 use App\Models\Task;
+use App\Models\TaskComment;
 use App\Models\TaskDependency;
 use App\Models\TaskRecurrence;
-use App\Models\TaskComment;
 use App\Models\Team;
 use App\Models\TimeEntry;
+use App\Models\TrackingExclusion;
 use App\Models\User;
+use App\Models\WebsiteSession;
 use App\Models\Workspace;
 use App\Models\WorkspaceMember;
-use App\Models\SecurityEvent;
 use App\Models\WorkspaceNotification;
+use App\Services\Approvals\ApprovalEngine;
+use App\Services\Attendance\AttendancePolicyService;
+use App\Services\Billing\SubscriptionService;
+use App\Services\ClientPortal\ClientInvoiceService;
+use App\Services\ClientPortal\ClientReportService;
+use App\Services\Payroll\PayrollCalculator;
+use App\Services\Reporting\ReportScheduleService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /** Provides demo workspace seeder behavior within the WorkIntel application. */ class DemoWorkspaceSeeder extends Seeder
 {
-    /** Handles the run operation for the current WorkIntel workflow. */ public function run(): void
+    /** Handles the run operation for the current WorkIntel workflow. */
+    public function run(): void
     {
         if (app()->environment('production')) {
             throw new \RuntimeException('DemoWorkspaceSeeder is forbidden in production because it creates known demo credentials.');
@@ -91,7 +91,9 @@ use Illuminate\Support\Facades\Schema;
                 ]
             );
 
-            if (Schema::hasTable('attendance_policies')) app(AttendancePolicyService::class)->policy($workspace);
+            if (Schema::hasTable('attendance_policies')) {
+                app(AttendancePolicyService::class)->policy($workspace);
+            }
 
             $departments = collect([
                 'Engineering' => 'ENG',
@@ -220,7 +222,7 @@ use Illuminate\Support\Facades\Schema;
                     'name' => 'Marcus Workstation',
                     'platform' => 'windows', 'os_name' => 'Windows 11', 'os_version' => '24H2', 'architecture' => 'x64',
                     'agent_version' => '0.1.0', 'status' => 'active', 'tracking_status' => 'active', 'is_idle' => true,
-                    'offline_queue_size' => 0, 'capabilities' => ['heartbeat','offline_sync','commands','app_tracking'],
+                    'offline_queue_size' => 0, 'capabilities' => ['heartbeat', 'offline_sync', 'commands', 'app_tracking'],
                     'metadata' => ['current_app' => 'Visual Studio Code', 'activity_percent' => 18],
                     'last_ip' => '10.0.0.41', 'enrolled_at' => now()->subDays(9), 'last_heartbeat_at' => now()->subSeconds(31),
                     'last_seen_at' => now()->subSeconds(31), 'last_sync_at' => now()->subMinutes(2), 'revoked_at' => null,
@@ -427,13 +429,13 @@ use Illuminate\Support\Facades\Schema;
             foreach ($appSessions as [$uuid, $memberId, $deviceId, $projectId, $taskId, $appKey, $appName, $processName, $started, $ended, $active, $idle]) {
                 ApplicationSession::updateOrCreate(
                     ['workspace_id' => $workspace->id, 'session_uuid' => $uuid],
-                    ['member_id'=>$memberId,'device_id'=>$deviceId,'project_id'=>$projectId,'task_id'=>$taskId,'app_key'=>$appKey,'app_name'=>$appName,'process_name'=>$processName,'started_at'=>$started,'ended_at'=>$ended,'duration_seconds'=>Carbon::parse($started)->diffInSeconds(Carbon::parse($ended)),'active_seconds'=>$active,'idle_seconds'=>$idle,'source'=>'desktop_agent']
+                    ['member_id' => $memberId, 'device_id' => $deviceId, 'project_id' => $projectId, 'task_id' => $taskId, 'app_key' => $appKey, 'app_name' => $appName, 'process_name' => $processName, 'started_at' => $started, 'ended_at' => $ended, 'duration_seconds' => Carbon::parse($started)->diffInSeconds(Carbon::parse($ended)), 'active_seconds' => $active, 'idle_seconds' => $idle, 'source' => 'desktop_agent']
                 );
             }
 
             $browserConnection = BrowserConnection::updateOrCreate(
                 ['workspace_id' => $workspace->id, 'installation_id' => 'demo-ahmed-chrome'],
-                ['uuid'=>'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','member_id'=>$members['Ahmed Khan']->id,'device_id'=>$ahmedDevice->id,'browser_name'=>'Chrome','browser_version'=>'140','extension_version'=>'0.1.0','status'=>'active','enrolled_at'=>now()->subDays(4),'last_seen_at'=>now()->subMinutes(2),'last_sync_at'=>now()->subMinutes(3),'last_ip'=>'10.0.0.24','revoked_at'=>null]
+                ['uuid' => 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'member_id' => $members['Ahmed Khan']->id, 'device_id' => $ahmedDevice->id, 'browser_name' => 'Chrome', 'browser_version' => '140', 'extension_version' => '0.1.0', 'status' => 'active', 'enrolled_at' => now()->subDays(4), 'last_seen_at' => now()->subMinutes(2), 'last_sync_at' => now()->subMinutes(3), 'last_ip' => '10.0.0.24', 'revoked_at' => null]
             );
             $webSessions = [
                 ['cccccccc-0001-4000-8000-000000000001', $members['Ahmed Khan']->id, $ahmedDevice->id, $browserConnection->id, $platform->id, $tasks[0]->id, 'github.com', 'Chrome', '2026-08-10 10:12:00', '2026-08-10 10:31:00', 1050, 90],
@@ -445,7 +447,7 @@ use Illuminate\Support\Facades\Schema;
             foreach ($webSessions as [$uuid, $memberId, $deviceId, $browserId, $projectId, $taskId, $domain, $browser, $started, $ended, $active, $idle]) {
                 WebsiteSession::updateOrCreate(
                     ['workspace_id' => $workspace->id, 'session_uuid' => $uuid],
-                    ['member_id'=>$memberId,'device_id'=>$deviceId,'browser_connection_id'=>$browserId,'project_id'=>$projectId,'task_id'=>$taskId,'domain'=>$domain,'browser_name'=>$browser,'started_at'=>$started,'ended_at'=>$ended,'duration_seconds'=>Carbon::parse($started)->diffInSeconds(Carbon::parse($ended)),'active_seconds'=>$active,'idle_seconds'=>$idle,'source'=>$browserId ? 'browser_extension' : 'desktop_agent']
+                    ['member_id' => $memberId, 'device_id' => $deviceId, 'browser_connection_id' => $browserId, 'project_id' => $projectId, 'task_id' => $taskId, 'domain' => $domain, 'browser_name' => $browser, 'started_at' => $started, 'ended_at' => $ended, 'duration_seconds' => Carbon::parse($started)->diffInSeconds(Carbon::parse($ended)), 'active_seconds' => $active, 'idle_seconds' => $idle, 'source' => $browserId ? 'browser_extension' : 'desktop_agent']
                 );
             }
 
@@ -474,9 +476,9 @@ use Illuminate\Support\Facades\Schema;
 
             if (Schema::hasTable('scheduling_settings')) {
                 SchedulingSetting::updateOrCreate(['workspace_id' => $workspace->id], ['max_weekly_hours' => 48, 'overtime_warning_hours' => 40, 'minimum_rest_hours' => 11, 'daily_coverage_target' => 6, 'weekly_labor_budget' => 12000, 'currency' => $workspace->currency, 'allow_open_shift_claims' => true, 'allow_shift_swaps' => true]);
-                MemberAvailability::updateOrCreate(['workspace_id'=>$workspace->id,'member_id'=>$members['Ahmed Khan']->id,'date'=>'2026-08-13'], ['status'=>'preferred','start_time'=>'09:00','end_time'=>'18:00','note'=>'Prefer office shift']);
-                MemberAvailability::updateOrCreate(['workspace_id'=>$workspace->id,'member_id'=>$members['Priya Sharma']->id,'date'=>'2026-08-14'], ['status'=>'unavailable','start_time'=>null,'end_time'=>null,'note'=>'Personal appointment']);
-                OpenShift::updateOrCreate(['workspace_id'=>$workspace->id,'shift_id'=>$dayShift->id,'date'=>'2026-08-13','note'=>'Product release coverage'], ['project_id'=>null,'slots'=>2,'claimed_slots'=>0,'work_mode'=>'office','status'=>'open','created_by'=>$owner->id]);
+                MemberAvailability::updateOrCreate(['workspace_id' => $workspace->id, 'member_id' => $members['Ahmed Khan']->id, 'date' => '2026-08-13'], ['status' => 'preferred', 'start_time' => '09:00', 'end_time' => '18:00', 'note' => 'Prefer office shift']);
+                MemberAvailability::updateOrCreate(['workspace_id' => $workspace->id, 'member_id' => $members['Priya Sharma']->id, 'date' => '2026-08-14'], ['status' => 'unavailable', 'start_time' => null, 'end_time' => null, 'note' => 'Personal appointment']);
+                OpenShift::updateOrCreate(['workspace_id' => $workspace->id, 'shift_id' => $dayShift->id, 'date' => '2026-08-13', 'note' => 'Product release coverage'], ['project_id' => null, 'slots' => 2, 'claimed_slots' => 0, 'work_mode' => 'office', 'status' => 'open', 'created_by' => $owner->id]);
             }
 
             foreach ([$sarah, $james, $members['Ahmed Khan'], $members['Marcus Webb'], $members['Jordan Lee']] as $member) {
@@ -555,7 +557,6 @@ use Illuminate\Support\Facades\Schema;
                 }
             }
 
-
             $weeklyReport = SavedReport::updateOrCreate(
                 ['workspace_id' => $workspace->id, 'name' => 'Weekly Team Summary'],
                 [
@@ -611,7 +612,9 @@ use Illuminate\Support\Facades\Schema;
             if ($demoSubscription->plan->slug !== 'gold') {
                 $demoSubscription = $subscriptionService->changePlan($workspace, 'gold', 'monthly', false);
                 $openInvoice = $demoSubscription->invoices()->where('status', 'open')->latest()->first();
-                if ($openInvoice) $subscriptionService->markInvoicePaid($openInvoice, 'DEMO-SEED-PAYMENT');
+                if ($openInvoice) {
+                    $subscriptionService->markInvoicePaid($openInvoice, 'DEMO-SEED-PAYMENT');
+                }
             }
 
             ClientPortalAccount::updateOrCreate(
@@ -656,7 +659,8 @@ use Illuminate\Support\Facades\Schema;
         });
     }
 
-    /** Handles the user operation for the current WorkIntel workflow. */ private function user(string $firstName, string $lastName, string $email, string $timezone = 'Asia/Dubai'): User
+    /** Handles the user operation for the current WorkIntel workflow. */
+    private function user(string $firstName, string $lastName, string $email, string $timezone = 'Asia/Dubai'): User
     {
         return User::updateOrCreate(
             ['email' => $email],
@@ -672,7 +676,8 @@ use Illuminate\Support\Facades\Schema;
         );
     }
 
-    /** Handles the member operation for the current WorkIntel workflow. */ private function member(Workspace $workspace, User $user, string $code, string $title, Department $department, ?WorkspaceMember $manager, string $joined): WorkspaceMember
+    /** Handles the member operation for the current WorkIntel workflow. */
+    private function member(Workspace $workspace, User $user, string $code, string $title, Department $department, ?WorkspaceMember $manager, string $joined): WorkspaceMember
     {
         $jobTitle = JobTitle::firstOrCreate(
             ['workspace_id' => $workspace->id, 'name' => $title],
@@ -695,7 +700,8 @@ use Illuminate\Support\Facades\Schema;
         );
     }
 
-    /** Handles the roles operation for the current WorkIntel workflow. */ private function roles(int $workspaceId): array
+    /** Handles the roles operation for the current WorkIntel workflow. */
+    private function roles(int $workspaceId): array
     {
         $all = Permission::pluck('id');
         $definitions = [
@@ -742,7 +748,8 @@ use Illuminate\Support\Facades\Schema;
         return $roles;
     }
 
-    /** Handles the project operation for the current WorkIntel workflow. */ private function project(Workspace $workspace, ?Client $client, User $creator, string $name, string $code, string $dueDate, int $budgetHours, bool $billable): Project
+    /** Handles the project operation for the current WorkIntel workflow. */
+    private function project(Workspace $workspace, ?Client $client, User $creator, string $name, string $code, string $dueDate, int $budgetHours, bool $billable): Project
     {
         return Project::updateOrCreate(
             ['workspace_id' => $workspace->id, 'code' => $code],
@@ -764,7 +771,8 @@ use Illuminate\Support\Facades\Schema;
         );
     }
 
-    /** Handles the task operation for the current WorkIntel workflow. */ private function task(Workspace $workspace, Project $project, User $creator, string $title, string $status, string $priority, int $estimate, string $dueDate, bool $billable, array $assignees): Task
+    /** Handles the task operation for the current WorkIntel workflow. */
+    private function task(Workspace $workspace, Project $project, User $creator, string $title, string $status, string $priority, int $estimate, string $dueDate, bool $billable, array $assignees): Task
     {
         $task = Task::updateOrCreate(
             ['workspace_id' => $workspace->id, 'project_id' => $project->id, 'title' => $title],
@@ -779,10 +787,12 @@ use Illuminate\Support\Facades\Schema;
         );
 
         $task->assignees()->sync(collect($assignees)->pluck('id'));
+
         return $task;
     }
 
-    /** Handles the time entry operation for the current WorkIntel workflow. */ private function timeEntry(int $workspaceId, int $memberId, int $projectId, int $taskId, string $start, string $end, bool $billable): void
+    /** Handles the time entry operation for the current WorkIntel workflow. */
+    private function timeEntry(int $workspaceId, int $memberId, int $projectId, int $taskId, string $start, string $end, bool $billable): void
     {
         $startAt = Carbon::parse($start);
         $endAt = Carbon::parse($end);

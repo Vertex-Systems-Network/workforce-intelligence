@@ -6,7 +6,8 @@ use Illuminate\Database\Seeder;
 
 /** Provides database seeder behavior within the WorkIntel application. */ class DatabaseSeeder extends Seeder
 {
-    /** Handles the run operation for the current WorkIntel workflow. */ public function run(): void
+    /** Handles the run operation for the current WorkIntel workflow. */
+    public function run(): void
     {
         if (app()->environment('production')) {
             throw new \RuntimeException(
