@@ -28,3 +28,21 @@ test('M14 release cleanup covers partial gh release create failures without dele
   assert.ok(workflow.includes('gh release delete "$RELEASE_TAG" --yes || true'))
   assert.ok(!workflow.includes('--clobber'))
 })
+
+test('M14 publication binds remote draft asset bytes to the locally verified trusted set before exposure', () => {
+  const helper = workflow.indexOf('assert_remote_release_assets_match() {')
+  const createRelease = workflow.indexOf('gh release create "$RELEASE_TAG" trusted-release-assets/*')
+  const firstRemoteCheck = workflow.indexOf('assert_remote_release_assets_match', createRelease)
+  const finalRefCheck = workflow.indexOf('assert_live_release_refs', firstRemoteCheck)
+  const finalRemoteCheck = workflow.indexOf('assert_remote_release_assets_match', finalRefCheck)
+  const publishRelease = workflow.indexOf('gh release edit "$RELEASE_TAG" --draft=false')
+
+  assert.ok(helper > 0, 'remote release-asset verification helper is required')
+  assert.ok(workflow.includes('"repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}"'))
+  assert.ok(workflow.includes("String(asset.digest || '').toLowerCase() !== expectedDigest"))
+  assert.ok(workflow.includes('Number(asset.size) !== bytes.length'))
+  assert.ok(workflow.includes("asset.state !== 'uploaded'"))
+  assert.ok(workflow.includes("crypto.createHash('sha256').update(bytes).digest('hex')"))
+  assert.ok(firstRemoteCheck > createRelease, 'uploaded draft bytes must be verified after release creation')
+  assert.ok(finalRemoteCheck > finalRefCheck && finalRemoteCheck < publishRelease, 'remote bytes must be re-verified immediately before public exposure')
+})

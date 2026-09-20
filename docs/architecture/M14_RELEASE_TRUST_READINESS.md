@@ -173,7 +173,7 @@ No new application UI is required. Existing download/install UX remains unchange
 - manual dispatch produces trusted candidate Actions artifacts but does not publish a GitHub Release;
 - an `agent-v*` tag may publish only after all platform jobs pass;
 - publication refuses an existing release target and never uses asset overwrite/clobber;
-- release is created as draft, expected assets are verified, then it is made public;
+- release is created as draft, then the remote GitHub asset set, upload state, byte size and server-reported SHA-256 digest are matched to the locally verified trusted files before exposure; the same remote-byte check is repeated immediately before the draft is made public;
 - a failed draft publication is cleaned up rather than left as apparent success.
 
 ## Failure / retry / recovery
@@ -184,6 +184,7 @@ No new application UI is required. Existing download/install UX remains unchange
 - macOS notarization non-accepted result: fail closed;
 - wrong source SHA/version/tag: fail before signing;
 - artifact or receipt mismatch: fail before publication;
+- remote draft asset set, upload state, byte size or SHA-256 digest mismatch: fail closed and clean up only the current run's owned draft;
 - existing release target: fail instead of overwrite;
 - repeated release attempt uses a new authorized version/tag after correction, not same-version mutation;
 - no infinite retries are implemented in source; provider/tool retries remain bounded to explicit command behavior;
