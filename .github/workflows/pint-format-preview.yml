@@ -1,4 +1,4 @@
-name: Temporary Pint Format Preview
+name: Temporary Pint Autoformat
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - security/harden-auth-ssrf-oidc-2026-09-21
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   pint-format:
@@ -20,16 +20,18 @@ jobs:
           php-version: '8.3'
           coverage: none
       - run: composer install --prefer-dist --no-interaction --no-progress
-      - name: Format changed PHP files
+      - name: Format and commit changed PHP files
         shell: bash
         run: |
           set -euo pipefail
           git diff --name-only --diff-filter=ACMRT 9ea4d90bea31d4bf13ebf095a15468e3c75ea39c...HEAD -- '*.php' > /tmp/php-files.txt
           vendor/bin/pint $(cat /tmp/php-files.txt)
-          tar -czf /tmp/pint-formatted.tar.gz -T /tmp/php-files.txt
-          git diff --stat
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: pint-formatted-${{ github.sha }}
-          path: /tmp/pint-formatted.tar.gz
-          retention-days: 1
+          if git diff --quiet -- $(cat /tmp/php-files.txt); then
+            echo 'No Pint formatting changes are required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add $(cat /tmp/php-files.txt)
+          git commit -m 'style: apply Laravel Pint to security changes'
+          git push origin HEAD:security/harden-auth-ssrf-oidc-2026-09-21
