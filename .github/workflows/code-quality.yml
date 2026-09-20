@@ -3,8 +3,20 @@ name: WorkIntel Code Quality
 on:
   push:
     branches: [main]
+    paths:
+      - '**/*.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - '.github/workflows/code-quality.yml'
   pull_request:
     branches: [main]
+    paths:
+      - '**/*.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - '.github/workflows/code-quality.yml'
+  schedule:
+    - cron: '27 3 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -16,8 +28,8 @@ concurrency:
 
 jobs:
   codeql:
-    name: CodeQL JS/TS quality analysis
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    name: CodeQL JS/TS security and quality analysis
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -25,25 +37,26 @@ jobs:
       packages: read
       security-events: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@1c5b675653bb5c22dbe9b12b556ec555138e09fd # v4
         with:
           languages: javascript-typescript
           queries: security-and-quality
       - name: Analyze JavaScript and TypeScript
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@1c5b675653bb5c22dbe9b12b556ec555138e09fd # v4
         with:
           category: /language:javascript-typescript
 
   pint-changed-php:
     name: Laravel Pint changed-PHP quality gate
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: '8.3'
           coverage: none
