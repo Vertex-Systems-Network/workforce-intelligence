@@ -475,7 +475,7 @@ use Illuminate\Validation\Rule;
     /** Validates validate provider config input before it is processed. */ private function validateProviderConfig(string $type, array $config): void
     {
         if ($type === 'oidc') {
-            foreach (['client_id', 'authorization_endpoint', 'token_endpoint', 'userinfo_endpoint'] as $key) {
+            foreach (['client_id', 'issuer', 'authorization_endpoint', 'token_endpoint', 'userinfo_endpoint'] as $key) {
                 abort_unless(filled($config[$key] ?? null), 422, "OIDC config requires {$key}.");
             }
             return;
