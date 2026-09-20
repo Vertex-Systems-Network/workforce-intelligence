@@ -4,7 +4,7 @@ import type { AuthResult, AuthSession, AuthUser, LoginInput, RegisterInput, Work
 
 const SESSION_KEY = 'workintel-demo-session'
 const LOCAL_LOGOUT_KEY = 'workintel-auth-local-logout'
-const AUTH_MODE = import.meta.env.VITE_AUTH_MODE === 'demo' ? 'demo' : 'laravel'
+const AUTH_MODE = import.meta.env?.DEV && import.meta.env.VITE_AUTH_MODE === 'demo' ? 'demo' : 'laravel'
 
 /** Handles the normalize email operation for the WorkIntel client. */ function normalizeEmail(email: string) {
   return email.trim().toLowerCase()
