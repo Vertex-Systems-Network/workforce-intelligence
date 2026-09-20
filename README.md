@@ -2,6 +2,41 @@
 
 WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platform. Laravel serves the React SPA and API from the same application; there is no second frontend project and no fixed hostname in the source.
 
+## Module delivery status
+
+The dates below are **repository-tracked dates**, not reconstructed project-history guesses. The first available baseline already contained M0-M12 work on 2026-08-20, so `≤ 2026-08-20` means the phase had started or finished by that tracked baseline. M13 has its own post-M12 history.
+
+| Module Name | Status | Start Date | End Date | Progress |
+|---|---|---:|---:|---|
+| M0 — Roadmap & Acceptance Criteria | Complete | ≤ 2026-08-20 | ≤ 2026-08-20 | ██████████ 100% |
+| M1 — Full System Inventory & Module Map | Complete | ≤ 2026-08-20 | ≤ 2026-08-20 | ██████████ 100% |
+| M2 — WorkIntel Design System V1 | Complete | ≤ 2026-08-20 | 2026-08-22 | ██████████ 100% |
+| M3 — Application Shell & Information Architecture | Complete | ≤ 2026-08-20 | 2026-08-22 | ██████████ 100% |
+| M4 — Shared UX Systems V3 | Complete | ≤ 2026-08-20 | ≤ 2026-08-20 | ██████████ 100% |
+| M5 — Core Workforce Module Conversion | Complete | ≤ 2026-08-20 | ≤ 2026-08-20 | ██████████ 100% |
+| M6 — Business/Admin Module Conversion | Complete | ≤ 2026-08-20 | ≤ 2026-08-20 | ██████████ 100% |
+| M7 — Media DAM V3 | Complete | ≤ 2026-08-20 | 2026-08-22 | ██████████ 100% |
+| M8 — Website Studio V3 | Complete | ≤ 2026-08-20 | 2026-08-22 | ██████████ 100% |
+| M9 — Document Studio V6 | Complete | ≤ 2026-08-20 | 2026-08-22 | ██████████ 100% |
+| M10 — Chat & Collaboration V4 | Complete | ≤ 2026-08-20 | 2026-08-22 | ██████████ 100% |
+| M11 — Role UX + Help + Onboarding | Complete | ≤ 2026-08-20 | 2026-08-22 | ██████████ 100% |
+| M12 — Accessibility, Performance & Final Certification | Complete for active release scope | ≤ 2026-08-20 | 2026-08-22 | ██████████ 100% |
+| M13 — Agent Lifecycle Reliability | Complete | 2026-08-22 | 2026-08-24 | ██████████ 100% |
+
+M0-M12 remain the original weighted maturity model at 100%. M13 is a post-M12 hardening phase and does not change those original weights. No M14 product implementation scope is currently authorized by the repository execution contract.
+
+### CI runner policy
+
+Normal development pushes and pull requests use **changed-scope runners** instead of repeating the full platform certification chain:
+
+- backend changes run PHP dependency/runtime checks, unit contracts and route boot;
+- database changes additionally run fresh SQLite migration plus an idempotent second seed;
+- frontend changes run the frontend source contracts once, TypeScript compilation and a production Vite compile smoke;
+- release-package changes run deterministic release and immutability audits;
+- repository governance remains a small always-on source contract.
+
+The expensive full Linux/MySQL, browser/accessibility and Windows cross-browser suites are retained as **manual final-release gates** for the exact release-candidate/PR head. CodeQL remains a scheduled/manual full scan, while normal PHP development uses changed-file Pint validation. This keeps development feedback focused without weakening the final release evidence.
+
 ## Clean project structure
 
 ```text
