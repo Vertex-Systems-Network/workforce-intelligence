@@ -31,11 +31,12 @@ If an accidental direct write occurs, preserve auditability: repair it with a no
 
 The repository retains its automated validation surfaces, including:
 
-- WorkIntel CI job `test` where GitHub Actions capacity is available;
-- WorkIntel Windows Certification job `windows-certification` on GitHub-hosted `windows-latest`;
-- PHPUnit, migrations/seeds, production/final doctors, responsive E2E, accessibility and cross-browser certification where applicable.
+- WorkIntel CI changed-scope development lanes on normal `push`/`pull_request` events, so backend, database, frontend and release-package checks run only when their paths are affected;
+- WorkIntel CI job `full-certification` as a manual exact-head release gate retaining Linux/MySQL, full PHPUnit, production/final doctors, responsive E2E and accessibility certification;
+- WorkIntel Windows Certification job `windows-certification` as a manual exact-head GitHub-hosted `windows-latest` cross-browser release gate;
+- WorkIntel Code Quality changed-PHP Pint checks during development, with full CodeQL security-and-quality analysis scheduled weekly and available on manual dispatch.
 
-A quota/capacity failure must never be relabeled as a passing run. Historical successful certification evidence remains valid evidence for the commits on which it executed.
+A quota/capacity failure must never be relabeled as a passing run. Historical successful certification evidence remains valid evidence for the commits on which it executed. Scoped development checks are not substitutes for final certification: before release, the manual full CI, CodeQL and Windows certification gates must be run against the exact candidate head.
 
 ## Release-scope boundaries
 
