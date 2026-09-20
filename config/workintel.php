@@ -44,7 +44,11 @@ return [
         'hsts_seconds' => (int) env('WORKINTEL_HSTS_SECONDS', 0),
     ],
 
-    'demo_accounts' => (bool) env('WORKINTEL_SHOW_DEMO_ACCOUNTS', env('APP_ENV', 'production') !== 'production'),
+    'demo_accounts' => env('APP_ENV', 'production') !== 'production' && filter_var(env('WORKINTEL_SHOW_DEMO_ACCOUNTS', false), FILTER_VALIDATE_BOOL),
+
+    'outbound' => [
+        'allow_private' => filter_var(env('WORKINTEL_ALLOW_PRIVATE_WEBHOOKS', false), FILTER_VALIDATE_BOOL),
+    ],
 
     'billing' => [
         'provider' => env('WORKINTEL_BILLING_PROVIDER', 'manual'),
