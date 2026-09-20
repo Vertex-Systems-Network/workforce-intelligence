@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Support\ProductionCertificationCatalog;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Throwable;
