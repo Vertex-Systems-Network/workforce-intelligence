@@ -1,9 +1,6 @@
 name: WorkIntel Windows Certification
 
 on:
-  pull_request:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -26,62 +23,27 @@ jobs:
           Write-Host "GitHub-hosted runner: $env:RUNNER_NAME"
           Write-Host "Image OS: $env:RUNNER_OS"
 
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - name: Bootstrap PowerShell 7 for setup-php
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Require PowerShell 7 from hosted image
+        shell: powershell
         run: |
-          if (Get-Command pwsh -ErrorAction SilentlyContinue) {
-            pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion'
-            exit 0
+          $pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
+          if (-not $pwsh) {
+            throw 'PowerShell 7 is required from the GitHub-hosted Windows image; runtime download is intentionally disabled.'
           }
+          & $pwsh.Source -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion'
 
-          $headers = @{
-            Accept = 'application/vnd.github+json'
-            Authorization = "Bearer $env:GH_TOKEN"
-            'X-GitHub-Api-Version' = '2022-11-28'
-          }
-          $release = Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/PowerShell/PowerShell/releases/latest'
-          $asset = $release.assets | Where-Object {
-            $_.name -match '^PowerShell-[0-9.]+-win-x64\.zip$'
-          } | Select-Object -First 1
-          if (-not $asset) {
-            throw 'Unable to resolve the latest official PowerShell win-x64 ZIP asset.'
-          }
-
-          if (-not (Get-Command curl.exe -ErrorAction SilentlyContinue)) {
-            throw 'curl.exe is required to bootstrap portable PowerShell.'
-          }
-
-          $pwshRoot = Join-Path $env:RUNNER_TEMP 'workintel-pwsh'
-          $zipPath = Join-Path $env:RUNNER_TEMP $asset.name
-          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $pwshRoot
-          Remove-Item -Force -ErrorAction SilentlyContinue $zipPath
-          New-Item -ItemType Directory -Force -Path $pwshRoot | Out-Null
-
-          & curl.exe -L --fail --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 300 -o $zipPath $asset.browser_download_url
-          if ($LASTEXITCODE -ne 0 -or -not (Test-Path $zipPath)) {
-            throw 'Portable PowerShell download failed.'
-          }
-
-          Expand-Archive -Path $zipPath -DestinationPath $pwshRoot -Force
-          $pwshExe = Join-Path $pwshRoot 'pwsh.exe'
-          if (-not (Test-Path $pwshExe)) {
-            throw 'Portable PowerShell bootstrap did not produce pwsh.exe.'
-          }
-          $pwshRoot | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          & $pwshExe -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion'
-
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: '8.3'
           extensions: mbstring, dom, xml, xmlwriter, pdo_sqlite, sqlite3, fileinfo, gd, zip
           coverage: none
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: '22'
+          cache: npm
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction
@@ -168,7 +130,7 @@ jobs:
 
       - name: Upload Windows browser failure artifacts
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: workintel-windows-certification-failure-${{ github.run_id }}-${{ github.run_attempt }}
           path: storage/app/private/e2e-results
