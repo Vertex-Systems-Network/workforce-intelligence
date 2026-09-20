@@ -89,6 +89,37 @@ class ProductionCertificationDoctor extends Command
                 $checks[$name] = ['ok' => $ok, 'detail' => $ok ? 'Production security policy satisfied.' : $failureDetail];
                 if (! $ok) $failed = true;
             }
+
+            if (Schema::hasTable('users')) {
+                $demoIdentityCount = DB::table('users')
+                    ->where(function ($query) {
+                        $query->where('email', 'like', '%@acme.test')
+                            ->orWhere('email', 'like', '%@example.test');
+                    })
+                    ->count();
+
+                $checks['production_demo_identities'] = [
+                    'ok' => $demoIdentityCount === 0,
+                    'detail' => $demoIdentityCount === 0
+                        ? 'No known demo user identities are present.'
+                        : "{$demoIdentityCount} known demo user identity record(s) remain in the production database.",
+                ];
+                if ($demoIdentityCount !== 0) $failed = true;
+            }
+
+            if (Schema::hasTable('client_portal_accounts')) {
+                $demoPortalCount = DB::table('client_portal_accounts')
+                    ->where('email', 'like', '%@techcorp.test')
+                    ->count();
+
+                $checks['production_demo_portal_identities'] = [
+                    'ok' => $demoPortalCount === 0,
+                    'detail' => $demoPortalCount === 0
+                        ? 'No known demo client-portal identities are present.'
+                        : "{$demoPortalCount} known demo client-portal identity record(s) remain in the production database.",
+                ];
+                if ($demoPortalCount !== 0) $failed = true;
+            }
         }
 
         $routeUris = collect(Route::getRoutes())->map(fn ($route) => $route->uri())->all();
