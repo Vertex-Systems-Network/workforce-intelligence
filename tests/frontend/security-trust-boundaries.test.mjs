@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import test from 'node:test'
 
+/** Read one repository source file for static security contracts. */
 const read = path => fs.readFileSync(path, 'utf8')
 
 test('production builds cannot activate or render static demo authentication', () => {
