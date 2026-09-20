@@ -21,6 +21,9 @@ class OutboundUrlGuard
 
         $scheme = strtolower((string) ($parts['scheme'] ?? ''));
         $host = strtolower(rtrim((string) ($parts['host'] ?? ''), '.'));
+        if (str_starts_with($host, '[') && str_ends_with($host, ']')) {
+            $host = substr($host, 1, -1);
+        }
         $port = (int) ($parts['port'] ?? ($scheme === 'https' ? 443 : 80));
 
         if (! in_array($scheme, ['http', 'https'], true) || $host === '' || $port < 1 || $port > 65535) {
@@ -131,6 +134,10 @@ class OutboundUrlGuard
     /** Return whether the address is globally routable rather than private or reserved. */
     private function isPublicIp(string $ip): bool
     {
+        if (str_starts_with(strtolower($ip), '::ffff:')) {
+            return false;
+        }
+
         return filter_var(
             $ip,
             FILTER_VALIDATE_IP,
