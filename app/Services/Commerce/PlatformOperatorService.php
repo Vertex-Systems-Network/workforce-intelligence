@@ -18,8 +18,20 @@ class PlatformOperatorService
             static fn (mixed $email): string => strtolower(trim((string) $email)),
             config('workintel.commerce.operator_emails', [])
         )));
+        if (! in_array(strtolower(trim((string) $user->email)), $emails, true)) {
+            return false;
+        }
 
-        return in_array(strtolower(trim((string) $user->email)), $emails, true);
+        $userIds = array_values(array_filter(array_map(
+            'intval',
+            config('workintel.commerce.operator_user_ids', [])
+        )));
+
+        if (app()->environment('production')) {
+            return $userIds !== [] && in_array((int) $user->id, $userIds, true);
+        }
+
+        return $userIds === [] || in_array((int) $user->id, $userIds, true);
     }
 
     /** Abort unless the current user is a verified active platform operator. */
