@@ -56,6 +56,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
             'http://10.0.0.1/internal',
             'http://169.254.169.254/latest/meta-data',
             'http://[::1]/internal',
+            'http://[::ffff:127.0.0.1]/internal',
             'http://user:secret@1.1.1.1/',
         ] as $url) {
             try {
@@ -68,6 +69,9 @@ class SecurityTrustBoundaryFlowTest extends TestCase
 
         $options = $guard->httpOptions('https://1.1.1.1/health');
         $this->assertFalse($options['allow_redirects']);
+
+        $ipv6 = $guard->assertSafe('https://[2606:4700:4700::1111]/health');
+        $this->assertSame('2606:4700:4700::1111', $ipv6['host']);
     }
 
     /** A valid signed ID token with matching nonce and UserInfo subject completes the OIDC flow. */
