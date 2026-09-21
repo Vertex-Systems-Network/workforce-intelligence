@@ -445,12 +445,12 @@ class OidcService
         $this->guard->assertSafe($url);
     }
 
-    /** Return true only when signed ID-token authentication-method claims explicitly indicate MFA. */
+    /** Return true only when the signed ID token explicitly asserts multi-factor authentication. */
     private function idTokenProvesMfa(array $claims): bool
     {
         $methods = array_map('strtolower', array_filter((array) ($claims['amr'] ?? []), 'is_string'));
 
-        return count(array_intersect($methods, ['mfa', 'otp', 'totp', 'hwk', 'swk'])) > 0;
+        return in_array('mfa', $methods, true);
     }
 
     /** Decode one strict base64url JWT/JWK segment or abort the authentication flow. */
