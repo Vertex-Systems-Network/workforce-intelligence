@@ -2,6 +2,59 @@
 
 WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platform. Laravel serves the React SPA and API from the same application; there is no second frontend project and no fixed hostname in the source.
 
+
+## Table of contents
+
+- [Audit snapshot and incomplete tracked work](#audit-snapshot-and-incomplete-tracked-work)
+- [Audit exclusions and intentional limitations](#audit-exclusions-and-intentional-limitations)
+- [Clean project structure](#clean-project-structure)
+- [Requirements](#requirements)
+- [Fresh zero installation](#fresh-zero-installation)
+- [Strict clean-install verification](#strict-clean-install-verification)
+- [Seeded local accounts](#seeded-local-accounts)
+- [Frontend development](#frontend-development)
+- [Database upgrade rule](#database-upgrade-rule)
+- [Current platform areas](#current-platform-areas)
+- [Realtime chat](#realtime-chat)
+- [Source quality gates](#source-quality-gates)
+- [Production checklist](#production-checklist)
+- [Important security boundaries](#important-security-boundaries)
+- [Real runtime certification](#real-runtime-certification)
+
+## Audit snapshot and incomplete tracked work
+
+This section is an evidence-based continuation index, not a replacement for GitHub issues, pull requests, `AGENTS.md`, or exact-head CI. Snapshot date: **2026-09-20**. Audited protected `main`: `9ea4d90bea31d4bf13ebf095a15468e3c75ea39c`.
+
+At this snapshot, protected `main` is green on the observed governance, Code Quality, WorkIntel CI, and Windows Certification checks. The repository has one active branch ruleset (`21176050`, `main`, no bypass actors in the observed read-back). The following work is still incomplete or awaiting evidence:
+
+| Priority | Work item | Current audited state | Completion condition |
+|---|---|---|---|
+| P0 | **M14 source/release-trust lane — PR #65** | PR #65 is open at `ea177caa362fee668322c3180f80d8e3eb3af959` on current `main`. Its observed automated checks are green, including governance, test, CodeQL, changed-PHP Pint, Windows certification, and the Windows/macOS/Linux standalone build matrix. It still has **0 submitted reviews**. | Independent review for the exact current head, no unresolved high-severity release-trust finding, and merge only after exact-head required checks remain green. If `main` moves, rehydrate/re-certify instead of reusing stale evidence. |
+| P0 | **Independent M14 security/release review — Issue #61** | Open. The required independent review for PR #65 has not been submitted. Self-review and older-head reviews do not satisfy this gate. | A valid independent reviewer covers the exact PR #65 head and all high-severity findings are resolved/re-certified. |
+| P0 | **External trusted-release configuration — Issue #62** | Open. Live ruleset audit still exposes only the active branch-targeted `main` ruleset; no dedicated active `target=tag` ruleset for `agent-v*` is verified. The audited tag-ruleset attestation and protected `production-release` environment/secret placement are also not verified. | Satisfy Issue #62 closure evidence: immutable trusted tag protection with audited no-bypass state, a verified source attestation bound to the live ruleset snapshot, and verified `production-release` environment policy/secret placement. |
+| P1 | **Intermittent AccessControlSeeder failure — Issue #70 / PR #71** | Root cause is not proven. Diagnostic PR #71 is open at `0de1a94d907a724a96036424aee95ec1af97fc35`. Its exact-head governance, CodeQL, changed-PHP Pint, 12-cycle SQLite seed stress, WorkIntel CI (including MySQL seed smoke), and Windows Certification checks are green. This certifies the diagnostic harness, not a root-cause fix. | Keep Issue #70 open until the actual failing state/order is captured and a focused non-masking regression fix is proven; do not weaken the owner-role invariant. |
+| P1 | **Authority/checkpoint documentation drift** | Current `main` still has pre-M14 wording in `AGENTS.md` and `docs/status/AI_CHECKPOINT.md` that describes Issue #50 as the current gate / no active M14 lane, while Issue #50 is closed and the authorized M14 release-trust lane is active in PR #65. PR #65 updates the checkpoint but does not update `AGENTS.md`. | Reconcile canonical authority/status documentation through an isolated reviewed change once the accepted M14 source state is clear; do not silently rewrite authority during another high-risk lane. |
+| P2 | **Dependency maintenance queue — PRs #73–#77** | Five Dependabot PRs are open. Their observed current checks are green. They are maintenance work, not unfinished product-module implementation. | Review and merge/rebase each independently under normal dependency/supply-chain policy. |
+| Release-time | **Production target checklist** | `docs/PRODUCTION_CHECKLIST.md` intentionally contains unchecked deployment/certification items. These are environment-specific release gates and must not be interpreted as missing source features. | Check each item only against the actual deployment/release candidate with real evidence. |
+
+### Immediate continuation order
+
+1. Do not mutate PR #65 merely to improve documentation; its exact-head evidence is review-sensitive.
+2. Obtain the independent review required by Issue #61.
+3. Complete the administrator/live configuration evidence in Issue #62.
+4. Keep PR #71 as a certified diagnostic lane and keep Issue #70 open until the nondeterministic seed defect has an evidence-backed root cause/fix; do not merge it ahead of M14 if doing so would invalidate PR #65's exact-base evidence.
+5. Reconcile stale authority/checkpoint prose in a separate documentation lane.
+6. Process dependency PRs independently; do not fold them into M14 or seed-diagnostic work.
+
+## Audit exclusions and intentional limitations
+
+The deep scan also found several strings that look unfinished but are **not** open implementation tasks:
+
+- Task Engine occurrences of `Todo`, `todo`, `Blocked`, and `pending` are workflow/status values, not TODO/FIXME engineering comments.
+- Document Studio's statement that its layout is “not implemented with GridStack” documents an intentional architecture choice; dnd-kit is the selected interaction model there.
+- `desktop-agent/reference-agent.mjs` deliberately rejects `update_agent`; it is a protocol reference client. The production `desktop-agent/native-agent.mjs` already implements managed self-update with release metadata and SHA-256 verification.
+- Unchecked boxes in `docs/PRODUCTION_CHECKLIST.md` are deployment-time evidence gates. They remain unchecked until a real production/release target is certified.
+
 ## Clean project structure
 
 ```text
