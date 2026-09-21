@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "368e9c9ca8f5c871f2642ab50097cbb2da553a78",
+  "observed_main_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
   "active_issue": null,
-  "active_pr": 84,
-  "active_branch": "dependabot/npm_and_yarn/development-minor-patch-93e912e386",
-  "current_milestone": "Refresh PR #84 development dependency updates onto current main",
-  "milestone_status": "COMPLETE",
-  "last_completed_milestone": "PR #88 merged Issue #70 current-main diagnostics and mandatory README progress synchronization to main.",
-  "exact_next_safe_action": "On next continue/resume: resolve PR #84 current head from GitHub and perform one consolidated exact-head status refresh. Merge only if required checks are green for the refreshed exact head and review state is clean.",
+  "active_pr": 80,
+  "active_branch": "security/harden-auth-ssrf-oidc-2026-09-21",
+  "current_milestone": "Rehydrate and certify PR #80 security trust boundaries on current main",
+  "milestone_status": "VERIFYING",
+  "last_completed_milestone": "PR #84 merged refreshed development dependency updates onto current main.",
+  "exact_next_safe_action": "Resolve PR #80 exact head from GitHub and perform one consolidated exact-head CI/review refresh. If required checks are green and review state is clean, mark ready and merge; otherwise fix only the deterministic failing gate.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,9 +23,9 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Issue #70 remains open but RB-005 is not-authorized/blocked; no executable diagnostic step is currently authorized.",
+    "Issue #70 remains open but RB-005 is not-authorized/blocked; do not execute the dedicated seed-stress Runner benchmark.",
     "Issues #61/#62 remain blocked on independent/external M14 release-trust prerequisites.",
-    "PR #84 requires fresh exact-head certification after current-main refresh; old green evidence is historical only."
+    "PR #80 exact-head CI/Code Quality/Windows certification is pending after current-main rehydration and security review fixes."
   ],
   "timeout_control": {
     "max_consolidated_status_refreshes_per_milestone": 1,
@@ -33,14 +33,14 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-22T02:02:00+05:00",
+  "last_reconciled_at": "2026-09-22T03:15:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Refresh PR #84 development dependency updates onto current main",
-    "current_module": "Dependency Maintenance / Dev Tooling",
+    "current_work": "Rehydrate and certify PR #80 security trust boundaries on current main",
+    "current_module": "Security Hardening / Identity & Outbound Trust",
     "module_progress": {
-      "percent": 100,
-      "basis": "This bounded milestone completes when PR #84's package.json/package-lock delta is reconstructed on current main, durable state/README are synchronized, and the existing PR branch is moved to the new current-main commit."
+      "percent": 90,
+      "basis": "Security scope is rehydrated onto current main, source-reviewed, and strengthened with browser-bound OIDC state plus strict signed MFA evidence. Completion requires fresh exact-head CI/Code Quality/Windows certification and a clean merge decision."
     },
     "overall_progress": {
       "percent": 100,
