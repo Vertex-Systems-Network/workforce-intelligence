@@ -2,8 +2,8 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "3e4ebb524b4fbed8da7879bc9130aed4a5afebbf",
-  "reconciled_at": "2026-09-21T23:22:00+05:00",
+  "observed_main_sha": "368e9c9ca8f5c871f2642ab50097cbb2da553a78",
+  "reconciled_at": "2026-09-22T02:02:00+05:00",
   "issues": [
     {
       "number": 70,
@@ -30,8 +30,11 @@
       "title": "chore(deps-dev): bump the development-minor-patch group across 1 directory with 3 updates",
       "state": "open",
       "draft": false,
-      "head_sha": "5949c99acd43e606125ecc1010ec8552cfd64567",
-      "base_sha": "3e4ebb524b4fbed8da7879bc9130aed4a5afebbf"
+      "head_sha": null,
+      "base_sha": "368e9c9ca8f5c871f2642ab50097cbb2da553a78",
+      "head_ref": "dependabot/npm_and_yarn/development-minor-patch-93e912e386",
+      "head_resolution": "resolve-current-head-on-resume",
+      "last_observed_pre_milestone_head_sha": "5949c99acd43e606125ecc1010ec8552cfd64567"
     },
     {
       "number": 83,

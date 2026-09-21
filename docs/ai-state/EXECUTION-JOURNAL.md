@@ -82,3 +82,11 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Added AGENTS rule requiring README sync on every completed bounded milestone source commit.
 - Preserved exact-head safety: README is not mutated solely for remote CI status while a candidate SHA is under certification.
 - Added state-audit and frontend governance tests that fail if README progress is missing/stale.
+
+## 2026-09-22T02:02:00+05:00 — PR #84 current-main refresh
+
+- Reconciled post-PR-#88 main and README state.
+- Issue #70 remains blocked on RB-005 execution authority; #61/#62 remain externally blocked.
+- Selected existing actionable PR #84 rather than creating duplicate work.
+- Verified PR #84 changes only package.json/package-lock.json and historically passed CI/Quality/Windows on its old base.
+- Reconstructed the exact dependency delta on current main and synchronized README/compact state for this milestone.
