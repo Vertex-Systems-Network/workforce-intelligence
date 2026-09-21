@@ -74,3 +74,11 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Ported the enriched failure-state diagnostics and fail-fast 12-cycle harness to a fresh current-main branch.
 - Changed seed-stress workflow to manual-only and updated the contract test to enforce Runner v3 authorization state.
 - Production RoleAccessService and AccessControlSeeder behavior remain unchanged.
+
+## 2026-09-22T00:54:00+05:00 — mandatory README progress synchronization
+
+- User requested visible repository progress on every AI-Native milestone.
+- Added one compact README AI Development Progress block synchronized from CURRENT-STATE.
+- Added AGENTS rule requiring README sync on every completed bounded milestone source commit.
+- Preserved exact-head safety: README is not mutated solely for remote CI status while a candidate SHA is under certification.
+- Added state-audit and frontend governance tests that fail if README progress is missing/stale.

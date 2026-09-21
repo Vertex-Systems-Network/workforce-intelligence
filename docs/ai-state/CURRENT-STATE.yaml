@@ -6,10 +6,10 @@
   "active_issue": 70,
   "active_pr": null,
   "active_branch": "maintenance/issue-70-seed-diagnostics-v2",
-  "current_milestone": "Refresh Issue #70 seed-stress diagnostics on current main with Runner v3 authorization safety",
+  "current_milestone": "Issue #70 diagnostics + mandatory README progress synchronization",
   "milestone_status": "COMPLETE",
-  "last_completed_milestone": "Issue #70 diagnostic harness ported to current main without changing RoleAccessService or seeder production behavior.",
-  "exact_next_safe_action": "On next continue/resume: rehydrate current repository truth, verify this branch diff and source contracts, then open one PR for Issue #70 diagnostics. Do not execute RB-005 unless current explicit execution authority is granted.",
+  "last_completed_milestone": "Issue #70 diagnostic harness refreshed on current main with Runner v3 authorization safety; README progress synchronization added to the AI-Native contract.",
+  "exact_next_safe_action": "On next continue/resume: rehydrate current repository truth, verify this branch diff/source contracts including README sync, then open one PR for Issue #70 diagnostics + progress governance. Do not execute RB-005 unless current explicit execution authority is granted.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -36,11 +36,11 @@
   "last_reconciled_at": "2026-09-22T00:54:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Refresh Issue #70 seed-stress diagnostics on current main with Runner v3 authorization safety",
-    "current_module": "CI / Seeder Reliability",
+    "current_work": "Issue #70 diagnostics + mandatory README progress synchronization",
+    "current_module": "CI / Seeder Reliability + Progress Governance",
     "module_progress": {
       "percent": 100,
-      "basis": "This bounded milestone completes when the diagnostic harness is ported to current main, old Runner v1 assumptions are removed, and unauthorized automatic execution is prevented."
+      "basis": "This bounded milestone completes when Issue #70 current-main diagnostics are retained, README progress synchronization is repository-enforced, and compact state/README agree."
     },
     "overall_progress": {
       "percent": 100,

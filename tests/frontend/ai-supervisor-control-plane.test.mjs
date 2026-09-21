@@ -68,3 +68,24 @@ test('user-facing response status carries repository, work, module and truthful 
   assert.ok(maturity.includes('Overall weighted modular maturity for the active release scope: 100%'))
   for(const marker of ['Repo:','Current Work:','Current Module:','Module Progress:','Overall Progress:']) assert.ok(responseContract.includes(marker))
 })
+
+test('README AI progress block stays synchronized with compact state', () => {
+  const state=parse('docs/ai-state/CURRENT-STATE.yaml')
+  const readme=read('README.md')
+  const rs=state.response_status
+  const bar=percent => {
+    const cells=Math.max(0,Math.min(10,Math.round(percent/10)))
+    return '█'.repeat(cells)+'░'.repeat(10-cells)
+  }
+  for(const marker of ['<!-- AI-PROGRESS:START -->','<!-- AI-PROGRESS:END -->','## AI Development Progress']) assert.ok(readme.includes(marker))
+  assert.ok(readme.includes('**Repo:** `'+rs.repository_name+'`'))
+  assert.ok(readme.includes('**Current Work:** '+rs.current_work))
+  assert.ok(readme.includes('**Current Module:** '+rs.current_module))
+  assert.ok(readme.includes('**Module Progress:** ['+bar(rs.module_progress.percent)+'] **'+rs.module_progress.percent+'%**'))
+  assert.ok(readme.includes('**Overall Progress:** ['+bar(rs.overall_progress.percent)+'] **'+rs.overall_progress.percent+'%** — '+rs.overall_progress.scope))
+  assert.ok(readme.includes('**Active Issue:** '+(state.active_issue===null?'none':'#'+state.active_issue)))
+  assert.ok(readme.includes('**Active PR:** '+(state.active_pr===null?'none':'#'+state.active_pr)))
+  assert.ok(readme.includes('**Active Branch:** `'+state.active_branch+'`'))
+  assert.ok(readme.includes('**Last Completed:** '+state.last_completed_milestone))
+  assert.ok(readme.includes('**Next Action:** '+state.exact_next_safe_action))
+})

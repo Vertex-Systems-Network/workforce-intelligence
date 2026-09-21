@@ -324,6 +324,32 @@ Compact limits: `CURRENT-STATE.yaml` <= 12 KiB; `LAST-CHECKPOINT.md` <= 16 KiB; 
 
 Update a large public/module dashboard only when underlying module lifecycle/progress/timeline/public delivery truth changed or a terminal product/integration closeout is being reported. Governance/security/coordination-only cycles update compact state and relevant governance records without rewriting a large dashboard merely to create churn.
 
+## README progress synchronization contract
+
+The root `README.md` contains one compact `AI Development Progress` block. Synchronize that block with `docs/ai-state/CURRENT-STATE.yaml` in every completed bounded milestone commit.
+
+The compact block must show:
+
+- repository;
+- current work;
+- current module;
+- module progress bar + exact percentage;
+- overall progress bar + exact percentage/scope;
+- active Issue;
+- active PR;
+- active branch;
+- last completed milestone;
+- exact next safe action.
+
+Rules:
+
+- The README progress block is a compact operational mirror, not an authority source. `CURRENT-STATE.yaml`, GitHub truth, and repository authority remain canonical.
+- Do not invent percentages. README values must be derived from `response_status` in compact state.
+- Large README lifecycle dashboards still change only when public lifecycle truth changes. The compact AI progress block is the exception and is updated on every completed bounded milestone.
+- Before closing a milestone, update compact state and README progress together in the same source commit when source mutation is safe.
+- During exact-head certification, do not mutate the candidate source merely to refresh README with pending/terminal CI. Keep README frozen at the certified source baseline, use PR/Issue evidence for live remote status, then synchronize README in the next safe source-changing milestone (for example post-merge reconciliation).
+- A missing/stale README progress block is a governance defect and must fail the AI supervisor state audit.
+
 ## User-facing development/status response contract
 
 Every user-facing repository development/status response must begin with a compact status block derived from current repository evidence. This applies to `continue`, resume, implementation, verification, blocked/waiting, merge, and post-merge messages.
