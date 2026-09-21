@@ -30,8 +30,11 @@
       "title": "Governance: implement AI Engineering Supervisor control plane v2",
       "state": "open",
       "draft": false,
-      "head_sha": "4c2da498678884df7eaf622dd9ae5cf0c22fc4cb",
-      "base_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
+      "head_sha": null,
+      "base_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
+      "head_ref": "governance/ai-supervisor-control-plane-v2",
+      "head_resolution": "resolve-current-head-on-resume",
+      "last_observed_pre_milestone_head_sha": "19add4eb3b6a97b36a8674ae0f11e47f8e992e96"
     },
     {
       "number": 84,

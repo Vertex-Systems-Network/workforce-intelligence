@@ -8,8 +8,8 @@
   "active_branch": "governance/ai-supervisor-control-plane-v2",
   "current_milestone": "Fix PR #86 deterministic governance source-contract marker",
   "milestone_status": "COMPLETE",
-  "last_completed_milestone": "PR #86 Windows failure classified as deterministic source-contract mismatch on head 19add4eb3b6a97b36a8674ae0f11e47f8e992e96.",
-  "exact_next_safe_action": "On next continue/resume: rehydrate compact state and repository truth, then perform one fresh consolidated exact-head status refresh for PR #86 on the new candidate head created by this marker fix. Do not merge unless required checks are green for that exact head.",
+  "last_completed_milestone": "PR #86 deterministic Windows source-contract marker fixed; coordination head tracking made non-self-referential.",
+  "exact_next_safe_action": "On next continue/resume: resolve PR #86 current head from GitHub, then perform one fresh consolidated exact-head status refresh. Do not infer the current head from coordination queue metadata and do not merge unless required checks are green for the resolved exact head.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",

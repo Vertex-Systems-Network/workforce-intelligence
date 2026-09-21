@@ -51,3 +51,6 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Applied the minimal explicit safety sentence to AGENTS.
 - Reconciled compact state and coordination queue with active PR #86.
 - No CI polling, rerun, or merge is part of this milestone.
+
+- Corrected a self-reference in coordination metadata: PR #86 no longer stores a supposed final source head from inside the source commit itself.
+- Queue now marks the PR head as resolve-on-resume; GitHub remains authoritative for the exact current head.

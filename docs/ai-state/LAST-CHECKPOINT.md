@@ -9,21 +9,21 @@
 
 ## Verified
 
-- PR #86 exact head `19add4eb3b6a97b36a8674ae0f11e47f8e992e96` failed Windows Certification in `Frontend source contracts`.
-- The failing assertion was exactly: `AGENTS.md missing supervisor execution contract: Do not merge because an older SHA was green`.
-- The governance test already contained the expected safety marker; AGENTS did not.
-- The fix is intentionally minimal: add that exact fail-closed merge sentence to AGENTS and reconcile compact state/coordination metadata.
+- Prior PR #86 head `19add4eb3b6a97b36a8674ae0f11e47f8e992e96` failed Windows Certification only because AGENTS lacked the exact safety marker expected by the governance source contract.
+- AGENTS now explicitly contains: `Do not merge because an older SHA was green.`
+- The fix does not change product/runtime behavior.
+- Coordination queue no longer tries to self-record the current source head from inside the same source commit; PR #86 head must be resolved from GitHub on resume.
 
 ## Not Verified
 
-- Fresh GitHub-hosted CI/Windows/Code Quality for the new candidate head has not been observed in this milestone.
-- No merge decision is made for the new head in this milestone.
+- Fresh exact-head GitHub-hosted CI/Windows/Code Quality for the new PR #86 head has not been observed in this milestone.
+- No merge decision is made for the new head.
 
 ## Known Risk
 
-- Any new commit invalidates prior exact-head CI evidence. The new head must receive fresh required certification.
-- Existing unrelated OPEN Issues/PRs remain outside this bounded milestone.
+- Any source/state commit moves the PR head, so previous exact-head certification is stale.
+- Coordination metadata is a non-authoritative resume index; exact current PR head always comes from GitHub.
 
 ## Next Action
 
-On the next `continue`/`resume`, rehydrate repository truth and perform one consolidated exact-head status refresh for PR #86 on the then-current head. Merge only if required checks are green for that exact head and review state remains clean.
+On the next `continue`/`resume`, resolve PR #86 current head directly from GitHub, then perform one consolidated exact-head status refresh. Merge only if required checks are green for that exact head and review state remains clean.
