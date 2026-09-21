@@ -221,10 +221,10 @@ use Illuminate\Validation\ValidationException;
     private function response(Response $response): array
     {
         if (! $response->successful()) {
-            throw new \RuntimeException('Connector request failed with HTTP '.$response->status().': '.Str::limit($response->body(),700,''));
+            throw new \RuntimeException('Connector request failed with HTTP '.$response->status().': '.Str::limit($response->body(), 700, ''));
         }
         $json = $response->json();
 
-        return ['ok' => true, 'status' => $response->status(), 'data' => is_array($json) ? $json : ['body' => Str::limit($response->body(),1200,'')]];
+        return ['ok' => true, 'status' => $response->status(), 'data' => is_array($json) ? $json : ['body' => Str::limit($response->body(), 1200, '')]];
     }
 }

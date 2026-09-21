@@ -154,7 +154,8 @@ use Illuminate\Validation\ValidationException;
             $run->update(['status' => 'cancelled', 'error' => 'Automation module is disabled.', 'completed_at' => now(), 'next_attempt_at' => null]);
 
             return $run->fresh(['steps', 'workflow']);
-        }$started = microtime(true);
+        }
+        $started = microtime(true);
         $run->update(['status' => 'running', 'attempts' => $run->attempts + 1, 'started_at' => now(), 'next_attempt_at' => null, 'error' => null]);
         $context = $this->baseContext($workspace, $run->trigger_event ?? 'automation.manual', $run->trigger_payload ?? [], $run->event);
         $context['run'] = ['id' => $run->id, 'uuid' => $run->uuid];
@@ -191,7 +192,7 @@ use Illuminate\Validation\ValidationException;
                     return $this->failRun($run, $lastError->getMessage(), $context);
                 }
 
-continue;
+                continue;
             }
             $step->update(['status' => 'succeeded', 'output' => $this->sanitize($output), 'completed_at' => now(), 'error' => null]);
             $context['steps'][(string) $action->position] = ['status' => 'succeeded', 'output' => $output];
@@ -246,7 +247,8 @@ continue;
     /** Handles the connector action operation for the current WorkIntel workflow. */
     private function connectorAction(Workspace $workspace, $action, array $input): array
     {
-        /** @var IntegrationConnection|null $integration */ $integration = $action->integration;
+        /** @var IntegrationConnection|null $integration */
+        $integration = $action->integration;
         if (! $integration || $integration->workspace_id !== $workspace->id || $integration->status !== 'active') {
             throw new \RuntimeException('Connector is missing or paused.');
         }
@@ -290,7 +292,8 @@ continue;
         foreach ($members->get() as $member) {
             if (! $member->user) {
                 continue;
-            }$this->notifications->notify($workspace, $member->user, 'workspace', 'automation.notification', (string) ($config['title'] ?? 'WorkIntel automation'), isset($config['body']) ? (string) $config['body'] : null, (string) ($config['severity'] ?? 'info'), ['automation' => true]);
+            }
+            $this->notifications->notify($workspace, $member->user, 'workspace', 'automation.notification', (string) ($config['title'] ?? 'WorkIntel automation'), isset($config['body']) ? (string) $config['body'] : null, (string) ($config['severity'] ?? 'info'), ['automation' => true]);
             $count++;
         }
 
@@ -330,22 +333,25 @@ continue;
     }
 
     /** Handles the sanitize operation for the current WorkIntel workflow. */
-    private function sanitize(mixed $value,int $depth = 0): mixed
+    private function sanitize(mixed $value, int $depth = 0): mixed
     {
         if ($depth > 5) {
             return '[truncated]';
-        }if (is_array($value)) {
+        }
+        if (is_array($value)) {
             foreach ($value as $key => $item) {
-                $value[$key] = is_string($key) && preg_match('/password|secret|token|authorization|cookie|credential|api[_-]?key/i',$key) ? '[redacted]' : $this->sanitize($item,$depth + 1);
+                $value[$key] = is_string($key) && preg_match('/password|secret|token|authorization|cookie|credential|api[_-]?key/i', $key) ? '[redacted]' : $this->sanitize($item, $depth + 1);
             }
 
-return $value;
-        }if (is_string($value)) {
-            return Str::limit($value,3000,'…');
-        }if (is_object($value)) {
+            return $value;
+        }
+        if (is_string($value)) {
+            return Str::limit($value, 3000, '…');
+        }
+        if (is_object($value)) {
             return '[object '.get_class($value).']';
         }
 
-return $value;
+        return $value;
     }
 }
