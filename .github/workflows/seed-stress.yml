@@ -1,0 +1,45 @@
+name: WorkIntel Seed Stress
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/seed-stress.yml'
+      - 'database/migrations/**'
+      - 'database/seeders/**'
+      - 'app/Services/Access/**'
+      - 'tools/access-control-seed-state.php'
+      - 'tools/access-control-seed-stress.sh'
+      - 'composer.json'
+      - 'composer.lock'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sqlite-seed-stress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, xml, xmlwriter, pdo_sqlite, sqlite3, fileinfo
+          coverage: none
+      - run: composer install --prefer-dist --no-interaction
+      - run: cp .env.example .env && php artisan key:generate
+      - name: Reproduce AccessControl SQLite seed flake
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+          WORKINTEL_SEED_STRESS_CYCLES: 12
+        run: bash tools/access-control-seed-stress.sh
+      - name: Upload seed stress diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: access-control-seed-stress-${{ github.run_id }}-${{ github.run_attempt }}
+          path: storage/logs/seed-stress
+          if-no-files-found: warn
+          retention-days: 14
