@@ -60,7 +60,7 @@
     "@tiptap/extension-link": "^3.0.0",
     "@tiptap/extension-placeholder": "^3.0.0",
     "@tiptap/extension-underline": "^3.0.0",
-    "gridstack": "^13.1.2",
+    "gridstack": "^13.3.0",
     "laravel-echo": "^2.0.0",
     "pusher-js": "^8.0.0",
     "@tanstack/react-table": "^8.21.3"
