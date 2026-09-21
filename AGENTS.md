@@ -202,6 +202,24 @@ It requires `WAVE_API_KEY` and a publicly reachable `WORKINTEL_WAVE_URL`. Hosted
 
 Do implementation, source cleanup and non-browser quality work first. The expensive runner/browser matrix is the final release step so it certifies a settled head rather than a sequence of intermediate UI commits.
 
+### Runner benchmark backlog
+
+The canonical backlog for expensive deferred certification is `benchmarks/runner/registry.json`; the human workflow is `docs/release/RUNNER_BENCHMARK_REGISTER.md`. Validate its structure cheaply with `npm run audit:runner-benchmarks`.
+
+During implementation, whenever a task discovers a verification obligation that genuinely requires a GitHub-hosted runner, Windows-only environment, installed system-browser matrix, publicly reachable external target, or similarly expensive real-target certification, add or update a benchmark entry in the same checkpoint instead of relying on chat memory or a private checklist. Until that entry is executed for the candidate head, report it as `Not Verified — deferred to final runner batch`.
+
+Do not use the benchmark backlog to postpone normal development feedback. Unit tests, typecheck, source/design-system audits, documentation audits, changed-file Pint, targeted diagnostics and other inexpensive checks must still run during implementation. Targeted browser checks may also run early when useful; only the expensive release-certification obligation is deferred.
+
+Before final release certification:
+
+1. finish implementation, source cleanup and normal quality work;
+2. run `npm run audit:runner-benchmarks`;
+3. settle the exact candidate PR head;
+4. drain every `required_for_release: true` benchmark plus any optional benchmark explicitly required by the approved scope as one final certification batch;
+5. respect dependency order rather than forcing incompatible jobs to run concurrently;
+6. record exact head SHA, timestamp and immutable evidence for each PASS/FAIL result.
+
+A `passed` or `failed` benchmark without exact-head evidence is invalid. If the source head changes after a benchmark result, move the old result to history, clear current verification and return the affected item to `ready` or `queued`; an older SHA cannot certify the newer head. Never delete a legitimate failed attempt merely to make the register appear green.
 Final release certification must cover the exact final PR head:
 
 1. WorkIntel Code Quality: CodeQL + changed-PHP Pint.
