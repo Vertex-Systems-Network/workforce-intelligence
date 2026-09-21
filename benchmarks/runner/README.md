@@ -1,9 +1,10 @@
 # Runner Benchmark Backlog
 
-`registry.json` is the schema-v2 authorization-aware source of truth. `docs/release/RUNNER_BENCHMARK_REGISTER.md` defines workflow semantics.
+`registry.json` is the schema-v3 committed task-definition registry. Exact-head runtime PASS/FAIL does **not** live in the candidate source tree.
 
-Safe non-blocking work defaults to the final batch. Security, exact-head merge, migration/auth/secrets/data-safety, current-change integration-safety, and incident/recovery tasks are immediate when required by the active milestone.
+`result-envelope.schema.json` defines the machine-readable exact-head terminal result envelope. Store terminal envelopes on immutable non-source evidence surfaces so evidence recording cannot change and invalidate the candidate SHA.
 
-Immediate classification never grants authority. Without current authority, the task is blocked.
+- Validate task definitions: `npm run audit:runner-benchmarks`
+- Validate a result envelope: `npm run validate:runner-result -- <result.json>`
 
-Do not defer cheap source verification into the Runner Benchmark.
+Runner registration never grants execution authority. Immediate work without current authority is blocked. Do not defer cheap source verification into Runner Benchmark.

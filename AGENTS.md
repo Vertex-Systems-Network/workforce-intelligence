@@ -63,7 +63,7 @@ A second refresh in the same milestone is allowed only after a material security
 
 ## State drift reconciliation
 
-At every resume reconcile stale main SHA, merged/closed/reopened Issues/PRs, branch/PR head movement, coordination queue, Runner Benchmark status/evidence, and relevant commits since the recorded anchor. A merged item must not remain `PENDING_MERGE`. An older green SHA cannot certify a newer head.
+At every resume reconcile stale main SHA, merged/closed/reopened Issues/PRs, branch/PR head movement, coordination queue, Runner task-definition status, applicable external result envelopes/evidence, and relevant commits since the recorded anchor. A merged item must not remain `PENDING_MERGE`. An older green SHA cannot certify a newer head.
 
 ## Start / resume protocol
 
@@ -273,7 +273,13 @@ Safe non-blocking Runner work defaults to `final-runner-batch`. These remain `im
 
 `immediate` means "do not defer past the milestone that needs the result"; it does not mean "run without authority". If current authority is absent, mark the task `blocked`.
 
-Before execution, resolve exact candidate SHA, verify deduplication, verify current authorization, and persist `VERIFYING`/`WAITING_EXTERNAL` when remote observation is expected. Terminal PASS/FAIL requires the exact SHA, timestamp, and immutable evidence. A head move invalidates current evidence; move it to history and reset the task. Never delete a legitimate failure to make the register appear green.
+Before execution, resolve the exact candidate SHA outside the candidate source tree, verify deduplication, verify current authorization, and persist `VERIFYING`/`WAITING_EXTERNAL` when remote observation is expected.
+
+The committed Runner registry is a **task-definition register**, not the terminal exact-head result ledger. Never commit the candidate SHA or terminal PASS/FAIL evidence into the same candidate source branch merely to record certification: that evidence commit would change the SHA and invalidate the head it claims to certify.
+
+Exact-head runtime state is recorded in a machine-readable result envelope conforming to `benchmarks/runner/result-envelope.schema.json`. Store that envelope on a non-source evidence surface such as an immutable GitHub Actions artifact, PR/Issue evidence attachment/comment carrying the exact JSON envelope, or another explicitly approved immutable evidence store. Validate a local envelope with `npm run validate:runner-result -- <path>`.
+
+A terminal result envelope must contain the stable Runner task ID, exact candidate repository/ref/SHA, computed deterministic dedup key, current authorization reference, execution identity, terminal status, timestamps, and immutable evidence references. A head move requires a new envelope/dedup key; older envelopes remain historical evidence only.
 
 Cheap local/source checks must not be deferred into Runner Benchmark.
 
