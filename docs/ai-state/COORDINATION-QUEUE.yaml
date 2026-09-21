@@ -30,7 +30,7 @@
       "title": "Governance: implement AI Engineering Supervisor control plane v2",
       "state": "open",
       "draft": false,
-      "head_sha": "PENDING_THIS_COMMIT",
+      "head_sha": "4c2da498678884df7eaf622dd9ae5cf0c22fc4cb",
       "base_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
     },
     {
