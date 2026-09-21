@@ -55,7 +55,7 @@ test('OIDC login verifies signed identity token and binds UserInfo to signed sub
     "array_key_exists('nbf', $claims)",
   ]) assert.ok(oidc.includes(token), token)
 
-  assert.match(oidc, /return in_array\\('mfa', \\$methods, true\\);/)
+  assert.ok(oidc.includes("return in_array('mfa', $methods, true);"))
   assert.doesNotMatch(oidc, /'mfa', 'otp'/)
 
   for (const token of [
