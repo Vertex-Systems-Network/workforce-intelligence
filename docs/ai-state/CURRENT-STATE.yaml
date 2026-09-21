@@ -7,9 +7,9 @@
   "active_pr": null,
   "active_branch": "governance/ai-supervisor-control-plane-v2",
   "current_milestone": "Implement AI Engineering Supervisor control plane v2",
-  "milestone_status": "VERIFYING",
-  "last_completed_milestone": "Runner Benchmark governance baseline present on protected main",
-  "exact_next_safe_action": "Verify the governance branch source/state contracts, then persist COMPLETE without starting Runner work or unrelated product development.",
+  "milestone_status": "COMPLETE",
+  "last_completed_milestone": "AI Engineering Supervisor control plane v2 implemented on governance/ai-supervisor-control-plane-v2; source contract verified at dc42c2676c3fe8f708e30b6d2cde6f0492c7b718.",
+  "exact_next_safe_action": "On next continue/resume: read compact state first, resolve exact current main, reconcile OPEN Issues first and OPEN PRs second, then continue one accepted actionable existing work path. Do not start unrelated new development.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",

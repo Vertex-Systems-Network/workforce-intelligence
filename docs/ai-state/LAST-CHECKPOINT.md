@@ -4,27 +4,31 @@
 **Observed protected main:** `f2c350497573b710a3298f7526807de1f7bfe973`  
 **Active branch:** `governance/ai-supervisor-control-plane-v2`  
 **Milestone:** Implement AI Engineering Supervisor control plane v2  
-**Status:** VERIFYING  
-**Reconciled:** 2026-09-21T19:58:00+05:00
+**Status:** COMPLETE  
+**Source contract verified at:** `dc42c2676c3fe8f708e30b6d2cde6f0492c7b718`
 
 ## Verified
 
-- Protected `main` resolved before mutation.
-- OPEN Issues were reconciled before OPEN PRs.
-- Existing AGENTS/Runner contract was read before modification.
-- Compact durable state did not previously exist on protected main.
-- Issue #70 diagnostic branch exact head was resolved before RB-005 registration.
+- Compact resume order is repository-native: CURRENT-STATE -> exact main -> OPEN Issues -> OPEN PRs -> claims/queue -> Runner Benchmark.
+- One user `continue`/`resume` turn is bounded to one logical milestone.
+- Remote-call budget defaults to one consolidated status refresh; tight polling and timeout-triggered reruns are forbidden.
+- Runner Benchmark is schema v2 with exact source identity, execution policy, authorization, safety/merge classifications, runner-time budget, deterministic dedup key, and immutable terminal evidence.
+- RB-005 is classified immediate for incident/data-safety but remains `blocked` because registration is not execution authority.
+- Compact state/queue/claims are machine-readable and within configured size limits.
+- Source-only verification found no contract errors and no unintended product/runtime files in the branch diff.
+- The exact verified source head had zero GitHub Actions workflow runs.
 
 ## Not Verified
 
-- No GitHub-hosted CI/Windows/browser/runtime Runner work has been executed for this governance milestone.
-- The new source/state audit wiring has not yet been committed/re-read.
+- No GitHub-hosted CI, Windows/browser, provider, deployment, production, release, or formal runtime workload was executed for this governance milestone.
+- This branch is not merged to protected `main`.
 
 ## Known Risk
 
-- OPEN Issue/PR state can drift after this checkpoint; the coordination queue is explicitly non-authoritative and must be reconciled from GitHub on resume.
-- Historical Runner evidence never authorizes a new execution or certifies a newer head.
+- Coordination queue entries are a non-authoritative resume index and can become stale after GitHub state changes.
+- Existing open Issues/PRs still require reconciliation before unrelated new development.
+- Blocked Runner tasks remain blocked until explicit current authority/prerequisites exist.
 
 ## Next Action
 
-Commit and verify the compact-state/source audit wiring, then mark this milestone COMPLETE if coherent. Do not start unrelated product development or Runner execution in this milestone.
+On the next `continue`/`resume`, start from compact state, resolve current main, reconcile OPEN Issues first and OPEN PRs second, then perform exactly one accepted actionable milestone. Do not infer Runner/provider/release authority from this checkpoint.
