@@ -1,7 +1,6 @@
 {
-  "schema_version": 1,
-  "execution_policy": "final-runner-batch",
-  "description": "Canonical backlog for expensive runner, browser-matrix, and real-target certification work that is discovered during implementation and drained against the settled final head.",
+  "schema_version": 2,
+  "execution_policy": "authorization-aware-final-batch-with-immediate-exceptions",
   "allowed_statuses": [
     "queued",
     "ready",
@@ -11,35 +10,78 @@
     "failed",
     "superseded"
   ],
+  "allowed_execution_policies": [
+    "final-runner-batch",
+    "immediate"
+  ],
+  "allowed_authorization_states": [
+    "repository-policy",
+    "explicit-current",
+    "not-authorized",
+    "expired",
+    "consumed"
+  ],
   "entries": [
     {
       "id": "RB-001",
-      "title": "WorkIntel CI exact-head release certification",
+      "title": "WorkIntel CI exact-head certification",
       "source": {
         "kind": "repository-contract",
-        "ref": "AGENTS.md#browser-and-runner-certification-order"
+        "ref": "AGENTS.md#runner-benchmark-backlog"
       },
-      "scope": "Run the canonical WorkIntel CI workflow on the exact final PR head, including source/tests/build, migrations/seeds, PHPUnit, production doctors, browser/accessibility coverage, MySQL, routes, scheduler, and any required governance status wired into that workflow.",
-      "defer_reason": "This is the consolidated remote release workflow. Re-running the complete matrix after every intermediate implementation commit wastes runner capacity and can certify heads that will immediately become stale.",
-      "environment": [
-        "GitHub-hosted runner selected by .github/workflows/ci.yml",
-        "Workflow-defined services and browser/runtime dependencies"
-      ],
+      "source_identity": {
+        "repository": "Vertex-Systems-Network/workforce-intelligence",
+        "registered_ref": "main",
+        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
+        "candidate_ref": null,
+        "candidate_head_sha": null
+      },
+      "scope": "WorkIntel CI exact-head certification",
+      "execution_policy": "immediate",
+      "immediate_reason": "exact-head-merge-required",
+      "dedup_key": "workintel-ci:exact-head",
+      "authorization": {
+        "state": "repository-policy",
+        "authority_ref": "AGENTS.md#runner-benchmark-backlog",
+        "authorized_scope": "Non-destructive exact-head repository certification when the active milestone requires it.",
+        "granted_at": null,
+        "expires_at": null,
+        "consumed_at": null
+      },
+      "security_critical": false,
+      "merge_blocking": true,
+      "expected_runner_time": {
+        "minutes": 45,
+        "basis": "Planning budget, not an SLA; update from measured history when available."
+      },
+      "execution_identity": {
+        "environment": [
+          "GitHub-hosted CI runner"
+        ],
+        "matrix": [
+          "Workflow-defined service/runtime matrix"
+        ],
+        "inputs": [
+          "Exact candidate SHA"
+        ],
+        "fixtures": [
+          "CI migrations/seeds/tests/build/runtime doctors"
+        ]
+      },
       "commands": [
         "GitHub Actions workflow: .github/workflows/ci.yml"
       ],
       "acceptance": [
-        "The required WorkIntel CI status is green for the exact settled final head SHA.",
-        "No required workflow job, release doctor, database lane, browser lane, governance gate, route check, or scheduler check is skipped, bypassed, faked, or weakened.",
-        "Run URL or run identifier is recorded in verification.evidence."
+        "Execute only for the exact authorized source identity.",
+        "Do not skip, fake, weaken, or relabel required evidence.",
+        "Record immutable terminal evidence."
       ],
       "required_for_release": true,
-      "execution_phase": "final-runner-batch",
       "stale_when_head_moves": true,
-      "status": "ready",
+      "status": "queued",
       "depends_on": [
-        "npm run quality:full",
-        "Settled final PR head"
+        "Current milestone requires this task",
+        "Current execution authority and prerequisites are valid"
       ],
       "verification": {
         "head_sha": null,
@@ -50,36 +92,67 @@
     },
     {
       "id": "RB-002",
-      "title": "Windows cross-browser release certification",
+      "title": "Windows cross-browser exact-head certification",
       "source": {
         "kind": "repository-contract",
-        "ref": "AGENTS.md#browser-and-runner-certification-order"
+        "ref": "AGENTS.md#runner-benchmark-backlog"
       },
-      "scope": "Run the WorkIntel Windows Certification workflow on the exact final PR head with the workflow-required installed Chrome, Microsoft Edge, and Firefox browser/accessibility gates.",
-      "defer_reason": "The Windows and real-system-browser matrix is intentionally the expensive final release lane and should certify a settled head rather than intermediate UI commits.",
-      "environment": [
-        "GitHub-hosted Windows runner selected by .github/workflows/windows-certification.yml",
-        "Installed Chrome",
-        "Installed Microsoft Edge",
-        "Installed Firefox"
-      ],
+      "source_identity": {
+        "repository": "Vertex-Systems-Network/workforce-intelligence",
+        "registered_ref": "main",
+        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
+        "candidate_ref": null,
+        "candidate_head_sha": null
+      },
+      "scope": "Windows cross-browser exact-head certification",
+      "execution_policy": "immediate",
+      "immediate_reason": "exact-head-merge-required",
+      "dedup_key": "windows-certification:exact-head",
+      "authorization": {
+        "state": "repository-policy",
+        "authority_ref": "AGENTS.md#runner-benchmark-backlog",
+        "authorized_scope": "Non-destructive exact-head repository certification when the active milestone requires it.",
+        "granted_at": null,
+        "expires_at": null,
+        "consumed_at": null
+      },
+      "security_critical": false,
+      "merge_blocking": true,
+      "expected_runner_time": {
+        "minutes": 45,
+        "basis": "Planning budget, not an SLA; update from measured history when available."
+      },
+      "execution_identity": {
+        "environment": [
+          "GitHub-hosted windows-latest"
+        ],
+        "matrix": [
+          "Chrome",
+          "Edge",
+          "Firefox"
+        ],
+        "inputs": [
+          "Exact candidate SHA"
+        ],
+        "fixtures": [
+          "Responsive/accessibility browser fixtures"
+        ]
+      },
       "commands": [
         "GitHub Actions workflow: .github/workflows/windows-certification.yml",
         "npm run test:e2e:cross-browser"
       ],
       "acceptance": [
-        "Windows Certification is green for the exact settled final head SHA.",
-        "Chrome, Microsoft Edge, and Firefox requirements are actually satisfied by the workflow; missing system browsers are not silently substituted.",
-        "Responsive and accessibility browser gates required by the workflow pass without coverage reduction.",
-        "Run URL or run identifier is recorded in verification.evidence."
+        "Execute only for the exact authorized source identity.",
+        "Do not skip, fake, weaken, or relabel required evidence.",
+        "Record immutable terminal evidence."
       ],
       "required_for_release": true,
-      "execution_phase": "final-runner-batch",
       "stale_when_head_moves": true,
-      "status": "ready",
+      "status": "queued",
       "depends_on": [
-        "npm run quality:full",
-        "Settled final PR head"
+        "Current milestone requires this task",
+        "Current execution authority and prerequisites are valid"
       ],
       "verification": {
         "head_sha": null,
@@ -90,33 +163,67 @@
     },
     {
       "id": "RB-003",
-      "title": "External WAVE scan when a public release candidate exists",
+      "title": "External WAVE scan",
       "source": {
         "kind": "repository-contract",
         "ref": "AGENTS.md#wcag--w3c--wave-truthfulness"
       },
-      "scope": "Run the real WebAIM WAVE adapter only when the current scope requires it and a public release candidate plus valid WAVE credentials are available.",
-      "defer_reason": "Hosted WAVE is an external real-target check that cannot certify localhost or private development URLs and should not be repeatedly invoked while the release candidate is still changing.",
-      "environment": [
-        "Publicly reachable WORKINTEL_WAVE_URL",
-        "Valid WAVE_API_KEY"
-      ],
+      "source_identity": {
+        "repository": "Vertex-Systems-Network/workforce-intelligence",
+        "registered_ref": "main",
+        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
+        "candidate_ref": null,
+        "candidate_head_sha": null
+      },
+      "scope": "External WAVE scan",
+      "execution_policy": "final-runner-batch",
+      "immediate_reason": null,
+      "dedup_key": "wave:public-target:exact-head",
+      "authorization": {
+        "state": "not-authorized",
+        "authority_ref": "Explicit current authority required",
+        "authorized_scope": null,
+        "granted_at": null,
+        "expires_at": null,
+        "consumed_at": null
+      },
+      "security_critical": false,
+      "merge_blocking": false,
+      "expected_runner_time": {
+        "minutes": 10,
+        "basis": "Planning budget, not an SLA; update from measured history when available."
+      },
+      "execution_identity": {
+        "environment": [
+          "Public HTTPS target",
+          "WebAIM WAVE"
+        ],
+        "matrix": [
+          "Approved public candidate"
+        ],
+        "inputs": [
+          "WORKINTEL_WAVE_URL",
+          "WAVE_API_KEY",
+          "Exact candidate SHA"
+        ],
+        "fixtures": [
+          "Repository WAVE thresholds"
+        ]
+      },
       "commands": [
         "npm run accessibility:wave"
       ],
       "acceptance": [
-        "The scan actually executes against the stated public release-candidate URL.",
-        "The result is reported separately from repository-local accessibility evidence.",
-        "No WAVE pass claim is made when credentials or a public target are unavailable.",
-        "Evidence reference is recorded when the scan is executed."
+        "Execute only for the exact authorized source identity.",
+        "Do not skip, fake, weaken, or relabel required evidence.",
+        "Record immutable terminal evidence."
       ],
       "required_for_release": false,
-      "execution_phase": "final-runner-batch",
       "stale_when_head_moves": true,
-      "status": "queued",
+      "status": "blocked",
       "depends_on": [
-        "Public release candidate",
-        "WAVE credentials"
+        "Current milestone requires this task",
+        "Current execution authority and prerequisites are valid"
       ],
       "verification": {
         "head_sha": null,
@@ -127,32 +234,66 @@
     },
     {
       "id": "RB-004",
-      "title": "Real-target runtime closure when the approved scope requires it",
+      "title": "Real-target runtime closure",
       "source": {
         "kind": "repository-contract",
-        "ref": "AGENTS.md#browser-and-runner-certification-order"
+        "ref": "AGENTS.md#runner-benchmark-backlog"
       },
-      "scope": "Capture non-destructive real-target runtime closure evidence when the approved change requires runtime/release-target proof in addition to source CI and browser certification.",
-      "defer_reason": "Runtime closure is a separate, potentially environment-sensitive evidence class and should be run once the candidate head and target environment are stable.",
-      "environment": [
-        "Approved release/runtime target",
-        "PowerShell environment required by tools/run-runtime-closure.ps1"
-      ],
+      "source_identity": {
+        "repository": "Vertex-Systems-Network/workforce-intelligence",
+        "registered_ref": "main",
+        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
+        "candidate_ref": null,
+        "candidate_head_sha": null
+      },
+      "scope": "Real-target runtime closure",
+      "execution_policy": "final-runner-batch",
+      "immediate_reason": null,
+      "dedup_key": "runtime-closure:approved-target:exact-head",
+      "authorization": {
+        "state": "not-authorized",
+        "authority_ref": "Explicit current authority required",
+        "authorized_scope": null,
+        "granted_at": null,
+        "expires_at": null,
+        "consumed_at": null
+      },
+      "security_critical": false,
+      "merge_blocking": false,
+      "expected_runner_time": {
+        "minutes": 20,
+        "basis": "Planning budget, not an SLA; update from measured history when available."
+      },
+      "execution_identity": {
+        "environment": [
+          "Explicitly approved runtime target",
+          "PowerShell"
+        ],
+        "matrix": [
+          "Approved target only"
+        ],
+        "inputs": [
+          "Exact candidate SHA",
+          "Target identity"
+        ],
+        "fixtures": [
+          "Runtime closure diagnostics"
+        ]
+      },
       "commands": [
-        "powershell -ExecutionPolicy Bypass -File tools\\run-runtime-closure.ps1 -Mode Release"
+        "powershell -ExecutionPolicy Bypass -File tools\\\\run-runtime-closure.ps1 -Mode Release"
       ],
       "acceptance": [
-        "The runtime closure command succeeds on the approved target for the exact candidate head.",
-        "The timestamped diagnostic evidence is retained with secrets reviewed/redacted according to repository policy.",
-        "Evidence reference is recorded when runtime proof is required by scope."
+        "Execute only for the exact authorized source identity.",
+        "Do not skip, fake, weaken, or relabel required evidence.",
+        "Record immutable terminal evidence."
       ],
       "required_for_release": false,
-      "execution_phase": "final-runner-batch",
       "stale_when_head_moves": true,
-      "status": "queued",
+      "status": "blocked",
       "depends_on": [
-        "Approved scope explicitly requires real-target/runtime evidence",
-        "Settled final PR head"
+        "Current milestone requires this task",
+        "Current execution authority and prerequisites are valid"
       ],
       "verification": {
         "head_sha": null,
@@ -160,6 +301,92 @@
         "evidence": []
       },
       "history": []
+    },
+    {
+      "id": "RB-005",
+      "title": "Issue #70 SQLite seed-stress diagnostic",
+      "source": {
+        "kind": "github-issue",
+        "ref": "https://github.com/Vertex-Systems-Network/workforce-intelligence/issues/70"
+      },
+      "source_identity": {
+        "repository": "Vertex-Systems-Network/workforce-intelligence",
+        "registered_ref": "fix/issue-70-seed-stress-diagnostics",
+        "registered_head_sha": "0de1a94d907a724a96036424aee95ec1af97fc35",
+        "candidate_ref": "fix/issue-70-seed-stress-diagnostics",
+        "candidate_head_sha": "0de1a94d907a724a96036424aee95ec1af97fc35"
+      },
+      "scope": "Issue #70 SQLite seed-stress diagnostic",
+      "execution_policy": "immediate",
+      "immediate_reason": "incident-recovery-and-data-safety",
+      "dedup_key": "issue-70:seed-stress:0de1a94d907a724a96036424aee95ec1af97fc35",
+      "authorization": {
+        "state": "not-authorized",
+        "authority_ref": "Explicit current authority required",
+        "authorized_scope": null,
+        "granted_at": null,
+        "expires_at": null,
+        "consumed_at": null
+      },
+      "security_critical": true,
+      "merge_blocking": false,
+      "expected_runner_time": {
+        "minutes": 20,
+        "basis": "Planning budget, not an SLA; update from measured history when available."
+      },
+      "execution_identity": {
+        "environment": [
+          "GitHub-hosted Linux runner"
+        ],
+        "matrix": [
+          "12 fresh SQLite migrate+seed cycles"
+        ],
+        "inputs": [
+          "Exact diagnostic SHA"
+        ],
+        "fixtures": [
+          "acme-corp",
+          "owner@acme.test",
+          "coordinator@acme.test",
+          "owner role",
+          "project-coordinator role"
+        ]
+      },
+      "commands": [
+        "GitHub Actions workflow: .github/workflows/seed-stress.yml",
+        "bash tools/access-control-seed-stress.sh"
+      ],
+      "acceptance": [
+        "Execute only for the exact authorized source identity.",
+        "Do not skip, fake, weaken, or relabel required evidence.",
+        "Record immutable terminal evidence."
+      ],
+      "required_for_release": false,
+      "stale_when_head_moves": true,
+      "status": "blocked",
+      "depends_on": [
+        "Current milestone requires this task",
+        "Current execution authority and prerequisites are valid"
+      ],
+      "verification": {
+        "head_sha": null,
+        "verified_at": null,
+        "evidence": []
+      },
+      "history": [
+        {
+          "head_sha": "0de1a94d907a724a96036424aee95ec1af97fc35",
+          "result": "historical-pass",
+          "evidence": [
+            {
+              "kind": "github-issue-comment",
+              "ref": "https://github.com/Vertex-Systems-Network/workforce-intelligence/issues/70#issuecomment-5749870031",
+              "immutable": true
+            }
+          ],
+          "note": "Historical evidence only; does not authorize another run."
+        }
+      ]
     }
   ]
 }
