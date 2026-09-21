@@ -16,6 +16,9 @@ const blade = read('resources/views/app.blade.php')
 const architecture = read('docs/architecture/SYSTEM_ARCHITECTURE_AND_FLOW.md')
 const hygieneAudit = read('tools/dead-source-audit.mjs')
 const agents = read('AGENTS.md')
+const runnerRegistry = JSON.parse(read('benchmarks/runner/registry.json'))
+const runnerGuide = read('docs/release/RUNNER_BENCHMARK_REGISTER.md')
+const runnerAudit = read('tools/runner-benchmark-audit.mjs')
 const ciWorkflow = read('.github/workflows/ci.yml')
 const qualityWorkflow = read('.github/workflows/code-quality.yml')
 
@@ -95,7 +98,8 @@ test('secondary and operational UI text stays readable across marketing, auth, c
 })
 
 test('repository exposes unified local quality and real opt-in WAVE commands', () => {
-  assert.equal(packageJson.scripts.quality, 'npm run verify:source && npm run accessibility:audit && npm run performance:audit')
+  assert.equal(packageJson.scripts.quality, 'npm run verify:source && npm run audit:runner-benchmarks && npm run accessibility:audit && npm run performance:audit')
+  assert.equal(packageJson.scripts['audit:runner-benchmarks'], 'node tools/runner-benchmark-audit.mjs')
   assert.equal(packageJson.scripts['quality:full'], 'npm run quality && npm run build')
   assert.equal(packageJson.scripts['accessibility:wave'], 'node tools/wave-accessibility-audit.mjs')
   const wave = read('tools/wave-accessibility-audit.mjs')
@@ -121,10 +125,49 @@ test('AI execution contract preserves quality truthfulness and final exact-head 
     'npm run accessibility:wave',
     'Never claim “WAVE passed”',
     'The expensive runner/browser matrix is the final release step',
+    'benchmarks/runner/registry.json',
+    'Not Verified — deferred to final runner batch',
+    'drain every `required_for_release: true` benchmark',
     'Do not merge because an older SHA was green',
     'Do not bypass, fake, skip or weaken required governance/browser/accessibility statuses',
     'GitHub-hosted',
   ]) assert.ok(agents.includes(marker), `AGENTS.md missing execution contract: ${marker}`)
+})
+
+test('runner benchmark backlog is machine-readable and exact-head evidence disciplined', () => {
+  assert.equal(runnerRegistry.schema_version, 1)
+  assert.equal(runnerRegistry.execution_policy, 'final-runner-batch')
+  assert.ok(runnerRegistry.entries.length >= 2)
+  assert.ok(runnerRegistry.entries.some(entry => entry.required_for_release === true))
+  const ids = new Set()
+  for (const entry of runnerRegistry.entries) {
+    assert.match(entry.id, /^RB-\d{3,}$/)
+    assert.equal(ids.has(entry.id), false, `duplicate runner benchmark id: ${entry.id}`)
+    ids.add(entry.id)
+    assert.equal(entry.execution_phase, 'final-runner-batch')
+    assert.equal(entry.stale_when_head_moves, true)
+    assert.ok(Array.isArray(entry.commands) && entry.commands.length > 0)
+    assert.ok(Array.isArray(entry.acceptance) && entry.acceptance.length > 0)
+    if (['passed', 'failed'].includes(entry.status)) {
+      assert.match(entry.verification.head_sha, /^[0-9a-f]{40}$/i)
+      assert.ok(!Number.isNaN(Date.parse(entry.verification.verified_at)))
+      assert.ok(Array.isArray(entry.verification.evidence) && entry.verification.evidence.length > 0)
+    } else {
+      assert.deepEqual(entry.verification, { head_sha: null, verified_at: null, evidence: [] })
+    }
+  }
+  for (const marker of [
+    'Not Verified — deferred to final runner batch',
+    'One batch” means one final phase',
+    'move the old result to `history`',
+    'older SHA cannot certify the newer head',
+  ]) assert.ok(runnerGuide.includes(marker), `runner benchmark guide missing: ${marker}`)
+  for (const marker of [
+    'duplicate benchmark id',
+    'passed/failed entries may carry current verification',
+    'requires a 40-character verification.head_sha',
+    'requires at least one evidence reference',
+  ]) assert.ok(runnerAudit.includes(marker), `runner benchmark audit missing: ${marker}`)
 })
 
 test('CI avoids duplicate feature-branch push runs and cancels stale PR work', () => {
