@@ -90,3 +90,15 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Selected existing actionable PR #84 rather than creating duplicate work.
 - Verified PR #84 changes only package.json/package-lock.json and historically passed CI/Quality/Windows on its old base.
 - Reconstructed the exact dependency delta on current main and synchronized README/compact state for this milestone.
+
+
+## 2026-09-22T03:15:00+05:00 — PR #80 security current-main rehydration and review
+
+- Reconciled protected main after PR #84 merge and selected existing security PR #80 as the next actionable engineering lane.
+- Reused the staged current-main security transplant rather than creating duplicate implementation work.
+- Source-reviewed OIDC, operator authorization, outbound URL/SSRF hardening, demo/seed production boundaries, and regression coverage.
+- Preserved the staged browser-bound OIDC state fix.
+- Found a concrete MFA trust defect: single-factor AMR methods (`otp`, `totp`, `hwk`, `swk`) could set `mfa_verified_at`.
+- Tightened trusted IdP MFA to require the explicit signed `mfa` AMR marker and added regression coverage.
+- Rehydrated the 24-path security tree onto current protected main and synchronized durable AI state/README for exact-head certification.
+- Dedicated Runner Benchmark RB-005 remains deferred/not-authorized.
