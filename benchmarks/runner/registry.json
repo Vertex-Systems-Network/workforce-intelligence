@@ -180,7 +180,8 @@
         "WORKINTEL_SEED_STRESS_CYCLES=12 bash tools/access-control-seed-stress.sh"
       ],
       "acceptance": [
-        "The settled Issue #70 candidate either completes 12/12 fresh SQLite seed cycles with owner/coordinator invariants intact or fails with retained actionable diagnostics.",
+        "The settled Issue #70 candidate either completes 12/12 fresh SQLite seed cycles with owner/coordinator and SQLite integrity/foreign-key invariants intact or fails with retained actionable diagnostics.",
+        "Any failed cycle retains both raw Artisan output and a JSON state artifact containing relevant identity, membership, role/pivot, row-count, SQLite sequence, integrity, and foreign-key evidence.",
         "RoleAccessService owner-role fail-closed behavior is not weakened, bypassed, or retried.",
         "A green rerun is not treated as root-cause proof; Issue #70 remains open until the actual nondeterministic cause is captured and a focused regression fix is proven.",
         "Final execution evidence is recorded for the exact candidate head when this maintenance work enters certification."
