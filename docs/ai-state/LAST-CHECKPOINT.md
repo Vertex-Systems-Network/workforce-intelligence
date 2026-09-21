@@ -1,31 +1,31 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `368e9c9ca8f5c871f2642ab50097cbb2da553a78`  
-**Active PR:** #84  
-**Active branch:** `dependabot/npm_and_yarn/development-minor-patch-93e912e386`  
-**Milestone:** Refresh PR #84 development dependency updates onto current main  
+**Observed protected main:** `9c93eb26e4f858262e3d9b20919b17fae1825fb8`  
+**Active PR:** #83  
+**Active branch:** `dependabot/npm_and_yarn/gridstack-13.3.0`  
+**Milestone:** Fix PR #83 Gridstack dependency contract for 13.3.0  
 **Status:** COMPLETE
 
 ## Verified
 
-- Issue #70 is reconciled as blocked for execution because RB-005 remains not-authorized/blocked; no Owner-role invariant is weakened.
-- Issues #61/#62 remain blocked on independent/external M14 prerequisites.
-- PR #84 is the first actionable non-draft maintenance lane.
-- PR #84 changes only `package.json` and `package-lock.json`: @types/node `^22.20.3`, Vite `^8.3.0`, Playwright `^1.63.0`.
-- The old PR #84 head was green historically, but its old-base evidence is not reused as current exact-head certification.
-- This milestone reconstructs the dependency delta on current main and synchronizes compact state/README in the same source commit.
+- PR #83 dependency delta is limited to Gridstack `^13.1.2 -> ^13.3.0` plus lockfile resolution `13.3.0`.
+- Code Quality and the dependency/source review were clean on the prior PR head.
+- CI and Windows failed for the same deterministic reason: `tests/Unit/DragDropChatContractTest.php` still hard-coded Gridstack `^13.1.2`.
+- The production/dashboard source did not fail; the stale repository contract was the blocker.
+- The contract expectation is now updated to `^13.3.0`.
+- README, compact state, coordination queue, checkpoint, and journal are synchronized on the same new PR head.
 
 ## Not Verified
 
-- Fresh exact-head CI/Code Quality/Windows for the refreshed PR #84 head has not yet been observed.
-- No dependency PR merge decision is made in this milestone.
+- Fresh exact-head CI/Code Quality/Windows for the new source-fix head has not yet been observed.
+- PR #83 is not merge-ready until that exact head is green.
 
 ## Known Risk
 
-- Dependency upgrades can affect build/browser behavior despite a small source diff.
-- Old green evidence cannot certify the refreshed head.
+- Gridstack 13.3.0 still changes drag/resizing behavior upstream, so browser/Windows certification remains required.
+- Old green/failed evidence cannot certify the new head.
 
 ## Next Action
 
-On next continue/resume: resolve PR #84 current head from GitHub and perform one consolidated exact-head status refresh. Merge only if required checks are green for the refreshed exact head and review state is clean.
+On next continue/resume: resolve PR #83 current head from GitHub and perform one fresh consolidated exact-head status refresh. Merge only if required checks are green for the new head and review threads remain resolved.
