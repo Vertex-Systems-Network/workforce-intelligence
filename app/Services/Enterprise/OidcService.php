@@ -28,8 +28,12 @@ class OidcService
         return json_decode(Crypt::decryptString($provider->config_encrypted), true) ?: [];
     }
 
-    /** Create an OIDC authorization request with state, nonce, and PKCE. */
-    public function authorizationUrl(EnterpriseIdentityProvider $provider): string
+    /**
+     * Create an OIDC authorization request and a browser-bound state cookie payload.
+     *
+     * @return array{url:string,cookie_name:string,cookie_value:string,cookie_path:string}
+     */
+    public function authorizationRequest(EnterpriseIdentityProvider $provider): array
     {
         abort_unless($provider->type === 'oidc' && $provider->status === 'active', 404);
         $config = $this->providerConfig($provider);
@@ -66,7 +70,32 @@ class OidcService
             'code_challenge_method' => 'S256',
         ]);
 
-        return rtrim($config['authorization_endpoint'], '?').'?'.$query;
+        return [
+            'url' => rtrim($config['authorization_endpoint'], '?').'?'.$query,
+            'cookie_name' => $this->browserStateCookieName($provider),
+            'cookie_value' => $this->browserStateCookieValue($provider, $state),
+            'cookie_path' => $this->browserStateCookiePath($provider),
+        ];
+    }
+
+    /** Return the authorization URL for non-browser callers; browser login should use authorizationRequest(). */
+    public function authorizationUrl(EnterpriseIdentityProvider $provider): string
+    {
+        return $this->authorizationRequest($provider)['url'];
+    }
+
+    /** Return the host-only cookie name that binds an OIDC state to its initiating browser. */
+    public function browserStateCookieName(EnterpriseIdentityProvider $provider): string
+    {
+        return 'workintel_oidc_state_'.(int) $provider->id;
+    }
+
+    /** Scope the browser-state cookie to the exact provider callback endpoint. */
+    public function browserStateCookiePath(EnterpriseIdentityProvider $provider): string
+    {
+        $path = parse_url(route('enterprise.oidc.callback', ['provider' => $provider->id]), PHP_URL_PATH);
+
+        return is_string($path) && $path !== '' ? $path : '/';
     }
 
     /** Complete OIDC login after validating discovery metadata, the signed ID token, nonce, and UserInfo subject. */
@@ -77,6 +106,7 @@ class OidcService
         $state = (string) $request->query('state');
         $code = (string) $request->query('code');
         abort_unless($state !== '' && $code !== '', 422, 'OIDC callback is missing state or authorization code.');
+        $this->assertBrowserStateBinding($provider, $request, $state);
 
         $stateRow = EnterpriseSsoState::query()
             ->where('state_hash', hash('sha256', $state))
@@ -318,6 +348,9 @@ class OidcService
         $now = time();
         abort_unless(is_numeric($claims['exp'] ?? null) && (int) $claims['exp'] >= $now - 60, 422, 'OIDC ID token has expired.');
         abort_unless(is_numeric($claims['iat'] ?? null) && (int) $claims['iat'] <= $now + 60, 422, 'OIDC ID token issued-at time is invalid.');
+        if (array_key_exists('nbf', $claims)) {
+            abort_unless(is_numeric($claims['nbf']) && (int) $claims['nbf'] <= $now + 60, 422, 'OIDC ID token not-before time is invalid.');
+        }
         abort_unless(
             filled($claims['nonce'] ?? null) && hash_equals($expectedNonce, (string) $claims['nonce']),
             422,
@@ -340,6 +373,7 @@ class OidcService
                 && ($key['kid'] ?? null) === $header['kid']
                 && ($key['kty'] ?? null) === 'RSA'
                 && in_array($key['use'] ?? 'sig', ['sig', null], true)
+                && (! isset($key['alg']) || $key['alg'] === 'RS256')
         );
 
         abort_unless(is_array($jwk) && filled($jwk['n'] ?? null) && filled($jwk['e'] ?? null), 422, 'OIDC signing key was not found.');
@@ -357,6 +391,37 @@ class OidcService
         abort_unless($verified === 1, 422, 'OIDC ID token signature is invalid.');
 
         return $claims;
+    }
+
+    /** Encrypt the provider/state binding that must return in the initiating browser cookie. */
+    private function browserStateCookieValue(EnterpriseIdentityProvider $provider, string $state): string
+    {
+        return Crypt::encryptString(json_encode([
+            'provider_id' => (int) $provider->id,
+            'state_hash' => hash('sha256', $state),
+        ], JSON_THROW_ON_ERROR));
+    }
+
+    /** Reject OIDC callbacks that were not initiated by the same browser. */
+    private function assertBrowserStateBinding(EnterpriseIdentityProvider $provider, Request $request, string $state): void
+    {
+        $encrypted = (string) $request->cookie($this->browserStateCookieName($provider), '');
+        abort_unless($encrypted !== '', 422, 'OIDC browser state binding is missing or invalid.');
+
+        try {
+            $binding = json_decode(Crypt::decryptString($encrypted), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Throwable) {
+            abort(422, 'OIDC browser state binding is missing or invalid.');
+        }
+
+        abort_unless(
+            is_array($binding)
+                && (int) ($binding['provider_id'] ?? 0) === (int) $provider->id
+                && filled($binding['state_hash'] ?? null)
+                && hash_equals((string) $binding['state_hash'], hash('sha256', $state)),
+            422,
+            'OIDC browser state binding is missing or invalid.'
+        );
     }
 
     /** Require the minimum configuration needed for a verifiable OIDC authorization-code flow. */

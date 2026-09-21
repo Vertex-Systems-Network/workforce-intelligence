@@ -38,6 +38,7 @@ test('outbound URL guard validates IPv4 and IPv6 and pins hostnames before reque
 
 test('OIDC login verifies signed identity token and binds UserInfo to signed subject', () => {
   const oidc = read('app/Services/Enterprise/OidcService.php')
+  const controller = read('app/Http/Controllers/Api/V1/EnterpriseSsoController.php')
 
   for (const token of [
     'openssl_verify',
@@ -49,7 +50,17 @@ test('OIDC login verifies signed identity token and binds UserInfo to signed sub
     'OIDC UserInfo subject does not match the signed ID token.',
     "($profile['email_verified'] ?? null) === true",
     'This existing WorkIntel account is not linked to this workspace.',
+    'OIDC browser state binding is missing or invalid.',
+    "(! isset($key['alg']) || $key['alg'] === 'RS256')",
+    "array_key_exists('nbf', $claims)",
   ]) assert.ok(oidc.includes(token), token)
+
+  for (const token of [
+    'authorizationRequest',
+    'browserStateCookieName',
+    "'lax'",
+    'withCookie',
+  ]) assert.ok(controller.includes(token), token)
 })
 
 test('production doctor fails closed on unsafe security posture', () => {
