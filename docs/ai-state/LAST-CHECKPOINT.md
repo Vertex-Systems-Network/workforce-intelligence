@@ -4,23 +4,30 @@
 **Observed protected main:** `f2c350497573b710a3298f7526807de1f7bfe973`  
 **Active branch:** `governance/ai-supervisor-control-plane-v2`  
 **Milestone:** Make Runner Benchmark exact-head evidence non-self-invalidating  
-**Status:** IMPLEMENTING
+**Status:** COMPLETE  
+**Source contract verified at:** `a036c26f77f0bbb42678452eb39635037253eea0`
 
 ## Verified
 
-- Compact state/current main/open Issues/open PRs/claims/queue/Runner Benchmark were reconciled in the required order.
-- The committed Runner schema currently expects candidate-head/terminal evidence inside the candidate source branch.
-- Writing exact-head PASS/FAIL evidence into the same candidate branch necessarily changes that branch SHA and makes the recorded exact-head evidence stale.
+- Committed Runner registry is now schema v3 task definitions only.
+- Candidate-head SHA and terminal PASS/FAIL evidence are not committed into the candidate source tree.
+- Exact-head terminal results use `benchmarks/runner/result-envelope.schema.json`.
+- Result envelopes carry exact candidate SHA, deterministic dedup key, current authorization, execution identity, PASS/FAIL timestamps, and immutable evidence.
+- `npm run validate:runner-result -- <path>` is available for local envelope validation.
+- Compact-state audit and frontend governance contracts were updated for schema v3.
+- One consolidated workflow-status refresh on the verified source head found zero workflow runs.
+- Static verification found no source-contract errors.
 
 ## Not Verified
 
-- The corrected external result-envelope contract has not yet been committed or audited.
-- No remote Runner/CI/browser/runtime work is authorized or executed in this milestone.
+- No GitHub-hosted CI/Windows/browser/runtime certification was executed in this milestone.
+- The governance branch has not yet been opened as a PR or merged to protected `main`.
 
 ## Known Risk
 
-Keeping terminal exact-head evidence inside candidate source would create a certification loop where the evidence commit invalidates the head it claims to certify.
+- Exact-head result envelopes must actually be stored on immutable non-source evidence surfaces when Runner work executes.
+- OPEN Issues/PRs remain repository work that must be reconciled before unrelated new development.
 
 ## Next Action
 
-Separate committed Runner task definitions from immutable exact-head result envelopes recorded on a non-source evidence surface; then audit the source contract and close this milestone.
+On the next `continue`/`resume`, rehydrate compact state and current repository truth, then prepare `governance/ai-supervisor-control-plane-v2` as one bounded PR/verification milestone. Do not start unrelated product work in that turn.

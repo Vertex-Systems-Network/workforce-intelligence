@@ -26,3 +26,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Rehydrated compact state, exact main, OPEN Issues, OPEN PRs, claims/queue, and Runner Benchmark.
 - Identified a self-invalidating exact-head design: committing terminal evidence into the candidate branch changes the candidate SHA.
 - Started one bounded governance milestone to separate source task definitions from external immutable result envelopes.
+
+## 2026-09-21T20:12:00+05:00 — exact-head evidence architecture complete
+
+- Replaced self-invalidating in-source terminal Runner evidence with schema-v3 task definitions plus external exact-head result envelopes.
+- Added `benchmarks/runner/result-envelope.schema.json` and `tools/validate-runner-result-envelope.mjs`.
+- Updated AGENTS, Runner guide, state audit, package scripts, and governance contract tests.
+- Source contract verified at `a036c26f77f0bbb42678452eb39635037253eea0` with no structural errors.
+- Per-milestone consolidated workflow refresh count: 1; observed workflow runs: 0.
+- Milestone transitioned to `COMPLETE`.

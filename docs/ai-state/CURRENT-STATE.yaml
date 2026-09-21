@@ -7,9 +7,9 @@
   "active_pr": null,
   "active_branch": "governance/ai-supervisor-control-plane-v2",
   "current_milestone": "Make Runner Benchmark exact-head evidence non-self-invalidating",
-  "milestone_status": "IMPLEMENTING",
-  "last_completed_milestone": "AI Engineering Supervisor control plane v2 implemented on governance/ai-supervisor-control-plane-v2.",
-  "exact_next_safe_action": "Separate committed Runner task definitions from exact-head terminal result envelopes, verify the contract, then end this milestone without opening a PR or running remote certification.",
+  "milestone_status": "COMPLETE",
+  "last_completed_milestone": "Runner Benchmark exact-head evidence architecture made non-self-invalidating; source contract verified at a036c26f77f0bbb42678452eb39635037253eea0.",
+  "exact_next_safe_action": "On next continue/resume: rehydrate compact state and repository truth, then prepare governance/ai-supervisor-control-plane-v2 as one PR/verification milestone. Do not start unrelated product work.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -32,5 +32,5 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-21T20:05:00+05:00"
+  "last_reconciled_at": "2026-09-21T20:12:00+05:00"
 }
