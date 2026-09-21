@@ -98,7 +98,8 @@ test('secondary and operational UI text stays readable across marketing, auth, c
 })
 
 test('repository exposes unified local quality and real opt-in WAVE commands', () => {
-  assert.equal(packageJson.scripts.quality, 'npm run verify:source && npm run audit:runner-benchmarks && npm run accessibility:audit && npm run performance:audit')
+  assert.equal(packageJson.scripts.quality, 'npm run verify:source && npm run audit:ai-supervisor-state && npm run audit:runner-benchmarks && npm run accessibility:audit && npm run performance:audit')
+  assert.equal(packageJson.scripts['audit:ai-supervisor-state'], 'node tools/ai-supervisor-state-audit.mjs')
   assert.equal(packageJson.scripts['audit:runner-benchmarks'], 'node tools/runner-benchmark-audit.mjs')
   assert.equal(packageJson.scripts['quality:full'], 'npm run quality && npm run build')
   assert.equal(packageJson.scripts['accessibility:wave'], 'node tools/wave-accessibility-audit.mjs')
@@ -118,55 +119,63 @@ test('source hygiene rejects temporary root placeholders and dead interaction pa
   assert.ok(hygieneAudit.includes('unfinished-comment'))
 })
 
-test('AI execution contract preserves quality truthfulness and final exact-head certification', () => {
+test('AI execution contract preserves supervisor resume, milestone, timeout and authority discipline', () => {
   for (const marker of [
-    'npm run quality',
-    'npm run quality:full',
-    'npm run accessibility:wave',
-    'Never claim “WAVE passed”',
-    'The expensive runner/browser matrix is the final release step',
-    'benchmarks/runner/registry.json',
-    'Not Verified — deferred to final runner batch',
-    'drain every `required_for_release: true` benchmark',
+    'docs/ai-state/CURRENT-STATE.yaml',
+    'one user `continue` or `resume` turn performs exactly one bounded logical engineering milestone',
+    'OPEN GitHub Issues first',
+    'at most one consolidated CI/status refresh',
+    'Runner registration NEVER grants execution authority',
+    'security-critical validation',
+    'exact-head merge-required checks',
+    'CURRENT-STATE.yaml` <= 12 KiB',
+    'Message delivery timed out',
     'Do not merge because an older SHA was green',
-    'Do not bypass, fake, skip or weaken required governance/browser/accessibility statuses',
     'GitHub-hosted',
-  ]) assert.ok(agents.includes(marker), `AGENTS.md missing execution contract: ${marker}`)
+  ]) assert.ok(agents.includes(marker), `AGENTS.md missing supervisor execution contract: ${marker}`)
 })
 
-test('runner benchmark backlog is machine-readable and exact-head evidence disciplined', () => {
-  assert.equal(runnerRegistry.schema_version, 1)
-  assert.equal(runnerRegistry.execution_policy, 'final-runner-batch')
-  assert.ok(runnerRegistry.entries.length >= 2)
-  assert.ok(runnerRegistry.entries.some(entry => entry.required_for_release === true))
+test('runner benchmark backlog is authorization-aware, deduplicated and exact-head disciplined', () => {
+  assert.equal(runnerRegistry.schema_version, 2)
+  assert.equal(runnerRegistry.execution_policy, 'authorization-aware-final-batch-with-immediate-exceptions')
+  assert.ok(runnerRegistry.entries.length >= 5)
   const ids = new Set()
+  const dedupKeys = new Set()
   for (const entry of runnerRegistry.entries) {
     assert.match(entry.id, /^RB-\d{3,}$/)
     assert.equal(ids.has(entry.id), false, `duplicate runner benchmark id: ${entry.id}`)
     ids.add(entry.id)
-    assert.equal(entry.execution_phase, 'final-runner-batch')
-    assert.equal(entry.stale_when_head_moves, true)
-    assert.ok(Array.isArray(entry.commands) && entry.commands.length > 0)
-    assert.ok(Array.isArray(entry.acceptance) && entry.acceptance.length > 0)
-    if (['passed', 'failed'].includes(entry.status)) {
+    assert.equal(dedupKeys.has(entry.dedup_key), false, `duplicate runner dedup key: ${entry.dedup_key}`)
+    dedupKeys.add(entry.dedup_key)
+    assert.match(entry.source_identity.registered_head_sha, /^[0-9a-f]{40}$/i)
+    assert.ok(['final-runner-batch', 'immediate'].includes(entry.execution_policy))
+    assert.ok(['repository-policy','explicit-current','not-authorized','expired','consumed'].includes(entry.authorization.state))
+    assert.equal(typeof entry.security_critical, 'boolean')
+    assert.equal(typeof entry.merge_blocking, 'boolean')
+    assert.ok(Number.isInteger(entry.expected_runner_time.minutes) && entry.expected_runner_time.minutes > 0)
+    for (const field of ['environment','matrix','inputs','fixtures']) assert.ok(Array.isArray(entry.execution_identity[field]) && entry.execution_identity[field].length > 0)
+    if (['passed','failed'].includes(entry.status)) {
       assert.match(entry.verification.head_sha, /^[0-9a-f]{40}$/i)
+      assert.equal(entry.verification.head_sha, entry.source_identity.candidate_head_sha)
       assert.ok(!Number.isNaN(Date.parse(entry.verification.verified_at)))
-      assert.ok(Array.isArray(entry.verification.evidence) && entry.verification.evidence.length > 0)
+      assert.ok(entry.verification.evidence.length > 0)
+      for (const evidence of entry.verification.evidence) assert.equal(evidence.immutable, true)
     } else {
       assert.deepEqual(entry.verification, { head_sha: null, verified_at: null, evidence: [] })
     }
   }
   for (const marker of [
-    'Not Verified — deferred to final runner batch',
-    'One batch” means one final phase',
-    'move the old result to `history`',
-    'older SHA cannot certify the newer head',
+    'Registration is **not** execution authority',
+    'deterministic `dedup_key`',
+    'one consolidated remote CI/status refresh',
+    'older green SHA is historical evidence only',
   ]) assert.ok(runnerGuide.includes(marker), `runner benchmark guide missing: ${marker}`)
   for (const marker of [
-    'duplicate benchmark id',
-    'passed/failed entries may carry current verification',
-    'requires a 40-character verification.head_sha',
-    'requires at least one evidence reference',
+    'schema_version must be 2',
+    'duplicate deterministic dedup key',
+    'registration never grants authority',
+    'terminal verification SHA must equal exact candidate_head_sha',
+    'terminal evidence must be immutable=true',
   ]) assert.ok(runnerAudit.includes(marker), `runner benchmark audit missing: ${marker}`)
 })
 
