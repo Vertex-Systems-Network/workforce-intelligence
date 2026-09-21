@@ -1,13 +1,11 @@
 {
-  "schema_version": 2,
-  "execution_policy": "authorization-aware-final-batch-with-immediate-exceptions",
-  "allowed_statuses": [
+  "schema_version": 3,
+  "execution_policy": "authorization-aware-definitions-with-external-exact-head-results",
+  "description": "Committed task-definition registry for material Runner workloads. Exact-head runtime status and terminal evidence live in external result envelopes so recording evidence cannot mutate and invalidate the candidate source SHA.",
+  "result_envelope_schema": "benchmarks/runner/result-envelope.schema.json",
+  "allowed_definition_statuses": [
     "queued",
-    "ready",
-    "running",
     "blocked",
-    "passed",
-    "failed",
     "superseded"
   ],
   "allowed_execution_policies": [
@@ -29,17 +27,15 @@
         "kind": "repository-contract",
         "ref": "AGENTS.md#runner-benchmark-backlog"
       },
-      "source_identity": {
+      "registered_source_identity": {
         "repository": "Vertex-Systems-Network/workforce-intelligence",
         "registered_ref": "main",
-        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
-        "candidate_ref": null,
-        "candidate_head_sha": null
+        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
       },
       "scope": "WorkIntel CI exact-head certification",
       "execution_policy": "immediate",
       "immediate_reason": "exact-head-merge-required",
-      "dedup_key": "workintel-ci:exact-head",
+      "dedup_key_template": "workintel-ci:{candidate_head_sha}",
       "authorization": {
         "state": "repository-policy",
         "authority_ref": "AGENTS.md#runner-benchmark-backlog",
@@ -77,17 +73,16 @@
         "Record immutable terminal evidence."
       ],
       "required_for_release": true,
-      "stale_when_head_moves": true,
-      "status": "queued",
+      "definition_status": "queued",
+      "result_recording": {
+        "mode": "external-exact-head-envelope",
+        "schema": "benchmarks/runner/result-envelope.schema.json",
+        "candidate_source_must_not_be_mutated_for_result_recording": true
+      },
       "depends_on": [
         "Current milestone requires this task",
         "Current execution authority and prerequisites are valid"
       ],
-      "verification": {
-        "head_sha": null,
-        "verified_at": null,
-        "evidence": []
-      },
       "history": []
     },
     {
@@ -97,17 +92,15 @@
         "kind": "repository-contract",
         "ref": "AGENTS.md#runner-benchmark-backlog"
       },
-      "source_identity": {
+      "registered_source_identity": {
         "repository": "Vertex-Systems-Network/workforce-intelligence",
         "registered_ref": "main",
-        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
-        "candidate_ref": null,
-        "candidate_head_sha": null
+        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
       },
       "scope": "Windows cross-browser exact-head certification",
       "execution_policy": "immediate",
       "immediate_reason": "exact-head-merge-required",
-      "dedup_key": "windows-certification:exact-head",
+      "dedup_key_template": "windows-certification:{candidate_head_sha}",
       "authorization": {
         "state": "repository-policy",
         "authority_ref": "AGENTS.md#runner-benchmark-backlog",
@@ -148,17 +141,16 @@
         "Record immutable terminal evidence."
       ],
       "required_for_release": true,
-      "stale_when_head_moves": true,
-      "status": "queued",
+      "definition_status": "queued",
+      "result_recording": {
+        "mode": "external-exact-head-envelope",
+        "schema": "benchmarks/runner/result-envelope.schema.json",
+        "candidate_source_must_not_be_mutated_for_result_recording": true
+      },
       "depends_on": [
         "Current milestone requires this task",
         "Current execution authority and prerequisites are valid"
       ],
-      "verification": {
-        "head_sha": null,
-        "verified_at": null,
-        "evidence": []
-      },
       "history": []
     },
     {
@@ -168,17 +160,15 @@
         "kind": "repository-contract",
         "ref": "AGENTS.md#wcag--w3c--wave-truthfulness"
       },
-      "source_identity": {
+      "registered_source_identity": {
         "repository": "Vertex-Systems-Network/workforce-intelligence",
         "registered_ref": "main",
-        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
-        "candidate_ref": null,
-        "candidate_head_sha": null
+        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
       },
       "scope": "External WAVE scan",
       "execution_policy": "final-runner-batch",
       "immediate_reason": null,
-      "dedup_key": "wave:public-target:exact-head",
+      "dedup_key_template": "wave:{target_identity}:{candidate_head_sha}",
       "authorization": {
         "state": "not-authorized",
         "authority_ref": "Explicit current authority required",
@@ -219,17 +209,16 @@
         "Record immutable terminal evidence."
       ],
       "required_for_release": false,
-      "stale_when_head_moves": true,
-      "status": "blocked",
+      "definition_status": "blocked",
+      "result_recording": {
+        "mode": "external-exact-head-envelope",
+        "schema": "benchmarks/runner/result-envelope.schema.json",
+        "candidate_source_must_not_be_mutated_for_result_recording": true
+      },
       "depends_on": [
         "Current milestone requires this task",
         "Current execution authority and prerequisites are valid"
       ],
-      "verification": {
-        "head_sha": null,
-        "verified_at": null,
-        "evidence": []
-      },
       "history": []
     },
     {
@@ -239,17 +228,15 @@
         "kind": "repository-contract",
         "ref": "AGENTS.md#runner-benchmark-backlog"
       },
-      "source_identity": {
+      "registered_source_identity": {
         "repository": "Vertex-Systems-Network/workforce-intelligence",
         "registered_ref": "main",
-        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
-        "candidate_ref": null,
-        "candidate_head_sha": null
+        "registered_head_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
       },
       "scope": "Real-target runtime closure",
       "execution_policy": "final-runner-batch",
       "immediate_reason": null,
-      "dedup_key": "runtime-closure:approved-target:exact-head",
+      "dedup_key_template": "runtime-closure:{target_identity}:{candidate_head_sha}",
       "authorization": {
         "state": "not-authorized",
         "authority_ref": "Explicit current authority required",
@@ -289,17 +276,16 @@
         "Record immutable terminal evidence."
       ],
       "required_for_release": false,
-      "stale_when_head_moves": true,
-      "status": "blocked",
+      "definition_status": "blocked",
+      "result_recording": {
+        "mode": "external-exact-head-envelope",
+        "schema": "benchmarks/runner/result-envelope.schema.json",
+        "candidate_source_must_not_be_mutated_for_result_recording": true
+      },
       "depends_on": [
         "Current milestone requires this task",
         "Current execution authority and prerequisites are valid"
       ],
-      "verification": {
-        "head_sha": null,
-        "verified_at": null,
-        "evidence": []
-      },
       "history": []
     },
     {
@@ -309,17 +295,15 @@
         "kind": "github-issue",
         "ref": "https://github.com/Vertex-Systems-Network/workforce-intelligence/issues/70"
       },
-      "source_identity": {
+      "registered_source_identity": {
         "repository": "Vertex-Systems-Network/workforce-intelligence",
         "registered_ref": "fix/issue-70-seed-stress-diagnostics",
-        "registered_head_sha": "0de1a94d907a724a96036424aee95ec1af97fc35",
-        "candidate_ref": "fix/issue-70-seed-stress-diagnostics",
-        "candidate_head_sha": "0de1a94d907a724a96036424aee95ec1af97fc35"
+        "registered_head_sha": "0de1a94d907a724a96036424aee95ec1af97fc35"
       },
       "scope": "Issue #70 SQLite seed-stress diagnostic",
       "execution_policy": "immediate",
       "immediate_reason": "incident-recovery-and-data-safety",
-      "dedup_key": "issue-70:seed-stress:0de1a94d907a724a96036424aee95ec1af97fc35",
+      "dedup_key_template": "issue-70:seed-stress:{candidate_head_sha}",
       "authorization": {
         "state": "not-authorized",
         "authority_ref": "Explicit current authority required",
@@ -362,17 +346,16 @@
         "Record immutable terminal evidence."
       ],
       "required_for_release": false,
-      "stale_when_head_moves": true,
-      "status": "blocked",
+      "definition_status": "blocked",
+      "result_recording": {
+        "mode": "external-exact-head-envelope",
+        "schema": "benchmarks/runner/result-envelope.schema.json",
+        "candidate_source_must_not_be_mutated_for_result_recording": true
+      },
       "depends_on": [
         "Current milestone requires this task",
         "Current execution authority and prerequisites are valid"
       ],
-      "verification": {
-        "head_sha": null,
-        "verified_at": null,
-        "evidence": []
-      },
       "history": [
         {
           "head_sha": "0de1a94d907a724a96036424aee95ec1af97fc35",
