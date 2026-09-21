@@ -18,11 +18,9 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 /** Handles the auth provider operation for the WorkIntel client. */ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<AuthSession | null>(() => authService.restore())
-  const [isReady, setIsReady] = useState(authService.mode === 'demo')
+  const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    if (authService.mode !== 'laravel') return
-
     let active = true
     let validationId = 0
 
@@ -74,7 +72,6 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 
   useEffect(() => {
-    if (authService.mode !== 'laravel') return
     /** Handles the refresh operation for the WorkIntel client. */ const refresh = () => { void authService.restoreFromApi().then(restored => { if (restored) setSession(restored) }) }
     window.addEventListener('workintel:subscription-changed', refresh)
     window.addEventListener('workintel:permissions-changed', refresh)
@@ -140,9 +137,6 @@ const AuthContext = createContext<AuthContextValue | null>(null)
         const updated = {
           ...current,
           user: { ...current.user, activeWorkspaceId: workspaceId },
-        }
-        if (authService.mode === 'demo') {
-          window.localStorage.setItem('workintel-demo-session', JSON.stringify(updated))
         }
         return updated
       })

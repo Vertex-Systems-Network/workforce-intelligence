@@ -46,36 +46,38 @@
     "audit:dead-source": "node tools/dead-source-audit.mjs"
   },
   "dependencies": {
-    "lucide-react": "^1.31.0",
+    "lucide-react": "^1.46.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react-dom": "^19.3.0",
     "recharts": "^3.10.1",
     "react-datepicker": "^9.1.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@tiptap/react": "^3.0.0",
-    "@tiptap/pm": "^3.0.0",
-    "@tiptap/starter-kit": "^3.0.0",
+    "@tiptap/react": "^3.31.3",
+    "@tiptap/pm": "^3.31.3",
+    "@tiptap/starter-kit": "^3.31.3",
     "@tiptap/extension-link": "^3.0.0",
-    "@tiptap/extension-placeholder": "^3.0.0",
+    "@tiptap/extension-placeholder": "^3.31.3",
     "@tiptap/extension-underline": "^3.0.0",
-    "gridstack": "^13.1.2",
+    "gridstack": "^13.3.0",
     "laravel-echo": "^2.0.0",
     "pusher-js": "^8.0.0",
     "@tanstack/react-table": "^8.21.3"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^22.20.3",
     "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.2.7",
+    "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.0.0",
     "laravel-vite-plugin": "^3.1",
     "typescript": "^6.0.3",
-    "vite": "^8.0.0",
-    "@playwright/test": "^1.55.0"
+    "vite": "^8.3.0",
+    "@playwright/test": "^1.63.0"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
-  }
+  },
+  "optionalDependencies": {},
+  "peerDependencies": {}
 }

@@ -15,7 +15,7 @@ class RuntimeClosureContractTest extends TestCase
         $preflight = file_get_contents(base_path('tools/runtime-closure-preflight.php'));
         $this->assertStringContainsString('runtime-closure', $runner);
         $this->assertStringContainsString('WORKINTEL_RESET_CONFIRM', $runner);
-        $this->assertStringContainsString("APP_ENV", $guard);
+        $this->assertStringContainsString('APP_ENV', $guard);
         $this->assertStringContainsString('production', $guard);
         $this->assertStringContainsString('phpunit_sqlite', $preflight);
         $this->assertStringContainsString('php_ini', $preflight);
@@ -25,10 +25,18 @@ class RuntimeClosureContractTest extends TestCase
     public function test_platform_operator_blank_env_uses_only_non_production_seed_fallback(): void
     {
         $config = file_get_contents(base_path('config/workintel.php'));
+        $this->assertStringContainsString('WORKINTEL_PLATFORM_OPERATOR_USER_IDS', file_get_contents(base_path('.env.example')));
+        $this->assertStringContainsString('operator_user_ids', $config);
         $this->assertStringContainsString("trim((string) env('WORKINTEL_PLATFORM_OPERATOR_EMAILS', ''))", $config);
         $this->assertStringContainsString("'owner@acme.test'", $config);
         $this->assertStringContainsString("env('APP_ENV', 'production') !== 'production'", $config);
+
+        $operatorService = file_get_contents(base_path('app/Services/Commerce/PlatformOperatorService.php'));
+        $this->assertStringContainsString('email_verified_at', $operatorService);
+        $this->assertStringContainsString("app()->environment('production')", $operatorService);
+        $this->assertStringContainsString('operator_user_ids', $operatorService);
     }
+
     /** Ensure the two previously observed Laragon runtime regressions remain closed. */
     public function test_stateless_registration_and_gold_payroll_runtime_regressions_are_guarded(): void
     {
@@ -52,5 +60,4 @@ class RuntimeClosureContractTest extends TestCase
         $this->assertStringContainsString("'storage/framework/cache/data'", $guard);
         $this->assertStringContainsString('workintel_prepare_runtime_directories($root)', $prepare);
     }
-
 }
