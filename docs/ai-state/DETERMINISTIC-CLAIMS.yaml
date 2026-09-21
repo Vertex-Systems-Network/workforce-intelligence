@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "repository": "Vertex-Systems-Network/workforce-intelligence",
+  "claims": [
+    {
+      "id": "CLAIM-001",
+      "subject": "compact_state_path",
+      "value": "docs/ai-state",
+      "authority": "AGENTS.md"
+    },
+    {
+      "id": "CLAIM-002",
+      "subject": "runner_benchmark_path",
+      "value": "benchmarks/runner/registry.json",
+      "authority": "AGENTS.md"
+    },
+    {
+      "id": "CLAIM-003",
+      "subject": "protected_main_not_ai_scratch_branch",
+      "value": true,
+      "authority": "AGENTS.md#change-discipline"
+    },
+    {
+      "id": "CLAIM-004",
+      "subject": "message_timeout_does_not_imply_failed_repository_action",
+      "value": true,
+      "authority": "AGENTS.md#recovery-after-message-delivery-timeout"
+    },
+    {
+      "id": "CLAIM-005",
+      "subject": "runner_registration_grants_execution_authority",
+      "value": false,
+      "authority": "AGENTS.md#runner-benchmark-backlog"
+    },
+    {
+      "id": "CLAIM-006",
+      "subject": "older_green_sha_certifies_newer_head",
+      "value": false,
+      "authority": "AGENTS.md#state-drift-reconciliation"
+    },
+    {
+      "id": "CLAIM-007",
+      "subject": "user_facing_development_status_response_requires_progress_block",
+      "value": true,
+      "authority": "AGENTS.md#user-facing-developmentstatus-response-contract"
+    },
+    {
+      "id": "CLAIM-008",
+      "subject": "active_release_scope_overall_weighted_modular_maturity_percent",
+      "value": 100,
+      "authority": "docs/architecture/MODULAR_MATURITY_STATUS.md"
+    },
+    {
+      "id": "CLAIM-009",
+      "subject": "readme_ai_progress_block_must_sync_each_completed_bounded_milestone",
+      "value": true,
+      "authority": "AGENTS.md#readme-progress-synchronization-contract"
+    }
+  ]
+}

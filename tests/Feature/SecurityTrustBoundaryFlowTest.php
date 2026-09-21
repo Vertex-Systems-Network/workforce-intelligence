@@ -80,10 +80,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         [$provider, $state, $idToken] = $this->oidcFixture('oidc-subject-123');
         $this->fakeOidcProvider($idToken, 'oidc-subject-123', true);
 
-        $request = Request::create('/api/v1/enterprise-sso/oidc/'.$provider->id.'/callback', 'GET', [
-            'state' => $state,
-            'code' => 'authorization-code',
-        ]);
+        $request = $this->oidcCallbackRequest($provider, $state);
 
         $user = app(OidcService::class)->callback($provider, $request);
 
@@ -92,16 +89,35 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         $this->assertDatabaseMissing('enterprise_sso_states', ['state_hash' => hash('sha256', $state)]);
     }
 
+    /** A valid server-side state is insufficient without the initiating browser's encrypted state binding. */
+    public function test_oidc_rejects_callback_without_browser_bound_state_cookie_before_network_exchange(): void
+    {
+        [$provider, $state, $idToken] = $this->oidcFixture('browser-bound-subject');
+        $this->fakeOidcProvider($idToken, 'browser-bound-subject', true);
+
+        $request = Request::create('/api/v1/enterprise-sso/oidc/'.$provider->id.'/callback', 'GET', [
+            'state' => $state,
+            'code' => 'authorization-code',
+        ]);
+
+        try {
+            app(OidcService::class)->callback($provider, $request);
+            $this->fail('OIDC callback without the initiating browser state cookie must be rejected.');
+        } catch (HttpException $exception) {
+            $this->assertSame(422, $exception->getStatusCode());
+        }
+
+        Http::assertNothingSent();
+        $this->assertDatabaseHas('enterprise_sso_states', ['state_hash' => hash('sha256', $state)]);
+    }
+
     /** UserInfo cannot substitute another subject after a valid ID token has been signed. */
     public function test_oidc_rejects_userinfo_subject_mismatch_even_with_valid_signed_id_token(): void
     {
         [$provider, $state, $idToken] = $this->oidcFixture('signed-subject');
         $this->fakeOidcProvider($idToken, 'different-userinfo-subject', true);
 
-        $request = Request::create('/api/v1/enterprise-sso/oidc/'.$provider->id.'/callback', 'GET', [
-            'state' => $state,
-            'code' => 'authorization-code',
-        ]);
+        $request = $this->oidcCallbackRequest($provider, $state);
 
         try {
             app(OidcService::class)->callback($provider, $request);
@@ -117,10 +133,7 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         [$provider, $state, $idToken] = $this->oidcFixture('oidc-subject-verified-email');
         $this->fakeOidcProvider($idToken, 'oidc-subject-verified-email', false);
 
-        $request = Request::create('/api/v1/enterprise-sso/oidc/'.$provider->id.'/callback', 'GET', [
-            'state' => $state,
-            'code' => 'authorization-code',
-        ]);
+        $request = $this->oidcCallbackRequest($provider, $state);
 
         try {
             app(OidcService::class)->callback($provider, $request);
@@ -128,6 +141,35 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         } catch (HttpException $exception) {
             $this->assertSame(422, $exception->getStatusCode());
         }
+    }
+
+    /** IdP trust must not upgrade single-factor AMR methods into a WorkIntel MFA-verified session. */
+    public function test_oidc_mfa_trust_requires_explicit_multi_factor_amr_marker(): void
+    {
+        $method = new \ReflectionMethod(OidcService::class, 'idTokenProvesMfa');
+        $service = app(OidcService::class);
+
+        $this->assertTrue($method->invoke($service, ['amr' => ['pwd', 'mfa']]));
+
+        foreach ([['otp'], ['totp'], ['hwk'], ['swk'], ['pwd', 'otp']] as $amr) {
+            $this->assertFalse($method->invoke($service, ['amr' => $amr]));
+        }
+    }
+
+    /** Build a callback request carrying the encrypted state binding issued to the initiating browser. */
+    private function oidcCallbackRequest(EnterpriseIdentityProvider $provider, string $state): Request
+    {
+        $binding = Crypt::encryptString(json_encode([
+            'provider_id' => (int) $provider->id,
+            'state_hash' => hash('sha256', $state),
+        ], JSON_THROW_ON_ERROR));
+
+        return Request::create(
+            '/api/v1/enterprise-sso/oidc/'.$provider->id.'/callback',
+            'GET',
+            ['state' => $state, 'code' => 'authorization-code'],
+            [app(OidcService::class)->browserStateCookieName($provider) => $binding]
+        );
     }
 
     /** @return array{0:EnterpriseIdentityProvider,1:string,2:string} */

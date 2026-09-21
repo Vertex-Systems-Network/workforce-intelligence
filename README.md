@@ -2,6 +2,23 @@
 
 WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platform. Laravel serves the React SPA and API from the same application; there is no second frontend project and no fixed hostname in the source.
 
+<!-- AI-PROGRESS:START -->
+## AI Development Progress
+
+- **Repo:** `Vertex-Systems-Network/workforce-intelligence`
+- **Current Work:** Refresh PR #84 development dependency updates onto current main
+- **Current Module:** Dependency Maintenance / Dev Tooling
+- **Module Progress:** [██████████] **100%**
+- **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
+- **Active Issue:** none
+- **Active PR:** #84
+- **Active Branch:** `dependabot/npm_and_yarn/development-minor-patch-93e912e386`
+- **Last Completed:** PR #88 merged Issue #70 current-main diagnostics and mandatory README progress synchronization to main.
+- **Next Action:** On next continue/resume: resolve PR #84 current head from GitHub and perform one consolidated exact-head status refresh. Merge only if required checks are green for the refreshed exact head and review state is clean.
+
+> Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, and future-scope work can still remain.
+<!-- AI-PROGRESS:END -->
+
 ## Clean project structure
 
 ```text
