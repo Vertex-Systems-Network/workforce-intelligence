@@ -1,31 +1,31 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `3e4ebb524b4fbed8da7879bc9130aed4a5afebbf`  
-**Active branch:** `governance/user-response-progress-contract`  
-**Milestone:** Post-merge reconcile AI-Native control plane and enforce user-facing progress response contract  
+**Observed protected main:** `ae9651f660c873d044c47b4c424f7d4ef71d3f0f`  
+**Active Issue:** #70  
+**Active branch:** `maintenance/issue-70-seed-diagnostics-v2`  
+**Milestone:** Refresh Issue #70 seed-stress diagnostics on current main with Runner v3 authorization safety  
 **Status:** COMPLETE
 
 ## Verified
 
-- PR #86 is merged; protected `main` is `3e4ebb524b4fbed8da7879bc9130aed4a5afebbf`.
-- Compact state no longer marks PR #86 active.
-- Coordination queue no longer lists merged PR #86 and is refreshed to current open PR heads observed after the merge.
-- User-facing development/status replies must show Repo, Current Work, Current Module, Module Progress, and Overall Progress.
-- Progress percentages require an explicit repository/state basis; guessing percentages is forbidden.
-- `docs/architecture/MODULAR_MATURITY_STATUS.md` currently records 100% overall weighted modular maturity for the active release scope.
-- Overall 100% is explicitly scoped and does not hide open maintenance/security/governance/future work.
+- Historical PR #71 diagnostic harness was useful but its branch was stale and its frontend contract still expected pre-v3 Runner registry fields.
+- Current Runner registry defines RB-005 as `immediate` by safety class but `not-authorized` and `blocked`.
+- The refreshed workflow is manual-only via `workflow_dispatch`; it no longer auto-runs on pull requests while execution authority is absent.
+- The 12-cycle fail-fast diagnostic script and enriched SQLite/access-control state capture are ported without changing production seeder/authorization behavior.
+- The contract test now validates Runner v3 fields and the no-auto-run/no-retry safety rules.
 
 ## Not Verified
 
-- This governance branch has not yet been opened as a PR or certified by remote CI.
-- No Runner/provider/deployment/production/release action was executed in this milestone.
+- RB-005 has not been executed on this branch.
+- The historical intermittent bad state has not been reproduced; root cause remains unproven.
+- Remote CI for this refreshed branch has not been requested yet.
 
 ## Known Risk
 
-- Issue #70 and M14 release-trust/external-configuration items remain unresolved.
-- Several dependency/security/docs PRs remain open.
+- A green diagnostic run would certify the harness, not prove the latent root cause is fixed.
+- Weakening `RoleAccessService` owner protection or adding masking retries remains prohibited.
 
 ## Next Action
 
-On the next `continue`, rehydrate current repository truth and take `governance/user-response-progress-contract` through one bounded PR/verification milestone. Do not start Issue #70 or unrelated work until this accepted governance branch is reconciled.
+On the next `continue`, rehydrate current repository truth, verify the exact branch diff/source contracts, and open one PR for Issue #70 diagnostics. Execute RB-005 only with current explicit authority.
