@@ -3,32 +3,24 @@
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
 **Observed protected main:** `f2c350497573b710a3298f7526807de1f7bfe973`  
 **Active branch:** `governance/ai-supervisor-control-plane-v2`  
-**Milestone:** Implement AI Engineering Supervisor control plane v2  
-**Status:** COMPLETE  
-**Source contract verified at:** `dc42c2676c3fe8f708e30b6d2cde6f0492c7b718`
+**Milestone:** Make Runner Benchmark exact-head evidence non-self-invalidating  
+**Status:** IMPLEMENTING
 
 ## Verified
 
-- Compact resume order is repository-native: CURRENT-STATE -> exact main -> OPEN Issues -> OPEN PRs -> claims/queue -> Runner Benchmark.
-- One user `continue`/`resume` turn is bounded to one logical milestone.
-- Remote-call budget defaults to one consolidated status refresh; tight polling and timeout-triggered reruns are forbidden.
-- Runner Benchmark is schema v2 with exact source identity, execution policy, authorization, safety/merge classifications, runner-time budget, deterministic dedup key, and immutable terminal evidence.
-- RB-005 is classified immediate for incident/data-safety but remains `blocked` because registration is not execution authority.
-- Compact state/queue/claims are machine-readable and within configured size limits.
-- Source-only verification found no contract errors and no unintended product/runtime files in the branch diff.
-- The exact verified source head had zero GitHub Actions workflow runs.
+- Compact state/current main/open Issues/open PRs/claims/queue/Runner Benchmark were reconciled in the required order.
+- The committed Runner schema currently expects candidate-head/terminal evidence inside the candidate source branch.
+- Writing exact-head PASS/FAIL evidence into the same candidate branch necessarily changes that branch SHA and makes the recorded exact-head evidence stale.
 
 ## Not Verified
 
-- No GitHub-hosted CI, Windows/browser, provider, deployment, production, release, or formal runtime workload was executed for this governance milestone.
-- This branch is not merged to protected `main`.
+- The corrected external result-envelope contract has not yet been committed or audited.
+- No remote Runner/CI/browser/runtime work is authorized or executed in this milestone.
 
 ## Known Risk
 
-- Coordination queue entries are a non-authoritative resume index and can become stale after GitHub state changes.
-- Existing open Issues/PRs still require reconciliation before unrelated new development.
-- Blocked Runner tasks remain blocked until explicit current authority/prerequisites exist.
+Keeping terminal exact-head evidence inside candidate source would create a certification loop where the evidence commit invalidates the head it claims to certify.
 
 ## Next Action
 
-On the next `continue`/`resume`, start from compact state, resolve current main, reconcile OPEN Issues first and OPEN PRs second, then perform exactly one accepted actionable milestone. Do not infer Runner/provider/release authority from this checkpoint.
+Separate committed Runner task definitions from immutable exact-head result envelopes recorded on a non-source evidence surface; then audit the source contract and close this milestone.

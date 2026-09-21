@@ -6,10 +6,10 @@
   "active_issue": null,
   "active_pr": null,
   "active_branch": "governance/ai-supervisor-control-plane-v2",
-  "current_milestone": "Implement AI Engineering Supervisor control plane v2",
-  "milestone_status": "COMPLETE",
-  "last_completed_milestone": "AI Engineering Supervisor control plane v2 implemented on governance/ai-supervisor-control-plane-v2; source contract verified at dc42c2676c3fe8f708e30b6d2cde6f0492c7b718.",
-  "exact_next_safe_action": "On next continue/resume: read compact state first, resolve exact current main, reconcile OPEN Issues first and OPEN PRs second, then continue one accepted actionable existing work path. Do not start unrelated new development.",
+  "current_milestone": "Make Runner Benchmark exact-head evidence non-self-invalidating",
+  "milestone_status": "IMPLEMENTING",
+  "last_completed_milestone": "AI Engineering Supervisor control plane v2 implemented on governance/ai-supervisor-control-plane-v2.",
+  "exact_next_safe_action": "Separate committed Runner task definitions from exact-head terminal result envelopes, verify the contract, then end this milestone without opening a PR or running remote certification.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -32,5 +32,5 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-21T19:58:00+05:00"
+  "last_reconciled_at": "2026-09-21T20:05:00+05:00"
 }

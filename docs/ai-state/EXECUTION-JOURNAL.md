@@ -20,3 +20,9 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - One consolidated workflow-status observation found zero runs on the verified governance head.
 - Milestone transitioned from `VERIFYING` to `COMPLETE`.
 - Next turn must rehydrate repository truth and reconcile existing open work before new development.
+
+## 2026-09-21T20:05:00+05:00 — Runner exact-head evidence architecture
+
+- Rehydrated compact state, exact main, OPEN Issues, OPEN PRs, claims/queue, and Runner Benchmark.
+- Identified a self-invalidating exact-head design: committing terminal evidence into the candidate branch changes the candidate SHA.
+- Started one bounded governance milestone to separate source task definitions from external immutable result envelopes.
