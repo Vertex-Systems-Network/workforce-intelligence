@@ -4,12 +4,12 @@
   "repository": "Vertex-Systems-Network/workforce-intelligence",
   "observed_main_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
   "active_issue": null,
-  "active_pr": null,
+  "active_pr": 86,
   "active_branch": "governance/ai-supervisor-control-plane-v2",
-  "current_milestone": "Open and verify AI supervisor governance PR",
-  "milestone_status": "VERIFYING",
-  "last_completed_milestone": "Runner Benchmark exact-head evidence architecture made non-self-invalidating; source contract verified at a036c26f77f0bbb42678452eb39635037253eea0.",
-  "exact_next_safe_action": "Create one PR from governance/ai-supervisor-control-plane-v2 to main, then perform one consolidated exact-head CI/status refresh. If checks are pending, record run IDs/status externally without changing the PR source head and end the milestone.",
+  "current_milestone": "Fix PR #86 deterministic governance source-contract marker",
+  "milestone_status": "COMPLETE",
+  "last_completed_milestone": "PR #86 Windows failure classified as deterministic source-contract mismatch on head 19add4eb3b6a97b36a8674ae0f11e47f8e992e96.",
+  "exact_next_safe_action": "On next continue/resume: rehydrate compact state and repository truth, then perform one fresh consolidated exact-head status refresh for PR #86 on the new candidate head created by this marker fix. Do not merge unless required checks are green for that exact head.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -32,5 +32,5 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-21T20:20:00+05:00"
+  "last_reconciled_at": "2026-09-21T21:05:00+05:00"
 }

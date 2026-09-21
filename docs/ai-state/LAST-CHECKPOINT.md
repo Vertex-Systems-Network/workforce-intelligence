@@ -2,27 +2,28 @@
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
 **Observed protected main:** `f2c350497573b710a3298f7526807de1f7bfe973`  
+**Active PR:** #86  
 **Active branch:** `governance/ai-supervisor-control-plane-v2`  
-**Milestone:** Open and verify AI supervisor governance PR  
-**Status:** VERIFYING  
-**Candidate source head:** `5e3c083fe6906b1657f3da84d81b633b14c01c3b`
+**Milestone:** Fix PR #86 deterministic governance source-contract marker  
+**Status:** COMPLETE
 
 ## Verified
 
-- Compact state, exact main, OPEN Issues, OPEN PRs, deterministic claims/queue, and Runner definitions were reconciled in the required order.
-- Prior exact-head evidence architecture milestone is complete.
-- The governance branch is the explicitly recorded next safe work path.
-- No PR currently exists for this governance branch in the reconciled open-PR set.
+- PR #86 exact head `19add4eb3b6a97b36a8674ae0f11e47f8e992e96` failed Windows Certification in `Frontend source contracts`.
+- The failing assertion was exactly: `AGENTS.md missing supervisor execution contract: Do not merge because an older SHA was green`.
+- The governance test already contained the expected safety marker; AGENTS did not.
+- The fix is intentionally minimal: add that exact fail-closed merge sentence to AGENTS and reconcile compact state/coordination metadata.
 
 ## Not Verified
 
-- The governance branch has not yet been opened as a PR.
-- Exact-head GitHub CI/Windows/Code Quality status for this candidate has not yet been observed in this milestone.
+- Fresh GitHub-hosted CI/Windows/Code Quality for the new candidate head has not been observed in this milestone.
+- No merge decision is made for the new head in this milestone.
 
 ## Known Risk
 
-Creating the PR may start merge-required GitHub-hosted checks. The milestone allows one consolidated status refresh only; no tight polling or source commit will be used merely to record pending CI.
+- Any new commit invalidates prior exact-head CI evidence. The new head must receive fresh required certification.
+- Existing unrelated OPEN Issues/PRs remain outside this bounded milestone.
 
 ## Next Action
 
-Create the governance PR against `main`, then perform one consolidated status refresh on the exact PR head. If checks remain pending, record their IDs/status on the PR without changing the candidate source head and end the milestone.
+On the next `continue`/`resume`, rehydrate repository truth and perform one consolidated exact-head status refresh for PR #86 on the then-current head. Merge only if required checks are green for that exact head and review state remains clean.

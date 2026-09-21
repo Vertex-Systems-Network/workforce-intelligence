@@ -43,3 +43,11 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Governance branch candidate is `5e3c083fe6906b1657f3da84d81b633b14c01c3b`.
 - Milestone persisted as `VERIFYING` before PR creation and remote status observation.
 - Remote status refresh budget for this milestone: 1.
+
+## 2026-09-21T21:05:00+05:00 — PR #86 source-contract marker fix
+
+- Rehydrated compact state, exact main, OPEN Issues, OPEN PRs, claims/queue, and Runner definitions.
+- Confirmed the Windows failure was deterministic: governance test expected `Do not merge because an older SHA was green`; AGENTS lacked that exact string.
+- Applied the minimal explicit safety sentence to AGENTS.
+- Reconciled compact state and coordination queue with active PR #86.
+- No CI polling, rerun, or merge is part of this milestone.

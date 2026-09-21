@@ -65,6 +65,8 @@ A second refresh in the same milestone is allowed only after a material security
 
 At every resume reconcile stale main SHA, merged/closed/reopened Issues/PRs, branch/PR head movement, coordination queue, Runner task-definition status, applicable external result envelopes/evidence, and relevant commits since the recorded anchor. A merged item must not remain `PENDING_MERGE`. An older green SHA cannot certify a newer head.
 
+Do not merge because an older SHA was green. Exact-head merge evidence must apply to the current candidate head.
+
 ## Start / resume protocol
 
 Before every material read-write sequence:

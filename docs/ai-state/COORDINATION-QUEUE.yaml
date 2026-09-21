@@ -3,7 +3,7 @@
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
   "observed_main_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
-  "reconciled_at": "2026-09-21T19:58:00+05:00",
+  "reconciled_at": "2026-09-21T21:05:00+05:00",
   "issues": [
     {
       "number": 70,
@@ -25,6 +25,14 @@
     }
   ],
   "pull_requests": [
+    {
+      "number": 86,
+      "title": "Governance: implement AI Engineering Supervisor control plane v2",
+      "state": "open",
+      "draft": false,
+      "head_sha": "PENDING_THIS_COMMIT",
+      "base_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
+    },
     {
       "number": 84,
       "title": "chore(deps-dev): bump the development-minor-patch group across 1 directory with 3 updates",
