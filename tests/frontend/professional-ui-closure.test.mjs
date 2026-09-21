@@ -132,6 +132,11 @@ test('AI execution contract preserves supervisor resume, milestone, timeout and 
     'Message delivery timed out',
     'Do not merge because an older SHA was green',
     'GitHub-hosted',
+    'Repo:',
+    'Current Work:',
+    'Current Module:',
+    'Module Progress:',
+    'Overall Progress:',
   ]) assert.ok(agents.includes(marker), `AGENTS.md missing supervisor execution contract: ${marker}`)
 })
 
