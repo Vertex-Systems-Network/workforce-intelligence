@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
     /** Handles the test drag drop uses gridstack for dashboard and dnd kit for sortable flows operation for the current WorkIntel workflow. */ public function test_drag_drop_uses_gridstack_for_dashboard_and_dnd_kit_for_sortable_flows(): void
     {
         $package=json_decode(file_get_contents(base_path('package.json')),true);
-        $this->assertSame('^13.1.2',$package['dependencies']['gridstack']??null);
+        $this->assertSame('^13.3.0',$package['dependencies']['gridstack']??null);
         $dashboard=file_get_contents(base_path('resources/js/components/DashboardGrid.tsx'));
         $this->assertStringContainsString("from 'gridstack'",$dashboard);
         $this->assertStringContainsString('GridStack.init',$dashboard);

@@ -2,8 +2,8 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "368e9c9ca8f5c871f2642ab50097cbb2da553a78",
-  "reconciled_at": "2026-09-22T02:02:00+05:00",
+  "observed_main_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
+  "reconciled_at": "2026-09-22T03:09:00+05:00",
   "issues": [
     {
       "number": 70,
@@ -26,39 +26,31 @@
   ],
   "pull_requests": [
     {
-      "number": 84,
-      "title": "chore(deps-dev): bump the development-minor-patch group across 1 directory with 3 updates",
-      "state": "open",
-      "draft": false,
-      "head_sha": null,
-      "base_sha": "368e9c9ca8f5c871f2642ab50097cbb2da553a78",
-      "head_ref": "dependabot/npm_and_yarn/development-minor-patch-93e912e386",
-      "head_resolution": "resolve-current-head-on-resume",
-      "last_observed_pre_milestone_head_sha": "5949c99acd43e606125ecc1010ec8552cfd64567"
-    },
-    {
       "number": 83,
       "title": "chore(deps): bump gridstack from 13.2.0 to 13.3.0",
       "state": "open",
       "draft": false,
-      "head_sha": "b2d862108a16545793e139bf57ca5d6e51f795d4",
-      "base_sha": "3e4ebb524b4fbed8da7879bc9130aed4a5afebbf"
+      "head_sha": null,
+      "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
+      "head_ref": "dependabot/npm_and_yarn/gridstack-13.3.0",
+      "head_resolution": "resolve-current-head-on-resume",
+      "last_observed_pre_milestone_head_sha": "f028cc0753f235a1c53d6aec31052ececdeff331"
     },
     {
       "number": 82,
       "title": "chore(deps): bump react-dom and @types/react-dom",
       "state": "open",
       "draft": false,
-      "head_sha": "448a429494fc609ab80b0573d5404f3ac50ba4be",
-      "base_sha": "3e4ebb524b4fbed8da7879bc9130aed4a5afebbf"
+      "head_sha": "d3bd2b2d195986999122a3af09871b63892f60eb",
+      "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8"
     },
     {
       "number": 81,
       "title": "chore(deps): bump lucide-react from 1.37.0 to 1.46.0",
       "state": "open",
       "draft": false,
-      "head_sha": "76e42edb7a9f91e693475cc31121d7b77866e69d",
-      "base_sha": "3e4ebb524b4fbed8da7879bc9130aed4a5afebbf"
+      "head_sha": "e2ed7c0a9ae5347804f01855daae135cf2d68e07",
+      "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8"
     },
     {
       "number": 80,
@@ -97,8 +89,8 @@
       "title": "chore(deps): bump the tiptap-family group across 1 directory with 6 updates",
       "state": "open",
       "draft": false,
-      "head_sha": "e67dd12ff5078c3c524445fc06e493d4c13caea7",
-      "base_sha": "3e4ebb524b4fbed8da7879bc9130aed4a5afebbf"
+      "head_sha": "95747f214debe477be0e831f8f75f0e1b22c2f62",
+      "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8"
     },
     {
       "number": 65,

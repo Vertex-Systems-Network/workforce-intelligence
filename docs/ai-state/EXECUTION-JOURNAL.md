@@ -90,3 +90,11 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Selected existing actionable PR #84 rather than creating duplicate work.
 - Verified PR #84 changes only package.json/package-lock.json and historically passed CI/Quality/Windows on its old base.
 - Reconstructed the exact dependency delta on current main and synchronized README/compact state for this milestone.
+
+## 2026-09-22T03:09:00+05:00 — PR #83 Gridstack contract fix
+
+- Rehydrated PR #83 exact head and observed Code Quality PASS, CI FAIL, Windows FAIL.
+- Both failing lanes reached the full PHPUnit suite and failed on the same deterministic assertion in DragDropChatContractTest.
+- Root cause: repository test contract pinned Gridstack ^13.1.2 while PR #83 intentionally updates to ^13.3.0.
+- No Gridstack runtime/dashboard source failure was observed before the contract assertion.
+- Updated the contract expectation to ^13.3.0 and synchronized README/AI state on the new PR head.
