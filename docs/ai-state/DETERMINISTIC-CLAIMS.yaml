@@ -49,6 +49,12 @@
       "subject": "active_release_scope_overall_weighted_modular_maturity_percent",
       "value": 100,
       "authority": "docs/architecture/MODULAR_MATURITY_STATUS.md"
+    },
+    {
+      "id": "CLAIM-009",
+      "subject": "readme_ai_progress_block_must_sync_each_completed_bounded_milestone",
+      "value": true,
+      "authority": "AGENTS.md#readme-progress-synchronization-contract"
     }
   ]
 }

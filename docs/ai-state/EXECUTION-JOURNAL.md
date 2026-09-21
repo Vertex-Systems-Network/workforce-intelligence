@@ -63,3 +63,22 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Bound overall progress to the authoritative modular-maturity document; active release scope currently records 100%.
 
 - Closeout sequencing corrected: the next safe milestone is PR/verification for `governance/user-response-progress-contract`; Issue #70 resumes only after this governance branch is reconciled.
+
+## 2026-09-22T00:54:00+05:00 — Issue #70 current-main diagnostic refresh
+
+- Rehydrated new main after PR #87 merge and reconciled OPEN Issues/PRs.
+- Confirmed Issue #70 remains the first actionable diagnostic lane.
+- Historical diagnostic branch was stale relative to current main.
+- Found a concrete compatibility defect: the old diagnostic contract expected Runner registry v1 fields while the repository now uses schema v3.
+- Found an authorization-flow defect: the old seed-stress workflow auto-triggered on pull requests even though current RB-005 authority is not-authorized/blocked.
+- Ported the enriched failure-state diagnostics and fail-fast 12-cycle harness to a fresh current-main branch.
+- Changed seed-stress workflow to manual-only and updated the contract test to enforce Runner v3 authorization state.
+- Production RoleAccessService and AccessControlSeeder behavior remain unchanged.
+
+## 2026-09-22T00:54:00+05:00 — mandatory README progress synchronization
+
+- User requested visible repository progress on every AI-Native milestone.
+- Added one compact README AI Development Progress block synchronized from CURRENT-STATE.
+- Added AGENTS rule requiring README sync on every completed bounded milestone source commit.
+- Preserved exact-head safety: README is not mutated solely for remote CI status while a candidate SHA is under certification.
+- Added state-audit and frontend governance tests that fail if README progress is missing/stale.

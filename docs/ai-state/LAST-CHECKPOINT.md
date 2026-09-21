@@ -1,31 +1,34 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `3e4ebb524b4fbed8da7879bc9130aed4a5afebbf`  
-**Active branch:** `governance/user-response-progress-contract`  
-**Milestone:** Post-merge reconcile AI-Native control plane and enforce user-facing progress response contract  
+**Observed protected main:** `ae9651f660c873d044c47b4c424f7d4ef71d3f0f`  
+**Active Issue:** #70  
+**Active branch:** `maintenance/issue-70-seed-diagnostics-v2`  
+**Milestone:** Issue #70 diagnostics + mandatory README progress synchronization  
 **Status:** COMPLETE
 
 ## Verified
 
-- PR #86 is merged; protected `main` is `3e4ebb524b4fbed8da7879bc9130aed4a5afebbf`.
-- Compact state no longer marks PR #86 active.
-- Coordination queue no longer lists merged PR #86 and is refreshed to current open PR heads observed after the merge.
-- User-facing development/status replies must show Repo, Current Work, Current Module, Module Progress, and Overall Progress.
-- Progress percentages require an explicit repository/state basis; guessing percentages is forbidden.
-- `docs/architecture/MODULAR_MATURITY_STATUS.md` currently records 100% overall weighted modular maturity for the active release scope.
-- Overall 100% is explicitly scoped and does not hide open maintenance/security/governance/future work.
+- Issue #70 current-main diagnostic harness remains fail-fast, manual-only, and compatible with Runner schema v3.
+- Production `AccessControlSeeder` and `RoleAccessService` remain unchanged.
+- Root README now contains a compact `AI Development Progress` block.
+- AGENTS requires README progress synchronization in every completed bounded milestone source commit when source mutation is safe.
+- README progress values are derived from `CURRENT-STATE.yaml.response_status`; guessed percentages are prohibited.
+- Exact-head certification is protected: README is not mutated merely to record pending/terminal remote CI on a certified candidate SHA.
+- The AI supervisor state audit and frontend governance tests now fail when the README progress block is missing or stale.
 
 ## Not Verified
 
-- This governance branch has not yet been opened as a PR or certified by remote CI.
-- No Runner/provider/deployment/production/release action was executed in this milestone.
+- RB-005 has not been executed.
+- Issue #70 latent root cause remains unproven.
+- Remote PR CI for this combined branch has not yet run.
 
 ## Known Risk
 
-- Issue #70 and M14 release-trust/external-configuration items remain unresolved.
-- Several dependency/security/docs PRs remain open.
+- A green normal PR lane certifies source integration but does not prove the intermittent seed root cause is fixed.
+- RB-005 remains separately blocked/not-authorized.
+- README is an operational mirror, not a source of authority.
 
 ## Next Action
 
-On the next `continue`, rehydrate current repository truth and take `governance/user-response-progress-contract` through one bounded PR/verification milestone. Do not start Issue #70 or unrelated work until this accepted governance branch is reconciled.
+On next continue/resume: rehydrate current repository truth, verify this branch diff/source contracts including README sync, then open one PR for Issue #70 diagnostics + progress governance. Do not execute RB-005 unless current explicit execution authority is granted.
