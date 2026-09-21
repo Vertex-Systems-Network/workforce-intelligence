@@ -39,6 +39,16 @@ test('issue 70 runner diagnostic is immediate by safety class but unauthorized a
   assert.equal(task.immediate_reason,'incident-recovery-and-data-safety')
   assert.equal(task.security_critical,true)
   assert.equal(task.authorization.state,'not-authorized')
-  assert.equal(task.status,'blocked')
-  assert.match(task.source_identity.candidate_head_sha,/^[0-9a-f]{40}$/i)
+  assert.equal(task.definition_status,'blocked')
+  assert.match(task.registered_source_identity.registered_head_sha,/^[0-9a-f]{40}$/i)
+  assert.equal(Object.hasOwn(task.registered_source_identity,'candidate_head_sha'),false)
+  assert.equal(task.result_recording.mode,'external-exact-head-envelope')
+})
+
+test('runner terminal evidence schema lives outside candidate source state', () => {
+  const schema=parse('benchmarks/runner/result-envelope.schema.json')
+  assert.equal(schema.properties.status.enum.includes('passed'),true)
+  assert.equal(schema.properties.status.enum.includes('failed'),true)
+  assert.equal(schema.properties.candidate_source_identity.properties.head_sha.pattern,'^[0-9a-fA-F]{40}$')
+  assert.equal(schema.properties.evidence.items.properties.immutable.const,true)
 })

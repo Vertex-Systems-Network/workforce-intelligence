@@ -135,48 +135,40 @@ test('AI execution contract preserves supervisor resume, milestone, timeout and 
   ]) assert.ok(agents.includes(marker), `AGENTS.md missing supervisor execution contract: ${marker}`)
 })
 
-test('runner benchmark backlog is authorization-aware, deduplicated and exact-head disciplined', () => {
-  assert.equal(runnerRegistry.schema_version, 2)
-  assert.equal(runnerRegistry.execution_policy, 'authorization-aware-final-batch-with-immediate-exceptions')
+test('runner benchmark uses source definitions plus non-self-invalidating exact-head result envelopes', () => {
+  assert.equal(runnerRegistry.schema_version, 3)
+  assert.equal(runnerRegistry.execution_policy, 'authorization-aware-definitions-with-external-exact-head-results')
+  assert.equal(runnerRegistry.result_envelope_schema, 'benchmarks/runner/result-envelope.schema.json')
   assert.ok(runnerRegistry.entries.length >= 5)
   const ids = new Set()
-  const dedupKeys = new Set()
+  const templates = new Set()
   for (const entry of runnerRegistry.entries) {
     assert.match(entry.id, /^RB-\d{3,}$/)
-    assert.equal(ids.has(entry.id), false, `duplicate runner benchmark id: ${entry.id}`)
+    assert.equal(ids.has(entry.id), false)
     ids.add(entry.id)
-    assert.equal(dedupKeys.has(entry.dedup_key), false, `duplicate runner dedup key: ${entry.dedup_key}`)
-    dedupKeys.add(entry.dedup_key)
-    assert.match(entry.source_identity.registered_head_sha, /^[0-9a-f]{40}$/i)
-    assert.ok(['final-runner-batch', 'immediate'].includes(entry.execution_policy))
-    assert.ok(['repository-policy','explicit-current','not-authorized','expired','consumed'].includes(entry.authorization.state))
-    assert.equal(typeof entry.security_critical, 'boolean')
-    assert.equal(typeof entry.merge_blocking, 'boolean')
-    assert.ok(Number.isInteger(entry.expected_runner_time.minutes) && entry.expected_runner_time.minutes > 0)
-    for (const field of ['environment','matrix','inputs','fixtures']) assert.ok(Array.isArray(entry.execution_identity[field]) && entry.execution_identity[field].length > 0)
-    if (['passed','failed'].includes(entry.status)) {
-      assert.match(entry.verification.head_sha, /^[0-9a-f]{40}$/i)
-      assert.equal(entry.verification.head_sha, entry.source_identity.candidate_head_sha)
-      assert.ok(!Number.isNaN(Date.parse(entry.verification.verified_at)))
-      assert.ok(entry.verification.evidence.length > 0)
-      for (const evidence of entry.verification.evidence) assert.equal(evidence.immutable, true)
-    } else {
-      assert.deepEqual(entry.verification, { head_sha: null, verified_at: null, evidence: [] })
-    }
+    assert.ok(entry.dedup_key_template.includes('{candidate_head_sha}'))
+    assert.equal(templates.has(entry.dedup_key_template), false)
+    templates.add(entry.dedup_key_template)
+    assert.match(entry.registered_source_identity.registered_head_sha, /^[0-9a-f]{40}$/i)
+    assert.equal(Object.hasOwn(entry.registered_source_identity, 'candidate_head_sha'), false)
+    assert.equal(Object.hasOwn(entry, 'verification'), false)
+    assert.equal(entry.result_recording.mode, 'external-exact-head-envelope')
+    assert.equal(entry.result_recording.candidate_source_must_not_be_mutated_for_result_recording, true)
   }
+  assert.equal(packageJson.scripts['validate:runner-result'], 'node tools/validate-runner-result-envelope.mjs')
   for (const marker of [
-    'Registration is **not** execution authority',
-    'deterministic `dedup_key`',
+    'task-definition registry',
+    'Committing a terminal result into the same candidate source branch would change the candidate SHA',
+    'result-envelope.schema.json',
+    'non-source evidence surface',
     'one consolidated remote CI/status refresh',
-    'older green SHA is historical evidence only',
-  ]) assert.ok(runnerGuide.includes(marker), `runner benchmark guide missing: ${marker}`)
+  ]) assert.ok(runnerGuide.includes(marker), `runner guide missing: ${marker}`)
   for (const marker of [
-    'schema_version must be 2',
-    'duplicate deterministic dedup key',
-    'registration never grants authority',
-    'terminal verification SHA must equal exact candidate_head_sha',
-    'terminal evidence must be immutable=true',
-  ]) assert.ok(runnerAudit.includes(marker), `runner benchmark audit missing: ${marker}`)
+    'schema_version must be 3',
+    'committed registry must not store runtime candidate_head_sha',
+    'committed task definition must not contain terminal verification evidence',
+    'candidate mutation guard required',
+  ]) assert.ok(runnerAudit.includes(marker), `runner audit missing: ${marker}`)
 })
 
 test('CI avoids duplicate feature-branch push runs and cancels stale PR work', () => {

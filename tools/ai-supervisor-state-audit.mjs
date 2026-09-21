@@ -17,7 +17,7 @@ if(!Array.isArray(q.issues)||!Array.isArray(q.pull_requests))fail('coordination 
 const claimIds=new Set(); for(const x of c.claims||[]){if(!/^CLAIM-\d{3,}$/.test(x.id||''))fail('claim id invalid');if(claimIds.has(x.id))fail('duplicate claim '+x.id);claimIds.add(x.id)}
 const runnerIds=new Set((r.entries||[]).map(x=>x.id))
 for(const k of ['pending_runner_ids','blocked_runner_ids'])for(const id of s[k])if(!runnerIds.has(id))fail(k+' references missing '+id)
-for(const id of s.blocked_runner_ids){const e=r.entries.find(x=>x.id===id);if(e?.status!=='blocked')fail(id+' is not blocked in registry')}
+for(const id of s.blocked_runner_ids){const e=r.entries.find(x=>x.id===id);if(e?.definition_status!=='blocked')fail(id+' is not blocked in registry')}
 for(const m of ['## Verified','## Not Verified','## Known Risk','## Next Action'])if(!cp.includes(m))fail('LAST-CHECKPOINT missing '+m)
 for(const m of ['docs/ai-state/CURRENT-STATE.yaml','Runner registration NEVER grants execution authority','at most one consolidated CI/status refresh','OPEN GitHub Issues first','Message delivery timed out'])if(!a.includes(m))fail('AGENTS missing '+m)
 console.log('AI supervisor compact state valid.')
