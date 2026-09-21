@@ -324,9 +324,39 @@ Compact limits: `CURRENT-STATE.yaml` <= 12 KiB; `LAST-CHECKPOINT.md` <= 16 KiB; 
 
 Update a large public/module dashboard only when underlying module lifecycle/progress/timeline/public delivery truth changed or a terminal product/integration closeout is being reported. Governance/security/coordination-only cycles update compact state and relevant governance records without rewriting a large dashboard merely to create churn.
 
+## User-facing development/status response contract
+
+Every user-facing repository development/status response must begin with a compact status block derived from current repository evidence. This applies to `continue`, resume, implementation, verification, blocked/waiting, merge, and post-merge messages.
+
+Required fields, in this order:
+
+1. `Repo:`
+2. `Current Work:`
+3. `Current Module:`
+4. `Module Progress:`
+5. `Overall Progress:`
+
+Render progress as a 10-cell visual bar plus the exact percentage, for example:
+
+`Module Progress: [████████░░] 80%`
+`Overall Progress: [██████████] 100%`
+
+Progress truth rules:
+
+- `Current Work` is the active bounded milestone or exact waiting/verification action.
+- `Current Module` is the active engineering/product/governance module, not a guessed product area.
+- `Module Progress` measures the current module/milestone against its explicit acceptance boundary. Do not invent a percentage; store the percentage and basis in `docs/ai-state/CURRENT-STATE.yaml`.
+- `Overall Progress` comes from the current authoritative repository progress source. For the present active release scope, `docs/architecture/MODULAR_MATURITY_STATUS.md` records overall weighted modular maturity as 100%.
+- Overall 100% means the **active release-scope modular maturity** is complete. It does not mean there are no open maintenance, security, governance, provider, or future-scope items. Report blockers separately.
+- If an authoritative overall percentage does not exist for a future scope, do not fabricate one. Use `N/A` with an explicit basis until repository authority defines the denominator.
+- When exact-head certification is in progress, do not mutate the candidate source merely to update response/progress state. Render current work/status from authoritative PR/Issue evidence and the last compact-state baseline.
+- A response may add CI, blockers, evidence, and next action after the required status block, but must not omit the five required fields.
+
+The machine-readable response baseline is `CURRENT-STATE.yaml.response_status`. The detailed contract lives in `docs/ai-state/USER-RESPONSE-CONTRACT.md`.
+
 ## Final user-facing response
 
-Keep completion compact and factual: repository; active/completed milestone; Issue/PR/commit evidence; CI state; blockers; exact next safe action. Do not hide unfinished CI, review, state reconciliation, or authorization behind a success statement.
+Keep completion/status messaging compact and factual after the mandatory status block. Report Issue/PR/commit evidence, CI state, blockers, and exact next safe action. Do not hide unfinished CI, review, state reconciliation, authorization, or scope uncertainty behind a success statement.
 
 ## Recovery after message-delivery timeout
 

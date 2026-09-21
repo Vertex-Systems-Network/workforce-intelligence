@@ -37,6 +37,18 @@
       "subject": "older_green_sha_certifies_newer_head",
       "value": false,
       "authority": "AGENTS.md#state-drift-reconciliation"
+    },
+    {
+      "id": "CLAIM-007",
+      "subject": "user_facing_development_status_response_requires_progress_block",
+      "value": true,
+      "authority": "AGENTS.md#user-facing-developmentstatus-response-contract"
+    },
+    {
+      "id": "CLAIM-008",
+      "subject": "active_release_scope_overall_weighted_modular_maturity_percent",
+      "value": 100,
+      "authority": "docs/architecture/MODULAR_MATURITY_STATUS.md"
     }
   ]
 }
