@@ -9,7 +9,7 @@
   "current_milestone": "Post-merge reconcile AI-Native control plane and enforce user-facing progress response contract",
   "milestone_status": "COMPLETE",
   "last_completed_milestone": "PR #86 AI Engineering Supervisor control plane v2 squash-merged to main at 3e4ebb524b4fbed8da7879bc9130aed4a5afebbf.",
-  "exact_next_safe_action": "On next continue/resume: rehydrate compact state and current GitHub truth, reconcile OPEN Issues first, and continue one accepted actionable existing work path. Reassess Issue #70 first; do not infer Runner execution authority.",
+  "exact_next_safe_action": "On next continue/resume: rehydrate repository truth, then open governance/user-response-progress-contract as one bounded PR/verification milestone against current main. Do not start Issue #70 or unrelated work until this accepted governance branch is reconciled.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",

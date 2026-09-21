@@ -28,4 +28,4 @@
 
 ## Next Action
 
-On the next `continue`, rehydrate current repository truth, reconcile OPEN Issues first, and reassess Issue #70 as the first diagnostic lane. Do not infer Runner execution authority.
+On the next `continue`, rehydrate current repository truth and take `governance/user-response-progress-contract` through one bounded PR/verification milestone. Do not start Issue #70 or unrelated work until this accepted governance branch is reconciled.
