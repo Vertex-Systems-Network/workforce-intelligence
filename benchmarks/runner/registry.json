@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "execution_policy": "final-runner-batch",
+  "description": "Canonical backlog for expensive runner, browser-matrix, and real-target certification work that is discovered during implementation and drained against the settled final head.",
+  "allowed_statuses": [
+    "queued",
+    "ready",
+    "running",
+    "blocked",
+    "passed",
+    "failed",
+    "superseded"
+  ],
+  "entries": [
+    {
+      "id": "RB-001",
+      "title": "WorkIntel CI exact-head release certification",
+      "source": {
+        "kind": "repository-contract",
+        "ref": "AGENTS.md#browser-and-runner-certification-order"
+      },
+      "scope": "Run the canonical WorkIntel CI workflow on the exact final PR head, including source/tests/build, migrations/seeds, PHPUnit, production doctors, browser/accessibility coverage, MySQL, routes, scheduler, and any required governance status wired into that workflow.",
+      "defer_reason": "This is the consolidated remote release workflow. Re-running the complete matrix after every intermediate implementation commit wastes runner capacity and can certify heads that will immediately become stale.",
+      "environment": [
+        "GitHub-hosted runner selected by .github/workflows/ci.yml",
+        "Workflow-defined services and browser/runtime dependencies"
+      ],
+      "commands": [
+        "GitHub Actions workflow: .github/workflows/ci.yml"
+      ],
+      "acceptance": [
+        "The required WorkIntel CI status is green for the exact settled final head SHA.",
+        "No required workflow job, release doctor, database lane, browser lane, governance gate, route check, or scheduler check is skipped, bypassed, faked, or weakened.",
+        "Run URL or run identifier is recorded in verification.evidence."
+      ],
+      "required_for_release": true,
+      "execution_phase": "final-runner-batch",
+      "stale_when_head_moves": true,
+      "status": "ready",
+      "depends_on": [
+        "npm run quality:full",
+        "Settled final PR head"
+      ],
+      "verification": {
+        "head_sha": null,
+        "verified_at": null,
+        "evidence": []
+      },
+      "history": []
+    },
+    {
+      "id": "RB-002",
+      "title": "Windows cross-browser release certification",
+      "source": {
+        "kind": "repository-contract",
+        "ref": "AGENTS.md#browser-and-runner-certification-order"
+      },
+      "scope": "Run the WorkIntel Windows Certification workflow on the exact final PR head with the workflow-required installed Chrome, Microsoft Edge, and Firefox browser/accessibility gates.",
+      "defer_reason": "The Windows and real-system-browser matrix is intentionally the expensive final release lane and should certify a settled head rather than intermediate UI commits.",
+      "environment": [
+        "GitHub-hosted Windows runner selected by .github/workflows/windows-certification.yml",
+        "Installed Chrome",
+        "Installed Microsoft Edge",
+        "Installed Firefox"
+      ],
+      "commands": [
+        "GitHub Actions workflow: .github/workflows/windows-certification.yml",
+        "npm run test:e2e:cross-browser"
+      ],
+      "acceptance": [
+        "Windows Certification is green for the exact settled final head SHA.",
+        "Chrome, Microsoft Edge, and Firefox requirements are actually satisfied by the workflow; missing system browsers are not silently substituted.",
+        "Responsive and accessibility browser gates required by the workflow pass without coverage reduction.",
+        "Run URL or run identifier is recorded in verification.evidence."
+      ],
+      "required_for_release": true,
+      "execution_phase": "final-runner-batch",
+      "stale_when_head_moves": true,
+      "status": "ready",
+      "depends_on": [
+        "npm run quality:full",
+        "Settled final PR head"
+      ],
+      "verification": {
+        "head_sha": null,
+        "verified_at": null,
+        "evidence": []
+      },
+      "history": []
+    },
+    {
+      "id": "RB-003",
+      "title": "External WAVE scan when a public release candidate exists",
+      "source": {
+        "kind": "repository-contract",
+        "ref": "AGENTS.md#wcag--w3c--wave-truthfulness"
+      },
+      "scope": "Run the real WebAIM WAVE adapter only when the current scope requires it and a public release candidate plus valid WAVE credentials are available.",
+      "defer_reason": "Hosted WAVE is an external real-target check that cannot certify localhost or private development URLs and should not be repeatedly invoked while the release candidate is still changing.",
+      "environment": [
+        "Publicly reachable WORKINTEL_WAVE_URL",
+        "Valid WAVE_API_KEY"
+      ],
+      "commands": [
+        "npm run accessibility:wave"
+      ],
+      "acceptance": [
+        "The scan actually executes against the stated public release-candidate URL.",
+        "The result is reported separately from repository-local accessibility evidence.",
+        "No WAVE pass claim is made when credentials or a public target are unavailable.",
+        "Evidence reference is recorded when the scan is executed."
+      ],
+      "required_for_release": false,
+      "execution_phase": "final-runner-batch",
+      "stale_when_head_moves": true,
+      "status": "queued",
+      "depends_on": [
+        "Public release candidate",
+        "WAVE credentials"
+      ],
+      "verification": {
+        "head_sha": null,
+        "verified_at": null,
+        "evidence": []
+      },
+      "history": []
+    },
+    {
+      "id": "RB-004",
+      "title": "Real-target runtime closure when the approved scope requires it",
+      "source": {
+        "kind": "repository-contract",
+        "ref": "AGENTS.md#browser-and-runner-certification-order"
+      },
+      "scope": "Capture non-destructive real-target runtime closure evidence when the approved change requires runtime/release-target proof in addition to source CI and browser certification.",
+      "defer_reason": "Runtime closure is a separate, potentially environment-sensitive evidence class and should be run once the candidate head and target environment are stable.",
+      "environment": [
+        "Approved release/runtime target",
+        "PowerShell environment required by tools/run-runtime-closure.ps1"
+      ],
+      "commands": [
+        "powershell -ExecutionPolicy Bypass -File tools\\run-runtime-closure.ps1 -Mode Release"
+      ],
+      "acceptance": [
+        "The runtime closure command succeeds on the approved target for the exact candidate head.",
+        "The timestamped diagnostic evidence is retained with secrets reviewed/redacted according to repository policy.",
+        "Evidence reference is recorded when runtime proof is required by scope."
+      ],
+      "required_for_release": false,
+      "execution_phase": "final-runner-batch",
+      "stale_when_head_moves": true,
+      "status": "queued",
+      "depends_on": [
+        "Approved scope explicitly requires real-target/runtime evidence",
+        "Settled final PR head"
+      ],
+      "verification": {
+        "head_sha": null,
+        "verified_at": null,
+        "evidence": []
+      },
+      "history": []
+    }
+  ]
+}
