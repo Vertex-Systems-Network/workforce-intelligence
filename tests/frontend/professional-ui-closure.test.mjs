@@ -148,7 +148,13 @@ test('runner benchmark backlog is machine-readable and exact-head evidence disci
     assert.equal(entry.stale_when_head_moves, true)
     assert.ok(Array.isArray(entry.commands) && entry.commands.length > 0)
     assert.ok(Array.isArray(entry.acceptance) && entry.acceptance.length > 0)
-    assert.deepEqual(entry.verification, { head_sha: null, verified_at: null, evidence: [] })
+    if (['passed', 'failed'].includes(entry.status)) {
+      assert.match(entry.verification.head_sha, /^[0-9a-f]{40}$/i)
+      assert.ok(!Number.isNaN(Date.parse(entry.verification.verified_at)))
+      assert.ok(Array.isArray(entry.verification.evidence) && entry.verification.evidence.length > 0)
+    } else {
+      assert.deepEqual(entry.verification, { head_sha: null, verified_at: null, evidence: [] })
+    }
   }
   for (const marker of [
     'Not Verified — deferred to final runner batch',
@@ -163,6 +169,7 @@ test('runner benchmark backlog is machine-readable and exact-head evidence disci
     'requires at least one evidence reference',
   ]) assert.ok(runnerAudit.includes(marker), `runner benchmark audit missing: ${marker}`)
 })
+
 test('CI avoids duplicate feature-branch push runs and cancels stale PR work', () => {
   for (const workflow of [ciWorkflow, qualityWorkflow]) {
     assert.ok(workflow.includes('push:\n    branches: [main]'), 'push certification must be limited to main')
