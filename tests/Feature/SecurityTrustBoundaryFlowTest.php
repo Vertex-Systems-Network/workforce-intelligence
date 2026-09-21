@@ -143,6 +143,19 @@ class SecurityTrustBoundaryFlowTest extends TestCase
         }
     }
 
+    /** IdP trust must not upgrade single-factor AMR methods into a WorkIntel MFA-verified session. */
+    public function test_oidc_mfa_trust_requires_explicit_multi_factor_amr_marker(): void
+    {
+        $method = new \ReflectionMethod(OidcService::class, 'idTokenProvesMfa');
+        $service = app(OidcService::class);
+
+        $this->assertTrue($method->invoke($service, ['amr' => ['pwd', 'mfa']]));
+
+        foreach ([['otp'], ['totp'], ['hwk'], ['swk'], ['pwd', 'otp']] as $amr) {
+            $this->assertFalse($method->invoke($service, ['amr' => $amr]));
+        }
+    }
+
     /** Build a callback request carrying the encrypted state binding issued to the initiating browser. */
     private function oidcCallbackRequest(EnterpriseIdentityProvider $provider, string $state): Request
     {
