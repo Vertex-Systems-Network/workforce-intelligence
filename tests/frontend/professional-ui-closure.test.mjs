@@ -141,7 +141,7 @@ test('runner benchmark backlog is machine-readable and exact-head evidence disci
   assert.ok(runnerRegistry.entries.some(entry => entry.required_for_release === true))
   const ids = new Set()
   for (const entry of runnerRegistry.entries) {
-    assert.match(entry.id, /^RB-\\d{3,}$/)
+    assert.match(entry.id, /^RB-\d{3,}$/)
     assert.equal(ids.has(entry.id), false, `duplicate runner benchmark id: ${entry.id}`)
     ids.add(entry.id)
     assert.equal(entry.execution_phase, 'final-runner-batch')
