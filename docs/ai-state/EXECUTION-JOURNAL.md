@@ -35,3 +35,11 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Source contract verified at `a036c26f77f0bbb42678452eb39635037253eea0` with no structural errors.
 - Per-milestone consolidated workflow refresh count: 1; observed workflow runs: 0.
 - Milestone transitioned to `COMPLETE`.
+
+## 2026-09-21T20:20:00+05:00 — governance PR verification milestone
+
+- Rehydrated compact state and repository truth in required order.
+- Protected main remains `f2c350497573b710a3298f7526807de1f7bfe973`.
+- Governance branch candidate is `5e3c083fe6906b1657f3da84d81b633b14c01c3b`.
+- Milestone persisted as `VERIFYING` before PR creation and remote status observation.
+- Remote status refresh budget for this milestone: 1.

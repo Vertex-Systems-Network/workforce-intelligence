@@ -3,31 +3,26 @@
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
 **Observed protected main:** `f2c350497573b710a3298f7526807de1f7bfe973`  
 **Active branch:** `governance/ai-supervisor-control-plane-v2`  
-**Milestone:** Make Runner Benchmark exact-head evidence non-self-invalidating  
-**Status:** COMPLETE  
-**Source contract verified at:** `a036c26f77f0bbb42678452eb39635037253eea0`
+**Milestone:** Open and verify AI supervisor governance PR  
+**Status:** VERIFYING  
+**Candidate source head:** `5e3c083fe6906b1657f3da84d81b633b14c01c3b`
 
 ## Verified
 
-- Committed Runner registry is now schema v3 task definitions only.
-- Candidate-head SHA and terminal PASS/FAIL evidence are not committed into the candidate source tree.
-- Exact-head terminal results use `benchmarks/runner/result-envelope.schema.json`.
-- Result envelopes carry exact candidate SHA, deterministic dedup key, current authorization, execution identity, PASS/FAIL timestamps, and immutable evidence.
-- `npm run validate:runner-result -- <path>` is available for local envelope validation.
-- Compact-state audit and frontend governance contracts were updated for schema v3.
-- One consolidated workflow-status refresh on the verified source head found zero workflow runs.
-- Static verification found no source-contract errors.
+- Compact state, exact main, OPEN Issues, OPEN PRs, deterministic claims/queue, and Runner definitions were reconciled in the required order.
+- Prior exact-head evidence architecture milestone is complete.
+- The governance branch is the explicitly recorded next safe work path.
+- No PR currently exists for this governance branch in the reconciled open-PR set.
 
 ## Not Verified
 
-- No GitHub-hosted CI/Windows/browser/runtime certification was executed in this milestone.
-- The governance branch has not yet been opened as a PR or merged to protected `main`.
+- The governance branch has not yet been opened as a PR.
+- Exact-head GitHub CI/Windows/Code Quality status for this candidate has not yet been observed in this milestone.
 
 ## Known Risk
 
-- Exact-head result envelopes must actually be stored on immutable non-source evidence surfaces when Runner work executes.
-- OPEN Issues/PRs remain repository work that must be reconciled before unrelated new development.
+Creating the PR may start merge-required GitHub-hosted checks. The milestone allows one consolidated status refresh only; no tight polling or source commit will be used merely to record pending CI.
 
 ## Next Action
 
-On the next `continue`/`resume`, rehydrate compact state and current repository truth, then prepare `governance/ai-supervisor-control-plane-v2` as one bounded PR/verification milestone. Do not start unrelated product work in that turn.
+Create the governance PR against `main`, then perform one consolidated status refresh on the exact PR head. If checks remain pending, record their IDs/status on the PR without changing the candidate source head and end the milestone.
