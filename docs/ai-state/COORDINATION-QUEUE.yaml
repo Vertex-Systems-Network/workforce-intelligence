@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "non_authoritative_resume_index": true,
+  "repository": "Vertex-Systems-Network/workforce-intelligence",
+  "observed_main_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
+  "reconciled_at": "2026-09-21T21:05:00+05:00",
+  "issues": [
+    {
+      "number": 70,
+      "title": "CI: harden intermittent AccessControlSeeder owner-role failure",
+      "state": "open",
+      "action": "reconcile-before-new-development"
+    },
+    {
+      "number": 62,
+      "title": "M14 external release configuration — immutable tags and production-release gate",
+      "state": "open",
+      "action": "reconcile-before-new-development"
+    },
+    {
+      "number": 61,
+      "title": "M14 independent security/release review — PR #65 final head",
+      "state": "open",
+      "action": "reconcile-before-new-development"
+    }
+  ],
+  "pull_requests": [
+    {
+      "number": 86,
+      "title": "Governance: implement AI Engineering Supervisor control plane v2",
+      "state": "open",
+      "draft": false,
+      "head_sha": null,
+      "base_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
+      "head_ref": "governance/ai-supervisor-control-plane-v2",
+      "head_resolution": "resolve-current-head-on-resume",
+      "last_observed_pre_milestone_head_sha": "19add4eb3b6a97b36a8674ae0f11e47f8e992e96"
+    },
+    {
+      "number": 84,
+      "title": "chore(deps-dev): bump the development-minor-patch group across 1 directory with 3 updates",
+      "state": "open",
+      "draft": false,
+      "head_sha": "9e137567d27897ec78f17ecdfd154d2bc02bc281",
+      "base_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
+    },
+    {
+      "number": 83,
+      "title": "chore(deps): bump gridstack from 13.2.0 to 13.3.0",
+      "state": "open",
+      "draft": false,
+      "head_sha": "0eaaaaa4b139916f8da5c96165bc0ccbc606ee05",
+      "base_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
+    },
+    {
+      "number": 82,
+      "title": "chore(deps): bump react-dom and @types/react-dom",
+      "state": "open",
+      "draft": false,
+      "head_sha": "9acd6d29b11b555c43399ba962d9478040c7b356",
+      "base_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
+    },
+    {
+      "number": 81,
+      "title": "chore(deps): bump lucide-react from 1.37.0 to 1.46.0",
+      "state": "open",
+      "draft": false,
+      "head_sha": "b15d13f79014a1db41e5de8edfee93fb6ba4a29c",
+      "base_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
+    },
+    {
+      "number": 80,
+      "title": "security: harden auth, demo seeding, SSRF and OIDC trust boundaries",
+      "state": "open",
+      "draft": true,
+      "head_sha": "5b28e2795d175a3fd9f341ef39373210e7a89d21",
+      "base_sha": "9ea4d90bea31d4bf13ebf095a15468e3c75ea39c"
+    },
+    {
+      "number": 78,
+      "title": "docs: add README deep-audit TOC and incomplete-work index",
+      "state": "open",
+      "draft": true,
+      "head_sha": "fa0c95711333b5147bae874290cbfd569e316b39",
+      "base_sha": "9ea4d90bea31d4bf13ebf095a15468e3c75ea39c"
+    },
+    {
+      "number": 77,
+      "title": "chore(deps): bump laravel/framework from 13.29.0 to 13.31.0",
+      "state": "open",
+      "draft": false,
+      "head_sha": "30e2c86aa6a921be7fa927ba4564354a75e2db2d",
+      "base_sha": "9ea4d90bea31d4bf13ebf095a15468e3c75ea39c"
+    },
+    {
+      "number": 76,
+      "title": "chore(deps-dev): bump laravel/pint from 1.30.5 to 1.31.1 in the development-minor-patch group",
+      "state": "open",
+      "draft": false,
+      "head_sha": "20946b78e9cdf201eb2a2cbb1b48a2d2c090f3fa",
+      "base_sha": "9ea4d90bea31d4bf13ebf095a15468e3c75ea39c"
+    },
+    {
+      "number": 74,
+      "title": "chore(deps): bump the tiptap-family group across 1 directory with 6 updates",
+      "state": "open",
+      "draft": false,
+      "head_sha": "5bbb7523e3e5df2cb358b884f08ed2704a397713",
+      "base_sha": "f2c350497573b710a3298f7526807de1f7bfe973"
+    },
+    {
+      "number": 65,
+      "title": "M14: rehydrated production release trust on current main",
+      "state": "open",
+      "draft": false,
+      "head_sha": "ad9e3a712a57cccdcee16b703e86622eac00d1a3",
+      "base_sha": "9ea4d90bea31d4bf13ebf095a15468e3c75ea39c"
+    }
+  ]
+}

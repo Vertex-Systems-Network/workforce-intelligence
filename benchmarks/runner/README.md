@@ -1,13 +1,10 @@
 # Runner Benchmark Backlog
 
-This directory is the canonical machine-readable backlog for expensive verification that should be accumulated during AI-native implementation and executed in the final certification phase.
+`registry.json` is the schema-v3 committed task-definition registry. Exact-head runtime PASS/FAIL does **not** live in the candidate source tree.
 
-- `registry.json` is the source of truth for benchmark entries and status.
-- `docs/release/RUNNER_BENCHMARK_REGISTER.md` defines the workflow and field semantics.
-- `npm run audit:runner-benchmarks` validates the register cheaply during normal development.
+`result-envelope.schema.json` defines the machine-readable exact-head terminal result envelope. Store terminal envelopes on immutable non-source evidence surfaces so evidence recording cannot change and invalidate the candidate SHA.
 
-Do not use this backlog to postpone ordinary local/source verification. Unit tests, typecheck, source audits, targeted checks, and other inexpensive evidence still run during implementation.
+- Validate task definitions: `npm run audit:runner-benchmarks`
+- Validate a result envelope: `npm run validate:runner-result -- <result.json>`
 
-When implementation discovers a new verification requirement that genuinely needs a GitHub-hosted runner, Windows-only environment, installed system-browser matrix, external public target, or similarly expensive real-target certification, append or update a benchmark entry in the same checkpoint and mark the item `Not Verified — deferred to final runner batch`.
-
-The final batch is one release phase, not an instruction to run incompatible jobs concurrently. Respect dependencies and workflow ordering while draining all required entries against the exact settled head.
+Runner registration never grants execution authority. Immediate work without current authority is blocked. Do not defer cheap source verification into Runner Benchmark.

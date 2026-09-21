@@ -64,7 +64,7 @@ requireMarkers('tools/playwright.config.mjs', ['accessibilityProjects', 'firefox
 requireMarkers('tools/run-browser-certification.mjs', ['accessibility', '--require-system-browsers', 'WORKINTEL_E2E_PROFILE'])
 requireMarkers('tests/e2e/accessibility-platform.spec.mjs', ['focus', 'reduced motion', 'RTL', 'touch'])
 requireMarkers('tools/wave-accessibility-audit.mjs', ['WAVE_API_KEY', 'WORKINTEL_WAVE_URL', 'https://wave.webaim.org/api/request', 'WAVE_MAX_ERRORS', 'WAVE_MAX_CONTRAST_ERRORS'])
-requireMarkers('package.json', ['"quality": "npm run verify:source && npm run audit:runner-benchmarks && npm run accessibility:audit && npm run performance:audit"', '"audit:runner-benchmarks": "node tools/runner-benchmark-audit.mjs"', '"accessibility:wave": "node tools/wave-accessibility-audit.mjs"'])
+requireMarkers('package.json', ['"quality": "npm run verify:source && npm run audit:ai-supervisor-state && npm run audit:runner-benchmarks && npm run accessibility:audit && npm run performance:audit"', '"audit:ai-supervisor-state": "node tools/ai-supervisor-state-audit.mjs"', '"audit:runner-benchmarks": "node tools/runner-benchmark-audit.mjs"', '"accessibility:wave": "node tools/wave-accessibility-audit.mjs"'])
 
 const favicon = path.join(root, 'public/favicon.svg')
 if (!fs.existsSync(favicon) || fs.statSync(favicon).size < 100) failures.push('public/favicon.svg must be a non-empty real favicon asset')

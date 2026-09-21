@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "repository": "Vertex-Systems-Network/workforce-intelligence",
+  "claims": [
+    {
+      "id": "CLAIM-001",
+      "subject": "compact_state_path",
+      "value": "docs/ai-state",
+      "authority": "AGENTS.md"
+    },
+    {
+      "id": "CLAIM-002",
+      "subject": "runner_benchmark_path",
+      "value": "benchmarks/runner/registry.json",
+      "authority": "AGENTS.md"
+    },
+    {
+      "id": "CLAIM-003",
+      "subject": "protected_main_not_ai_scratch_branch",
+      "value": true,
+      "authority": "AGENTS.md#change-discipline"
+    },
+    {
+      "id": "CLAIM-004",
+      "subject": "message_timeout_does_not_imply_failed_repository_action",
+      "value": true,
+      "authority": "AGENTS.md#recovery-after-message-delivery-timeout"
+    },
+    {
+      "id": "CLAIM-005",
+      "subject": "runner_registration_grants_execution_authority",
+      "value": false,
+      "authority": "AGENTS.md#runner-benchmark-backlog"
+    },
+    {
+      "id": "CLAIM-006",
+      "subject": "older_green_sha_certifies_newer_head",
+      "value": false,
+      "authority": "AGENTS.md#state-drift-reconciliation"
+    }
+  ]
+}

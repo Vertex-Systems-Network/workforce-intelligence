@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "compact_state_path": "docs/ai-state",
+  "repository": "Vertex-Systems-Network/workforce-intelligence",
+  "observed_main_sha": "f2c350497573b710a3298f7526807de1f7bfe973",
+  "active_issue": null,
+  "active_pr": 86,
+  "active_branch": "governance/ai-supervisor-control-plane-v2",
+  "current_milestone": "Fix PR #86 deterministic governance source-contract marker",
+  "milestone_status": "COMPLETE",
+  "last_completed_milestone": "PR #86 deterministic Windows source-contract marker fixed; coordination head tracking made non-self-referential.",
+  "exact_next_safe_action": "On next continue/resume: resolve PR #86 current head from GitHub, then perform one fresh consolidated exact-head status refresh. Do not infer the current head from coordination queue metadata and do not merge unless required checks are green for the resolved exact head.",
+  "pending_runner_ids": [
+    "RB-001",
+    "RB-002",
+    "RB-003",
+    "RB-004",
+    "RB-005"
+  ],
+  "blocked_runner_ids": [
+    "RB-003",
+    "RB-004",
+    "RB-005"
+  ],
+  "current_blockers": [
+    "OPEN Issues/PRs must be reconciled before unrelated new product development.",
+    "RB-003/RB-004/RB-005 lack current execution authority or target prerequisites."
+  ],
+  "timeout_control": {
+    "max_consolidated_status_refreshes_per_milestone": 1,
+    "tight_polling_allowed": false,
+    "rerun_on_message_delivery_timeout": false,
+    "second_refresh_requires_material_transition": true
+  },
+  "last_reconciled_at": "2026-09-21T21:05:00+05:00"
+}

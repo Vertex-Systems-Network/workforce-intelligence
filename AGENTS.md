@@ -16,18 +16,68 @@ A lower layer cannot broaden a higher layer. One repository cannot authorize cha
 
 At the current post-M13 checkpoint, no repository-native M14 product implementation authority exists. GitHub Issue #50 is the current planning/product-authority gate only; it authorizes no product implementation until a concrete owner-approved scope names the acceptance evidence and exact starting Git state. Do not invent M14 features, migrations, APIs, UI, release changes or product scope until that authority exists.
 
+## Compact durable state and source of truth
+
+The compact durable AI state lives at `docs/ai-state`. This is the repository's concrete `COMPACT_STATE_PATH`.
+
+On every start, `continue`, resume, interrupted session, connector/tool failure, previous message-delivery timeout, merge, or material state transition:
+
+1. read `docs/ai-state/CURRENT-STATE.yaml`;
+2. read `docs/ai-state/LAST-CHECKPOINT.md`;
+3. resolve the exact current default/protected `main` SHA;
+4. reconcile OPEN GitHub Issues first;
+5. reconcile OPEN PRs second;
+6. reconcile `docs/ai-state/DETERMINISTIC-CLAIMS.yaml`, `docs/ai-state/COORDINATION-QUEUE.yaml`, and `benchmarks/runner/registry.json`;
+7. inspect only commits/files needed for the active milestone or drift;
+8. read large historical checkpoints only for a specific historical fact, evidence item, or conflict.
+
+Compact state is a resume index and never overrides current repository/runtime truth. Chat memory is never authority. A missing or timed-out ChatGPT response is not evidence that repository work failed; verify what persisted before repeating anything.
+
+## One user turn = one logical milestone
+
+By default, one user `continue` or `resume` turn performs exactly one bounded logical engineering milestone.
+
+Examples: reconcile/close one accepted PR; implement one coherent change and persist it; perform one exact-head verification/merge decision; reconcile durable shared state after a merge.
+
+Do not chain broad audit -> multiple implementations -> repeated CI polling -> merge -> post-merge audit -> unrelated next task in one turn. Security/incident recovery may contain tightly coupled actions only when splitting them would reduce safety.
+
+## Issues / PRs first — hard gate
+
+New product/development work is forbidden while an accepted actionable OPEN Issue or PR is being bypassed.
+
+Before new development:
+
+`Compact State -> Exact Main -> OPEN Issues -> OPEN PRs -> Deterministic Claims/Coordination Queue -> Runner Benchmark -> New Work`
+
+An Issue already represented by an accepted PR is one work path. Finish/review/fix that PR instead of creating duplicate implementation. Merge only dependency-safe, exact-head, review-clean work.
+
+## Timeout / remote-call budget
+
+Batch related read-only calls when supported and read only what the active milestone needs.
+
+By default perform at most one consolidated CI/status refresh per milestone. Never tight-poll CI/workflows/deployments/providers/status endpoints, repeatedly fetch unchanged workflow state while waiting, or rerun a workflow merely because a ChatGPT/UI/message response timed out.
+
+Before final exact-head CI observation, persist the milestone as `VERIFYING` or `WAITING_EXTERNAL` when remote checks are expected. If required CI is still running after the consolidated refresh, do not create another source commit solely to record pending CI; preserve durable state, record run IDs on a PR/Issue surface when possible without modifying the certified source head, report pending, and end the milestone.
+
+A second refresh in the same milestone is allowed only after a material security, merge, incident/recovery, or provider state transition requires it for a safe decision. Record that exception durably.
+
+## State drift reconciliation
+
+At every resume reconcile stale main SHA, merged/closed/reopened Issues/PRs, branch/PR head movement, coordination queue, Runner task-definition status, applicable external result envelopes/evidence, and relevant commits since the recorded anchor. A merged item must not remain `PENDING_MERGE`. An older green SHA cannot certify a newer head.
+
+Do not merge because an older SHA was green. Exact-head merge evidence must apply to the current candidate head.
+
 ## Start / resume protocol
 
 Before every material read-write sequence:
 
-1. identify `repository + issue/scope + protected-main SHA + working branch + current branch/PR head`;
-2. re-read this contract and the issue/specification that grants authority;
-3. compare the working branch with current protected `main`;
-4. inspect open PR state, required checks, review state and unresolved conversations when a PR exists;
-5. stop and rehydrate if `main`, branch head, PR head, authoritative scope or governance policy moved materially;
-6. never treat a previously green SHA as evidence for a newer head.
-
-Long-running AI sessions must checkpoint exact SHAs and evidence identifiers. Chat context is convenience, not execution state.
+1. execute the compact-state/source-of-truth order above;
+2. identify `repository + issue/scope + protected-main SHA + working branch + current branch/PR head`;
+3. re-read this contract and the exact issue/specification that grants authority;
+4. compare working state with current protected `main`;
+5. inspect required checks, review state, unresolved conversations, and authorization boundaries when a PR exists;
+6. stop and rehydrate if main/head/scope/governance/authorization moved materially;
+7. never treat a previously green SHA as evidence for a newer head.
 
 ## Product and architecture
 
@@ -85,6 +135,11 @@ At minimum evaluate unauthorized access, cross-tenant access, replay, tampering,
 For schema/data changes:
 
 - preserve existing production data unless explicit destructive authority exists;
+- explicitly review idempotency, supported transaction boundaries, partial execution, concurrency and retry behavior;
+- treat apply-success followed by marker/status-write failure as a first-class crash-recovery case; never assume apply-then-mark is automatically safe;
+- define rollback/restore or forward-recovery behavior for destructive and partially applied operations;
+- record backup/snapshot requirements when recovery depends on them;
+- keep destructive migration authority separate and explicit;
 - migrations must be deterministic, reviewable and safe for the supported database matrix;
 - define backward/forward compatibility across deploy boundaries when application and schema may not switch atomically;
 - avoid hidden manual SQL as a required production step;
@@ -122,6 +177,12 @@ Before adding or materially upgrading a dependency, inspect:
 - lockfile diff and rollback path.
 
 Pin/lock according to repository policy. Do not use an unreviewed dependency merely to shorten implementation. Release-package provenance and immutable-version rules must not be weakened to absorb dependency churn.
+
+## CI / supply-chain security
+
+Where applicable, pin third-party CI actions to immutable revisions, disable unnecessary credential persistence, use least-privilege workflow permissions, avoid dangerous `pull_request_target` execution without a separately reviewed exception, enforce dependency-security gates, and do not run untrusted lifecycle scripts merely to regenerate lockfiles unless explicitly reviewed.
+
+Keep production/distributable dependency audits separate from development-tooling audits where appropriate. CI/Runner optimization must never weaken branch protection, required checks, provenance, security gates, or release trust.
 
 ## ADR and technical-debt classification
 
@@ -204,33 +265,25 @@ Do implementation, source cleanup and non-browser quality work first. The expens
 
 ### Runner benchmark backlog
 
-The canonical backlog for expensive deferred certification is `benchmarks/runner/registry.json`; the human workflow is `docs/release/RUNNER_BENCHMARK_REGISTER.md`. Validate its structure cheaply with `npm run audit:runner-benchmarks`.
+The canonical backlog is `benchmarks/runner/registry.json`; the human workflow is `docs/release/RUNNER_BENCHMARK_REGISTER.md`. Validate it with `npm run audit:runner-benchmarks`.
 
-During implementation, whenever a task discovers a verification obligation that genuinely requires a GitHub-hosted runner, Windows-only environment, installed system-browser matrix, publicly reachable external target, or similarly expensive real-target certification, add or update a benchmark entry in the same checkpoint instead of relying on chat memory or a private checklist. Until that entry is executed for the candidate head, report it as `Not Verified — deferred to final runner batch`.
+Every material remote/container/browser/runtime/full-regression/performance workload must record: stable task ID; source Issue/PR/work package; command/workflow; exact source identity; environment/matrix/input/fixture identity; authorization state; security-critical classification; merge-blocking classification; expected runner-time budget; deterministic dedup key; status; and immutable terminal evidence.
 
-Do not use the benchmark backlog to postpone normal development feedback. Unit tests, typecheck, source/design-system audits, documentation audits, changed-file Pint, targeted diagnostics and other inexpensive checks must still run during implementation. Targeted browser checks may also run early when useful; only the expensive release-certification obligation is deferred.
+Runner registration NEVER grants execution authority. Consumed, expired, historical, destructive, provider, production, deployment, release, or formal-runtime authorization must NEVER be inferred or silently reused.
 
-Before final release certification:
+Safe non-blocking Runner work defaults to `final-runner-batch`. These remain `immediate` once the active milestone actually requires them: security-critical validation; exact-head merge-required checks; migration/auth/secrets/data-safety checks; current-change integration-safety checks; incident/recovery checks.
 
-1. finish implementation, source cleanup and normal quality work;
-2. run `npm run audit:runner-benchmarks`;
-3. settle the exact candidate PR head;
-4. drain every `required_for_release: true` benchmark plus any optional benchmark explicitly required by the approved scope as one final certification batch;
-5. respect dependency order rather than forcing incompatible jobs to run concurrently;
-6. record exact head SHA, timestamp and immutable evidence for each PASS/FAIL result.
+`immediate` means "do not defer past the milestone that needs the result"; it does not mean "run without authority". If current authority is absent, mark the task `blocked`.
 
-A `passed` or `failed` benchmark without exact-head evidence is invalid. If the source head changes after a benchmark result, move the old result to history, clear current verification and return the affected item to `ready` or `queued`; an older SHA cannot certify the newer head. Never delete a legitimate failed attempt merely to make the register appear green.
-Final release certification must cover the exact final PR head:
+Before execution, resolve the exact candidate SHA outside the candidate source tree, verify deduplication, verify current authorization, and persist `VERIFYING`/`WAITING_EXTERNAL` when remote observation is expected.
 
-1. WorkIntel Code Quality: CodeQL + changed-PHP Pint.
-2. WorkIntel CI: source/tests/build/migrations/seeds/PHPUnit/production doctors/browser/accessibility/MySQL/routes/scheduler as defined by the workflow.
-3. WorkIntel Windows Certification: GitHub-hosted Windows plus required installed Chrome/Edge/Firefox browser/accessibility gates.
-4. Required `governance` status when imposed by the repository/org ruleset.
-5. Optional external WAVE scan reported separately when a public release candidate and credentials exist.
+The committed Runner registry is a **task-definition register**, not the terminal exact-head result ledger. Never commit the candidate SHA or terminal PASS/FAIL evidence into the same candidate source branch merely to record certification: that evidence commit would change the SHA and invalidate the head it claims to certify.
 
-Do not merge because an older SHA was green. Do not bypass, fake, skip or weaken required governance/browser/accessibility statuses. Merge only after the exact final head satisfies the actual required statuses.
+Exact-head runtime state is recorded in a machine-readable result envelope conforming to `benchmarks/runner/result-envelope.schema.json`. Store that envelope on a non-source evidence surface such as an immutable GitHub Actions artifact, PR/Issue evidence attachment/comment carrying the exact JSON envelope, or another explicitly approved immutable evidence store. Validate a local envelope with `npm run validate:runner-result -- <path>`.
 
-Source CI, browser/Windows certification, real-target/runtime evidence and independent review are separate evidence classes. One cannot silently substitute for another when the scope requires both.
+A terminal result envelope must contain the stable Runner task ID, exact candidate repository/ref/SHA, computed deterministic dedup key, current authorization reference, execution identity, terminal status, timestamps, and immutable evidence references. A head move requires a new envelope/dedup key; older envelopes remain historical evidence only.
+
+Cheap local/source checks must not be deferred into Runner Benchmark.
 
 ## Runner policy
 
@@ -256,6 +309,28 @@ If the failure cannot be diagnosed safely, stop the affected lane as `Blocked`/`
 - Never delete legitimate source merely because it looks old; prove it is unreachable/retired first.
 - Protected `main` is not an AI scratch branch; use a scope-specific branch/PR for writes.
 - Do not allow a planning issue, generated report or AI-authored prose to self-promote product implementation authority or completion state.
+
+## Durable state before reporting completion
+
+Before saying a meaningful milestone is `COMPLETE`, `BLOCKED`, `VERIFYING`, or `WAITING_EXTERNAL`, reconcile `docs/ai-state/CURRENT-STATE.yaml`, `docs/ai-state/LAST-CHECKPOINT.md`, rolling `docs/ai-state/EXECUTION-JOURNAL.md`, the coordination queue when changed, and Runner Benchmark when changed.
+
+`CURRENT-STATE.yaml` must contain observed main SHA, active Issue, active PR, active branch, current milestone, milestone status, last completed milestone, exact next safe action, pending Runner IDs, blocked Runner IDs, current blockers, and timeout-control settings.
+
+If durable state cannot be written, do not claim the milestone fully complete.
+
+Compact limits: `CURRENT-STATE.yaml` <= 12 KiB; `LAST-CHECKPOINT.md` <= 16 KiB; `EXECUTION-JOURNAL.md` <= 32 KiB. The journal is rolling; archive older detail when needed.
+
+## README / large status dashboards
+
+Update a large public/module dashboard only when underlying module lifecycle/progress/timeline/public delivery truth changed or a terminal product/integration closeout is being reported. Governance/security/coordination-only cycles update compact state and relevant governance records without rewriting a large dashboard merely to create churn.
+
+## Final user-facing response
+
+Keep completion compact and factual: repository; active/completed milestone; Issue/PR/commit evidence; CI state; blockers; exact next safe action. Do not hide unfinished CI, review, state reconciliation, or authorization behind a success statement.
+
+## Recovery after message-delivery timeout
+
+After `Message delivery timed out. Please try again.`: read compact durable state; resolve exact current main; inspect the previously active Issue/PR; determine what actually persisted; reconcile queue and Runner Benchmark; continue only the next unfinished milestone. Never redo a merge, deployment, destructive action, migration, provider call, or formal runtime execution solely because the previous response was not delivered.
 
 ## Required closeout contract
 

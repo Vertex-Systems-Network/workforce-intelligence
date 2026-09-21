@@ -98,7 +98,8 @@ test('secondary and operational UI text stays readable across marketing, auth, c
 })
 
 test('repository exposes unified local quality and real opt-in WAVE commands', () => {
-  assert.equal(packageJson.scripts.quality, 'npm run verify:source && npm run audit:runner-benchmarks && npm run accessibility:audit && npm run performance:audit')
+  assert.equal(packageJson.scripts.quality, 'npm run verify:source && npm run audit:ai-supervisor-state && npm run audit:runner-benchmarks && npm run accessibility:audit && npm run performance:audit')
+  assert.equal(packageJson.scripts['audit:ai-supervisor-state'], 'node tools/ai-supervisor-state-audit.mjs')
   assert.equal(packageJson.scripts['audit:runner-benchmarks'], 'node tools/runner-benchmark-audit.mjs')
   assert.equal(packageJson.scripts['quality:full'], 'npm run quality && npm run build')
   assert.equal(packageJson.scripts['accessibility:wave'], 'node tools/wave-accessibility-audit.mjs')
@@ -118,56 +119,56 @@ test('source hygiene rejects temporary root placeholders and dead interaction pa
   assert.ok(hygieneAudit.includes('unfinished-comment'))
 })
 
-test('AI execution contract preserves quality truthfulness and final exact-head certification', () => {
+test('AI execution contract preserves supervisor resume, milestone, timeout and authority discipline', () => {
   for (const marker of [
-    'npm run quality',
-    'npm run quality:full',
-    'npm run accessibility:wave',
-    'Never claim “WAVE passed”',
-    'The expensive runner/browser matrix is the final release step',
-    'benchmarks/runner/registry.json',
-    'Not Verified — deferred to final runner batch',
-    'drain every `required_for_release: true` benchmark',
+    'docs/ai-state/CURRENT-STATE.yaml',
+    'one user `continue` or `resume` turn performs exactly one bounded logical engineering milestone',
+    'OPEN GitHub Issues first',
+    'at most one consolidated CI/status refresh',
+    'Runner registration NEVER grants execution authority',
+    'security-critical validation',
+    'exact-head merge-required checks',
+    'CURRENT-STATE.yaml` <= 12 KiB',
+    'Message delivery timed out',
     'Do not merge because an older SHA was green',
-    'Do not bypass, fake, skip or weaken required governance/browser/accessibility statuses',
     'GitHub-hosted',
-  ]) assert.ok(agents.includes(marker), `AGENTS.md missing execution contract: ${marker}`)
+  ]) assert.ok(agents.includes(marker), `AGENTS.md missing supervisor execution contract: ${marker}`)
 })
 
-test('runner benchmark backlog is machine-readable and exact-head evidence disciplined', () => {
-  assert.equal(runnerRegistry.schema_version, 1)
-  assert.equal(runnerRegistry.execution_policy, 'final-runner-batch')
-  assert.ok(runnerRegistry.entries.length >= 2)
-  assert.ok(runnerRegistry.entries.some(entry => entry.required_for_release === true))
+test('runner benchmark uses source definitions plus non-self-invalidating exact-head result envelopes', () => {
+  assert.equal(runnerRegistry.schema_version, 3)
+  assert.equal(runnerRegistry.execution_policy, 'authorization-aware-definitions-with-external-exact-head-results')
+  assert.equal(runnerRegistry.result_envelope_schema, 'benchmarks/runner/result-envelope.schema.json')
+  assert.ok(runnerRegistry.entries.length >= 5)
   const ids = new Set()
+  const templates = new Set()
   for (const entry of runnerRegistry.entries) {
     assert.match(entry.id, /^RB-\d{3,}$/)
-    assert.equal(ids.has(entry.id), false, `duplicate runner benchmark id: ${entry.id}`)
+    assert.equal(ids.has(entry.id), false)
     ids.add(entry.id)
-    assert.equal(entry.execution_phase, 'final-runner-batch')
-    assert.equal(entry.stale_when_head_moves, true)
-    assert.ok(Array.isArray(entry.commands) && entry.commands.length > 0)
-    assert.ok(Array.isArray(entry.acceptance) && entry.acceptance.length > 0)
-    if (['passed', 'failed'].includes(entry.status)) {
-      assert.match(entry.verification.head_sha, /^[0-9a-f]{40}$/i)
-      assert.ok(!Number.isNaN(Date.parse(entry.verification.verified_at)))
-      assert.ok(Array.isArray(entry.verification.evidence) && entry.verification.evidence.length > 0)
-    } else {
-      assert.deepEqual(entry.verification, { head_sha: null, verified_at: null, evidence: [] })
-    }
+    assert.ok(entry.dedup_key_template.includes('{candidate_head_sha}'))
+    assert.equal(templates.has(entry.dedup_key_template), false)
+    templates.add(entry.dedup_key_template)
+    assert.match(entry.registered_source_identity.registered_head_sha, /^[0-9a-f]{40}$/i)
+    assert.equal(Object.hasOwn(entry.registered_source_identity, 'candidate_head_sha'), false)
+    assert.equal(Object.hasOwn(entry, 'verification'), false)
+    assert.equal(entry.result_recording.mode, 'external-exact-head-envelope')
+    assert.equal(entry.result_recording.candidate_source_must_not_be_mutated_for_result_recording, true)
   }
+  assert.equal(packageJson.scripts['validate:runner-result'], 'node tools/validate-runner-result-envelope.mjs')
   for (const marker of [
-    'Not Verified — deferred to final runner batch',
-    'One batch” means one final phase',
-    'move the old result to `history`',
-    'older SHA cannot certify the newer head',
-  ]) assert.ok(runnerGuide.includes(marker), `runner benchmark guide missing: ${marker}`)
+    'task-definition registry',
+    'Committing a terminal result into the same candidate source branch would change the candidate SHA',
+    'result-envelope.schema.json',
+    'non-source evidence surface',
+    'one consolidated remote CI/status refresh',
+  ]) assert.ok(runnerGuide.includes(marker), `runner guide missing: ${marker}`)
   for (const marker of [
-    'duplicate benchmark id',
-    'passed/failed entries may carry current verification',
-    'requires a 40-character verification.head_sha',
-    'requires at least one evidence reference',
-  ]) assert.ok(runnerAudit.includes(marker), `runner benchmark audit missing: ${marker}`)
+    'schema_version must be 3',
+    'committed registry must not store runtime candidate_head_sha',
+    'committed task definition must not contain terminal verification evidence',
+    'candidate mutation guard required',
+  ]) assert.ok(runnerAudit.includes(marker), `runner audit missing: ${marker}`)
 })
 
 test('CI avoids duplicate feature-branch push runs and cancels stale PR work', () => {
