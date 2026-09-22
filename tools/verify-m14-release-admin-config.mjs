@@ -218,8 +218,13 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   const auditedBy = requireString(attestation.audited_by, 'attestation.audited_by')
   const auditedAt = requireTimestamp(attestation.audited_at, 'attestation.audited_at')
   const auditedAtMs = Date.parse(auditedAt)
-  if (auditedAtMs < collectedAtMs) fail('attestation.audited_at cannot predate collected_at')
   if (auditedAtMs > verifiedAtMs) fail('attestation.audited_at cannot be later than verifier system time')
+  if (verifiedAtMs - auditedAtMs > MAX_EVIDENCE_AGE_MS) {
+    fail('administrator attestation is stale; audit within 30 minutes of verification')
+  }
+  if (Math.abs(auditedAtMs - collectedAtMs) > MAX_EVIDENCE_AGE_MS) {
+    fail('administrator attestation and GitHub snapshot must be collected within 30 minutes of each other')
+  }
 
   return {
     schema: SCHEMA,
