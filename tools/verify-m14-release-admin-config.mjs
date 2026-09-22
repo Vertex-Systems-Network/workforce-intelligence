@@ -203,7 +203,8 @@ const args = parseArgs(process.argv.slice(2))
 const expectedRepository = requireString(args.repository, '--repository')
 const expectedSourceSha = requireString(args['source-sha'], '--source-sha').toLowerCase()
 if (!/^[0-9a-f]{40}$/.test(expectedSourceSha)) fail('--source-sha must be a 40-hex Git commit SHA')
-const verifiedAt = requireTimestamp(args['as-of'], '--as-of')
+if (Object.hasOwn(args, 'as-of')) fail('--as-of is not accepted; verification time is bound to the verifier system clock')
+const verifiedAt = new Date().toISOString()
 
 let raw = ''
 process.stdin.setEncoding('utf8')
