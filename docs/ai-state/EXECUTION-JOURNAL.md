@@ -142,3 +142,13 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Issue #62 must externally enable/verify immutable releases and place the read token; source/CI alone cannot claim that live configuration.
 - No release was published and RB-005 was not executed.
 
+
+## 2026-09-22T14:44:00+05:00 — PR #90 merge + M14 rehydration
+
+- PR #90 exact head `3fa531f535b2588573e70ed6c0bd1ed0b0b481d9` passed Code Quality #284, WorkIntel CI #598, and Windows Certification #367 and merged as protected-main commit `1be13fcab75c2fbee1a91f5dcc856bb007264085`.
+- PR #90 adds demo-only in-process identity consistency checks immediately before AccessControl coordinator role assignment and a runtime regression proving the guard fails before role mutation.
+- RB-005 was not executed; Issue #70 remains open because root cause is still unproven.
+- Reconciled PR #65 against the new protected main and confirmed zero path overlap between PR #90's three changed paths and M14's 19 release-trust paths.
+- Rehydrated M14 with current main as primary parent and the prior M14 head as the second parent, preserving both current-main diagnostics and release-trust provenance without force-push.
+- Prior PR #65 exact-head CI/review evidence is historical after rehydration; fresh exact-head certification and genuine independent review are required.
+- Issue #62 remains external/Not Verified; no trusted tag/release publication was performed.

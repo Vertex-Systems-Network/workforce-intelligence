@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "ed8de6952d2617eb6ec3969c2c878e404e0521fc",
+  "observed_main_sha": "1be13fcab75c2fbee1a91f5dcc856bb007264085",
   "active_issue": 61,
   "active_pr": 65,
   "active_branch": "m14/release-trust-current-main",
   "current_milestone": "Rehydrate and certify PR #65 M14 production release trust on current main",
   "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #89 merged normal Linux/Windows AccessControl seed-failure evidence capture on exact green head.",
-  "exact_next_safe_action": "Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for PR #65 after immutable-release policy hardening. If all automated gates pass, obtain genuine independent review for that exact head; merge only after that review clears, while trusted publication remains blocked until Issue #62 live immutable-release, tag, and production-release environment gates are verified.",
+  "last_completed_milestone": "PR #90 merged in-process AccessControl identity diagnostics on exact green head; M14 PR #65 rehydrated onto the resulting protected main.",
+  "exact_next_safe_action": "Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for rehydrated PR #65. If all automated gates pass, obtain genuine independent review for that exact head and merge only after that review clears. Issue #62 live immutable-release, tag, and production-release environment gates remain external and fail-closed.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -25,7 +25,7 @@
   "current_blockers": [
     "Issue #61 requires a genuine independent reviewer on the exact current PR #65 head; self-review is not independent evidence.",
     "Issue #62 remains externally blocked: immutable GitHub Releases, the agent-v* tag ruleset/creation authority, production-release protections, and WORKINTEL_RELEASE_POLICY_READ_TOKEN placement are not yet live-verified.",
-    "Issue #70 remains open as recurrent nondeterminism; PR #89 evidence capture is merged, while RB-005 remains not-authorized/blocked."
+    "Issue #70 remains open as recurrent nondeterminism; PR #89 persisted-state capture and PR #90 in-process identity diagnostics are merged, while RB-005 remains not-authorized/blocked."
   ],
   "timeout_control": {
     "max_consolidated_status_refreshes_per_milestone": 1,
@@ -33,14 +33,14 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-22T12:11:00+05:00",
+  "last_reconciled_at": "2026-09-22T14:44:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Rehydrate and certify PR #65 M14 production release trust on current main",
+    "current_work": "Certify rehydrated PR #65 M14 production release trust on current main",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 60,
-      "basis": "M14 source now additionally fails closed on live GitHub immutable-release policy before trust work and immediately before exposure. Completion still requires fresh exact-head automated certification, genuine independent review, and Issue #62 external release-trust evidence."
+      "basis": "M14 source is rehydrated onto protected main after PR #90 and preserves release-trust hardening plus AccessControl diagnostics. Completion still requires fresh exact-head automated certification, genuine independent review, and Issue #62 external release-trust evidence."
     },
     "overall_progress": {
       "percent": 100,

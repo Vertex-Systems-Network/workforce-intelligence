@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** Rehydrate and certify PR #65 M14 production release trust on current main
+- **Current Work:** Certify rehydrated PR #65 M14 production release trust on current main
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [██████░░░░] **60%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #61
 - **Active PR:** #65
 - **Active Branch:** `m14/release-trust-current-main`
-- **Last Completed:** PR #89 merged normal Linux/Windows AccessControl seed-failure evidence capture on exact green head.
-- **Next Action:** Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for PR #65 after immutable-release policy hardening. If all automated gates pass, obtain genuine independent review for that exact head; merge only after that review clears, while trusted publication remains blocked until Issue #62 live immutable-release, tag, and production-release environment gates are verified.
+- **Last Completed:** PR #90 merged in-process AccessControl identity diagnostics on exact green head.
+- **Next Action:** Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for rehydrated PR #65. If all automated gates pass, obtain genuine independent review for that exact head and merge only after that review clears. Issue #62 remains a separate external live-configuration gate.
 
 > Overall progress is scoped to the active release-scope modular maturity. M14 remains partially complete until its independent-review and external release/real-target evidence gates are actually satisfied.
 <!-- AI-PROGRESS:END -->
