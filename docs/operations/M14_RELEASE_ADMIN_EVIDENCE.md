@@ -10,6 +10,7 @@ After an administrator configures M14 external release controls, collect GitHub 
 node tools/verify-m14-release-admin-config.mjs \
   --repository Vertex-Systems-Network/workforce-intelligence \
   --source-sha <exact-M14-source-sha> \
+  --as-of "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   < m14-release-admin-evidence.json
 ```
 
@@ -41,6 +42,8 @@ Environment secret list responses expose names/metadata only, not encrypted valu
 ## Evidence packet
 
 The final JSON object contains `source_contract_sha`, which must equal the exact source SHA supplied to `--source-sha`. This prevents an evidence packet collected for one release-trust contract from silently validating a later changed contract.
+
+It also contains `collected_at`. The verifier requires an explicit `--as-of` timestamp and rejects evidence older than 30 minutes, evidence collected after the verifier time, attestations made before collection, or attestations dated after verification. This prevents a previously valid admin snapshot from being replayed after live GitHub configuration changes.
 
 The final JSON object also contains:
 
@@ -74,6 +77,7 @@ The verifier requires:
 - all nine M14 environment secret names present;
 - `WORKINTEL_WINDOWS_TIMESTAMP_URL` uses HTTPS;
 - both Windows and Apple approved signer fingerprints are exactly 64 hexadecimal SHA-256 characters;
-- all seven administrator attestations are true and auditor metadata is valid.
+- all seven administrator attestations are true and auditor metadata is valid;
+- the evidence snapshot is fresh (maximum age 30 minutes) and audit timestamps are ordered correctly.
 
 This evidence complements, but does not replace, `tools/verify-release-tag-protection.mjs` and the committed `M14_RELEASE_TAG_RULESET_ATTESTATION.json`. Real signing, notarization, publication, and real-target evidence remain separate gates.
