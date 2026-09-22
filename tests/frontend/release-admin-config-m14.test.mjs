@@ -51,6 +51,9 @@ function evidence(overrides = {}) {
       required_reviewer_independence_attested: true,
       main_policy_is_branch_attested: true,
       agent_v_policy_is_tag_attested: true,
+      release_policy_token_least_privilege_attested: true,
+      windows_signer_fingerprint_matches_certificate_attested: true,
+      apple_signer_fingerprint_matches_certificate_attested: true,
       audited_by: 'release-admin@example.test',
       audited_at: '2026-09-23T12:00:00Z',
     },
@@ -138,8 +141,14 @@ test('requires signer fingerprint variables and https timestamp endpoint', () =>
   }
 })
 
-test('requires explicit admin-bypass and reviewer-independence attestations', () => {
-  for (const key of ['admin_bypass_disabled_attested', 'required_reviewer_independence_attested']) {
+test('requires explicit attestations for API-invisible release authority facts', () => {
+  for (const key of [
+    'admin_bypass_disabled_attested',
+    'required_reviewer_independence_attested',
+    'release_policy_token_least_privilege_attested',
+    'windows_signer_fingerprint_matches_certificate_attested',
+    'apple_signer_fingerprint_matches_certificate_attested',
+  ]) {
     const payload = evidence()
     payload.attestation[key] = false
     const result = verify(payload)
