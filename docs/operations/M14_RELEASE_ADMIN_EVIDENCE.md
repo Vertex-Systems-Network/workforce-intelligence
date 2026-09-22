@@ -76,8 +76,9 @@ The verifier requires:
 - at least one structurally valid User/Team required reviewer and `prevent_self_review=true`;
 - custom deployment policies enabled;
 - all list snapshots are complete (`total_count` exactly equals collected entries), with duplicate names rejected;
-- both `main` and `agent-v*` policies present with API policy ids/node ids;
-- all nine M14 environment secret names present;
+- exactly two deployment policies exist: `main` and `agent-v*`, each with API policy ids/node ids; no extra branch/tag deployment policy is allowed;
+- exactly the nine M14 environment secret names are present; no unrelated secret is allowed in the privileged environment;
+- exactly the three M14 environment variables are present; no unrelated variable is allowed;
 - `WORKINTEL_WINDOWS_TIMESTAMP_URL` uses HTTPS;
 - both Windows and Apple approved signer fingerprints are exactly 64 hexadecimal SHA-256 characters;
 - all seven administrator attestations are true and auditor metadata is valid;
