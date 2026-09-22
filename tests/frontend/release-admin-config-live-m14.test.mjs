@@ -124,7 +124,7 @@ test('live collector output satisfies the verifier schema contract', async () =>
   const evidence = await collectEvidence({
     repository,
     sourceSha,
-    attestation: { ...validAttestation },
+    attestation: { ...validAttestation, audited_at: new Date().toISOString() },
     token: auditToken,
     request: async url => response(apiPayload(url)),
     now: () => new Date(),
