@@ -6,6 +6,18 @@ import { collectEvidence } from '../../tools/collect-m14-release-admin-evidence.
 const repository = 'Vertex-Systems-Network/workforce-intelligence'
 const sourceSha = '0123456789abcdef0123456789abcdef01234567'
 const auditToken = 'super-secret-auditor-token'
+const validAttestation = {
+  admin_bypass_disabled_attested: true,
+  required_reviewer_independence_attested: true,
+  main_policy_is_branch_attested: true,
+  agent_v_policy_is_tag_attested: true,
+  release_policy_token_least_privilege_attested: true,
+  windows_signer_fingerprint_matches_certificate_attested: true,
+  apple_signer_fingerprint_matches_certificate_attested: true,
+  no_organization_scope_release_credentials_attested: true,
+  audited_by: 'release-reviewer',
+  audited_at: '2026-09-23T11:59:00Z',
+}
 
 function response(payload, status = 200) {
   return {
@@ -43,7 +55,18 @@ test('collects live admin evidence only from pinned GitHub API endpoints', async
     return response(apiPayload(url))
   }
 
-  const attestation = { audited_by: 'release-reviewer' }
+  const attestation = {
+    admin_bypass_disabled_attested: true,
+    required_reviewer_independence_attested: true,
+    main_policy_is_branch_attested: true,
+    agent_v_policy_is_tag_attested: true,
+    release_policy_token_least_privilege_attested: true,
+    windows_signer_fingerprint_matches_certificate_attested: true,
+    apple_signer_fingerprint_matches_certificate_attested: true,
+    no_organization_scope_release_credentials_attested: true,
+    audited_by: 'release-reviewer',
+    audited_at: '2026-09-23T11:59:00Z',
+  }
   const evidence = await collectEvidence({
     repository,
     sourceSha,
@@ -74,7 +97,7 @@ test('never accepts caller-controlled GitHub API origins', async () => {
   await collectEvidence({
     repository,
     sourceSha,
-    attestation: {},
+    attestation: { ...validAttestation },
     token: auditToken,
     request: async url => {
       urls.push(url)
@@ -84,12 +107,30 @@ test('never accepts caller-controlled GitHub API origins', async () => {
   assert.ok(urls.every(url => url.startsWith('https://api.github.com/')))
 })
 
+test('rejects unknown attestation fields before any GitHub request', async () => {
+  let calls = 0
+  await assert.rejects(
+    () => collectEvidence({
+      repository,
+      sourceSha,
+      attestation: { ...validAttestation, password: 'do-not-serialize' },
+      token: auditToken,
+      request: async () => {
+        calls += 1
+        return response({})
+      },
+    }),
+    /attestation contains unsupported field: password/,
+  )
+  assert.equal(calls, 0)
+})
+
 test('fails closed when the auditor token is missing', async () => {
   await assert.rejects(
     () => collectEvidence({
       repository,
       sourceSha,
-      attestation: {},
+      attestation: { ...validAttestation },
       token: '',
       request: async url => response(apiPayload(url)),
     }),
@@ -102,7 +143,7 @@ test('fails closed on any non-success GitHub API response', async () => {
     () => collectEvidence({
       repository,
       sourceSha,
-      attestation: {},
+      attestation: { ...validAttestation },
       token: auditToken,
       request: async () => response({ message: 'forbidden' }, 403),
     }),
@@ -121,7 +162,7 @@ test('validates repository and exact source SHA before making requests', async (
     () => collectEvidence({
       repository: 'https://evil.example/repo',
       sourceSha,
-      attestation: {},
+      attestation: { ...validAttestation },
       token: auditToken,
       request,
     }),
@@ -131,7 +172,7 @@ test('validates repository and exact source SHA before making requests', async (
     () => collectEvidence({
       repository,
       sourceSha: 'not-a-sha',
-      attestation: {},
+      attestation: { ...validAttestation },
       token: auditToken,
       request,
     }),
