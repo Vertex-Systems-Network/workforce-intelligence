@@ -282,6 +282,26 @@ test('fails closed on any non-success GitHub API response', async () => {
   )
 })
 
+test('rejects repository dot-segments before any GitHub request', async () => {
+  for (const repositoryValue of ['../repo', './repo', 'owner/..', 'owner/.']) {
+    let calls = 0
+    await assert.rejects(
+      () => collectEvidence({
+        repository: repositoryValue,
+        sourceSha,
+        attestation: { ...validAttestation },
+        token: auditToken,
+        request: async () => {
+          calls += 1
+          return response({})
+        },
+      }),
+      /segments cannot be \. or \.\./,
+    )
+    assert.equal(calls, 0)
+  }
+})
+
 test('validates repository and exact source SHA before making requests', async () => {
   let calls = 0
   const request = async url => {
