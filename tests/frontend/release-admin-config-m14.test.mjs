@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import test from 'node:test'
 
 const verifier = 'tools/verify-m14-release-admin-config.mjs'
@@ -370,22 +370,36 @@ test('accepts a fresh administrator attestation made shortly before live collect
 })
 
 
-test('captures verification time after evidence input is available', () => {
-  const payload = evidence({ collected_at: isoOffset(1 * 1000) })
-  payload.attestation.audited_at = payload.collected_at
-
-  const result = spawnSync(process.execPath, [
+test('captures verification time after delayed stdin evidence is received', async () => {
+  const child = spawn(process.execPath, [
     verifier,
     '--repository', repository,
     '--source-sha', sourceSha,
   ], {
-    input: JSON.stringify(payload),
-    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
   })
 
-  // A slightly future packet must still fail when verified immediately.
-  assert.notEqual(result.status, 0)
-  assert.match(result.stderr, /cannot be later than verifier system time/)
+  let stdout = ''
+  let stderr = ''
+  child.stdout.setEncoding('utf8')
+  child.stderr.setEncoding('utf8')
+  child.stdout.on('data', chunk => { stdout += chunk })
+  child.stderr.on('data', chunk => { stderr += chunk })
+
+  await new Promise(resolve => setTimeout(resolve, 1100))
+  const collectedAt = new Date().toISOString()
+  const payload = evidence({ collected_at: collectedAt })
+  payload.attestation.audited_at = collectedAt
+  child.stdin.end(JSON.stringify(payload))
+
+  const exitCode = await new Promise((resolve, reject) => {
+    child.once('error', reject)
+    child.once('close', resolve)
+  })
+
+  assert.equal(exitCode, 0, stderr)
+  const output = JSON.parse(stdout)
+  assert.equal(output.collected_at, collectedAt)
 })
 
 test('does not allow caller-controlled verifier time to bypass freshness', () => {
