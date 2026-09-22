@@ -54,11 +54,6 @@ function normalizeFingerprint(value, label) {
   return text
 }
 
-function findRequiredReviewerRule(environment) {
-  const rules = Array.isArray(environment.protection_rules) ? environment.protection_rules : []
-  return rules.find(rule => rule && rule.type === 'required_reviewers') || null
-}
-
 function mapByName(items, label) {
   if (!Array.isArray(items)) fail(`${label} must be an array`)
   const map = new Map()
@@ -96,7 +91,7 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   const collectedAt = requireTimestamp(evidence.collected_at, 'collected_at')
   const collectedAtMs = Date.parse(collectedAt)
   const verifiedAtMs = Date.parse(verifiedAt)
-  if (collectedAtMs > verifiedAtMs) fail('collected_at cannot be later than verifier --as-of time')
+  if (collectedAtMs > verifiedAtMs) fail('collected_at cannot be later than verifier system time')
   if (verifiedAtMs - collectedAtMs > MAX_EVIDENCE_AGE_MS) {
     fail('external admin evidence is stale; collect a fresh snapshot within 30 minutes of verification')
   }
@@ -187,7 +182,7 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   const auditedAt = requireTimestamp(attestation.audited_at, 'attestation.audited_at')
   const auditedAtMs = Date.parse(auditedAt)
   if (auditedAtMs < collectedAtMs) fail('attestation.audited_at cannot predate collected_at')
-  if (auditedAtMs > verifiedAtMs) fail('attestation.audited_at cannot be later than verifier --as-of time')
+  if (auditedAtMs > verifiedAtMs) fail('attestation.audited_at cannot be later than verifier system time')
 
   return {
     schema: SCHEMA,
