@@ -26,6 +26,10 @@ test('Issue 70 seed stress lane remains fail-fast and manually gated by Runner a
   for (const marker of [
     'PRAGMA integrity_check',
     'PRAGMA foreign_key_check',
+    "'php_version' => PHP_VERSION",
+    'PDO::ATTR_CLIENT_VERSION',
+    'SELECT sqlite_version()',
+    'SELECT sqlite_source_id()',
     'sqlite_sequence',
     'mr.is_primary',
     'mr.assigned_by',
