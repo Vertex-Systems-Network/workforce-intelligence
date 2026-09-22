@@ -337,7 +337,7 @@ test('binds the admin evidence packet to the exact M14 source contract SHA', () 
 })
 
 
-test('rejects stale, future, or audit-order-invalid admin evidence', () => {
+test('rejects stale, future, or time-incoherent admin evidence', () => {
   const stale = evidence({ collected_at: isoOffset(-31 * 60 * 1000) })
   assert.notEqual(verify(stale).status, 0)
   assert.match(verify(stale).stderr, /evidence is stale/)
@@ -346,15 +346,27 @@ test('rejects stale, future, or audit-order-invalid admin evidence', () => {
   assert.notEqual(verify(future).status, 0)
   assert.match(verify(future).stderr, /cannot be later than verifier/)
 
-  const auditBeforeCollection = evidence()
-  auditBeforeCollection.attestation.audited_at = isoOffset(-11 * 60 * 1000)
-  assert.notEqual(verify(auditBeforeCollection).status, 0)
-  assert.match(verify(auditBeforeCollection).stderr, /cannot predate collected_at/)
+  const staleAudit = evidence()
+  staleAudit.attestation.audited_at = isoOffset(-31 * 60 * 1000)
+  assert.notEqual(verify(staleAudit).status, 0)
+  assert.match(verify(staleAudit).stderr, /attestation is stale/)
+
+  const auditTooFarFromSnapshot = evidence({ collected_at: isoOffset(-1 * 60 * 1000) })
+  auditTooFarFromSnapshot.attestation.audited_at = isoOffset(-32 * 60 * 1000)
+  assert.notEqual(verify(auditTooFarFromSnapshot).status, 0)
+  assert.match(verify(auditTooFarFromSnapshot).stderr, /within 30 minutes of each other/)
 
   const auditAfterVerification = evidence()
   auditAfterVerification.attestation.audited_at = isoOffset(60 * 1000)
   assert.notEqual(verify(auditAfterVerification).status, 0)
   assert.match(verify(auditAfterVerification).stderr, /cannot be later than verifier/)
+})
+
+test('accepts a fresh administrator attestation made shortly before live collection', () => {
+  const payload = evidence({ collected_at: isoOffset(-2 * 60 * 1000) })
+  payload.attestation.audited_at = isoOffset(-5 * 60 * 1000)
+  const result = verify(payload)
+  assert.equal(result.status, 0, result.stderr)
 })
 
 
