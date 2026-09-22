@@ -13,7 +13,7 @@ node tools/verify-m14-release-admin-config.mjs \
   < m14-release-admin-evidence.json
 ```
 
-The verifier expects schema `workintel.m14-release-admin-evidence.v1` and fails closed unless all source-visible M14 admin requirements are represented.
+The verifier expects schema `workintel.m14-release-admin-evidence.v1`, requires `github_api_version: "2026-03-10"`, and fails closed unless all source-visible M14 admin requirements are represented. API-version binding prevents future response-schema changes from silently reinterpreting older evidence.
 
 ## API snapshots
 
