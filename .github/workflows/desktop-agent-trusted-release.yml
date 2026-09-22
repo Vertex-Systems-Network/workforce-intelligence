@@ -440,7 +440,6 @@ jobs:
       SOURCE_SHA: ${{ needs.authorize.outputs.source_sha }}
       VERSION: ${{ needs.authorize.outputs.version }}
       RELEASE_TAG: ${{ needs.authorize.outputs.release_tag }}
-      RELEASE_POLICY_TOKEN: ${{ secrets.WORKINTEL_RELEASE_POLICY_READ_TOKEN }}
     steps:
       - name: Checkout exact authorized source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -491,6 +490,8 @@ jobs:
           done
       - name: Create and atomically expose new trusted release
         shell: bash
+        env:
+          RELEASE_POLICY_TOKEN: ${{ secrets.WORKINTEL_RELEASE_POLICY_READ_TOKEN }}
         run: |
           set -euo pipefail
           assert_immutable_release_policy() {

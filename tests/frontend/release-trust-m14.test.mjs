@@ -97,6 +97,24 @@ test('M14 requires live GitHub immutable-release policy before trust work and pu
   assert.ok(finalPolicyCheck > 0 && finalPolicyCheck < finalRefCheck, 'immutable-release policy must be rechecked immediately before final release exposure sequence')
 })
 
+test('M14 scopes the release-policy administration token only to policy verification shell steps', () => {
+  const publishJob = workflow.indexOf('\n  publish:')
+  const publishSteps = workflow.indexOf('\n    steps:', publishJob)
+  const publishJobHeader = workflow.slice(publishJob, publishSteps)
+  assert.ok(!publishJobHeader.includes('WORKINTEL_RELEASE_POLICY_READ_TOKEN'), 'publish job-level env must not expose the Administration-read token to every action')
+
+  const publishPolicyStep = workflow.indexOf('- name: Create and atomically expose new trusted release', publishJob)
+  const publishPolicyRun = workflow.indexOf('        run: |', publishPolicyStep)
+  const publishPolicyHeader = workflow.slice(publishPolicyStep, publishPolicyRun)
+  assert.ok(publishPolicyHeader.includes('RELEASE_POLICY_TOKEN: ${{ secrets.WORKINTEL_RELEASE_POLICY_READ_TOKEN }}'), 'publication policy token must be step-scoped')
+
+  assert.equal(
+    workflow.split('WORKINTEL_RELEASE_POLICY_READ_TOKEN').length - 1,
+    2,
+    'policy token should appear only in the pre-trust policy step and final publication step',
+  )
+})
+
 test('M14 publication rechecks live main and tag refs before exposure', () => {
   assert.ok(workflow.includes('assert_live_release_refs()'))
   assert.ok(workflow.includes('git fetch --force origin "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"'))
