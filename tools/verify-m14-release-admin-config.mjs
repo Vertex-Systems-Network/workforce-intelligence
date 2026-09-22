@@ -62,12 +62,15 @@ function mapByName(items, label) {
   return new Map(items.map(item => [String(item?.name || ''), item]))
 }
 
-function verifyEvidence(evidence, expectedRepository) {
+function verifyEvidence(evidence, expectedRepository, expectedSourceSha) {
   requireObject(evidence, 'evidence')
   if (evidence.schema !== SCHEMA) fail(`schema must be ${SCHEMA}`)
   if (requireString(evidence.repository, 'repository') !== expectedRepository) {
     fail(`repository must be ${expectedRepository}`)
   }
+  const sourceContractSha = requireString(evidence.source_contract_sha, 'source_contract_sha').toLowerCase()
+  if (!/^[0-9a-f]{40}$/.test(sourceContractSha)) fail('source_contract_sha must be a 40-hex Git commit SHA')
+  if (sourceContractSha !== expectedSourceSha) fail(`source_contract_sha must match expected source ${expectedSourceSha}`)
 
   const immutable = requireObject(evidence.immutable_releases, 'immutable_releases')
   requireTrue(immutable.enabled, 'immutable_releases.enabled')
@@ -136,6 +139,7 @@ function verifyEvidence(evidence, expectedRepository) {
   return {
     schema: SCHEMA,
     repository: expectedRepository,
+    source_contract_sha: sourceContractSha,
     immutable_releases: {
       enabled: true,
       enforced_by_owner: immutable.enforced_by_owner === true,
@@ -184,6 +188,8 @@ function parseArgs(args) {
 
 const args = parseArgs(process.argv.slice(2))
 const expectedRepository = requireString(args.repository, '--repository')
+const expectedSourceSha = requireString(args['source-sha'], '--source-sha').toLowerCase()
+if (!/^[0-9a-f]{40}$/.test(expectedSourceSha)) fail('--source-sha must be a 40-hex Git commit SHA')
 
 let raw = ''
 process.stdin.setEncoding('utf8')
@@ -195,6 +201,6 @@ process.stdin.on('end', () => {
   } catch (error) {
     fail(`could not parse JSON evidence: ${error.message}`)
   }
-  const result = verifyEvidence(evidence, expectedRepository)
+  const result = verifyEvidence(evidence, expectedRepository, expectedSourceSha)
   console.log(JSON.stringify(result, null, 2))
 })
