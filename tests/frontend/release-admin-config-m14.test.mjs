@@ -40,6 +40,7 @@ function evidence(overrides = {}) {
       ],
     },
     environment_secrets: {
+      total_count: 9,
       secrets: [
         'WORKINTEL_RELEASE_POLICY_READ_TOKEN',
         'WORKINTEL_WINDOWS_SIGNING_PFX_B64',
@@ -53,6 +54,7 @@ function evidence(overrides = {}) {
       ].map(name => ({ name })),
     },
     environment_variables: {
+      total_count: 3,
       variables: [
         { name: 'WORKINTEL_WINDOWS_TIMESTAMP_URL', value: 'https://timestamp.example.test' },
         { name: 'WORKINTEL_WINDOWS_SIGNING_CERT_SHA256', value: 'a'.repeat(64) },
@@ -155,11 +157,41 @@ test('requires custom main and agent-v deployment policies plus audit type attes
   }
 })
 
+test('rejects duplicate or truncated GitHub list evidence', () => {
+  const duplicatePolicy = evidence()
+  duplicatePolicy.deployment_branch_policies.branch_policies.push({
+    id: 803,
+    node_id: 'policy-main-duplicate',
+    name: 'main',
+  })
+  duplicatePolicy.deployment_branch_policies.total_count = 3
+  assert.notEqual(verify(duplicatePolicy).status, 0)
+
+  const truncatedPolicies = evidence()
+  truncatedPolicies.deployment_branch_policies.total_count = 3
+  assert.notEqual(verify(truncatedPolicies).status, 0)
+  assert.match(verify(truncatedPolicies).stderr, /truncated or paginated/)
+
+  const duplicateVariable = evidence()
+  duplicateVariable.environment_variables.variables.push({
+    name: 'WORKINTEL_WINDOWS_TIMESTAMP_URL',
+    value: 'https://other.example.test',
+  })
+  duplicateVariable.environment_variables.total_count = 4
+  assert.notEqual(verify(duplicateVariable).status, 0)
+
+  const truncatedSecrets = evidence()
+  truncatedSecrets.environment_secrets.total_count = 10
+  assert.notEqual(verify(truncatedSecrets).status, 0)
+  assert.match(verify(truncatedSecrets).stderr, /truncated or paginated/)
+})
+
 test('requires the complete environment secret inventory without reading secret values', () => {
   const payload = evidence()
   payload.environment_secrets.secrets = payload.environment_secrets.secrets.filter(
     item => item.name !== 'WORKINTEL_APPLE_NOTARY_ISSUER_ID',
   )
+  payload.environment_secrets.total_count = payload.environment_secrets.secrets.length
   const result = verify(payload)
   assert.notEqual(result.status, 0)
   assert.match(result.stderr, /WORKINTEL_APPLE_NOTARY_ISSUER_ID/)
