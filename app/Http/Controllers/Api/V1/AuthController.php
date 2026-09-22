@@ -11,15 +11,16 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Models\WorkspaceMember;
-use App\Support\PermissionCatalog;
-use App\Services\Billing\SubscriptionService;
 use App\Services\Access\RoleAccessService;
-use App\Services\Attendance\AttendancePolicyService;
 use App\Services\Approvals\ApprovalEngine;
-use App\Services\Security\SecurityEventService;
+use App\Services\Attendance\AttendancePolicyService;
+use App\Services\Billing\SubscriptionService;
+use App\Services\Commerce\PlatformOperatorService;
 use App\Services\Enterprise\EnterpriseSecurityService;
 use App\Services\Enterprise\TotpService;
 use App\Services\Modules\WorkspaceModuleService;
+use App\Services\Security\SecurityEventService;
+use App\Support\PermissionCatalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,12 +31,17 @@ use Illuminate\Validation\ValidationException;
 
 /** Provides auth controller behavior within the WorkIntel application. */ class AuthController extends Controller
 {
-    /** Handles the demo accounts operation for the current WorkIntel workflow. */ public function demoAccounts(): JsonResponse
+    /** Handles the demo accounts operation for the current WorkIntel workflow. */
+    public function demoAccounts(): JsonResponse
     {
-        if (! config('workintel.demo_accounts')) return response()->json(['data' => []]);
+        if (app()->environment('production') || ! config('workintel.demo_accounts')) {
+            return response()->json(['data' => []]);
+        }
         $workspace = Workspace::query()->where('slug', 'acme-corp')->first();
-        if (! $workspace) return response()->json(['data' => []]);
-        $rows = WorkspaceMember::query()->with(['user:id,first_name,last_name,email','roles:id,name,slug,status'])
+        if (! $workspace) {
+            return response()->json(['data' => []]);
+        }
+        $rows = WorkspaceMember::query()->with(['user:id,first_name,last_name,email', 'roles:id,name,slug,status'])
             ->where('workspace_id', $workspace->id)->where('status', 'active')
             ->whereHas('user', fn ($q) => $q->where('email', 'like', '%@acme.test'))
             ->orderBy('id')->get()->map(fn (WorkspaceMember $member) => [
@@ -45,10 +51,12 @@ use Illuminate\Validation\ValidationException;
                 'role' => app(RoleAccessService::class)->primaryRoleSlug($member),
                 'role_name' => $member->roles->firstWhere('slug', app(RoleAccessService::class)->primaryRoleSlug($member))?->name ?? 'Employee',
             ])->values();
+
         return response()->json(['data' => $rows]);
     }
 
-    /** Handles the login operation for the current WorkIntel workflow. */ public function login(LoginRequest $request): JsonResponse
+    /** Handles the login operation for the current WorkIntel workflow. */
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->safe()->only(['email', 'password']);
 
@@ -96,7 +104,8 @@ use Illuminate\Validation\ValidationException;
         return response()->json(['user' => $this->userPayload($user)]);
     }
 
-    /** Handles the register operation for the current WorkIntel workflow. */ public function register(RegisterRequest $request): JsonResponse
+    /** Handles the register operation for the current WorkIntel workflow. */
+    public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -143,8 +152,12 @@ use Illuminate\Validation\ValidationException;
             app(WorkspaceModuleService::class)->initializeWorkspace($workspace);
             $membership->roles()->attach($roles['owner']);
             app(SubscriptionService::class)->ensureDefault($workspace, 'free');
-            if (Schema::hasTable('attendance_policies')) app(AttendancePolicyService::class)->policy($workspace);
-            if (Schema::hasTable('approval_workflows')) app(ApprovalEngine::class)->ensureDefaultWorkflows($workspace, $user->id);
+            if (Schema::hasTable('attendance_policies')) {
+                app(AttendancePolicyService::class)->policy($workspace);
+            }
+            if (Schema::hasTable('approval_workflows')) {
+                app(ApprovalEngine::class)->ensureDefaultWorkflows($workspace, $user->id);
+            }
 
             return $user;
         });
@@ -157,16 +170,20 @@ use Illuminate\Validation\ValidationException;
         return response()->json(['user' => $this->userPayload($user)], 201);
     }
 
-    /** Handles the me operation for the current WorkIntel workflow. */ public function me(Request $request): JsonResponse
+    /** Handles the me operation for the current WorkIntel workflow. */
+    public function me(Request $request): JsonResponse
     {
         return response()->json(['user' => $this->userPayload($request->user())]);
     }
 
-    /** Handles the logout operation for the current WorkIntel workflow. */ public function logout(Request $request): JsonResponse
+    /** Handles the logout operation for the current WorkIntel workflow. */
+    public function logout(Request $request): JsonResponse
     {
         $user = $request->user();
         $workspace = $user?->memberships()->where('status', 'active')->with('workspace')->first()?->workspace;
-        if ($user) app(SecurityEventService::class)->record($workspace, $user, 'auth.logout', 'info', $request);
+        if ($user) {
+            app(SecurityEventService::class)->record($workspace, $user, 'auth.logout', 'info', $request);
+        }
         Auth::guard('web')->logout();
         if ($request->hasSession()) {
             $request->session()->invalidate();
@@ -176,10 +193,13 @@ use Illuminate\Validation\ValidationException;
         return response()->json(['message' => 'Signed out.']);
     }
 
-    /** Handles the user payload operation for the current WorkIntel workflow. */ private function userPayload(User $user): array
+    /** Handles the user payload operation for the current WorkIntel workflow. */
+    private function userPayload(User $user): array
     {
         $relations = ['workspace.subscription.plan.entitlements', 'workspace.branding', 'roles.permissions'];
-        if (Schema::hasTable('workspace_preferences')) $relations[] = 'workspace.preferences';
+        if (Schema::hasTable('workspace_preferences')) {
+            $relations[] = 'workspace.preferences';
+        }
         $memberships = $user->memberships()
             ->with($relations)
             ->where('status', 'active')
@@ -198,7 +218,7 @@ use Illuminate\Validation\ValidationException;
             'use_workspace_locale' => (bool) ($user->use_workspace_locale ?? true),
             'email_verified' => (bool) $user->email_verified_at,
             'force_password_change' => (bool) $user->force_password_change,
-            'platform_operator' => app(\App\Services\Commerce\PlatformOperatorService::class)->isOperator($user),
+            'platform_operator' => app(PlatformOperatorService::class)->isOperator($user),
             'mfa_enabled' => Schema::hasTable('user_mfa_methods') ? app(TotpService::class)->enabled($user) : false,
             'workspaces' => $memberships->map(fn (WorkspaceMember $member) => [
                 'id' => $member->workspace->id,
@@ -243,7 +263,8 @@ use Illuminate\Validation\ValidationException;
      *
      * @return array<string, Role>
      */
-    /** Creates create default roles data for the requested workflow. */ private function createDefaultRoles(Workspace $workspace): array
+    /** Creates create default roles data for the requested workflow. */
+    private function createDefaultRoles(Workspace $workspace): array
     {
         $allPermissionIds = PermissionCatalog::sync();
 
@@ -334,7 +355,8 @@ use Illuminate\Validation\ValidationException;
         return $roles;
     }
 
-    /** Handles the unique workspace slug operation for the current WorkIntel workflow. */ private function uniqueWorkspaceSlug(string $name): string
+    /** Handles the unique workspace slug operation for the current WorkIntel workflow. */
+    private function uniqueWorkspaceSlug(string $name): string
     {
         $base = Str::slug($name) ?: 'workspace';
         $slug = $base;
