@@ -54,6 +54,9 @@ Required auditor attestations:
 - required reviewer independence from the release initiator/operator is verified;
 - the `main` custom deployment policy is a branch policy;
 - the `agent-v*` custom deployment policy is a tag policy;
+- `WORKINTEL_RELEASE_POLICY_READ_TOKEN` was independently checked to have only the least privilege needed for the immutable-release Administration read;
+- `WORKINTEL_WINDOWS_SIGNING_CERT_SHA256` was compared out of band to the approved organization Windows Code Signing certificate;
+- `WORKINTEL_APPLE_SIGNING_CERT_SHA256` was compared out of band to the approved organization Apple Developer ID leaf certificate;
 - real auditor identity and ISO-8601 audit time are recorded.
 
 ## Fail-closed checks
@@ -68,6 +71,6 @@ The verifier requires:
 - all nine M14 environment secret names present;
 - `WORKINTEL_WINDOWS_TIMESTAMP_URL` uses HTTPS;
 - both Windows and Apple approved signer fingerprints are exactly 64 hexadecimal SHA-256 characters;
-- all four administrator attestations are true and auditor metadata is valid.
+- all seven administrator attestations are true and auditor metadata is valid.
 
 This evidence complements, but does not replace, `tools/verify-release-tag-protection.mjs` and the committed `M14_RELEASE_TAG_RULESET_ATTESTATION.json`. Real signing, notarization, publication, and real-target evidence remain separate gates.
