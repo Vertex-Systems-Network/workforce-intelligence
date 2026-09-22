@@ -77,7 +77,27 @@ jobs:
           path: storage/app/private/seed-diagnostics/workintel-ci-seed-failure.json
           if-no-files-found: error
           retention-days: 7
-      - run: php artisan db:seed --force
+      - id: sqlite_seed_idempotency
+        name: Seeder idempotency
+        shell: bash
+        run: |
+          set +e
+          php artisan db:seed --force
+          seed_status=$?
+          set -e
+          if [ "$seed_status" -ne 0 ]; then
+            mkdir -p storage/app/private/seed-diagnostics
+            php tools/access-control-seed-state.php > storage/app/private/seed-diagnostics/workintel-ci-idempotency-seed-failure.json || true
+            exit "$seed_status"
+          fi
+      - name: Upload SQLite idempotency seed failure diagnostics
+        if: failure() && steps.sqlite_seed_idempotency.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: workintel-idempotency-seed-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: storage/app/private/seed-diagnostics/workintel-ci-idempotency-seed-failure.json
+          if-no-files-found: error
+          retention-days: 7
       - run: php artisan test
       - run: php artisan workintel:production-doctor --json --require-build
       - run: php artisan workintel:final-certification --json --require-build

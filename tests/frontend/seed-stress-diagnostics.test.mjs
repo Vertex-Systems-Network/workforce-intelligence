@@ -61,8 +61,18 @@ test('normal CI captures Issue 70 seed state without retrying or weakening the o
     assert.ok(source.includes("if: failure() && steps.sqlite_seed.outcome == 'failure'"), `${name} upload must be failure-only`)
   }
 
-  const linuxSeedBlock = ci.slice(ci.indexOf('- id: sqlite_seed'), ci.indexOf('- run: php artisan db:seed --force'))
-  const windowsSeedBlock = windows.slice(windows.indexOf('- id: sqlite_seed'), windows.indexOf('- name: Seeder idempotency'))
+  const linuxSeedBlock = ci.slice(ci.indexOf('- id: sqlite_seed'), ci.indexOf('- run: php artisan test'))
+  const windowsSeedBlock = windows.slice(windows.indexOf('- id: sqlite_seed'), windows.indexOf('- name: Full PHPUnit suite'))
   assert.equal(/\bretry\b/i.test(linuxSeedBlock), false)
   assert.equal(/\bretry\b/i.test(windowsSeedBlock), false)
+
+  for (const [name, source, artifact] of [
+    ['linux idempotency', ci, 'workintel-ci-idempotency-seed-failure.json'],
+    ['windows idempotency', windows, 'workintel-windows-idempotency-seed-failure.json'],
+  ]) {
+    assert.ok(source.includes('id: sqlite_seed_idempotency'), `${name} seed step must expose an outcome id`)
+    assert.ok(source.includes('php artisan db:seed --force'), `${name} must keep the real idempotency seed command`)
+    assert.ok(source.includes(artifact), `${name} must retain a dedicated JSON artifact`)
+    assert.ok(source.includes("if: failure() && steps.sqlite_seed_idempotency.outcome == 'failure'"), `${name} upload must be failure-only`)
+  }
 })
