@@ -5,12 +5,15 @@ import test from 'node:test'
 const verifier = 'tools/verify-m14-release-admin-config.mjs'
 const repository = 'Vertex-Systems-Network/workforce-intelligence'
 const sourceSha = '0123456789abcdef0123456789abcdef01234567'
+const collectedAt = '2026-09-23T12:00:00Z'
+const verifiedAt = '2026-09-23T12:20:00Z'
 
 function evidence(overrides = {}) {
   return {
     schema: 'workintel.m14-release-admin-evidence.v1',
     repository,
     source_contract_sha: sourceSha,
+    collected_at: collectedAt,
     immutable_releases: { enabled: true, enforced_by_owner: false },
     environment: {
       name: 'production-release',
@@ -57,14 +60,19 @@ function evidence(overrides = {}) {
       windows_signer_fingerprint_matches_certificate_attested: true,
       apple_signer_fingerprint_matches_certificate_attested: true,
       audited_by: 'release-admin@example.test',
-      audited_at: '2026-09-23T12:00:00Z',
+      audited_at: '2026-09-23T12:10:00Z',
     },
     ...overrides,
   }
 }
 
 function verify(payload) {
-  return spawnSync(process.execPath, [verifier, '--repository', repository, '--source-sha', sourceSha], {
+  return spawnSync(process.execPath, [
+    verifier,
+    '--repository', repository,
+    '--source-sha', sourceSha,
+    '--as-of', verifiedAt,
+  ], {
     input: JSON.stringify(payload),
     encoding: 'utf8',
   })
@@ -180,4 +188,25 @@ test('binds the admin evidence packet to the exact M14 source contract SHA', () 
   const result = verify(wrong)
   assert.notEqual(result.status, 0)
   assert.match(result.stderr, /must match expected source/)
+})
+
+
+test('rejects stale, future, or audit-order-invalid admin evidence', () => {
+  const stale = evidence({ collected_at: '2026-09-23T11:49:59Z' })
+  assert.notEqual(verify(stale).status, 0)
+  assert.match(verify(stale).stderr, /evidence is stale/)
+
+  const future = evidence({ collected_at: '2026-09-23T12:20:01Z' })
+  assert.notEqual(verify(future).status, 0)
+  assert.match(verify(future).stderr, /cannot be later than verifier/)
+
+  const auditBeforeCollection = evidence()
+  auditBeforeCollection.attestation.audited_at = '2026-09-23T11:59:59Z'
+  assert.notEqual(verify(auditBeforeCollection).status, 0)
+  assert.match(verify(auditBeforeCollection).stderr, /cannot predate collected_at/)
+
+  const auditAfterVerification = evidence()
+  auditAfterVerification.attestation.audited_at = '2026-09-23T12:20:01Z'
+  assert.notEqual(verify(auditAfterVerification).status, 0)
+  assert.match(verify(auditAfterVerification).stderr, /cannot be later than verifier/)
 })
