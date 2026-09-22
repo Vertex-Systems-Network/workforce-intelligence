@@ -123,3 +123,11 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Added regression tests and M14 specification language; no application runtime/schema behavior changed.
 - Exact-head certification must restart after this source change.
 
+## 2026-09-22T12:11:00+05:00 — PR #89 merge + M14 current-main rehydration
+
+- PR #89 exact head `49b14a96faa75b1025176798d6d95fa61ad25650` passed Code Quality #275, WorkIntel CI #589, and Windows Certification #358 and merged as protected-main commit `ed8de6952d2617eb6ec3969c2c878e404e0521fc`.
+- Reclassified Issue #70 as recurrent nondeterministic seed failure with two historical incidents; normal certification now preserves fail-fast seed diagnostics while RB-005 remains not-authorized/blocked.
+- Reconciled PR #65 against new protected main. The only path overlap was `.github/workflows/ci.yml`.
+- Preserved PR #89 Linux seed diagnostics in the CI test lane and PR #65 M14 release-trust checks in the governance lane.
+- Prior PR #65 exact-head CI/review evidence is historical after rehydration; fresh exact-head certification and independent review are required.
+- Issue #62 remains external/Not Verified; no trusted tag/release publication was performed.

@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "0cc033029912cd1975b4dbda14efe449f6576320",
+  "observed_main_sha": "ed8de6952d2617eb6ec3969c2c878e404e0521fc",
   "active_issue": 61,
   "active_pr": 65,
   "active_branch": "m14/release-trust-current-main",
   "current_milestone": "Rehydrate and certify PR #65 M14 production release trust on current main",
   "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #80 merged security trust-boundary hardening on exact green head.",
-  "exact_next_safe_action": "Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for PR #65 after compact-state synchronization. If all automated gates are green, obtain genuine independent review for the exact current head; merge only after that review clears with no unresolved high-severity findings.",
+  "last_completed_milestone": "PR #89 merged normal Linux/Windows AccessControl seed-failure evidence capture on exact green head.",
+  "exact_next_safe_action": "Freshly certify the rehydrated PR #65 exact head on Code Quality, Standalone Build, WorkIntel CI, and Windows Certification. If all automated gates pass, obtain genuine independent review for that exact head; merge only after the review gate clears with no unresolved high-severity findings.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -25,7 +25,7 @@
   "current_blockers": [
     "Issue #61 requires a genuine independent reviewer on the exact current PR #65 head; self-review is not independent evidence.",
     "Issue #62 remains externally blocked because no active tag-target ruleset for agent-v* is present and the production-release environment remains Not Verified.",
-    "Issue #70 remains open but RB-005 is not-authorized/blocked; do not execute the dedicated seed-stress Runner benchmark."
+    "Issue #70 remains open as recurrent nondeterminism; PR #89 evidence capture is merged, while RB-005 remains not-authorized/blocked."
   ],
   "timeout_control": {
     "max_consolidated_status_refreshes_per_milestone": 1,
@@ -33,14 +33,14 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-22T05:03:00+05:00",
+  "last_reconciled_at": "2026-09-22T12:11:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
     "current_work": "Rehydrate and certify PR #65 M14 production release trust on current main",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 60,
-      "basis": "M14 source is rehydrated onto current main and the historical publication-order contract defect is fixed. Completion still requires fresh exact-head automated certification, genuine independent review, and external release-trust evidence."
+      "basis": "M14 source is rehydrated onto protected main after PR #89 evidence hardening. Prior PR #65 exact-head CI is historical after the head move; completion still requires fresh exact-head automated certification, genuine independent review, and external release-trust evidence."
     },
     "overall_progress": {
       "percent": 100,

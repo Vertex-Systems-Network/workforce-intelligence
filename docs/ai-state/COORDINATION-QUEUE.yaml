@@ -2,8 +2,8 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "0cc033029912cd1975b4dbda14efe449f6576320",
-  "reconciled_at": "2026-09-22T05:03:00+05:00",
+  "observed_main_sha": "ed8de6952d2617eb6ec3969c2c878e404e0521fc",
+  "reconciled_at": "2026-09-22T12:11:00+05:00",
   "issues": [
     {
       "number": 61,
@@ -21,7 +21,7 @@
       "number": 70,
       "title": "CI: harden intermittent AccessControlSeeder owner-role failure",
       "state": "open",
-      "action": "blocked-rb-005-not-authorized"
+      "action": "normal-ci-diagnostics-integrated-rb-005-blocked"
     }
   ],
   "pull_requests": [
@@ -31,7 +31,7 @@
       "state": "open",
       "draft": false,
       "head_sha": null,
-      "base_sha": "0cc033029912cd1975b4dbda14efe449f6576320",
+      "base_sha": "ed8de6952d2617eb6ec3969c2c878e404e0521fc",
       "head_ref": "m14/release-trust-current-main",
       "head_resolution": "resolve-current-head-on-resume"
     },
