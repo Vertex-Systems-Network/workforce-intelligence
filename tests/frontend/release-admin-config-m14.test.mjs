@@ -186,6 +186,46 @@ test('rejects duplicate or truncated GitHub list evidence', () => {
   assert.match(verify(truncatedSecrets).stderr, /truncated or paginated/)
 })
 
+test('rejects extra privileged deployment policies, secrets, and variables', () => {
+  const extraPolicy = evidence()
+  extraPolicy.deployment_branch_policies.branch_policies.push({
+    id: 803,
+    node_id: 'policy-staging',
+    name: 'staging',
+  })
+  extraPolicy.deployment_branch_policies.total_count = 3
+  const policyResult = verify(extraPolicy)
+  assert.notEqual(policyResult.status, 0)
+  assert.match(policyResult.stderr, /must not authorize deployment policies beyond main and agent-v\*/)
+
+  const extraSecret = evidence()
+  extraSecret.environment_secrets.secrets.push({ name: 'UNRELATED_PRODUCTION_SECRET' })
+  extraSecret.environment_secrets.total_count = 10
+  const secretResult = verify(extraSecret)
+  assert.notEqual(secretResult.status, 0)
+  assert.match(secretResult.stderr, /must not contain environment secrets outside the M14 allowlist/)
+
+  const extraVariable = evidence()
+  extraVariable.environment_variables.variables.push({ name: 'UNRELATED_RELEASE_FLAG', value: 'true' })
+  extraVariable.environment_variables.total_count = 4
+  const variableResult = verify(extraVariable)
+  assert.notEqual(variableResult.status, 0)
+  assert.match(variableResult.stderr, /must not contain environment variables outside the M14 allowlist/)
+})
+
+test('rejects unknown or duplicate CLI arguments', () => {
+  for (const args of [
+    [verifier, '--repository', repository, '--source-sha', sourceSha, '--unexpected', 'value'],
+    [verifier, '--repository', repository, '--repository', repository, '--source-sha', sourceSha],
+  ]) {
+    const result = spawnSync(process.execPath, args, {
+      input: JSON.stringify(evidence()),
+      encoding: 'utf8',
+    })
+    assert.notEqual(result.status, 0)
+  }
+})
+
 test('requires the complete environment secret inventory without reading secret values', () => {
   const payload = evidence()
   payload.environment_secrets.secrets = payload.environment_secrets.secrets.filter(
@@ -284,5 +324,5 @@ test('does not allow caller-controlled verifier time to bypass freshness', () =>
     encoding: 'utf8',
   })
   assert.notEqual(result.status, 0)
-  assert.match(result.stderr, /--as-of is not accepted/)
+  assert.match(result.stderr, /unsupported argument: --as-of/)
 })
