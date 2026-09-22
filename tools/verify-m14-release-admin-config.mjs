@@ -3,6 +3,7 @@
 import process from 'node:process'
 
 const SCHEMA = 'workintel.m14-release-admin-evidence.v1'
+const GITHUB_API_VERSION = '2026-03-10'
 const REQUIRED_ENVIRONMENT = 'production-release'
 const MAX_EVIDENCE_AGE_MS = 30 * 60 * 1000
 const REQUIRED_SECRETS = [
@@ -66,6 +67,7 @@ function mapByName(items, label) {
 function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifiedAt) {
   requireObject(evidence, 'evidence')
   if (evidence.schema !== SCHEMA) fail(`schema must be ${SCHEMA}`)
+  if (evidence.github_api_version !== GITHUB_API_VERSION) fail(`github_api_version must be ${GITHUB_API_VERSION}`)
   if (requireString(evidence.repository, 'repository') !== expectedRepository) {
     fail(`repository must be ${expectedRepository}`)
   }
@@ -164,6 +166,7 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
 
   return {
     schema: SCHEMA,
+    github_api_version: GITHUB_API_VERSION,
     repository: expectedRepository,
     source_contract_sha: sourceContractSha,
     collected_at: collectedAt,
