@@ -23,7 +23,7 @@ const REQUIRED_VARIABLES = [
   'WORKINTEL_APPLE_SIGNING_CERT_SHA256',
 ]
 const EVIDENCE_KEYS = new Set(["schema","github_api_version","repository","source_contract_sha","collected_at","immutable_releases","environment","deployment_branch_policies","environment_secrets","environment_variables","repository_secrets","repository_variables","attestation"])
-const ATTESTATION_KEYS = new Set(["admin_bypass_disabled_attested","required_reviewer_independence_attested","main_policy_is_branch_attested","agent_v_policy_is_tag_attested","release_policy_token_least_privilege_attested","windows_signer_fingerprint_matches_certificate_attested","apple_signer_fingerprint_matches_certificate_attested","no_organization_scope_release_credentials_attested","audited_by","audited_at"])
+const ATTESTATION_KEYS = new Set(["admin_bypass_disabled_attested","required_reviewer_independence_attested","main_policy_is_branch_attested","agent_v_policy_is_tag_attested","release_policy_token_least_privilege_attested","windows_signer_fingerprint_matches_certificate_attested","apple_signer_fingerprint_matches_certificate_attested","no_organization_scope_release_credentials_attested","audit_token_least_privilege_attested","audited_by","audited_at"])
 
 function fail(message) {
   console.error(`m14-release-admin-config: ${message}`)
