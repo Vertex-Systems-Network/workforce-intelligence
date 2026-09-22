@@ -4,11 +4,13 @@ import test from 'node:test'
 
 const verifier = 'tools/verify-m14-release-admin-config.mjs'
 const repository = 'Vertex-Systems-Network/workforce-intelligence'
+const sourceSha = '0123456789abcdef0123456789abcdef01234567'
 
 function evidence(overrides = {}) {
   return {
     schema: 'workintel.m14-release-admin-evidence.v1',
     repository,
+    source_contract_sha: sourceSha,
     immutable_releases: { enabled: true, enforced_by_owner: false },
     environment: {
       name: 'production-release',
@@ -62,7 +64,7 @@ function evidence(overrides = {}) {
 }
 
 function verify(payload) {
-  return spawnSync(process.execPath, [verifier, '--repository', repository], {
+  return spawnSync(process.execPath, [verifier, '--repository', repository, '--source-sha', sourceSha], {
     input: JSON.stringify(payload),
     encoding: 'utf8',
   })
@@ -170,4 +172,12 @@ test('rejects wrong repository, environment, malformed audit identity and timest
     payload.attestation[key] = value
     assert.notEqual(verify(payload).status, 0)
   }
+})
+
+
+test('binds the admin evidence packet to the exact M14 source contract SHA', () => {
+  const wrong = evidence({ source_contract_sha: 'f'.repeat(40) })
+  const result = verify(wrong)
+  assert.notEqual(result.status, 0)
+  assert.match(result.stderr, /must match expected source/)
 })
