@@ -56,18 +56,7 @@ test('collects live admin evidence only from pinned GitHub API endpoints', async
     return response(apiPayload(url))
   }
 
-  const attestation = {
-    admin_bypass_disabled_attested: true,
-    required_reviewer_independence_attested: true,
-    main_policy_is_branch_attested: true,
-    agent_v_policy_is_tag_attested: true,
-    release_policy_token_least_privilege_attested: true,
-    windows_signer_fingerprint_matches_certificate_attested: true,
-    apple_signer_fingerprint_matches_certificate_attested: true,
-    no_organization_scope_release_credentials_attested: true,
-    audited_by: 'release-reviewer',
-    audited_at: '2026-09-23T11:59:00Z',
-  }
+  const attestation = { ...validAttestation }
   const evidence = await collectEvidence({
     repository,
     sourceSha,
