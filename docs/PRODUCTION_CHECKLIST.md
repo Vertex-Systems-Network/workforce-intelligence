@@ -35,10 +35,11 @@ Before traffic:
 - [ ] `production-release` environment deployment rules are externally verified to allow only the intended `main` manual-dispatch branch and authorized `agent-v*` release tags before signing/notary secrets are attached; environment deployment rules do not substitute for tag immutability rules
 - [ ] `production-release` environment required-reviewer policy is configured for privileged release jobs, with self-review prevention and administrator bypass disabled where the repository plan/policy supports those controls
 - [ ] environment signing/notary secrets are unavailable until the configured deployment protection rules pass
-- [ ] Windows standalone distribution has a verified Authenticode signature and RFC 3161 timestamp when Windows enterprise distribution is in scope
+- [ ] `production-release` defines `WORKINTEL_WINDOWS_SIGNING_CERT_SHA256` as the approved 64-hex SHA-256 fingerprint for the organization Windows Code Signing certificate
+- [ ] Windows standalone distribution has a verified Authenticode signature and RFC 3161 timestamp, and the imported signing certificate fingerprint exactly matches `WORKINTEL_WINDOWS_SIGNING_CERT_SHA256`, when Windows enterprise distribution is in scope
 - [ ] macOS standalone distribution has a verified Developer ID signature and an accepted Apple notarization result when macOS enterprise distribution is in scope
 - [ ] Linux standalone distribution has final SHA-256/provenance evidence and is not described as platform-signed unless such signing actually occurred
-- [ ] every trusted standalone artifact has a machine-readable M14 receipt whose final digest matches the distributed bytes
+- [ ] every trusted standalone artifact has a machine-readable M14 receipt whose final digest matches the distributed bytes; Windows SIGNED receipts also bind `authenticode-cert-sha256:<fingerprint>` evidence
 - [ ] M13 canonical ZIP bytes/version immutability remains unchanged by trusted standalone distribution
 - [ ] backup and rollback procedure tested
 - [ ] backup-to-restore evidence exists before recovery is described as `restore verified`

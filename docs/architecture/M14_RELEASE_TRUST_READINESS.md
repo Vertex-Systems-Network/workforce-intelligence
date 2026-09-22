@@ -32,7 +32,7 @@ Ordinary application users, tenant administrators, employees and tracked devices
 - retain the existing deterministic standalone build and exact Node/lockfile contract;
 - introduce a separate trusted release workflow that is never triggered by `pull_request`;
 - bind every trusted build to an exact source SHA that must be reachable from protected `main`;
-- Windows Authenticode signing with an organization-controlled certificate, RFC 3161 timestamp and explicit signature verification;
+- Windows Authenticode signing with an organization-controlled certificate, an administrator-configured expected SHA-256 certificate fingerprint, RFC 3161 timestamp and explicit signature verification;
 - macOS Developer ID signing with hardened runtime, secure timestamp and Apple notarization through `notarytool`;
 - Linux distribution remains checksum/provenance based and is not assigned an invented signing provider;
 - calculate an unsigned/pre-trust SHA-256 and a final post-trust SHA-256;
@@ -149,10 +149,12 @@ No new application UI is required. Existing download/install UX remains unchange
 
 1. build deterministic standalone executable;
 2. record unsigned SHA-256;
-3. require organization certificate material and timestamp URL;
-4. sign using SignTool with SHA-256 file digest and SHA-256 RFC 3161 timestamp digest;
-5. verify Authenticode signature;
-6. record final SHA-256 and receipt.
+3. require organization certificate material, the approved certificate SHA-256 fingerprint and timestamp URL;
+4. verify the imported Code Signing certificate's SHA-256 fingerprint exactly matches the approved signer identity before signing;
+5. sign using SignTool with SHA-256 file digest and SHA-256 RFC 3161 timestamp digest;
+6. verify Authenticode signature;
+7. bind the approved signer fingerprint into the machine-readable receipt;
+8. record final SHA-256 and receipt.
 
 **macOS**
 
@@ -202,15 +204,16 @@ High-severity unresolved conditions block release:
 3. wrong revision or substituted artifact signed;
 4. only pre-sign digest retained with no final digest;
 5. key/token/certificate material leaked to logs or artifacts;
-6. stale or non-main-contained source SHA released;
-7. timestamp/notary partial failure represented as success;
-8. artifact replaced after trust verification and before publication;
-9. unpinned release-critical GitHub Action introduced;
-10. retry overwrites an existing same-version asset;
-11. existing M13 canonical same-version package bytes changed;
-12. healthy HTTP endpoint used as substitute for DB/queue/scheduler/storage readiness;
-13. backup creation represented as restore verification;
-14. rollback target incompatible with schema/configuration.
+6. a valid but unapproved Windows Code Signing certificate is accepted because signer identity was not pinned;
+7. stale or non-main-contained source SHA released;
+8. timestamp/notary partial failure represented as success;
+9. artifact replaced after trust verification and before publication;
+10. unpinned release-critical GitHub Action introduced;
+11. retry overwrites an existing same-version asset;
+12. existing M13 canonical same-version package bytes changed;
+13. healthy HTTP endpoint used as substitute for DB/queue/scheduler/storage readiness;
+14. backup creation represented as restore verification;
+15. rollback target incompatible with schema/configuration.
 
 ## Observability / support contract
 
@@ -224,7 +227,7 @@ Each receipt records only non-secret evidence:
 - final SHA-256 and byte size;
 - whether trust processing changed bytes;
 - verification method;
-- external evidence ID when applicable (for example Apple notarization submission ID);
+- external evidence ID when applicable (for example the Windows Authenticode signer certificate SHA-256 fingerprint or Apple notarization submission ID);
 - GitHub repository/workflow/run/attempt/event/ref metadata.
 
 Unavailable external signing/notary/real-target evidence is reported as `Not Verified`, never synthesized.

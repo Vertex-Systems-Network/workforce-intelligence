@@ -113,6 +113,13 @@ function validateReceiptShape(receipt) {
   if (receipt.trust_state === 'NOTARIZED' && !receipt.verification.external_evidence_id) {
     fail('NOTARIZED receipt requires external evidence id')
   }
+  if (
+    receipt.platform === 'Windows'
+    && receipt.trust_state === 'SIGNED'
+    && !/^authenticode-cert-sha256:[0-9a-f]{64}$/.test(String(receipt.verification.external_evidence_id || ''))
+  ) {
+    fail('SIGNED Windows receipt requires Authenticode certificate SHA-256 evidence')
+  }
 
   if (receipt.trust_state === 'HASH_VERIFIED' && receipt.byte_changed_by_trust) {
     fail('HASH_VERIFIED receipt cannot claim trust processing changed bytes')

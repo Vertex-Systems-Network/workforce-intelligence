@@ -211,6 +211,7 @@ test('M14 Windows and macOS trust operations fail closed on missing organization
   for (const token of [
     'WORKINTEL_WINDOWS_SIGNING_PFX_B64',
     'WORKINTEL_WINDOWS_SIGNING_PFX_PASSWORD',
+    'WORKINTEL_WINDOWS_SIGNING_CERT_SHA256',
     'WORKINTEL_WINDOWS_TIMESTAMP_URL',
     '/fd SHA256',
     '/tr $env:WINDOWS_TIMESTAMP_URL',
@@ -237,7 +238,12 @@ test('M14 Windows signing selects exactly one newly imported private-key Code Si
     "1.3.6.1.5.5.7.3.3",
     '$_.HasPrivateKey',
     'Expected exactly one newly imported Code Signing certificate with a private key',
-    '$certificateThumbprint = [string]$codeSigningCandidates[0].Thumbprint',
+    '$certificate = $codeSigningCandidates[0]',
+    '$certificateThumbprint = [string]$certificate.Thumbprint',
+    '$certificate.GetCertHashString([System.Security.Cryptography.HashAlgorithmName]::SHA256)',
+    '$certificateSha256 -ne $expectedCertificateSha256',
+    'Imported Windows Code Signing certificate SHA-256 fingerprint does not match the approved signer identity.',
+    'WINDOWS_SIGNING_CERT_SHA256=$certificateSha256',
     'foreach ($thumbprint in $importedThumbprints)',
     'Remove-Item "$certificateStorePath\\$thumbprint"',
   ]) assert.ok(workflow.includes(token), token)
@@ -248,6 +254,7 @@ test('M14 platform receipts distinguish truthful trust states', () => {
   for (const token of [
     '--platform Windows',
     '--trust-state SIGNED',
+    '--external-evidence-id "authenticode-cert-sha256:$env:WINDOWS_SIGNING_CERT_SHA256"',
     '--platform macOS',
     '--trust-state NOTARIZED',
     '--platform Linux',
@@ -306,6 +313,30 @@ test('release trust receipt creation and verification are tamper evident', () =>
   }
 })
 
+test('release trust receipt requires Windows signer fingerprint evidence', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-windows-signer-evidence-'))
+  try {
+    const artifact = path.join(root, 'WorkIntelAgent-Windows-1.2.3.exe')
+    fs.writeFileSync(artifact, 'signed-windows-bytes')
+    const result = spawnSync(process.execPath, [
+      receiptTool,
+      'create',
+      '--artifact', artifact,
+      '--output', `${artifact}.receipt.json`,
+      '--platform', 'Windows',
+      '--trust-state', 'SIGNED',
+      '--source-sha', '0123456789abcdef0123456789abcdef01234567',
+      '--release-version', '1.2.3',
+      '--unsigned-sha256', sha256(Buffer.from('unsigned-windows-bytes')),
+      '--verification-method', 'test Authenticode verification',
+    ], { encoding: 'utf8' })
+    assert.notEqual(result.status, 0)
+    assert.match(result.stderr, /SIGNED Windows receipt requires Authenticode certificate SHA-256 evidence/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
 test('release trust receipt rejects a platform trust-state mismatch', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-platform-state-'))
   try {
@@ -325,6 +356,7 @@ test('release trust receipt rejects a platform trust-state mismatch', () => {
       '--release-version', '1.2.3',
       '--unsigned-sha256', sha256(Buffer.from('unsigned-windows-bytes')),
       '--verification-method', 'test Authenticode verification',
+      '--external-evidence-id', `authenticode-cert-sha256:${'a'.repeat(64)}`,
     ], { encoding: 'utf8' })
     assert.equal(create.status, 0, create.stderr || create.stdout)
 
@@ -386,6 +418,7 @@ test('release trust receipt requires byte-changing evidence for signed states', 
       '--release-version', '1.2.2',
       '--unsigned-sha256', unchangedDigest,
       '--verification-method', 'test signature verification',
+      '--external-evidence-id', `authenticode-cert-sha256:${'a'.repeat(64)}`,
     ], { encoding: 'utf8' })
     assert.notEqual(result.status, 0)
     assert.match(result.stderr, /SIGNED artifact did not change/)

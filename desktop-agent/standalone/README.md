@@ -35,7 +35,7 @@ Trusted release invariants:
 - GitHub may omit `bypass_actors` from detailed ruleset reads for callers without ruleset write visibility; the reviewed attested snapshot covers that hidden field, while any later ruleset mutation changes `updated_at` and invalidates the proof; when GitHub does expose `bypass_actors`, the verifier additionally requires the live array to be empty;
 - the publication job re-runs the same exact ruleset-snapshot verification before exposing the release;
 - tag creation authority remains an external operator/repository policy boundary and must be restricted to the intended release process;
-- Windows requires organization-owned Authenticode certificate material plus an RFC 3161 timestamp URL, then verifies the resulting signature;
+- Windows requires organization-owned Authenticode certificate material, an approved `WORKINTEL_WINDOWS_SIGNING_CERT_SHA256` fingerprint plus an RFC 3161 timestamp URL; the imported Code Signing certificate must match that SHA-256 identity before signing, and the verified fingerprint is bound into the receipt;
 - macOS requires an organization-owned Developer ID certificate and Apple notarization credentials, then requires an accepted `notarytool` result;
 - Linux remains checksum/provenance based and does not claim a platform signing service that has not been configured;
 - every platform emits a machine-readable trust receipt containing the pre-trust and final SHA-256 evidence without including private signing material;
