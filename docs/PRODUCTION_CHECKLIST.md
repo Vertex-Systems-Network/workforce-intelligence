@@ -26,6 +26,7 @@ Before traffic:
 - [ ] GitHub **immutable releases** are enabled for this repository (directly or by organization policy) before any trusted release is published
 - [ ] `production-release` stores `WORKINTEL_RELEASE_POLICY_READ_TOKEN` with the minimum Administration **read** capability needed to verify `GET /repos/{owner}/{repo}/immutable-releases`
 - [ ] trusted release workflow fails closed if immutable-release policy cannot be verified before trust work and rechecks it immediately before public exposure
+- [ ] after draft-to-public transition, GitHub native release verification proves the published immutable release and every attached local artifact; an ambiguous non-zero publish response is accepted only when that final immutable postcondition verifies
 - [ ] the exact audited ruleset ID and GitHub `updated_at` snapshot are recorded in `docs/operations/M14_RELEASE_TAG_RULESET_ATTESTATION.json` with `status=VERIFIED`, `no_bypass_actors_attested=true`, auditor identity and an audit timestamp at or after the ruleset snapshot
 - [ ] the attestation update itself is committed through normal exact-head source certification and required independent review; do not edit release trust evidence directly on protected `main`
 - [ ] release-tag creation authority is restricted to the intended operator/process; tag creation policy is reviewed separately from post-creation update/deletion immutability

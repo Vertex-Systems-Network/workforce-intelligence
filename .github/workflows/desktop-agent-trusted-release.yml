@@ -507,6 +507,13 @@ jobs:
               || { echo 'GitHub immutable releases are not enabled or could not be verified.'; exit 1; }
           }
 
+          verify_published_immutable_release() {
+            gh release verify "$RELEASE_TAG" || return 1
+            for asset in trusted-release-assets/*; do
+              gh release verify-asset "$RELEASE_TAG" "$asset" || return 1
+            done
+          }
+
           assert_immutable_release_tag_rules() {
             local ruleset_file="$RUNNER_TEMP/workintel-publish-tag-rulesets-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.jsonl"
             : > "$ruleset_file"
@@ -631,7 +638,18 @@ NODE
           assert_immutable_release_tag_rules
           assert_live_release_refs
           assert_remote_release_assets_match
-          gh release edit "$RELEASE_TAG" --draft=false
+          publish_status=0
+          gh release edit "$RELEASE_TAG" --draft=false || publish_status=$?
+          if ! verify_published_immutable_release; then
+            if [ "$publish_status" -ne 0 ]; then
+              exit "$publish_status"
+            fi
+            echo 'Published GitHub Release did not pass immutable release/asset verification.'
+            exit 1
+          fi
           created=0
           trap - EXIT
-          echo "Published trusted release $RELEASE_TAG from exact source $SOURCE_SHA"
+          if [ "$publish_status" -ne 0 ]; then
+            echo 'Release publication command returned non-zero, but the immutable published postcondition is verified.'
+          fi
+          echo "Published and verified immutable trusted release $RELEASE_TAG from exact source $SOURCE_SHA"

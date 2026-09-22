@@ -293,3 +293,15 @@ The policy is verified twice:
 Once immutable releases are enabled, a published release locks its associated release assets and tag against later mutation and GitHub generates release-integrity attestation evidence. Release title/notes may remain editable under GitHub semantics and are not artifact-integrity authority.
 
 Issue #62 owns the external administrator configuration and read-token placement. Source merge alone does not verify this live policy.
+
+
+## Published immutable-release postcondition
+
+After the draft is exposed, the trusted workflow verifies the resulting GitHub immutable release and every locally retained release asset with GitHub's native release-integrity verification commands. A successful publication API response is not sufficient by itself.
+
+The publication command is treated as an at-most-once transition:
+- if draft-to-public succeeds, immutable release and asset verification must also succeed;
+- if the publication command returns non-zero but the server-side transition actually succeeded, the run may recover only when the immutable published release and every local asset verify successfully;
+- if neither condition is proven, the workflow fails closed.
+
+This closes the ambiguous network-response case without retrying publication or overwriting an existing release version.

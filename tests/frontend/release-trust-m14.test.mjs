@@ -508,3 +508,21 @@ test('release trust receipt publication expectations bind source and workflow ru
     fs.rmSync(root, { recursive: true, force: true })
   }
 })
+
+
+test('M14 verifies the published immutable release and every asset as the final publication postcondition', () => {
+  for (const token of [
+    'verify_published_immutable_release()',
+    'gh release verify "$RELEASE_TAG"',
+    'gh release verify-asset "$RELEASE_TAG" "$asset"',
+    'publish_status=0',
+    'gh release edit "$RELEASE_TAG" --draft=false || publish_status=$?',
+    'if ! verify_published_immutable_release; then',
+    'Release publication command returned non-zero, but the immutable published postcondition is verified.',
+  ]) assert.ok(workflow.includes(token), token)
+
+  const expose = workflow.lastIndexOf('gh release edit "$RELEASE_TAG" --draft=false || publish_status=$?')
+  const verified = workflow.lastIndexOf('if ! verify_published_immutable_release; then')
+  const releaseSuccess = workflow.lastIndexOf('Published and verified immutable trusted release')
+  assert.ok(expose > 0 && verified > expose && releaseSuccess > verified, 'immutable release verification must be the final publication postcondition')
+})
