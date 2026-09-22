@@ -370,6 +370,24 @@ test('accepts a fresh administrator attestation made shortly before live collect
 })
 
 
+test('captures verification time after evidence input is available', () => {
+  const payload = evidence({ collected_at: isoOffset(1 * 1000) })
+  payload.attestation.audited_at = payload.collected_at
+
+  const result = spawnSync(process.execPath, [
+    verifier,
+    '--repository', repository,
+    '--source-sha', sourceSha,
+  ], {
+    input: JSON.stringify(payload),
+    encoding: 'utf8',
+  })
+
+  // A slightly future packet must still fail when verified immediately.
+  assert.notEqual(result.status, 0)
+  assert.match(result.stderr, /cannot be later than verifier system time/)
+})
+
 test('does not allow caller-controlled verifier time to bypass freshness', () => {
   const payload = evidence({ collected_at: isoOffset(-31 * 60 * 1000) })
   const result = spawnSync(process.execPath, [
