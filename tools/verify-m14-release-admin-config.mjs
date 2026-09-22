@@ -214,6 +214,7 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   requireTrue(attestation.windows_signer_fingerprint_matches_certificate_attested, 'attestation.windows_signer_fingerprint_matches_certificate_attested')
   requireTrue(attestation.apple_signer_fingerprint_matches_certificate_attested, 'attestation.apple_signer_fingerprint_matches_certificate_attested')
   requireTrue(attestation.no_organization_scope_release_credentials_attested, 'attestation.no_organization_scope_release_credentials_attested')
+  requireTrue(attestation.audit_token_least_privilege_attested, 'attestation.audit_token_least_privilege_attested')
   const auditedBy = requireString(attestation.audited_by, 'attestation.audited_by')
   const auditedAt = requireTimestamp(attestation.audited_at, 'attestation.audited_at')
   const auditedAtMs = Date.parse(auditedAt)
@@ -254,6 +255,7 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
       windows_signer_fingerprint_matches_certificate: true,
       apple_signer_fingerprint_matches_certificate: true,
       no_organization_scope_release_credentials: true,
+      audit_token_least_privilege: true,
       audited_by: auditedBy,
       audited_at: auditedAt,
     },
