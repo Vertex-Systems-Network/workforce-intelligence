@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Throwable;
+
 $dbPath = getenv('DB_DATABASE') ?: 'database/database.sqlite';
 if (! str_starts_with($dbPath, DIRECTORY_SEPARATOR)) {
     $dbPath = dirname(__DIR__).DIRECTORY_SEPARATOR.$dbPath;
@@ -46,7 +48,7 @@ $safeRuntimeValue = static function (callable $resolver): ?string {
         $value = $resolver();
 
         return $value === false || $value === null ? null : (string) $value;
-    } catch (\Throwable) {
+    } catch (Throwable) {
         return null;
     }
 };
