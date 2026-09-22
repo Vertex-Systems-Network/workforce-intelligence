@@ -2,6 +2,23 @@
 
 WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platform. Laravel serves the React SPA and API from the same application; there is no second frontend project and no fixed hostname in the source.
 
+<!-- AI-PROGRESS:START -->
+## AI Development Progress
+
+- **Repo:** `Vertex-Systems-Network/workforce-intelligence`
+- **Current Work:** Rehydrate and certify PR #65 M14 production release trust on current main
+- **Current Module:** M14 — Production Release Trust & Real-Target Readiness
+- **Module Progress:** [██████░░░░] **60%**
+- **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
+- **Active Issue:** #61 / #62
+- **Active PR:** #65
+- **Active Branch:** `m14/release-trust-current-main`
+- **Last Completed:** PR #80 merged security trust-boundary hardening on exact green head.
+- **Next Action:** Certify PR #65 on its refreshed exact head. Merge remains blocked until a genuine independent reviewer approves that exact head with no unresolved high-severity release-trust finding; Issue #62 external administrator configuration remains separate.
+
+> Overall progress is scoped to the active release-scope modular maturity. M14 remains partially complete until its independent-review and external release/real-target evidence gates are actually satisfied.
+<!-- AI-PROGRESS:END -->
+
 ## Development progress & phase status
 
 The table below is the repository-level roadmap view. `Progress` represents accepted phase completion/evidence gates, not code volume. A green source/CI state is not the same as `PRODUCTION_VERIFIED`; external signing, release and real-target evidence remain separate gates where required.
