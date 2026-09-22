@@ -4,7 +4,23 @@ This document defines a read-only evidence packet for Issue #62. It does not con
 
 ## Purpose
 
-After an administrator configures M14 external release controls, collect GitHub REST snapshots and validate them with:
+After an administrator configures M14 external release controls, prefer live collection directly from GitHub's pinned API origin and pipe that evidence into the verifier:
+
+```bash
+export WORKINTEL_M14_ADMIN_AUDIT_TOKEN='<ephemeral read-only auditor token>'
+node tools/collect-m14-release-admin-evidence.mjs \
+  --repository Vertex-Systems-Network/workforce-intelligence \
+  --source-sha <exact-M14-source-sha> \
+  --attestation-file ./m14-admin-attestation.json \
+| node tools/verify-m14-release-admin-config.mjs \
+  --repository Vertex-Systems-Network/workforce-intelligence \
+  --source-sha <exact-M14-source-sha>
+unset WORKINTEL_M14_ADMIN_AUDIT_TOKEN
+```
+
+The collector hardcodes `https://api.github.com`, sends the auditor credential only in the Authorization header, disables redirects, pins GitHub API version `2026-03-10`, and never writes the token into the evidence packet.
+
+For archived/re-verification workflows, an already-collected packet can still be validated directly with:
 
 ```bash
 node tools/verify-m14-release-admin-config.mjs \
