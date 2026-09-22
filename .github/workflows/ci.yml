@@ -56,7 +56,27 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
       - run: npm run performance:audit:build
-      - run: php artisan migrate:fresh --seed --force
+      - id: sqlite_seed
+        name: Fresh SQLite migration and seed
+        shell: bash
+        run: |
+          set +e
+          php artisan migrate:fresh --seed --force
+          seed_status=$?
+          set -e
+          if [ "$seed_status" -ne 0 ]; then
+            mkdir -p storage/app/private/seed-diagnostics
+            php tools/access-control-seed-state.php > storage/app/private/seed-diagnostics/workintel-ci-seed-failure.json || true
+            exit "$seed_status"
+          fi
+      - name: Upload SQLite seed failure diagnostics
+        if: failure() && steps.sqlite_seed.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: workintel-seed-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: storage/app/private/seed-diagnostics/workintel-ci-seed-failure.json
+          if-no-files-found: error
+          retention-days: 7
       - run: php artisan db:seed --force
       - run: php artisan test
       - run: php artisan workintel:production-doctor --json --require-build

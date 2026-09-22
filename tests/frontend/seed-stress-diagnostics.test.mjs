@@ -7,6 +7,8 @@ const root = process.cwd()
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8')
 
 const workflow = read('.github/workflows/seed-stress.yml')
+const ci = read('.github/workflows/ci.yml')
+const windows = read('.github/workflows/windows-certification.yml')
 const stress = read('tools/access-control-seed-stress.sh')
 const state = read('tools/access-control-seed-state.php')
 const registry = JSON.parse(read('benchmarks/runner/registry.json'))
@@ -44,4 +46,23 @@ test('Issue 70 seed stress lane remains fail-fast and manually gated by Runner a
   assert.equal(benchmark.security_critical, true)
   assert.equal(benchmark.result_recording.mode, 'external-exact-head-envelope')
   assert.ok(benchmark.commands.some(command => command.includes('seed-stress.yml')))
+})
+
+
+test('normal CI captures Issue 70 seed state without retrying or weakening the owner invariant', () => {
+  for (const [name, source, artifact] of [
+    ['linux', ci, 'workintel-ci-seed-failure.json'],
+    ['windows', windows, 'workintel-windows-seed-failure.json'],
+  ]) {
+    assert.ok(source.includes('id: sqlite_seed'), `${name} seed step must expose an outcome id`)
+    assert.ok(source.includes('php artisan migrate:fresh --seed --force'), `${name} must keep the real seed command`)
+    assert.ok(source.includes('php tools/access-control-seed-state.php'), `${name} must capture access-control state`)
+    assert.ok(source.includes(artifact), `${name} must retain a dedicated JSON artifact`)
+    assert.ok(source.includes("if: failure() && steps.sqlite_seed.outcome == 'failure'"), `${name} upload must be failure-only`)
+  }
+
+  const linuxSeedBlock = ci.slice(ci.indexOf('- id: sqlite_seed'), ci.indexOf('- run: php artisan db:seed --force'))
+  const windowsSeedBlock = windows.slice(windows.indexOf('- id: sqlite_seed'), windows.indexOf('- name: Seeder idempotency'))
+  assert.equal(/\bretry\b/i.test(linuxSeedBlock), false)
+  assert.equal(/\bretry\b/i.test(windowsSeedBlock), false)
 })
