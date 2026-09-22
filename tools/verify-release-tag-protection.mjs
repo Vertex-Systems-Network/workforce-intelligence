@@ -69,6 +69,12 @@ function loadAttestation(path) {
   if (attestation.no_bypass_actors_attested !== true) {
     fail('release-tag ruleset attestation must explicitly attest no bypass actors')
   }
+  if (attestation.tag_creation_authority_attested !== true) {
+    fail('release-tag ruleset attestation must explicitly attest restricted tag creation authority')
+  }
+  if (typeof attestation.tag_creation_authority_basis !== 'string' || attestation.tag_creation_authority_basis.trim() === '') {
+    fail('release-tag ruleset attestation tag_creation_authority_basis is required')
+  }
   if (typeof attestation.audited_by !== 'string' || attestation.audited_by.trim() === '') {
     fail('release-tag ruleset attestation audited_by is required')
   }
@@ -145,6 +151,9 @@ function verify(rulesets, tag, attestation) {
 
   if (!Array.isArray(ruleset.rules)) fail(`${label} has malformed rules`)
   const ruleTypes = [...new Set(ruleset.rules.map(rule => rule?.type).filter(Boolean))].sort()
+  if (ruleTypes.includes('creation')) {
+    fail(`${label} uses a creation restriction that only bypass actors can satisfy; this conflicts with the attested zero-bypass policy`)
+  }
   for (const requiredRule of ['update', 'deletion']) {
     if (!ruleTypes.includes(requiredRule)) {
       fail(`${label} does not enforce ${requiredRule} restriction for ${ref}`)
@@ -166,6 +175,8 @@ function verify(rulesets, tag, attestation) {
       deletion_restricted: true,
       no_bypass_actors: true,
       bypass_evidence: Object.hasOwn(ruleset, 'bypass_actors') ? 'api-plus-attested-snapshot' : 'attested-snapshot',
+      tag_creation_authority_restricted: true,
+      tag_creation_authority_basis: attestation.tag_creation_authority_basis,
     },
     attestation: {
       schema: attestation.schema,

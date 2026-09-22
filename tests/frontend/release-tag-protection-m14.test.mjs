@@ -36,6 +36,8 @@ function attestation(overrides = {}) {
     ruleset_id: 700,
     ruleset_updated_at: UPDATED_AT,
     no_bypass_actors_attested: true,
+    tag_creation_authority_attested: true,
+    tag_creation_authority_basis: 'Repository permissions restrict agent-v* creation to the approved release operator/process.',
     audited_by: 'release-admin@example.test',
     audited_at: '2026-09-02T00:05:00Z',
     ...overrides,
@@ -79,6 +81,8 @@ test('canonical attestation remains fail-closed until administrator evidence is 
   assert.equal(canonical.schema, 'workintel.release-tag-ruleset-attestation.v1')
   assert.equal(canonical.status, 'NOT_CONFIGURED')
   assert.equal(canonical.no_bypass_actors_attested, false)
+  assert.equal(canonical.tag_creation_authority_attested, false)
+  assert.equal(canonical.tag_creation_authority_basis, '')
 })
 
 test('accepts hidden bypass field when exact immutable snapshot is externally attested', () => {
@@ -91,6 +95,8 @@ test('accepts hidden bypass field when exact immutable snapshot is externally at
   assert.equal(evidence.protections.deletion_restricted, true)
   assert.equal(evidence.protections.no_bypass_actors, true)
   assert.equal(evidence.protections.bypass_evidence, 'attested-snapshot')
+  assert.equal(evidence.protections.tag_creation_authority_restricted, true)
+  assert.match(evidence.protections.tag_creation_authority_basis, /approved release operator\/process/)
 })
 
 test('accepts visible empty bypass actors and records API plus snapshot evidence', () => {
@@ -135,6 +141,12 @@ test('rejects inactive, wrong-target, excluded and nonmatching rulesets', () => 
   }
 })
 
+test('rejects a creation restriction under the zero-bypass policy because no actor could create the release tag', () => {
+  const result = verify([ruleset({ rules: [{ type: 'creation' }, { type: 'update' }, { type: 'deletion' }] })])
+  assert.notEqual(result.status, 0)
+  assert.match(result.stderr, /creation restriction that only bypass actors can satisfy/)
+})
+
 test('rejects missing update or deletion restriction in the attested ruleset', () => {
   for (const rules of [[{ type: 'update' }], [{ type: 'deletion' }]]) {
     const result = verify([ruleset({ rules })])
@@ -147,6 +159,8 @@ test('rejects unverified, non-no-bypass, wrong-ID and stale attestation', () => 
   const cases = [
     [attestation({ status: 'NOT_CONFIGURED' }), /status must be VERIFIED/],
     [attestation({ no_bypass_actors_attested: false }), /explicitly attest no bypass actors/],
+    [attestation({ tag_creation_authority_attested: false }), /explicitly attest restricted tag creation authority/],
+    [attestation({ tag_creation_authority_basis: '' }), /tag_creation_authority_basis is required/],
     [attestation({ ruleset_id: 701 }), /Attested ruleset 701 was not returned/],
     [attestation({ ruleset_updated_at: '2026-09-01T23:00:00Z' }), /updated_at changed from attested snapshot/],
     [attestation({ audited_by: '' }), /audited_by is required/],

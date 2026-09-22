@@ -113,3 +113,13 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - RB-005 remains not-authorized/blocked; no stress benchmark was executed.
 - This source move invalidates the prior exact-head runs; fresh exact-head certification is required.
 
+## 2026-09-22T05:03:00+05:00 — M14 trusted-tag creation authority hardening
+
+- Continued static high-risk review while exact-head CI was pending instead of tight-polling workflow status.
+- Confirmed from GitHub ruleset semantics that a `creation` rule allows matching ref creation only to bypass actors.
+- Identified a contract gap: M14 required restricted `agent-v*` creation authority, but the verifier/attestation only proved update/deletion immutability plus zero bypass.
+- Hardened the attestation contract to require explicit administrator evidence for trusted tag creation authority.
+- Added fail-closed rejection of a tag ruleset that combines a `creation` restriction with the zero-bypass policy, because that configuration would make trusted tag creation impossible.
+- Added regression tests and M14 specification language; no application runtime/schema behavior changed.
+- Exact-head certification must restart after this source change.
+

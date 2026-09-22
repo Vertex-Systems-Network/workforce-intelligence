@@ -49,6 +49,8 @@ Ordinary application users, tenant administrators, employees and tracked devices
 - refuse an already-existing release/tag publication target instead of overwriting assets;
 - verify the complete expected trusted asset set before making a draft release public;
 - clean up a newly-created draft release when publication validation fails;
+- require administrator-attested tag-creation authority so only the approved release operator/process can create trusted `agent-v*` refs;
+- keep the immutable tag ruleset zero-bypass for update/deletion protection; do not combine zero bypass with GitHub's `creation` restriction because that rule permits creation only to bypass actors and would make trusted tag creation impossible;
 - never mutate the M13 canonical ZIP catalog or same-version canonical bytes as part of trusted executable distribution.
 
 ### M14C — Real-target readiness evidence
@@ -138,7 +140,8 @@ No new application UI is required. Existing download/install UX remains unchange
 3. determine the exact source SHA;
 4. source SHA must be a valid commit reachable from protected `main`;
 5. release tag events must match the agent source version exactly;
-6. every build job checks out that exact SHA.
+6. every build job checks out that exact SHA;
+7. trusted tag protection must include an administrator-audited creation-authority attestation in addition to zero-bypass update/deletion immutability evidence.
 
 ### Platform trust
 
