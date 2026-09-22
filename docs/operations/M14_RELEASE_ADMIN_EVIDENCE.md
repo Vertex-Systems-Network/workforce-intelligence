@@ -69,10 +69,10 @@ Required auditor attestations:
 The verifier requires:
 
 - immutable releases enabled;
-- environment name exactly `production-release`;
-- at least one required reviewer and `prevent_self_review=true`;
+- environment name exactly `production-release`, a positive environment id, and an API URL bound to the expected repository;
+- at least one structurally valid User/Team required reviewer and `prevent_self_review=true`;
 - custom deployment policies enabled;
-- both `main` and `agent-v*` policies present;
+- both `main` and `agent-v*` policies present with API policy ids/node ids;
 - all nine M14 environment secret names present;
 - `WORKINTEL_WINDOWS_TIMESTAMP_URL` uses HTTPS;
 - both Windows and Apple approved signer fingerprints are exactly 64 hexadecimal SHA-256 characters;
