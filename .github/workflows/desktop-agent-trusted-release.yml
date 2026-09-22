@@ -333,30 +333,38 @@ jobs:
           APPLE_DEVELOPER_ID_P12_B64: ${{ secrets.WORKINTEL_APPLE_DEVELOPER_ID_P12_B64 }}
           APPLE_DEVELOPER_ID_P12_PASSWORD: ${{ secrets.WORKINTEL_APPLE_DEVELOPER_ID_P12_PASSWORD }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.WORKINTEL_APPLE_SIGNING_IDENTITY }}
+          APPLE_SIGNING_CERT_SHA256: ${{ vars.WORKINTEL_APPLE_SIGNING_CERT_SHA256 }}
           APPLE_NOTARY_KEY_P8_B64: ${{ secrets.WORKINTEL_APPLE_NOTARY_KEY_P8_B64 }}
           APPLE_NOTARY_KEY_ID: ${{ secrets.WORKINTEL_APPLE_NOTARY_KEY_ID }}
           APPLE_NOTARY_ISSUER_ID: ${{ secrets.WORKINTEL_APPLE_NOTARY_ISSUER_ID }}
         run: |
           set -euo pipefail
-          for variable in APPLE_DEVELOPER_ID_P12_B64 APPLE_DEVELOPER_ID_P12_PASSWORD APPLE_SIGNING_IDENTITY APPLE_NOTARY_KEY_P8_B64 APPLE_NOTARY_KEY_ID APPLE_NOTARY_ISSUER_ID; do
+          for variable in APPLE_DEVELOPER_ID_P12_B64 APPLE_DEVELOPER_ID_P12_PASSWORD APPLE_SIGNING_IDENTITY APPLE_SIGNING_CERT_SHA256 APPLE_NOTARY_KEY_P8_B64 APPLE_NOTARY_KEY_ID APPLE_NOTARY_ISSUER_ID; do
             if [ -z "${!variable:-}" ]; then
               echo "Required macOS release credential reference is unavailable: $variable"
               exit 1
             fi
           done
 
+          expected_certificate_sha256="$(printf '%s' "$APPLE_SIGNING_CERT_SHA256" | tr '[:upper:]' '[:lower:]')"
+          if ! [[ "$expected_certificate_sha256" =~ ^[0-9a-f]{64}$ ]]; then
+            echo 'Expected Apple Developer ID certificate SHA-256 fingerprint must be 64 hexadecimal characters.'
+            exit 1
+          fi
+
           artifact='desktop-agent/standalone/dist/WorkIntelAgent'
           trusted='desktop-agent/standalone/trusted-dist'
           mkdir -p "$trusted"
           final_archive="$trusted/WorkIntelAgent-macOS-${VERSION}.zip"
           p12_path="$RUNNER_TEMP/workintel-developer-id.p12"
+          leaf_cert_path="$RUNNER_TEMP/workintel-developer-id-leaf.pem"
           notary_key_path="$RUNNER_TEMP/AuthKey_${APPLE_NOTARY_KEY_ID}.p8"
           keychain="$RUNNER_TEMP/workintel-release.keychain-db"
           keychain_password="$(uuidgen)"
 
           cleanup() {
             security delete-keychain "$keychain" >/dev/null 2>&1 || true
-            rm -f "$p12_path" "$notary_key_path" "$RUNNER_TEMP/workintel-notary.json"
+            rm -f "$p12_path" "$leaf_cert_path" "$notary_key_path" "$RUNNER_TEMP/workintel-notary.json"
           }
           trap cleanup EXIT
 
@@ -364,11 +372,34 @@ jobs:
           NOTARY_KEY_PATH="$notary_key_path" node --input-type=commonjs -e "const fs=require('node:fs');fs.writeFileSync(process.env.NOTARY_KEY_PATH,Buffer.from(process.env.APPLE_NOTARY_KEY_P8_B64,'base64'));"
           chmod 600 "$p12_path" "$notary_key_path"
 
+          openssl pkcs12 -in "$p12_path" -clcerts -nokeys -passin env:APPLE_DEVELOPER_ID_P12_PASSWORD -out "$leaf_cert_path"
+          leaf_certificate_count="$(grep -c -- '-----BEGIN CERTIFICATE-----' "$leaf_cert_path" || true)"
+          if [ "$leaf_certificate_count" -ne 1 ]; then
+            echo "Expected exactly one leaf certificate in the Apple Developer ID P12; found $leaf_certificate_count."
+            exit 1
+          fi
+          actual_certificate_sha256="$(openssl x509 -in "$leaf_cert_path" -noout -fingerprint -sha256 | sed -E 's/^[^=]+=//; s/://g' | tr '[:upper:]' '[:lower:]')"
+          if ! [[ "$actual_certificate_sha256" =~ ^[0-9a-f]{64}$ ]]; then
+            echo 'Apple Developer ID certificate SHA-256 fingerprint could not be derived.'
+            exit 1
+          fi
+          if [ "$actual_certificate_sha256" != "$expected_certificate_sha256" ]; then
+            echo 'Imported Apple Developer ID certificate SHA-256 fingerprint does not match the approved signer identity.'
+            exit 1
+          fi
+
           security create-keychain -p "$keychain_password" "$keychain"
           security set-keychain-settings -lut 21600 "$keychain"
           security unlock-keychain -p "$keychain_password" "$keychain"
           security import "$p12_path" -k "$keychain" -P "$APPLE_DEVELOPER_ID_P12_PASSWORD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain"
+          matching_identity_lines="$(security find-identity -v -p codesigning "$keychain" | grep -F "\"$APPLE_SIGNING_IDENTITY\"" || true)"
+          matching_identity_count="$(printf '%s\n' "$matching_identity_lines" | sed '/^[[:space:]]*$/d' | wc -l | tr -d '[:space:]')"
+          if [ "$matching_identity_count" -ne 1 ]; then
+            echo "Expected exactly one imported macOS Code Signing identity matching the approved Developer ID; found $matching_identity_count."
+            exit 1
+          fi
+          echo "APPLE_SIGNING_CERT_SHA256=$actual_certificate_sha256" >> "$GITHUB_ENV"
 
           codesign --force --options runtime --timestamp --sign "$APPLE_SIGNING_IDENTITY" --keychain "$keychain" "$artifact"
           codesign --verify --strict --verbose=2 "$artifact"
@@ -405,7 +436,7 @@ jobs:
             --release-version "$VERSION" \
             --unsigned-sha256 "$UNSIGNED_SHA" \
             --verification-method 'Developer ID codesign verification and Apple notarytool Accepted' \
-            --external-evidence-id "$NOTARY_ID"
+            --external-evidence-id "apple-notary:$NOTARY_ID;developer-id-cert-sha256:$APPLE_SIGNING_CERT_SHA256"
           node tools/release-trust-receipt.mjs verify --receipt "$artifact.receipt.json" --artifact-root "$trusted"
 
       - name: Package Linux checksum-provenance distribution and receipt

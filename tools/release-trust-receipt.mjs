@@ -120,6 +120,13 @@ function validateReceiptShape(receipt) {
   ) {
     fail('SIGNED Windows receipt requires Authenticode certificate SHA-256 evidence')
   }
+  if (
+    receipt.platform === 'macOS'
+    && receipt.trust_state === 'NOTARIZED'
+    && !/^apple-notary:[^;\s]+;developer-id-cert-sha256:[0-9a-f]{64}$/.test(String(receipt.verification.external_evidence_id || ''))
+  ) {
+    fail('NOTARIZED macOS receipt requires Apple notary id and Developer ID certificate SHA-256 evidence')
+  }
 
   if (receipt.trust_state === 'HASH_VERIFIED' && receipt.byte_changed_by_trust) {
     fail('HASH_VERIFIED receipt cannot claim trust processing changed bytes')

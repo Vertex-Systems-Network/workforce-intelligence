@@ -36,7 +36,7 @@ Trusted release invariants:
 - the publication job re-runs the same exact ruleset-snapshot verification before exposing the release;
 - tag creation authority remains an external operator/repository policy boundary and must be restricted to the intended release process;
 - Windows requires organization-owned Authenticode certificate material, an approved `WORKINTEL_WINDOWS_SIGNING_CERT_SHA256` fingerprint plus an RFC 3161 timestamp URL; the imported Code Signing certificate must match that SHA-256 identity before signing, and the verified fingerprint is bound into the receipt;
-- macOS requires an organization-owned Developer ID certificate and Apple notarization credentials, then requires an accepted `notarytool` result;
+- macOS requires an organization-owned Developer ID certificate, an approved `WORKINTEL_APPLE_SIGNING_CERT_SHA256` fingerprint and Apple notarization credentials; the P12 leaf certificate and imported Code Signing identity must match that approved signer before codesign, and the receipt binds both the accepted notary submission ID and Developer ID certificate fingerprint;
 - Linux remains checksum/provenance based and does not claim a platform signing service that has not been configured;
 - every platform emits a machine-readable trust receipt containing the pre-trust and final SHA-256 evidence without including private signing material;
 - manual dispatch uploads candidate evidence only; tag runs may publish a new GitHub Release after all platform trust jobs succeed;

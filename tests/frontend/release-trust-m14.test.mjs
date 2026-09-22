@@ -219,7 +219,11 @@ test('M14 Windows and macOS trust operations fail closed on missing organization
     'verify /pa /all /v',
     'WORKINTEL_APPLE_DEVELOPER_ID_P12_B64',
     'WORKINTEL_APPLE_SIGNING_IDENTITY',
+    'WORKINTEL_APPLE_SIGNING_CERT_SHA256',
     'WORKINTEL_APPLE_NOTARY_KEY_P8_B64',
+    'openssl pkcs12 -in "$p12_path" -clcerts -nokeys -passin env:APPLE_DEVELOPER_ID_P12_PASSWORD',
+    'Imported Apple Developer ID certificate SHA-256 fingerprint does not match the approved signer identity.',
+    'Expected exactly one imported macOS Code Signing identity matching the approved Developer ID',
     'codesign --force --options runtime --timestamp',
     'codesign --verify --strict --verbose=2',
     'xcrun notarytool submit',
@@ -259,7 +263,7 @@ test('M14 platform receipts distinguish truthful trust states', () => {
     '--trust-state NOTARIZED',
     '--platform Linux',
     '--trust-state HASH_VERIFIED',
-    '--external-evidence-id "$NOTARY_ID"',
+    '--external-evidence-id "apple-notary:$NOTARY_ID;developer-id-cert-sha256:$APPLE_SIGNING_CERT_SHA256"',
   ]) assert.ok(workflow.includes(token), token)
 })
 
@@ -308,6 +312,63 @@ test('release trust receipt creation and verification are tamper evident', () =>
     ], { encoding: 'utf8' })
     assert.notEqual(tampered.status, 0)
     assert.match(tampered.stderr, /Receipt (size|digest) mismatch/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('release trust receipt requires macOS signer fingerprint evidence', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-macos-signer-evidence-'))
+  try {
+    const artifact = path.join(root, 'WorkIntelAgent-macOS-1.2.3.zip')
+    fs.writeFileSync(artifact, 'notarized-macos-bytes')
+    const result = spawnSync(process.execPath, [
+      receiptTool,
+      'create',
+      '--artifact', artifact,
+      '--output', `${artifact}.receipt.json`,
+      '--platform', 'macOS',
+      '--trust-state', 'NOTARIZED',
+      '--source-sha', '0123456789abcdef0123456789abcdef01234567',
+      '--release-version', '1.2.3',
+      '--unsigned-sha256', sha256(Buffer.from('unsigned-macos-bytes')),
+      '--verification-method', 'test Apple notarytool Accepted',
+      '--external-evidence-id', 'apple-notary:test-notary-id',
+    ], { encoding: 'utf8' })
+    assert.notEqual(result.status, 0)
+    assert.match(result.stderr, /NOTARIZED macOS receipt requires Apple notary id and Developer ID certificate SHA-256 evidence/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('release trust receipt accepts bound macOS notary and signer evidence', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-m14-macos-bound-evidence-'))
+  try {
+    const artifact = path.join(root, 'WorkIntelAgent-macOS-1.2.3.zip')
+    fs.writeFileSync(artifact, 'notarized-macos-bytes')
+    const receipt = `${artifact}.receipt.json`
+    const create = spawnSync(process.execPath, [
+      receiptTool,
+      'create',
+      '--artifact', artifact,
+      '--output', receipt,
+      '--platform', 'macOS',
+      '--trust-state', 'NOTARIZED',
+      '--source-sha', '0123456789abcdef0123456789abcdef01234567',
+      '--release-version', '1.2.3',
+      '--unsigned-sha256', sha256(Buffer.from('unsigned-macos-bytes')),
+      '--verification-method', 'test Apple notarytool Accepted',
+      '--external-evidence-id', `apple-notary:test-notary-id;developer-id-cert-sha256:${'b'.repeat(64)}`,
+    ], { encoding: 'utf8' })
+    assert.equal(create.status, 0, create.stderr)
+    const verify = spawnSync(process.execPath, [
+      receiptTool,
+      'verify',
+      '--receipt', receipt,
+      '--artifact-root', root,
+    ], { encoding: 'utf8' })
+    assert.equal(verify.status, 0, verify.stderr)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }

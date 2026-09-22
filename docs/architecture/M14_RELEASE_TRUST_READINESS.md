@@ -160,12 +160,13 @@ No new application UI is required. Existing download/install UX remains unchange
 
 1. build deterministic standalone executable;
 2. archive and record unsigned distribution SHA-256;
-3. require organization Developer ID certificate and Apple notarization credentials;
-4. sign with Developer ID, hardened runtime and secure timestamp;
-5. verify code signature;
-6. create final distribution ZIP;
-7. submit with `notarytool --wait` and require `Accepted`;
-8. record notarization submission ID, final SHA-256 and receipt.
+3. require organization Developer ID certificate, approved certificate SHA-256 fingerprint and Apple notarization credentials;
+4. extract the P12 leaf certificate, require exactly one matching imported Code Signing identity, and verify its SHA-256 fingerprint equals the approved signer identity;
+5. sign with Developer ID, hardened runtime and secure timestamp;
+6. verify code signature;
+7. create final distribution ZIP;
+8. submit with `notarytool --wait` and require `Accepted`;
+9. bind both notarization submission ID and approved Developer ID certificate SHA-256 fingerprint into the machine-readable receipt.
 
 **Linux**
 
@@ -205,15 +206,16 @@ High-severity unresolved conditions block release:
 4. only pre-sign digest retained with no final digest;
 5. key/token/certificate material leaked to logs or artifacts;
 6. a valid but unapproved Windows Code Signing certificate is accepted because signer identity was not pinned;
-7. stale or non-main-contained source SHA released;
-8. timestamp/notary partial failure represented as success;
-9. artifact replaced after trust verification and before publication;
-10. unpinned release-critical GitHub Action introduced;
-11. retry overwrites an existing same-version asset;
-12. existing M13 canonical same-version package bytes changed;
-13. healthy HTTP endpoint used as substitute for DB/queue/scheduler/storage readiness;
-14. backup creation represented as restore verification;
-15. rollback target incompatible with schema/configuration.
+7. a valid but unapproved Apple Developer ID certificate is accepted because signer identity was not pinned;
+8. stale or non-main-contained source SHA released;
+9. timestamp/notary partial failure represented as success;
+10. artifact replaced after trust verification and before publication;
+11. unpinned release-critical GitHub Action introduced;
+12. retry overwrites an existing same-version asset;
+13. existing M13 canonical same-version package bytes changed;
+14. healthy HTTP endpoint used as substitute for DB/queue/scheduler/storage readiness;
+15. backup creation represented as restore verification;
+16. rollback target incompatible with schema/configuration.
 
 ## Observability / support contract
 
@@ -227,7 +229,7 @@ Each receipt records only non-secret evidence:
 - final SHA-256 and byte size;
 - whether trust processing changed bytes;
 - verification method;
-- external evidence ID when applicable (for example the Windows Authenticode signer certificate SHA-256 fingerprint or Apple notarization submission ID);
+- external evidence ID when applicable (Windows Authenticode signer certificate SHA-256 fingerprint, or macOS notarization submission ID plus Developer ID certificate SHA-256 fingerprint);
 - GitHub repository/workflow/run/attempt/event/ref metadata.
 
 Unavailable external signing/notary/real-target evidence is reported as `Not Verified`, never synthesized.
