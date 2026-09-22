@@ -17,7 +17,10 @@ The verifier expects schema `workintel.m14-release-admin-evidence.v1`, requires 
 
 ## API snapshots
 
-Collect these read-only GitHub API responses with an appropriately scoped administrator/auditor token:
+Collect these read-only GitHub API responses with a dedicated administrator/auditor credential.
+
+Do **not** reuse or broaden `WORKINTEL_RELEASE_POLICY_READ_TOKEN` for this collection. That trusted-workflow token remains limited to repository **Administration: read** for the immutable-release check. The separate evidence-collection credential needs the read permissions required by the endpoints below, including **Administration: read** for immutable releases and **Environments: read** for environment secrets/variables. Keep the auditor credential outside the trusted release workflow and do not store its value in the evidence packet.
+
 
 ```bash
 gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
