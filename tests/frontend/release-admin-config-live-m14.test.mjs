@@ -156,6 +156,88 @@ test('never accepts caller-controlled GitHub API origins', async () => {
   assert.ok(urls.every(url => url.startsWith('https://api.github.com/')))
 })
 
+test('paginates repository credential metadata so later-page M14 duplicates cannot hide', async () => {
+  const calls = []
+  const request = async (url, options) => {
+    calls.push({ url, options })
+
+    if (url.includes('/actions/secrets?')) {
+      const page = Number(new URL(url).searchParams.get('page') || '1')
+      if (page === 1) {
+        return response({
+          total_count: 101,
+          secrets: Array.from({ length: 100 }, (_, index) => ({ name: `UNRELATED_SECRET_${index}` })),
+        })
+      }
+      return response({
+        total_count: 101,
+        secrets: [{ name: 'WORKINTEL_RELEASE_POLICY_READ_TOKEN' }],
+      })
+    }
+
+    return response(apiPayload(url))
+  }
+
+  const evidence = await collectEvidence({
+    repository,
+    sourceSha,
+    attestation: { ...validAttestation },
+    token: auditToken,
+    request,
+    now: () => new Date(),
+  })
+  evidence.attestation.audited_at = evidence.collected_at
+
+  assert.equal(evidence.repository_secrets.total_count, 101)
+  assert.equal(evidence.repository_secrets.secrets.length, 101)
+  assert.ok(calls.some(call => /\/actions\/secrets\?.*page=2/.test(call.url)))
+
+  const result = spawnSync(process.execPath, [
+    verifier,
+    '--repository', repository,
+    '--source-sha', sourceSha,
+  ], {
+    input: JSON.stringify(evidence),
+    encoding: 'utf8',
+  })
+  assert.notEqual(result.status, 0)
+  assert.match(result.stderr, /M14 secret must not exist at repository scope/)
+})
+
+test('rejects inconsistent or prematurely truncated paginated GitHub lists', async () => {
+  for (const request of [
+    async url => {
+      if (url.includes('/actions/secrets?')) {
+        const page = Number(new URL(url).searchParams.get('page') || '1')
+        return page === 1
+          ? response({ total_count: 101, secrets: [{ name: 'ONE' }] })
+          : response({ total_count: 102, secrets: [{ name: 'TWO' }] })
+      }
+      return response(apiPayload(url))
+    },
+    async url => {
+      if (url.includes('/actions/secrets?')) {
+        const page = Number(new URL(url).searchParams.get('page') || '1')
+        return page === 1
+          ? response({ total_count: 101, secrets: [{ name: 'ONE' }] })
+          : response({ total_count: 101, secrets: [] })
+      }
+      return response(apiPayload(url))
+    },
+  ]) {
+    await assert.rejects(
+      () => collectEvidence({
+        repository,
+        sourceSha,
+        attestation: { ...validAttestation },
+        token: auditToken,
+        request,
+      }),
+      /total_count changed|pagination ended before total_count/,
+    )
+  }
+})
+
 test('rejects unknown attestation fields before any GitHub request', async () => {
   let calls = 0
   await assert.rejects(
