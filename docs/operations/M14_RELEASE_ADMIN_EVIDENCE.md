@@ -9,6 +9,7 @@ After an administrator configures M14 external release controls, collect GitHub 
 ```bash
 node tools/verify-m14-release-admin-config.mjs \
   --repository Vertex-Systems-Network/workforce-intelligence \
+  --source-sha <exact-M14-source-sha> \
   < m14-release-admin-evidence.json
 ```
 
@@ -39,7 +40,9 @@ Environment secret list responses expose names/metadata only, not encrypted valu
 
 ## Evidence packet
 
-The final JSON object contains:
+The final JSON object contains `source_contract_sha`, which must equal the exact source SHA supplied to `--source-sha`. This prevents an evidence packet collected for one release-trust contract from silently validating a later changed contract.
+
+The final JSON object also contains:
 
 - `immutable_releases`: repository immutable-release response;
 - `environment`: `production-release` environment response;
