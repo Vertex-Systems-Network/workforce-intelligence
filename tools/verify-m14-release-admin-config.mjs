@@ -162,6 +162,18 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
     fail('production-release must not contain environment variables outside the M14 allowlist')
   }
 
+  const repositorySecretItems = requireCompleteList(evidence.repository_secrets, 'secrets', 'repository_secrets')
+  const repositorySecretMap = mapByName(repositorySecretItems, 'repository_secrets.secrets')
+  for (const name of REQUIRED_SECRETS) {
+    if (repositorySecretMap.has(name)) fail(`M14 secret must not exist at repository scope: ${name}`)
+  }
+
+  const repositoryVariableItems = requireCompleteList(evidence.repository_variables, 'variables', 'repository_variables')
+  const repositoryVariableMap = mapByName(repositoryVariableItems, 'repository_variables.variables')
+  for (const name of REQUIRED_VARIABLES) {
+    if (repositoryVariableMap.has(name)) fail(`M14 variable must not exist at repository scope: ${name}`)
+  }
+
   const timestampUrl = requireString(variableMap.get('WORKINTEL_WINDOWS_TIMESTAMP_URL')?.value, 'WORKINTEL_WINDOWS_TIMESTAMP_URL')
   let parsedTimestampUrl
   try {
@@ -188,6 +200,7 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   requireTrue(attestation.release_policy_token_least_privilege_attested, 'attestation.release_policy_token_least_privilege_attested')
   requireTrue(attestation.windows_signer_fingerprint_matches_certificate_attested, 'attestation.windows_signer_fingerprint_matches_certificate_attested')
   requireTrue(attestation.apple_signer_fingerprint_matches_certificate_attested, 'attestation.apple_signer_fingerprint_matches_certificate_attested')
+  requireTrue(attestation.no_organization_scope_release_credentials_attested, 'attestation.no_organization_scope_release_credentials_attested')
   const auditedBy = requireString(attestation.audited_by, 'attestation.audited_by')
   const auditedAt = requireTimestamp(attestation.audited_at, 'attestation.audited_at')
   const auditedAtMs = Date.parse(auditedAt)
@@ -227,6 +240,7 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
       release_policy_token_least_privilege: true,
       windows_signer_fingerprint_matches_certificate: true,
       apple_signer_fingerprint_matches_certificate: true,
+      no_organization_scope_release_credentials: true,
       audited_by: auditedBy,
       audited_at: auditedAt,
     },
