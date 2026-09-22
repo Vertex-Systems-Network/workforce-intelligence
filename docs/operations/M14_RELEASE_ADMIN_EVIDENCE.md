@@ -35,7 +35,16 @@ The verifier expects schema `workintel.m14-release-admin-evidence.v1`, requires 
 
 Collect these read-only GitHub API responses with a dedicated administrator/auditor credential.
 
-Do **not** reuse or broaden `WORKINTEL_RELEASE_POLICY_READ_TOKEN` for this collection. That trusted-workflow token remains limited to repository **Administration: read** for the immutable-release check. The separate evidence-collection credential needs the read permissions required by the endpoints below, including **Administration: read** for immutable releases and **Environments: read** for environment secrets/variables. Keep the auditor credential outside the trusted release workflow and do not store its value in the evidence packet.
+Do **not** reuse or broaden `WORKINTEL_RELEASE_POLICY_READ_TOKEN` for this collection. That trusted-workflow token remains limited to repository **Administration: read** for the immutable-release check.
+
+Use a separate read-only evidence-collection credential with only the permissions required by the endpoints below:
+- **Administration: read** — immutable Releases policy;
+- **Actions: read** — environment metadata and deployment branch/tag policy reads;
+- **Environments: read** — environment secret/variable metadata;
+- **Secrets: read** — repository-scoped Actions secret-name metadata;
+- **Variables: read** — repository-scoped Actions variable metadata.
+
+Keep the auditor credential outside the trusted release workflow, do not store its value in the evidence packet, and attest that it was created with no additional write/broader permissions.
 
 
 ```bash
@@ -93,6 +102,7 @@ Required auditor attestations:
 - `WORKINTEL_WINDOWS_SIGNING_CERT_SHA256` was compared out of band to the approved organization Windows Code Signing certificate;
 - `WORKINTEL_APPLE_SIGNING_CERT_SHA256` was compared out of band to the approved organization Apple Developer ID leaf certificate;
 - no organization-scoped secret or variable grants the repository the same M14 release credentials outside the protected environment;
+- the dedicated admin-audit credential is read-only and limited to the five required permission classes above, with no write/broader scope;
 - real auditor identity and ISO-8601 audit time are recorded.
 
 ## Fail-closed checks
@@ -111,7 +121,7 @@ The verifier requires:
 - organization-scope absence is explicitly administrator-attested;
 - `WORKINTEL_WINDOWS_TIMESTAMP_URL` uses HTTPS;
 - both Windows and Apple approved signer fingerprints are exactly 64 hexadecimal SHA-256 characters;
-- all eight administrator attestations are true and auditor metadata is valid;
+- all nine administrator attestations are true and auditor metadata is valid;
 - the evidence snapshot is fresh (maximum age 30 minutes) and audit timestamps are ordered correctly.
 
 This evidence complements, but does not replace, `tools/verify-release-tag-protection.mjs` and the committed `M14_RELEASE_TAG_RULESET_ATTESTATION.json`. Real signing, notarization, publication, and real-target evidence remain separate gates.
