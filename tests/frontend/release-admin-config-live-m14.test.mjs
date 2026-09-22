@@ -130,7 +130,6 @@ test('live collector output satisfies the verifier schema contract', async () =>
     now: () => new Date(),
   })
 
-  evidence.attestation.audited_at = evidence.collected_at
   const result = spawnSync(process.execPath, [
     verifier,
     '--repository', repository,
