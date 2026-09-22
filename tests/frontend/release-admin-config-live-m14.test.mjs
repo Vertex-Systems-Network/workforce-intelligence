@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { spawnSync } from 'node:child_process'
 import test from 'node:test'
 
 import { collectEvidence } from '../../tools/collect-m14-release-admin-evidence.mjs'
@@ -6,6 +7,7 @@ import { collectEvidence } from '../../tools/collect-m14-release-admin-evidence.
 const repository = 'Vertex-Systems-Network/workforce-intelligence'
 const sourceSha = '0123456789abcdef0123456789abcdef01234567'
 const auditToken = 'super-secret-auditor-token'
+const verifier = 'tools/verify-m14-release-admin-config.mjs'
 const validAttestation = {
   admin_bypass_disabled_attested: true,
   required_reviewer_independence_attested: true,
@@ -37,13 +39,49 @@ function apiPayload(url) {
       id: 7001,
       name: 'production-release',
       url: `https://api.github.com/repos/${repository}/environments/production-release`,
-      protection_rules: [],
+      protection_rules: [{
+        type: 'required_reviewers',
+        prevent_self_review: true,
+        reviewers: [{ type: 'User', reviewer: { login: 'release-reviewer', id: 55 } }],
+      }],
       deployment_branch_policy: { protected_branches: false, custom_branch_policies: true },
     }
   }
-  if (url.includes('/deployment-branch-policies?')) return { total_count: 0, branch_policies: [] }
-  if (url.includes('/environments/production-release/secrets?')) return { total_count: 0, secrets: [] }
-  if (url.includes('/environments/production-release/variables?')) return { total_count: 0, variables: [] }
+  if (url.includes('/deployment-branch-policies?')) {
+    return {
+      total_count: 2,
+      branch_policies: [
+        { id: 801, node_id: 'policy-main', name: 'main' },
+        { id: 802, node_id: 'policy-agent-v', name: 'agent-v*' },
+      ],
+    }
+  }
+  if (url.includes('/environments/production-release/secrets?')) {
+    return {
+      total_count: 9,
+      secrets: [
+        'WORKINTEL_RELEASE_POLICY_READ_TOKEN',
+        'WORKINTEL_WINDOWS_SIGNING_PFX_B64',
+        'WORKINTEL_WINDOWS_SIGNING_PFX_PASSWORD',
+        'WORKINTEL_APPLE_DEVELOPER_ID_P12_B64',
+        'WORKINTEL_APPLE_DEVELOPER_ID_P12_PASSWORD',
+        'WORKINTEL_APPLE_SIGNING_IDENTITY',
+        'WORKINTEL_APPLE_NOTARY_KEY_P8_B64',
+        'WORKINTEL_APPLE_NOTARY_KEY_ID',
+        'WORKINTEL_APPLE_NOTARY_ISSUER_ID',
+      ].map(name => ({ name })),
+    }
+  }
+  if (url.includes('/environments/production-release/variables?')) {
+    return {
+      total_count: 3,
+      variables: [
+        { name: 'WORKINTEL_WINDOWS_TIMESTAMP_URL', value: 'https://timestamp.example.test' },
+        { name: 'WORKINTEL_WINDOWS_SIGNING_CERT_SHA256', value: 'a'.repeat(64) },
+        { name: 'WORKINTEL_APPLE_SIGNING_CERT_SHA256', value: 'b'.repeat(64) },
+      ],
+    }
+  }
   if (url.includes('/actions/secrets?')) return { total_count: 0, secrets: [] }
   if (url.includes('/actions/variables?')) return { total_count: 0, variables: [] }
   throw new Error(`unexpected test URL: ${url}`)
@@ -80,6 +118,28 @@ test('collects live admin evidence only from pinned GitHub API endpoints', async
     assert.equal(call.options.headers.Authorization, `Bearer ${auditToken}`)
     assert.equal(call.options.headers['X-GitHub-Api-Version'], '2026-03-10')
   }
+})
+
+test('live collector output satisfies the verifier schema contract', async () => {
+  const evidence = await collectEvidence({
+    repository,
+    sourceSha,
+    attestation: { ...validAttestation },
+    token: auditToken,
+    request: async url => response(apiPayload(url)),
+    now: () => new Date(),
+  })
+
+  evidence.attestation.audited_at = new Date(Date.now() - 1000).toISOString()
+  const result = spawnSync(process.execPath, [
+    verifier,
+    '--repository', repository,
+    '--source-sha', sourceSha,
+  ], {
+    input: JSON.stringify(evidence),
+    encoding: 'utf8',
+  })
+  assert.equal(result.status, 0, result.stderr)
 })
 
 test('never accepts caller-controlled GitHub API origins', async () => {
