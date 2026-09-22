@@ -115,11 +115,47 @@ jobs:
       - name: Production performance budget
         run: npm run performance:audit:build
 
-      - name: Fresh SQLite migration and seed
-        run: php artisan migrate:fresh --seed --force
+      - id: sqlite_seed
+        name: Fresh SQLite migration and seed
+        run: |
+          php artisan migrate:fresh --seed --force
+          $seedStatus = $LASTEXITCODE
+          if ($seedStatus -ne 0) {
+            $diagnosticRoot = 'storage/app/private/seed-diagnostics'
+            New-Item -ItemType Directory -Force -Path $diagnosticRoot | Out-Null
+            php tools/access-control-seed-state.php | Out-File -FilePath (Join-Path $diagnosticRoot 'workintel-windows-seed-failure.json') -Encoding utf8
+            exit $seedStatus
+          }
 
-      - name: Seeder idempotency
-        run: php artisan db:seed --force
+      - name: Upload Windows SQLite seed failure diagnostics
+        if: failure() && steps.sqlite_seed.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: workintel-windows-seed-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: storage/app/private/seed-diagnostics/workintel-windows-seed-failure.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - id: sqlite_seed_idempotency
+        name: Seeder idempotency
+        run: |
+          php artisan db:seed --force
+          $seedStatus = $LASTEXITCODE
+          if ($seedStatus -ne 0) {
+            $diagnosticRoot = 'storage/app/private/seed-diagnostics'
+            New-Item -ItemType Directory -Force -Path $diagnosticRoot | Out-Null
+            php tools/access-control-seed-state.php | Out-File -FilePath (Join-Path $diagnosticRoot 'workintel-windows-idempotency-seed-failure.json') -Encoding utf8
+            exit $seedStatus
+          }
+
+      - name: Upload Windows SQLite idempotency seed failure diagnostics
+        if: failure() && steps.sqlite_seed_idempotency.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: workintel-windows-idempotency-seed-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: storage/app/private/seed-diagnostics/workintel-windows-idempotency-seed-failure.json
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Full PHPUnit suite
         run: php artisan test

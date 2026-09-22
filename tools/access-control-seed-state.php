@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Throwable;
+
 $dbPath = getenv('DB_DATABASE') ?: 'database/database.sqlite';
 if (! str_starts_with($dbPath, DIRECTORY_SEPARATOR)) {
     $dbPath = dirname(__DIR__).DIRECTORY_SEPARATOR.$dbPath;
@@ -11,6 +13,13 @@ $assert = in_array('--assert', $argv, true);
 $payload = [
     'database' => $dbPath,
     'database_size_bytes' => is_file($dbPath) ? filesize($dbPath) : null,
+    'runtime' => [
+        'php_version' => PHP_VERSION,
+        'pdo_driver' => null,
+        'pdo_client_version' => null,
+        'sqlite_version' => null,
+        'sqlite_source_id' => null,
+    ],
     'sqlite' => [
         'foreign_keys' => null,
         'journal_mode' => null,
@@ -34,6 +43,20 @@ if (! is_file($dbPath)) {
 }
 
 $pdo = new PDO('sqlite:'.$dbPath, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+$safeRuntimeValue = static function (callable $resolver): ?string {
+    try {
+        $value = $resolver();
+
+        return $value === false || $value === null ? null : (string) $value;
+    } catch (Throwable) {
+        return null;
+    }
+};
+$payload['runtime']['pdo_driver'] = $safeRuntimeValue(fn () => $pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
+$payload['runtime']['pdo_client_version'] = $safeRuntimeValue(fn () => $pdo->getAttribute(PDO::ATTR_CLIENT_VERSION));
+$payload['runtime']['sqlite_version'] = $safeRuntimeValue(fn () => $pdo->query('SELECT sqlite_version()')->fetchColumn());
+$payload['runtime']['sqlite_source_id'] = $safeRuntimeValue(fn () => $pdo->query('SELECT sqlite_source_id()')->fetchColumn());
+
 $tableExists = static function (PDO $pdo, string $table): bool {
     $stmt = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = :name LIMIT 1");
     $stmt->execute(['name' => $table]);
