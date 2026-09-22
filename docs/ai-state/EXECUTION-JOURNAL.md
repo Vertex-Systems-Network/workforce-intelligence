@@ -152,3 +152,10 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Rehydrated M14 with current main as primary parent and the prior M14 head as the second parent, preserving both current-main diagnostics and release-trust provenance without force-push.
 - Prior PR #65 exact-head CI/review evidence is historical after rehydration; fresh exact-head certification and genuine independent review are required.
 - Issue #62 remains external/Not Verified; no trusted tag/release publication was performed.
+
+## 2026-09-22T14:52:00+05:00 — M14 README/compact-state exact-string repair
+
+- Fresh rehydrated PR #65 runs exposed the same cross-platform governance contract failure in Linux `npm test` and Windows frontend source contracts.
+- Root cause was exact-string drift: README used concise `Last Completed` and `Next Action` values while CURRENT-STATE stored longer semantically equivalent text.
+- Corrected CURRENT-STATE to the already-published README values; no release workflow, product runtime, schema, seed, or security behavior changed.
+- Code Quality #287 and Standalone #53 were green on the failed head; CI #601 and Windows #370 are historical after this governance-only source move.
