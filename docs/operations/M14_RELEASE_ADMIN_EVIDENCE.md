@@ -77,7 +77,7 @@ Environment secret list responses expose names/metadata only, not encrypted valu
 
 The final JSON object contains `source_contract_sha`, which must equal the exact source SHA supplied to `--source-sha`. This prevents an evidence packet collected for one release-trust contract from silently validating a later changed contract.
 
-It also contains `collected_at`. The verifier binds verification time to its own system clock and rejects caller-controlled `--as-of` values, snapshots or administrator attestations older than 30 minutes, future-dated values, or snapshot/attestation timestamps more than 30 minutes apart. The attestation may be made shortly before or shortly after the live GitHub collection, which matches the real administrator workflow while preventing stale evidence replay.
+It also contains `collected_at`. The verifier binds verification time to its own system clock and rejects caller-controlled `--as-of` values, snapshots older than 30 minutes, administrator attestations older than 30 minutes, and future-dated values. Because both timestamps are independently constrained to the same non-future 30-minute verification window, no separate snapshot-to-attestation distance rule is needed. The attestation may be made shortly before or shortly after the live GitHub collection while remaining fresh.
 
 The evidence schema and attestation object are exact-key allowlists. Unknown fields are rejected so tokens, passwords, or unrelated sensitive values cannot be accidentally serialized into an archived evidence packet.
 
@@ -122,6 +122,6 @@ The verifier requires:
 - `WORKINTEL_WINDOWS_TIMESTAMP_URL` uses HTTPS;
 - both Windows and Apple approved signer fingerprints are exactly 64 hexadecimal SHA-256 characters;
 - all nine administrator attestations are true and auditor metadata is valid;
-- both the evidence snapshot and administrator attestation are fresh (maximum age 30 minutes), future timestamps are rejected, and their timestamps are within 30 minutes of each other.
+- both the evidence snapshot and administrator attestation are independently fresh (maximum age 30 minutes) and future timestamps are rejected.
 
 This evidence complements, but does not replace, `tools/verify-release-tag-protection.mjs` and the committed `M14_RELEASE_TAG_RULESET_ATTESTATION.json`. Real signing, notarization, publication, and real-target evidence remain separate gates.
