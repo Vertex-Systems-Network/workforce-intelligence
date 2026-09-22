@@ -37,6 +37,13 @@ gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
 
 gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
   'repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release/variables?per_page=100'
+
+
+gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
+  'repos/Vertex-Systems-Network/workforce-intelligence/actions/secrets?per_page=100'
+
+gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
+  'repos/Vertex-Systems-Network/workforce-intelligence/actions/variables?per_page=100'
 ```
 
 Environment secret list responses expose names/metadata only, not encrypted values. Environment variable responses expose non-secret values, so the verifier can validate signer fingerprints and the HTTPS timestamp endpoint.
@@ -54,6 +61,8 @@ The final JSON object also contains:
 - `deployment_branch_policies`: custom deployment branch/tag policy list;
 - `environment_secrets`: environment secret list;
 - `environment_variables`: environment variable list;
+- `repository_secrets`: repository-scoped Actions secret-name list;
+- `repository_variables`: repository-scoped Actions variable list;
 - `attestation`: administrator-only facts that GitHub read APIs do not prove strongly enough for M14.
 
 Required auditor attestations:
@@ -65,6 +74,7 @@ Required auditor attestations:
 - `WORKINTEL_RELEASE_POLICY_READ_TOKEN` was independently checked to have only the least privilege needed for the immutable-release Administration read;
 - `WORKINTEL_WINDOWS_SIGNING_CERT_SHA256` was compared out of band to the approved organization Windows Code Signing certificate;
 - `WORKINTEL_APPLE_SIGNING_CERT_SHA256` was compared out of band to the approved organization Apple Developer ID leaf certificate;
+- no organization-scoped secret or variable grants the repository the same M14 release credentials outside the protected environment;
 - real auditor identity and ISO-8601 audit time are recorded.
 
 ## Fail-closed checks
@@ -79,9 +89,11 @@ The verifier requires:
 - exactly two deployment policies exist: `main` and `agent-v*`, each with API policy ids/node ids; no extra branch/tag deployment policy is allowed;
 - exactly the nine M14 environment secret names are present; no unrelated secret is allowed in the privileged environment;
 - exactly the three M14 environment variables are present; no unrelated variable is allowed;
+- none of the nine M14 secrets or three M14 variables exist at repository scope;
+- organization-scope absence is explicitly administrator-attested;
 - `WORKINTEL_WINDOWS_TIMESTAMP_URL` uses HTTPS;
 - both Windows and Apple approved signer fingerprints are exactly 64 hexadecimal SHA-256 characters;
-- all seven administrator attestations are true and auditor metadata is valid;
+- all eight administrator attestations are true and auditor metadata is valid;
 - the evidence snapshot is fresh (maximum age 30 minutes) and audit timestamps are ordered correctly.
 
 This evidence complements, but does not replace, `tools/verify-release-tag-protection.mjs` and the committed `M14_RELEASE_TAG_RULESET_ATTESTATION.json`. Real signing, notarization, publication, and real-target evidence remain separate gates.
