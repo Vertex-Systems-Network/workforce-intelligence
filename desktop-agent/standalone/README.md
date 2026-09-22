@@ -15,6 +15,37 @@ node build.mjs
 
 Do not replace `npm ci` with unlocked `npm install` in the release path. Dependency or Node-runtime changes require a reviewed lock/runtime update and fresh cross-platform evidence.
 
-Output is `dist/WorkIntelAgent.exe` on Windows or `dist/WorkIntelAgent` on macOS/Linux. Build each operating system on that operating system (or in the provided GitHub Actions matrix). The release workflow verifies that the expected artifact exists, is non-empty, and records its SHA-256 digest before upload.
+Output is `dist/WorkIntelAgent.exe` on Windows or `dist/WorkIntelAgent` on macOS/Linux. Build each operating system on that operating system (or in the provided GitHub Actions matrix). The normal `Desktop Agent Standalone Build` workflow remains the deterministic, unsigned PR/build certification lane.
 
-The output is not production-signed by this repository. Apply Authenticode signing on Windows and Developer ID signing/notarization on macOS with organization-owned certificates/secrets in your release pipeline.
+## Trusted distribution lane
+
+M14 adds a separate `Desktop Agent Trusted Release` workflow. It is intentionally not triggered by pull requests and uses the `production-release` GitHub environment for privileged release operations.
+
+Trusted release invariants:
+
+- every build is checked out from one exact source SHA;
+- the source SHA must be contained by protected `main`;
+- before any `production-release` environment/signing authority is reached, that exact source SHA must have successful `main` push runs for `WorkIntel CI`, `WorkIntel Code Quality`, and `WorkIntel Windows Certification`;
+- source-certification evidence is matched by canonical workflow name/path, `push` event, `main` branch, exact SHA and completed/success state; missing, pending, failed or substituted evidence fails closed;
+- manual trusted candidates must equal the current protected-main head;
+- tag publication requires `agent-v<version>` to match the version declared by `native-agent.mjs`;
+- trusted tag publication is bound to one dedicated externally audited ruleset snapshot recorded in `docs/operations/M14_RELEASE_TAG_RULESET_ATTESTATION.json`; the attestation identifies the exact ruleset ID and GitHub `updated_at` value and explicitly records that the audited snapshot has no bypass actors;
+- the default attestation is `NOT_CONFIGURED`, so tag publication fails closed until administrator evidence is recorded through a normal reviewed/certified source change;
+- the unprivileged workflow continues to use the ordinary GitHub token: it matches the exact attested ruleset snapshot, active tag/ref applicability, and update/deletion restrictions without introducing a repository-Administration/ruleset-write PAT/App token;
+- GitHub may omit `bypass_actors` from detailed ruleset reads for callers without ruleset write visibility; the reviewed attested snapshot covers that hidden field, while any later ruleset mutation changes `updated_at` and invalidates the proof; when GitHub does expose `bypass_actors`, the verifier additionally requires the live array to be empty;
+- the publication job re-runs the same exact ruleset-snapshot verification before exposing the release;
+- tag creation authority remains an external operator/repository policy boundary and must be restricted to the intended release process;
+- Windows requires organization-owned Authenticode certificate material plus an RFC 3161 timestamp URL, then verifies the resulting signature;
+- macOS requires an organization-owned Developer ID certificate and Apple notarization credentials, then requires an accepted `notarytool` result;
+- Linux remains checksum/provenance based and does not claim a platform signing service that has not been configured;
+- every platform emits a machine-readable trust receipt containing the pre-trust and final SHA-256 evidence without including private signing material;
+- manual dispatch uploads candidate evidence only; tag runs may publish a new GitHub Release after all platform trust jobs succeed;
+- publication refuses an existing release target and never overwrites same-version assets.
+
+The repository does not contain signing certificates, private keys or notary credentials. Missing required organization credentials fail the corresponding trusted release job closed; they must never cause an unsigned fallback to be labelled signed or notarized. Ruleset audit evidence is deliberately not replaced with a privileged ruleset-admin token in the unprivileged authorization job.
+
+## Canonical package boundary
+
+The M13 canonical ZIP catalog under `storage/app/releases` remains a separate immutable provenance anchor. M14 trusted standalone executables are separately named distribution outputs and do not rewrite canonical ZIP bytes, manifest rows or same-version checksums.
+
+A source/PR merge does not itself prove that release-tag protections/attestation, production signing, Apple notarization or real-target deployment verification have occurred. Those evidence classes remain `Not Verified` until the trusted workflow and any required external/production-target checks actually run successfully.
