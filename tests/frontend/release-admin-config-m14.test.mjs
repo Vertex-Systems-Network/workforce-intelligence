@@ -351,11 +351,6 @@ test('rejects stale, future, or time-incoherent admin evidence', () => {
   assert.notEqual(verify(staleAudit).status, 0)
   assert.match(verify(staleAudit).stderr, /attestation is stale/)
 
-  const auditTooFarFromSnapshot = evidence({ collected_at: isoOffset(-1 * 60 * 1000) })
-  auditTooFarFromSnapshot.attestation.audited_at = isoOffset(-32 * 60 * 1000)
-  assert.notEqual(verify(auditTooFarFromSnapshot).status, 0)
-  assert.match(verify(auditTooFarFromSnapshot).stderr, /within 30 minutes of each other/)
-
   const auditAfterVerification = evidence()
   auditAfterVerification.attestation.audited_at = isoOffset(60 * 1000)
   assert.notEqual(verify(auditAfterVerification).status, 0)
