@@ -61,7 +61,26 @@ function findRequiredReviewerRule(environment) {
 
 function mapByName(items, label) {
   if (!Array.isArray(items)) fail(`${label} must be an array`)
-  return new Map(items.map(item => [String(item?.name || ''), item]))
+  const map = new Map()
+  for (const item of items) {
+    const name = requireString(item?.name, `${label}[].name`)
+    if (map.has(name)) fail(`${label} contains duplicate name: ${name}`)
+    map.set(name, item)
+  }
+  return map
+}
+
+function requireCompleteList(container, key, label) {
+  const object = requireObject(container, label)
+  const items = object[key]
+  if (!Array.isArray(items)) fail(`${label}.${key} must be an array`)
+  if (!Number.isInteger(object.total_count) || object.total_count < 0) {
+    fail(`${label}.total_count must be a non-negative integer`)
+  }
+  if (object.total_count !== items.length) {
+    fail(`${label} appears truncated or paginated: total_count ${object.total_count} != collected ${items.length}`)
+  }
+  return items
 }
 
 function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifiedAt) {
@@ -91,8 +110,10 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   const expectedEnvironmentUrl = `https://api.github.com/repos/${expectedRepository}/environments/${REQUIRED_ENVIRONMENT}`
   if (environment.url !== expectedEnvironmentUrl) fail(`environment.url must be ${expectedEnvironmentUrl}`)
 
-  const reviewerRule = findRequiredReviewerRule(environment)
-  if (!reviewerRule) fail('production-release must expose a required_reviewers protection rule')
+  const reviewerRules = (Array.isArray(environment.protection_rules) ? environment.protection_rules : [])
+    .filter(rule => rule && rule.type === 'required_reviewers')
+  if (reviewerRules.length !== 1) fail('production-release must expose exactly one required_reviewers protection rule')
+  const reviewerRule = reviewerRules[0]
   requireTrue(reviewerRule.prevent_self_review, 'required_reviewers.prevent_self_review')
   if (!Array.isArray(reviewerRule.reviewers) || reviewerRule.reviewers.length === 0) {
     fail('required_reviewers.reviewers must contain at least one user or team')
@@ -110,8 +131,12 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
     fail('production-release must use custom deployment branch/tag policies')
   }
 
-  const branchPolicies = requireObject(evidence.deployment_branch_policies, 'deployment_branch_policies')
-  const policies = mapByName(branchPolicies.branch_policies, 'deployment_branch_policies.branch_policies')
+  const branchPolicyItems = requireCompleteList(
+    evidence.deployment_branch_policies,
+    'branch_policies',
+    'deployment_branch_policies',
+  )
+  const policies = mapByName(branchPolicyItems, 'deployment_branch_policies.branch_policies')
   if (!policies.has('main')) fail('deployment policies must include main')
   if (!policies.has('agent-v*')) fail('deployment policies must include agent-v*')
   for (const name of ['main', 'agent-v*']) {
@@ -120,14 +145,14 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
     requireString(policy.node_id, `deployment policy ${name} node_id`)
   }
 
-  const secrets = requireObject(evidence.environment_secrets, 'environment_secrets')
-  const secretNames = new Set((Array.isArray(secrets.secrets) ? secrets.secrets : []).map(item => String(item?.name || '')))
+  const secretItems = requireCompleteList(evidence.environment_secrets, 'secrets', 'environment_secrets')
+  const secretMap = mapByName(secretItems, 'environment_secrets.secrets')
   for (const name of REQUIRED_SECRETS) {
-    if (!secretNames.has(name)) fail(`missing production-release environment secret: ${name}`)
+    if (!secretMap.has(name)) fail(`missing production-release environment secret: ${name}`)
   }
 
-  const variables = requireObject(evidence.environment_variables, 'environment_variables')
-  const variableMap = mapByName(variables.variables, 'environment_variables.variables')
+  const variableItems = requireCompleteList(evidence.environment_variables, 'variables', 'environment_variables')
+  const variableMap = mapByName(variableItems, 'environment_variables.variables')
   for (const name of REQUIRED_VARIABLES) {
     if (!variableMap.has(name)) fail(`missing production-release environment variable: ${name}`)
   }
