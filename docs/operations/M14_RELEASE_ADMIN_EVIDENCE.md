@@ -18,7 +18,7 @@ node tools/collect-m14-release-admin-evidence.mjs \
 unset WORKINTEL_M14_ADMIN_AUDIT_TOKEN
 ```
 
-The collector hardcodes `https://api.github.com`, sends the auditor credential only in the Authorization header, disables redirects, pins GitHub API version `2026-03-10`, and never writes the token into the evidence packet.
+The collector hardcodes `https://api.github.com`, sends the auditor credential only in the Authorization header, disables redirects, pins GitHub API version `2026-03-10`, and never writes the token into the evidence packet. All list endpoints are fully paginated until `total_count` is collected; changing counts, premature empty pages, over-returned items, or lists above the 10,000-item safety cap fail closed.
 
 For archived/re-verification workflows, an already-collected packet can still be validated directly with:
 
