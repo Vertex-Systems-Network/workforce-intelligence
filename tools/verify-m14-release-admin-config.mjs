@@ -4,6 +4,7 @@ import process from 'node:process'
 
 const SCHEMA = 'workintel.m14-release-admin-evidence.v1'
 const REQUIRED_ENVIRONMENT = 'production-release'
+const MAX_EVIDENCE_AGE_MS = 30 * 60 * 1000
 const REQUIRED_SECRETS = [
   'WORKINTEL_RELEASE_POLICY_READ_TOKEN',
   'WORKINTEL_WINDOWS_SIGNING_PFX_B64',
@@ -62,7 +63,7 @@ function mapByName(items, label) {
   return new Map(items.map(item => [String(item?.name || ''), item]))
 }
 
-function verifyEvidence(evidence, expectedRepository, expectedSourceSha) {
+function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifiedAt) {
   requireObject(evidence, 'evidence')
   if (evidence.schema !== SCHEMA) fail(`schema must be ${SCHEMA}`)
   if (requireString(evidence.repository, 'repository') !== expectedRepository) {
@@ -71,6 +72,13 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha) {
   const sourceContractSha = requireString(evidence.source_contract_sha, 'source_contract_sha').toLowerCase()
   if (!/^[0-9a-f]{40}$/.test(sourceContractSha)) fail('source_contract_sha must be a 40-hex Git commit SHA')
   if (sourceContractSha !== expectedSourceSha) fail(`source_contract_sha must match expected source ${expectedSourceSha}`)
+  const collectedAt = requireTimestamp(evidence.collected_at, 'collected_at')
+  const collectedAtMs = Date.parse(collectedAt)
+  const verifiedAtMs = Date.parse(verifiedAt)
+  if (collectedAtMs > verifiedAtMs) fail('collected_at cannot be later than verifier --as-of time')
+  if (verifiedAtMs - collectedAtMs > MAX_EVIDENCE_AGE_MS) {
+    fail('external admin evidence is stale; collect a fresh snapshot within 30 minutes of verification')
+  }
 
   const immutable = requireObject(evidence.immutable_releases, 'immutable_releases')
   requireTrue(immutable.enabled, 'immutable_releases.enabled')
@@ -135,11 +143,16 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha) {
   requireTrue(attestation.apple_signer_fingerprint_matches_certificate_attested, 'attestation.apple_signer_fingerprint_matches_certificate_attested')
   const auditedBy = requireString(attestation.audited_by, 'attestation.audited_by')
   const auditedAt = requireTimestamp(attestation.audited_at, 'attestation.audited_at')
+  const auditedAtMs = Date.parse(auditedAt)
+  if (auditedAtMs < collectedAtMs) fail('attestation.audited_at cannot predate collected_at')
+  if (auditedAtMs > verifiedAtMs) fail('attestation.audited_at cannot be later than verifier --as-of time')
 
   return {
     schema: SCHEMA,
     repository: expectedRepository,
     source_contract_sha: sourceContractSha,
+    collected_at: collectedAt,
+    verified_at: verifiedAt,
     immutable_releases: {
       enabled: true,
       enforced_by_owner: immutable.enforced_by_owner === true,
@@ -190,6 +203,7 @@ const args = parseArgs(process.argv.slice(2))
 const expectedRepository = requireString(args.repository, '--repository')
 const expectedSourceSha = requireString(args['source-sha'], '--source-sha').toLowerCase()
 if (!/^[0-9a-f]{40}$/.test(expectedSourceSha)) fail('--source-sha must be a 40-hex Git commit SHA')
+const verifiedAt = requireTimestamp(args['as-of'], '--as-of')
 
 let raw = ''
 process.stdin.setEncoding('utf8')
@@ -201,6 +215,6 @@ process.stdin.on('end', () => {
   } catch (error) {
     fail(`could not parse JSON evidence: ${error.message}`)
   }
-  const result = verifyEvidence(evidence, expectedRepository, expectedSourceSha)
+  const result = verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifiedAt)
   console.log(JSON.stringify(result, null, 2))
 })
