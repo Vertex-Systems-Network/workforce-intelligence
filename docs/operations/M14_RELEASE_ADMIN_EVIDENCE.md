@@ -27,13 +27,13 @@ gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
   repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release
 
 gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
-  repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release/deployment-branch-policies
+  'repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release/deployment-branch-policies?per_page=100'
 
 gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
-  repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release/secrets?per_page=100
+  'repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release/secrets?per_page=100'
 
 gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
-  repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release/variables?per_page=30
+  'repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release/variables?per_page=100'
 ```
 
 Environment secret list responses expose names/metadata only, not encrypted values. Environment variable responses expose non-secret values, so the verifier can validate signer fingerprints and the HTTPS timestamp endpoint.
@@ -72,6 +72,7 @@ The verifier requires:
 - environment name exactly `production-release`, a positive environment id, and an API URL bound to the expected repository;
 - at least one structurally valid User/Team required reviewer and `prevent_self_review=true`;
 - custom deployment policies enabled;
+- all list snapshots are complete (`total_count` exactly equals collected entries), with duplicate names rejected;
 - both `main` and `agent-v*` policies present with API policy ids/node ids;
 - all nine M14 environment secret names present;
 - `WORKINTEL_WINDOWS_TIMESTAMP_URL` uses HTTPS;
