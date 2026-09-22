@@ -13,6 +13,7 @@ function isoOffset(milliseconds) {
 function evidence(overrides = {}) {
   return {
     schema: 'workintel.m14-release-admin-evidence.v1',
+    github_api_version: '2026-03-10',
     repository,
     source_contract_sha: sourceSha,
     collected_at: isoOffset(-10 * 60 * 1000),
@@ -94,6 +95,13 @@ test('accepts complete M14 external admin evidence', () => {
   assert.equal(output.required_variable_count, 3)
   assert.equal(output.fingerprints.windows_signing_cert_sha256, 'a'.repeat(64))
   assert.equal(output.fingerprints.apple_signing_cert_sha256, 'b'.repeat(64))
+})
+
+test('rejects evidence collected under a different GitHub API version', () => {
+  const payload = evidence({ github_api_version: '2022-11-28' })
+  const result = verify(payload)
+  assert.notEqual(result.status, 0)
+  assert.match(result.stderr, /github_api_version must be 2026-03-10/)
 })
 
 test('fails closed when immutable releases are not verified', () => {
