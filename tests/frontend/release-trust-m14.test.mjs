@@ -73,6 +73,30 @@ test('M14 release authority binds source, dispatch ref, tag version and immutabl
   assert.ok(dispatchRefGuard > 0 && dispatchRefGuard < buildTrustJob, 'dispatch ref must fail closed before signing/notarization jobs')
 })
 
+
+test('M14 requires live GitHub immutable-release policy before trust work and public exposure', () => {
+  for (const token of [
+    '\n  release-policy:',
+    'environment: production-release',
+    'WORKINTEL_RELEASE_POLICY_READ_TOKEN',
+    'repos/${GITHUB_REPOSITORY}/immutable-releases',
+    "X-GitHub-Api-Version: 2026-03-10",
+    "jq -e '.enabled == true'",
+    'needs: [authorize, release-policy]',
+    'needs: [authorize, release-policy, build-and-trust]',
+    'assert_immutable_release_policy()',
+  ]) assert.ok(workflow.includes(token), token)
+
+  const policyJob = workflow.indexOf('\n  release-policy:')
+  const buildTrustJob = workflow.indexOf('\n  build-and-trust:')
+  assert.ok(policyJob > 0 && policyJob < buildTrustJob, 'immutable-release policy must pass before signing/notarization jobs')
+
+  const publishStep = workflow.lastIndexOf('gh release edit "$RELEASE_TAG" --draft=false')
+  const finalPolicyCheck = workflow.lastIndexOf('assert_immutable_release_policy', publishStep)
+  const finalRefCheck = workflow.lastIndexOf('assert_live_release_refs', publishStep)
+  assert.ok(finalPolicyCheck > 0 && finalPolicyCheck < finalRefCheck, 'immutable-release policy must be rechecked immediately before final release exposure sequence')
+})
+
 test('M14 publication rechecks live main and tag refs before exposure', () => {
   assert.ok(workflow.includes('assert_live_release_refs()'))
   assert.ok(workflow.includes('git fetch --force origin "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"'))

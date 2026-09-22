@@ -14,7 +14,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Active PR:** #65
 - **Active Branch:** `m14/release-trust-current-main`
 - **Last Completed:** PR #89 merged normal Linux/Windows AccessControl seed-failure evidence capture on exact green head.
-- **Next Action:** Freshly certify the rehydrated PR #65 exact head on Code Quality, Standalone Build, WorkIntel CI, and Windows Certification. If all automated gates pass, obtain genuine independent review for that exact head; merge only after the review gate clears with no unresolved high-severity findings.
+- **Next Action:** Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for PR #65 after immutable-release policy hardening. If all automated gates pass, obtain genuine independent review for that exact head; merge only after that review clears, while trusted publication remains blocked until Issue #62 live immutable-release, tag, and production-release environment gates are verified.
 
 > Overall progress is scoped to the active release-scope modular maturity. M14 remains partially complete until its independent-review and external release/real-target evidence gates are actually satisfied.
 <!-- AI-PROGRESS:END -->

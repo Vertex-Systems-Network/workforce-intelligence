@@ -279,3 +279,17 @@ M14 is `DONE` only when:
 - no secret/key/token material is exposed.
 
 A source merge alone may establish implementation completeness, but it must remain `PARTIALLY_COMPLETE` or `Not Verified` for external trust/real-target evidence until those checks actually run.
+
+## GitHub immutable-release enforcement
+
+Trusted `agent-v*` publication requires GitHub **immutable releases** to be enabled for this repository, either directly or through organization policy, before any signing/notarization trust work begins. Git tag protection alone is not sufficient because it does not lock published release assets.
+
+The `production-release` environment must provide `WORKINTEL_RELEASE_POLICY_READ_TOKEN`, a least-privilege credential capable of reading the repository immutable-release administration setting. The trusted workflow must fail closed when the token is absent, the policy endpoint cannot be read, or `enabled` is not `true`.
+
+The policy is verified twice:
+1. in a dedicated `release-policy` job before Windows/macOS/Linux trust processing;
+2. again in the publish job immediately before final tag/ref/asset revalidation and draft-to-public exposure.
+
+Once immutable releases are enabled, a published release locks its associated release assets and tag against later mutation and GitHub generates release-integrity attestation evidence. Release title/notes may remain editable under GitHub semantics and are not artifact-integrity authority.
+
+Issue #62 owns the external administrator configuration and read-token placement. Source merge alone does not verify this live policy.

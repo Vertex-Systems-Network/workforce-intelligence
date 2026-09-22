@@ -131,3 +131,14 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Preserved PR #89 Linux seed diagnostics in the CI test lane and PR #65 M14 release-trust checks in the governance lane.
 - Prior PR #65 exact-head CI/review evidence is historical after rehydration; fresh exact-head certification and independent review are required.
 - Issue #62 remains external/Not Verified; no trusted tag/release publication was performed.
+
+## 2026-09-22 — M14 immutable-release trust hardening
+
+- High-risk publication audit established that tag immutability and workflow no-clobber logic do not themselves lock GitHub Release assets after publication.
+- GitHub's separate immutable-release policy is now a required live trust boundary.
+- Added a `production-release` policy-verification job using least-privilege `WORKINTEL_RELEASE_POLICY_READ_TOKEN` before signing/notarization.
+- Added a second immutable-release policy check immediately before final live-ref/remote-byte checks and draft-to-public exposure.
+- Updated M14 architecture/checklist/source contracts and compact state.
+- Issue #62 must externally enable/verify immutable releases and place the read token; source/CI alone cannot claim that live configuration.
+- No release was published and RB-005 was not executed.
+
