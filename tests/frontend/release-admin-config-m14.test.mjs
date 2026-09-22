@@ -61,6 +61,14 @@ function evidence(overrides = {}) {
         { name: 'WORKINTEL_APPLE_SIGNING_CERT_SHA256', value: 'b'.repeat(64) },
       ],
     },
+    repository_secrets: {
+      total_count: 0,
+      secrets: [],
+    },
+    repository_variables: {
+      total_count: 0,
+      variables: [],
+    },
     attestation: {
       admin_bypass_disabled_attested: true,
       required_reviewer_independence_attested: true,
@@ -69,6 +77,7 @@ function evidence(overrides = {}) {
       release_policy_token_least_privilege_attested: true,
       windows_signer_fingerprint_matches_certificate_attested: true,
       apple_signer_fingerprint_matches_certificate_attested: true,
+      no_organization_scope_release_credentials_attested: true,
       audited_by: 'release-admin@example.test',
       audited_at: isoOffset(-5 * 60 * 1000),
     },
@@ -237,6 +246,26 @@ test('requires the complete environment secret inventory without reading secret 
   assert.match(result.stderr, /WORKINTEL_APPLE_NOTARY_ISSUER_ID/)
 })
 
+test('requires M14 credentials to remain environment-scoped', () => {
+  const repoSecret = evidence()
+  repoSecret.repository_secrets = {
+    total_count: 1,
+    secrets: [{ name: 'WORKINTEL_RELEASE_POLICY_READ_TOKEN' }],
+  }
+  const secretResult = verify(repoSecret)
+  assert.notEqual(secretResult.status, 0)
+  assert.match(secretResult.stderr, /must not exist at repository scope/)
+
+  const repoVariable = evidence()
+  repoVariable.repository_variables = {
+    total_count: 1,
+    variables: [{ name: 'WORKINTEL_WINDOWS_SIGNING_CERT_SHA256', value: 'a'.repeat(64) }],
+  }
+  const variableResult = verify(repoVariable)
+  assert.notEqual(variableResult.status, 0)
+  assert.match(variableResult.stderr, /must not exist at repository scope/)
+})
+
 test('requires signer fingerprint variables and https timestamp endpoint', () => {
   for (const [name, value, pattern] of [
     ['WORKINTEL_WINDOWS_SIGNING_CERT_SHA256', 'abc', /64-hex/],
@@ -258,6 +287,7 @@ test('requires explicit attestations for API-invisible release authority facts',
     'release_policy_token_least_privilege_attested',
     'windows_signer_fingerprint_matches_certificate_attested',
     'apple_signer_fingerprint_matches_certificate_attested',
+    'no_organization_scope_release_credentials_attested',
   ]) {
     const payload = evidence()
     payload.attestation[key] = false
