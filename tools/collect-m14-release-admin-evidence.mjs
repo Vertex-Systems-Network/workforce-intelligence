@@ -36,6 +36,10 @@ function requireRepository(value) {
   if (typeof value !== 'string' || !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(value)) {
     fail('--repository must be in owner/name form')
   }
+  const [owner, name] = value.split('/')
+  if (owner === '.' || owner === '..' || name === '.' || name === '..') {
+    fail('--repository owner/name segments cannot be . or ..')
+  }
   return value
 }
 
