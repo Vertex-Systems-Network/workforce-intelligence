@@ -10,11 +10,11 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [██████░░░░] **60%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
-- **Active Issue:** #61 / #62
+- **Active Issue:** #61
 - **Active PR:** #65
 - **Active Branch:** `m14/release-trust-current-main`
 - **Last Completed:** PR #80 merged security trust-boundary hardening on exact green head.
-- **Next Action:** Certify PR #65 on its refreshed exact head. Merge remains blocked until a genuine independent reviewer approves that exact head with no unresolved high-severity release-trust finding; Issue #62 external administrator configuration remains separate.
+- **Next Action:** Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for PR #65 after compact-state synchronization. If all automated gates are green, obtain genuine independent review for the exact current head; merge only after that review clears with no unresolved high-severity findings.
 
 > Overall progress is scoped to the active release-scope modular maturity. M14 remains partially complete until its independent-review and external release/real-target evidence gates are actually satisfied.
 <!-- AI-PROGRESS:END -->

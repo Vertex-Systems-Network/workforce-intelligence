@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
-  "active_issue": null,
-  "active_pr": 80,
-  "active_branch": "security/harden-auth-ssrf-oidc-2026-09-21",
-  "current_milestone": "Rehydrate and certify PR #80 security trust boundaries on current main",
+  "observed_main_sha": "0cc033029912cd1975b4dbda14efe449f6576320",
+  "active_issue": 61,
+  "active_pr": 65,
+  "active_branch": "m14/release-trust-current-main",
+  "current_milestone": "Rehydrate and certify PR #65 M14 production release trust on current main",
   "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #84 merged refreshed development dependency updates onto current main.",
-  "exact_next_safe_action": "Resolve PR #80 exact head from GitHub and perform one consolidated exact-head CI/review refresh. If required checks are green and review state is clean, mark ready and merge; otherwise fix only the deterministic failing gate.",
+  "last_completed_milestone": "PR #80 merged security trust-boundary hardening on exact green head.",
+  "exact_next_safe_action": "Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for PR #65 after compact-state synchronization. If all automated gates are green, obtain genuine independent review for the exact current head; merge only after that review clears with no unresolved high-severity findings.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,9 +23,9 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Issue #70 remains open but RB-005 is not-authorized/blocked; do not execute the dedicated seed-stress Runner benchmark.",
-    "Issues #61/#62 remain blocked on independent/external M14 release-trust prerequisites.",
-    "PR #80 exact-head CI/Code Quality/Windows certification is pending after current-main rehydration and security review fixes."
+    "Issue #61 requires a genuine independent reviewer on the exact current PR #65 head; self-review is not independent evidence.",
+    "Issue #62 remains externally blocked because no active tag-target ruleset for agent-v* is present and the production-release environment remains Not Verified.",
+    "Issue #70 remains open but RB-005 is not-authorized/blocked; do not execute the dedicated seed-stress Runner benchmark."
   ],
   "timeout_control": {
     "max_consolidated_status_refreshes_per_milestone": 1,
@@ -33,20 +33,20 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-22T03:15:00+05:00",
+  "last_reconciled_at": "2026-09-22T05:03:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Rehydrate and certify PR #80 security trust boundaries on current main",
-    "current_module": "Security Hardening / Identity & Outbound Trust",
+    "current_work": "Rehydrate and certify PR #65 M14 production release trust on current main",
+    "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
-      "percent": 90,
-      "basis": "Security scope is rehydrated onto current main, source-reviewed, and strengthened with browser-bound OIDC state plus strict signed MFA evidence. Completion requires fresh exact-head CI/Code Quality/Windows certification and a clean merge decision."
+      "percent": 60,
+      "basis": "M14 source is rehydrated onto current main and the historical publication-order contract defect is fixed. Completion still requires fresh exact-head automated certification, genuine independent review, and external release-trust evidence."
     },
     "overall_progress": {
       "percent": 100,
       "scope": "active release-scope modular maturity",
       "basis": "docs/architecture/MODULAR_MATURITY_STATUS.md states: Overall weighted modular maturity for the active release scope: 100%.",
-      "caveat": "Open maintenance, security, governance, provider, and future-scope work remain separate from active release-scope modular maturity."
+      "caveat": "Open maintenance, security, governance, provider, M14 release-trust, and future-scope work remain separate from active release-scope modular maturity."
     },
     "bar_cells": 10
   }

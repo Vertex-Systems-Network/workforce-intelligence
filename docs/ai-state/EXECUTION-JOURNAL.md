@@ -102,3 +102,14 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Tightened trusted IdP MFA to require the explicit signed `mfa` AMR marker and added regression coverage.
 - Rehydrated the 24-path security tree onto current protected main and synchronized durable AI state/README for exact-head certification.
 - Dedicated Runner Benchmark RB-005 remains deferred/not-authorized.
+
+## 2026-09-22T05:03:00+05:00 — PR #65 exact-head governance synchronization
+
+- Reconciled protected main `0cc033029912cd1975b4dbda14efe449f6576320`, PR #65, open issues, open PRs, reviews, and exact-head workflow results.
+- Confirmed Code Quality #268 and Desktop Agent Standalone Build #44 passed on PR #65 head `3a522526014545ec031629a1e0b3939d7e63ac3b`.
+- Diagnosed CI #582 and Windows #351 as the same deterministic governance failure: README M14 progress no longer matched compact CURRENT-STATE, which still described merged PR #80.
+- Preserved M14 README truth and synchronized compact state instead of regressing the README to stale PR #80 status.
+- Issue #61 remains the primary merge blocker; Issue #62 remains a separate external release-configuration blocker.
+- RB-005 remains not-authorized/blocked; no stress benchmark was executed.
+- This source move invalidates the prior exact-head runs; fresh exact-head certification is required.
+
