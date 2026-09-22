@@ -78,6 +78,7 @@ function evidence(overrides = {}) {
       windows_signer_fingerprint_matches_certificate_attested: true,
       apple_signer_fingerprint_matches_certificate_attested: true,
       no_organization_scope_release_credentials_attested: true,
+      audit_token_least_privilege_attested: true,
       audited_by: 'release-admin@example.test',
       audited_at: isoOffset(-5 * 60 * 1000),
     },
@@ -302,6 +303,7 @@ test('requires explicit attestations for API-invisible release authority facts',
     'windows_signer_fingerprint_matches_certificate_attested',
     'apple_signer_fingerprint_matches_certificate_attested',
     'no_organization_scope_release_credentials_attested',
+    'audit_token_least_privilege_attested',
   ]) {
     const payload = evidence()
     payload.attestation[key] = false
