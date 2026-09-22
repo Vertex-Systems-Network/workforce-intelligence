@@ -5,15 +5,17 @@ import test from 'node:test'
 const verifier = 'tools/verify-m14-release-admin-config.mjs'
 const repository = 'Vertex-Systems-Network/workforce-intelligence'
 const sourceSha = '0123456789abcdef0123456789abcdef01234567'
-const collectedAt = '2026-09-23T12:00:00Z'
-const verifiedAt = '2026-09-23T12:20:00Z'
+
+function isoOffset(milliseconds) {
+  return new Date(Date.now() + milliseconds).toISOString()
+}
 
 function evidence(overrides = {}) {
   return {
     schema: 'workintel.m14-release-admin-evidence.v1',
     repository,
     source_contract_sha: sourceSha,
-    collected_at: collectedAt,
+    collected_at: isoOffset(-10 * 60 * 1000),
     immutable_releases: { enabled: true, enforced_by_owner: false },
     environment: {
       name: 'production-release',
@@ -60,7 +62,7 @@ function evidence(overrides = {}) {
       windows_signer_fingerprint_matches_certificate_attested: true,
       apple_signer_fingerprint_matches_certificate_attested: true,
       audited_by: 'release-admin@example.test',
-      audited_at: '2026-09-23T12:10:00Z',
+      audited_at: isoOffset(-5 * 60 * 1000),
     },
     ...overrides,
   }
@@ -71,7 +73,6 @@ function verify(payload) {
     verifier,
     '--repository', repository,
     '--source-sha', sourceSha,
-    '--as-of', verifiedAt,
   ], {
     input: JSON.stringify(payload),
     encoding: 'utf8',
@@ -192,21 +193,37 @@ test('binds the admin evidence packet to the exact M14 source contract SHA', () 
 
 
 test('rejects stale, future, or audit-order-invalid admin evidence', () => {
-  const stale = evidence({ collected_at: '2026-09-23T11:49:59Z' })
+  const stale = evidence({ collected_at: isoOffset(-31 * 60 * 1000) })
   assert.notEqual(verify(stale).status, 0)
   assert.match(verify(stale).stderr, /evidence is stale/)
 
-  const future = evidence({ collected_at: '2026-09-23T12:20:01Z' })
+  const future = evidence({ collected_at: isoOffset(60 * 1000) })
   assert.notEqual(verify(future).status, 0)
   assert.match(verify(future).stderr, /cannot be later than verifier/)
 
   const auditBeforeCollection = evidence()
-  auditBeforeCollection.attestation.audited_at = '2026-09-23T11:59:59Z'
+  auditBeforeCollection.attestation.audited_at = isoOffset(-11 * 60 * 1000)
   assert.notEqual(verify(auditBeforeCollection).status, 0)
   assert.match(verify(auditBeforeCollection).stderr, /cannot predate collected_at/)
 
   const auditAfterVerification = evidence()
-  auditAfterVerification.attestation.audited_at = '2026-09-23T12:20:01Z'
+  auditAfterVerification.attestation.audited_at = isoOffset(60 * 1000)
   assert.notEqual(verify(auditAfterVerification).status, 0)
   assert.match(verify(auditAfterVerification).stderr, /cannot be later than verifier/)
+})
+
+
+test('does not allow caller-controlled verifier time to bypass freshness', () => {
+  const payload = evidence({ collected_at: isoOffset(-31 * 60 * 1000) })
+  const result = spawnSync(process.execPath, [
+    verifier,
+    '--repository', repository,
+    '--source-sha', sourceSha,
+    '--as-of', payload.collected_at,
+  ], {
+    input: JSON.stringify(payload),
+    encoding: 'utf8',
+  })
+  assert.notEqual(result.status, 0)
+  assert.match(result.stderr, /--as-of is not accepted/)
 })
