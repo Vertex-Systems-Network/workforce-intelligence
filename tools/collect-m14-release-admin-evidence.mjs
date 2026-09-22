@@ -8,6 +8,7 @@ const GITHUB_API_VERSION = '2026-03-10'
 const API_ORIGIN = 'https://api.github.com'
 const ENVIRONMENT = 'production-release'
 const TOKEN_ENV = 'WORKINTEL_M14_ADMIN_AUDIT_TOKEN'
+const ATTESTATION_KEYS = new Set(["admin_bypass_disabled_attested","required_reviewer_independence_attested","main_policy_is_branch_attested","agent_v_policy_is_tag_attested","release_policy_token_least_privilege_attested","windows_signer_fingerprint_matches_certificate_attested","apple_signer_fingerprint_matches_certificate_attested","no_organization_scope_release_credentials_attested","audited_by","audited_at"])
 
 function fail(message) {
   throw new Error(`m14-release-admin-collector: ${message}`)
@@ -45,6 +46,12 @@ function requireSha(value) {
 
 function requireAttestation(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) fail('attestation file must contain a JSON object')
+  for (const key of Object.keys(value)) {
+    if (!ATTESTATION_KEYS.has(key)) fail(`attestation contains unsupported field: ${key}`)
+  }
+  for (const key of ATTESTATION_KEYS) {
+    if (!Object.hasOwn(value, key)) fail(`attestation is missing required field: ${key}`)
+  }
   return value
 }
 
