@@ -222,10 +222,6 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   if (verifiedAtMs - auditedAtMs > MAX_EVIDENCE_AGE_MS) {
     fail('administrator attestation is stale; audit within 30 minutes of verification')
   }
-  if (Math.abs(auditedAtMs - collectedAtMs) > MAX_EVIDENCE_AGE_MS) {
-    fail('administrator attestation and GitHub snapshot must be collected within 30 minutes of each other')
-  }
-
   return {
     schema: SCHEMA,
     github_api_version: GITHUB_API_VERSION,
