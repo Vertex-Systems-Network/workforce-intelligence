@@ -61,6 +61,32 @@ use Illuminate\Support\Facades\Schema;
         if ($member->status->value !== 'active') {
             $member->update(['status' => 'active']);
         }
+
+        $persistedCoordinatorId = User::query()->where('email', 'coordinator@acme.test')->value('id');
+        $persistedMemberUserId = WorkspaceMember::query()->whereKey($member->id)->value('user_id');
+        $identitySnapshot = [
+            'workspace_id' => (int) $workspace->id,
+            'workspace_owner_id' => (int) $workspace->owner_id,
+            'coordinator_model_id' => (int) $user->id,
+            'coordinator_persisted_id' => $persistedCoordinatorId === null ? null : (int) $persistedCoordinatorId,
+            'member_model_id' => (int) $member->id,
+            'member_model_user_id' => (int) $member->user_id,
+            'member_persisted_user_id' => $persistedMemberUserId === null ? null : (int) $persistedMemberUserId,
+        ];
+
+        if (
+            $identitySnapshot['coordinator_persisted_id'] === null
+            || $identitySnapshot['member_persisted_user_id'] === null
+            || $identitySnapshot['coordinator_model_id'] !== $identitySnapshot['coordinator_persisted_id']
+            || $identitySnapshot['member_model_user_id'] !== $identitySnapshot['member_persisted_user_id']
+            || $identitySnapshot['coordinator_model_id'] !== $identitySnapshot['member_model_user_id']
+            || $identitySnapshot['workspace_owner_id'] === $identitySnapshot['coordinator_model_id']
+        ) {
+            throw new \RuntimeException(
+                'AccessControlSeeder identity precondition failed: '.json_encode($identitySnapshot, JSON_UNESCAPED_SLASHES)
+            );
+        }
+
         app(RoleAccessService::class)->assignRoles($workspace, $member, [$role->id], $role->id, $workspace->owner_id);
     }
 }

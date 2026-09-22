@@ -11,6 +11,7 @@ const ci = read('.github/workflows/ci.yml')
 const windows = read('.github/workflows/windows-certification.yml')
 const stress = read('tools/access-control-seed-stress.sh')
 const state = read('tools/access-control-seed-state.php')
+const accessSeeder = read('database/seeders/AccessControlSeeder.php')
 const registry = JSON.parse(read('benchmarks/runner/registry.json'))
 
 test('Issue 70 seed stress lane remains fail-fast and manually gated by Runner authority', () => {
@@ -40,6 +41,14 @@ test('Issue 70 seed stress lane remains fail-fast and manually gated by Runner a
     'sqlite_integrity_ok',
     'sqlite_foreign_keys_ok',
   ]) assert.ok(state.includes(marker), `missing seed diagnostic marker: ${marker}`)
+
+  for (const marker of [
+    'coordinator_model_id',
+    'coordinator_persisted_id',
+    'member_model_user_id',
+    'member_persisted_user_id',
+    'AccessControlSeeder identity precondition failed:',
+  ]) assert.ok(accessSeeder.includes(marker), `missing in-process seed identity marker: ${marker}`)
 
   const benchmark = registry.entries.find(entry => entry.id === 'RB-005')
   assert.ok(benchmark)
