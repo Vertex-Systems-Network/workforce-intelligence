@@ -24,9 +24,16 @@ class AccessControlSeederDiagnosticsTest extends TestCase
         $coordinator = User::query()->where('email', 'coordinator@acme.test')->firstOrFail();
         $workspace->update(['owner_id' => $coordinator->id]);
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('AccessControlSeeder identity precondition failed:');
+        try {
+            $this->seed(AccessControlSeeder::class);
+            $this->fail('AccessControlSeeder should reject a coordinator/owner identity collision.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('AccessControlSeeder identity precondition failed:', $exception->getMessage());
+            $this->assertStringContainsString('"workspace_owner_id":'.$coordinator->id, $exception->getMessage());
+            $this->assertStringContainsString('"coordinator_model_id":'.$coordinator->id, $exception->getMessage());
+        }
 
-        $this->seed(AccessControlSeeder::class);
+        $member = $coordinator->memberships()->where('workspace_id', $workspace->id)->firstOrFail();
+        $this->assertSame(['project-coordinator'], $member->roles()->orderBy('roles.slug')->pluck('roles.slug')->all());
     }
 }
