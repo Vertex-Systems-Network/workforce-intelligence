@@ -70,6 +70,8 @@ The final JSON object contains `source_contract_sha`, which must equal the exact
 
 It also contains `collected_at`. The verifier binds verification time to its own system clock and rejects caller-controlled `--as-of` values, evidence older than 30 minutes, evidence collected after the verifier time, attestations made before collection, or attestations dated after verification. This prevents a previously valid admin snapshot from being replayed after live GitHub configuration changes by supplying an old reference time.
 
+The evidence schema and attestation object are exact-key allowlists. Unknown fields are rejected so tokens, passwords, or unrelated sensitive values cannot be accidentally serialized into an archived evidence packet.
+
 The final JSON object also contains:
 
 - `immutable_releases`: repository immutable-release response;
