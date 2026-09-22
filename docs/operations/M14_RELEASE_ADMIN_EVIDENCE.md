@@ -1,0 +1,73 @@
+# M14 external release administration evidence
+
+This document defines a read-only evidence packet for Issue #62. It does not configure GitHub, publish a release, or expose secret values.
+
+## Purpose
+
+After an administrator configures M14 external release controls, collect GitHub REST snapshots and validate them with:
+
+```bash
+node tools/verify-m14-release-admin-config.mjs \
+  --repository Vertex-Systems-Network/workforce-intelligence \
+  < m14-release-admin-evidence.json
+```
+
+The verifier expects schema `workintel.m14-release-admin-evidence.v1` and fails closed unless all source-visible M14 admin requirements are represented.
+
+## API snapshots
+
+Collect these read-only GitHub API responses with an appropriately scoped administrator/auditor token:
+
+```bash
+gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
+  repos/Vertex-Systems-Network/workforce-intelligence/immutable-releases
+
+gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
+  repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release
+
+gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
+  repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release/deployment-branch-policies
+
+gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
+  repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release/secrets?per_page=100
+
+gh api -H 'X-GitHub-Api-Version: 2026-03-10' \
+  repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release/variables?per_page=30
+```
+
+Environment secret list responses expose names/metadata only, not encrypted values. Environment variable responses expose non-secret values, so the verifier can validate signer fingerprints and the HTTPS timestamp endpoint.
+
+## Evidence packet
+
+The final JSON object contains:
+
+- `immutable_releases`: repository immutable-release response;
+- `environment`: `production-release` environment response;
+- `deployment_branch_policies`: custom deployment branch/tag policy list;
+- `environment_secrets`: environment secret list;
+- `environment_variables`: environment variable list;
+- `attestation`: administrator-only facts that GitHub read APIs do not prove strongly enough for M14.
+
+Required auditor attestations:
+
+- administrator bypass is disabled for the protected release environment;
+- required reviewer independence from the release initiator/operator is verified;
+- the `main` custom deployment policy is a branch policy;
+- the `agent-v*` custom deployment policy is a tag policy;
+- real auditor identity and ISO-8601 audit time are recorded.
+
+## Fail-closed checks
+
+The verifier requires:
+
+- immutable releases enabled;
+- environment name exactly `production-release`;
+- at least one required reviewer and `prevent_self_review=true`;
+- custom deployment policies enabled;
+- both `main` and `agent-v*` policies present;
+- all nine M14 environment secret names present;
+- `WORKINTEL_WINDOWS_TIMESTAMP_URL` uses HTTPS;
+- both Windows and Apple approved signer fingerprints are exactly 64 hexadecimal SHA-256 characters;
+- all four administrator attestations are true and auditor metadata is valid.
+
+This evidence complements, but does not replace, `tools/verify-release-tag-protection.mjs` and the committed `M14_RELEASE_TAG_RULESET_ATTESTATION.json`. Real signing, notarization, publication, and real-target evidence remain separate gates.
