@@ -288,7 +288,6 @@ const args = parseArgs(process.argv.slice(2))
 const expectedRepository = requireString(args.repository, '--repository')
 const expectedSourceSha = requireString(args['source-sha'], '--source-sha').toLowerCase()
 if (!/^[0-9a-f]{40}$/.test(expectedSourceSha)) fail('--source-sha must be a 40-hex Git commit SHA')
-const verifiedAt = new Date().toISOString()
 
 let raw = ''
 process.stdin.setEncoding('utf8')
@@ -300,6 +299,7 @@ process.stdin.on('end', () => {
   } catch (error) {
     fail(`could not parse JSON evidence: ${error.message}`)
   }
+  const verifiedAt = new Date().toISOString()
   const result = verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifiedAt)
   console.log(JSON.stringify(result, null, 2))
 })
