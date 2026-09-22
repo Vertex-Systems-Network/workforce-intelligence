@@ -80,7 +80,11 @@ test('M14 publication rechecks live main and tag refs before exposure', () => {
   assert.ok(workflow.includes('current_tag="$(git rev-list -n 1 "$RELEASE_TAG")"'))
   assert.ok(workflow.includes('Protected main moved after release authorization'))
   assert.ok(workflow.includes('Release tag moved after authorization'))
-  assert.ok(workflow.indexOf('assert_live_release_refs\n          gh release edit "$RELEASE_TAG" --draft=false') > 0)
+  const publishStep = workflow.lastIndexOf('gh release edit "$RELEASE_TAG" --draft=false')
+  const finalRefCheck = workflow.lastIndexOf('assert_live_release_refs', publishStep)
+  const finalAssetCheck = workflow.lastIndexOf('assert_remote_release_assets_match', publishStep)
+  assert.ok(finalRefCheck > 0 && finalRefCheck < publishStep, 'live main/tag refs must be rechecked before exposure')
+  assert.ok(finalAssetCheck > finalRefCheck && finalAssetCheck < publishStep, 'remote asset bytes must be rechecked after live refs and before exposure')
 })
 
 test('M14 publication verifies receipts against the exact release run', () => {
