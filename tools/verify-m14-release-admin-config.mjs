@@ -85,12 +85,22 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
 
   const environment = requireObject(evidence.environment, 'environment')
   if (environment.name !== REQUIRED_ENVIRONMENT) fail(`environment.name must be ${REQUIRED_ENVIRONMENT}`)
+  if (!Number.isInteger(environment.id) || environment.id <= 0) fail('environment.id must be a positive integer')
+  const expectedEnvironmentUrl = `https://api.github.com/repos/${expectedRepository}/environments/${REQUIRED_ENVIRONMENT}`
+  if (environment.url !== expectedEnvironmentUrl) fail(`environment.url must be ${expectedEnvironmentUrl}`)
 
   const reviewerRule = findRequiredReviewerRule(environment)
   if (!reviewerRule) fail('production-release must expose a required_reviewers protection rule')
   requireTrue(reviewerRule.prevent_self_review, 'required_reviewers.prevent_self_review')
   if (!Array.isArray(reviewerRule.reviewers) || reviewerRule.reviewers.length === 0) {
     fail('required_reviewers.reviewers must contain at least one user or team')
+  }
+  for (const entry of reviewerRule.reviewers) {
+    const type = String(entry?.type || '')
+    const reviewer = requireObject(entry?.reviewer, 'required_reviewers.reviewers[].reviewer')
+    if (type === 'User') requireString(reviewer.login, 'required_reviewers User login')
+    else if (type === 'Team') requireString(reviewer.slug, 'required_reviewers Team slug')
+    else fail('required_reviewers reviewer type must be User or Team')
   }
 
   const deploymentPolicy = requireObject(environment.deployment_branch_policy, 'environment.deployment_branch_policy')
@@ -102,6 +112,11 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   const policies = mapByName(branchPolicies.branch_policies, 'deployment_branch_policies.branch_policies')
   if (!policies.has('main')) fail('deployment policies must include main')
   if (!policies.has('agent-v*')) fail('deployment policies must include agent-v*')
+  for (const name of ['main', 'agent-v*']) {
+    const policy = requireObject(policies.get(name), `deployment policy ${name}`)
+    if (!Number.isInteger(policy.id) || policy.id <= 0) fail(`deployment policy ${name} id must be a positive integer`)
+    requireString(policy.node_id, `deployment policy ${name} node_id`)
+  }
 
   const secrets = requireObject(evidence.environment_secrets, 'environment_secrets')
   const secretNames = new Set((Array.isArray(secrets.secrets) ? secrets.secrets : []).map(item => String(item?.name || '')))
