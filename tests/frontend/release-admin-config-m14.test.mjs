@@ -18,11 +18,13 @@ function evidence(overrides = {}) {
     collected_at: isoOffset(-10 * 60 * 1000),
     immutable_releases: { enabled: true, enforced_by_owner: false },
     environment: {
+      id: 7001,
       name: 'production-release',
+      url: `https://api.github.com/repos/${repository}/environments/production-release`,
       protection_rules: [{
         type: 'required_reviewers',
         prevent_self_review: true,
-        reviewers: [{ type: 'User', reviewer: { login: 'release-reviewer' } }],
+        reviewers: [{ type: 'User', reviewer: { login: 'release-reviewer', id: 55 } }],
       }],
       deployment_branch_policy: {
         protected_branches: false,
@@ -31,7 +33,10 @@ function evidence(overrides = {}) {
     },
     deployment_branch_policies: {
       total_count: 2,
-      branch_policies: [{ name: 'main' }, { name: 'agent-v*' }],
+      branch_policies: [
+        { id: 801, node_id: 'policy-main', name: 'main' },
+        { id: 802, node_id: 'policy-agent-v', name: 'agent-v*' },
+      ],
     },
     environment_secrets: {
       secrets: [
@@ -110,9 +115,23 @@ test('requires protected environment reviewer and prevent-self-review', () => {
   }
 })
 
+test('binds environment evidence to the expected repository and validates reviewer identity shape', () => {
+  const wrongUrl = evidence()
+  wrongUrl.environment.url = 'https://api.github.com/repos/other/repository/environments/production-release'
+  assert.notEqual(verify(wrongUrl).status, 0)
+
+  const malformedReviewer = evidence()
+  malformedReviewer.environment.protection_rules[0].reviewers = [{ type: 'User', reviewer: {} }]
+  assert.notEqual(verify(malformedReviewer).status, 0)
+
+  const unsupportedReviewer = evidence()
+  unsupportedReviewer.environment.protection_rules[0].reviewers = [{ type: 'Robot', reviewer: { login: 'bot' } }]
+  assert.notEqual(verify(unsupportedReviewer).status, 0)
+})
+
 test('requires custom main and agent-v deployment policies plus audit type attestations', () => {
   const missingTag = evidence()
-  missingTag.deployment_branch_policies.branch_policies = [{ name: 'main' }]
+  missingTag.deployment_branch_policies.branch_policies = [{ id: 801, node_id: 'policy-main', name: 'main' }]
   assert.notEqual(verify(missingTag).status, 0)
 
   const wrongMode = evidence()
