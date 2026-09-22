@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\BusinessUnit;
+use App\Models\CostCenter;
 use App\Models\DataGovernancePolicy;
 use App\Models\EnterpriseIdentityProvider;
 use App\Models\LegalEntity;
 use App\Models\MobileAccessToken;
-use App\Models\CostCenter;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\ScimAccessToken;
@@ -29,7 +29,8 @@ use Illuminate\Validation\Rule;
 
 /** Provides enterprise governance controller behavior within the WorkIntel application. */ class EnterpriseGovernanceController extends Controller
 {
-    /** Handles the overview operation for the current WorkIntel workflow. */ public function overview(Request $request, EnterpriseSecurityService $security, TotpService $totp): JsonResponse
+    /** Handles the overview operation for the current WorkIntel workflow. */
+    public function overview(Request $request, EnterpriseSecurityService $security, TotpService $totp): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         $member = $request->attributes->get('workspaceMember');
@@ -81,16 +82,17 @@ use Illuminate\Validation\Rule;
             'legal_entities' => LegalEntity::where('workspace_id', $workspace->id)->orderBy('name')->get(),
             'business_units' => BusinessUnit::where('workspace_id', $workspace->id)->orderBy('name')->get(),
             'governance' => DataGovernancePolicy::where('workspace_id', $workspace->id)->orderBy('dataset')->get(),
-            'organization_members' => WorkspaceMember::where('workspace_id', $workspace->id)->with('user:id,first_name,last_name,email')->orderBy('id')->get(['id','user_id','employee_code','legal_entity_id','business_unit_id']),
-            'organization_projects' => Project::where('workspace_id', $workspace->id)->orderBy('name')->get(['id','name','code','legal_entity_id','business_unit_id']),
-            'organization_cost_centers' => Schema::hasTable('cost_centers') ? CostCenter::where('workspace_id', $workspace->id)->orderBy('name')->get(['id','name','code','legal_entity_id','business_unit_id']) : collect(),
+            'organization_members' => WorkspaceMember::where('workspace_id', $workspace->id)->with('user:id,first_name,last_name,email')->orderBy('id')->get(['id', 'user_id', 'employee_code', 'legal_entity_id', 'business_unit_id']),
+            'organization_projects' => Project::where('workspace_id', $workspace->id)->orderBy('name')->get(['id', 'name', 'code', 'legal_entity_id', 'business_unit_id']),
+            'organization_cost_centers' => Schema::hasTable('cost_centers') ? CostCenter::where('workspace_id', $workspace->id)->orderBy('name')->get(['id', 'name', 'code', 'legal_entity_id', 'business_unit_id']) : collect(),
             'mfa' => [
                 'enabled' => Schema::hasTable('user_mfa_methods') ? $totp->enabled($request->user()) : false,
             ],
         ]);
     }
 
-    /** Handles the store provider operation for the current WorkIntel workflow. */ public function storeProvider(Request $request): JsonResponse
+    /** Handles the store provider operation for the current WorkIntel workflow. */
+    public function storeProvider(Request $request): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         $data = $request->validate([
@@ -123,7 +125,8 @@ use Illuminate\Validation\Rule;
         return response()->json(['data' => $this->providerPayload($row)], 201);
     }
 
-    /** Updates update provider data for the requested resource. */ public function updateProvider(Request $request, EnterpriseIdentityProvider $provider): JsonResponse
+    /** Updates update provider data for the requested resource. */
+    public function updateProvider(Request $request, EnterpriseIdentityProvider $provider): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         abort_unless((int) $provider->workspace_id === (int) $workspace->id, 404);
@@ -146,17 +149,21 @@ use Illuminate\Validation\Rule;
         }
 
         $provider->update($data);
+
         return response()->json(['data' => $this->providerPayload($provider->fresh())]);
     }
 
-    /** Handles the test provider operation for the current WorkIntel workflow. */ public function testProvider(Request $request, EnterpriseIdentityProvider $provider, OidcService $service): JsonResponse
+    /** Handles the test provider operation for the current WorkIntel workflow. */
+    public function testProvider(Request $request, EnterpriseIdentityProvider $provider, OidcService $service): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         abort_unless((int) $provider->workspace_id === (int) $workspace->id, 404);
+
         return response()->json(['data' => $service->test($provider)]);
     }
 
-    /** Updates update security policy data for the requested resource. */ public function updateSecurityPolicy(Request $request, EnterpriseSecurityService $security): JsonResponse
+    /** Updates update security policy data for the requested resource. */
+    public function updateSecurityPolicy(Request $request, EnterpriseSecurityService $security): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         $data = $request->validate([
@@ -171,15 +178,21 @@ use Illuminate\Validation\Rule;
             'block_compromised_devices' => 'boolean',
         ]);
 
-        if (($data['require_mfa'] ?? false)) $security->assertCanEnableMfa($workspace, $data['mfa_role_slugs'] ?? []);
-        if (($data['require_sso'] ?? false)) $security->assertCanRequireSso($workspace);
+        if (($data['require_mfa'] ?? false)) {
+            $security->assertCanEnableMfa($workspace, $data['mfa_role_slugs'] ?? []);
+        }
+        if (($data['require_sso'] ?? false)) {
+            $security->assertCanRequireSso($workspace);
+        }
 
         $policy = $security->policy($workspace);
         $policy->update($data);
+
         return response()->json(['data' => $policy->fresh()]);
     }
 
-    /** Handles the store ip rule operation for the current WorkIntel workflow. */ public function storeIpRule(Request $request): JsonResponse
+    /** Handles the store ip rule operation for the current WorkIntel workflow. */
+    public function storeIpRule(Request $request): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         $data = $request->validate([
@@ -194,15 +207,18 @@ use Illuminate\Validation\Rule;
         return response()->json(['data' => WorkspaceIpRule::create(['workspace_id' => $workspace->id, ...$data])], 201);
     }
 
-    /** Removes delete ip rule data from the requested resource. */ public function deleteIpRule(Request $request, WorkspaceIpRule $rule): JsonResponse
+    /** Removes delete ip rule data from the requested resource. */
+    public function deleteIpRule(Request $request, WorkspaceIpRule $rule): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         abort_unless((int) $rule->workspace_id === (int) $workspace->id, 404);
         $rule->delete();
+
         return response()->json(['message' => 'IP rule removed.']);
     }
 
-    /** Handles the store access policy operation for the current WorkIntel workflow. */ public function storeAccessPolicy(Request $request): JsonResponse
+    /** Handles the store access policy operation for the current WorkIntel workflow. */
+    public function storeAccessPolicy(Request $request): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         $data = $request->validate([
@@ -225,12 +241,12 @@ use Illuminate\Validation\Rule;
             'conditions.ip_cidrs.*' => 'string|max:64',
         ]);
 
-        $validRoleSlugs = Role::where('workspace_id', $workspace->id)->where('status','active')->pluck('slug')->all();
+        $validRoleSlugs = Role::where('workspace_id', $workspace->id)->where('status', 'active')->pluck('slug')->all();
         foreach (($data['conditions']['role_slugs'] ?? []) as $slug) {
             abort_unless(in_array($slug, $validRoleSlugs, true), 422, "Unknown workspace role slug: {$slug}");
         }
         foreach (($data['conditions']['employment_stages'] ?? []) as $stage) {
-            abort_unless(in_array($stage, ['preboarding','onboarding','probation','active','notice','terminated','alumni'], true), 422, "Unknown employment stage: {$stage}");
+            abort_unless(in_array($stage, ['preboarding', 'onboarding', 'probation', 'active', 'notice', 'terminated', 'alumni'], true), 422, "Unknown employment stage: {$stage}");
         }
 
         foreach (($data['conditions']['legal_entity_ids'] ?? []) as $id) {
@@ -259,15 +275,18 @@ use Illuminate\Validation\Rule;
         return response()->json(['data' => $row], 201);
     }
 
-    /** Removes delete access policy data from the requested resource. */ public function deleteAccessPolicy(Request $request, WorkspaceAccessPolicy $policy): JsonResponse
+    /** Removes delete access policy data from the requested resource. */
+    public function deleteAccessPolicy(Request $request, WorkspaceAccessPolicy $policy): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         abort_unless((int) $policy->workspace_id === (int) $workspace->id, 404);
         $policy->delete();
+
         return response()->json(['message' => 'Attribute access policy removed.']);
     }
 
-    /** Handles the revoke session operation for the current WorkIntel workflow. */ public function revokeSession(Request $request, WorkspaceAccessSession $session): JsonResponse
+    /** Handles the revoke session operation for the current WorkIntel workflow. */
+    public function revokeSession(Request $request, WorkspaceAccessSession $session): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         abort_unless((int) $session->workspace_id === (int) $workspace->id, 404);
@@ -275,18 +294,22 @@ use Illuminate\Validation\Rule;
             'revoked_at' => now(),
             'revoke_reason' => $request->input('reason', 'Revoked by administrator.'),
         ]);
+
         return response()->json(['data' => $session->fresh()]);
     }
 
-    /** Handles the revoke mobile session operation for the current WorkIntel workflow. */ public function revokeMobileSession(Request $request, MobileAccessToken $token): JsonResponse
+    /** Handles the revoke mobile session operation for the current WorkIntel workflow. */
+    public function revokeMobileSession(Request $request, MobileAccessToken $token): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         abort_unless((int) $token->workspace_id === (int) $workspace->id, 404);
         $token->update(['revoked_at' => now()]);
+
         return response()->json(['data' => $token->fresh()]);
     }
 
-    /** Creates create scim token data for the requested workflow. */ public function createScimToken(Request $request): JsonResponse
+    /** Creates create scim token data for the requested workflow. */
+    public function createScimToken(Request $request): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         $data = $request->validate([
@@ -315,15 +338,18 @@ use Illuminate\Validation\Rule;
         ], 201);
     }
 
-    /** Handles the revoke scim token operation for the current WorkIntel workflow. */ public function revokeScimToken(Request $request, ScimAccessToken $token): JsonResponse
+    /** Handles the revoke scim token operation for the current WorkIntel workflow. */
+    public function revokeScimToken(Request $request, ScimAccessToken $token): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         abort_unless((int) $token->workspace_id === (int) $workspace->id, 404);
         $token->update(['revoked_at' => now()]);
+
         return response()->json(['data' => $token->fresh()]);
     }
 
-    /** Handles the store legal entity operation for the current WorkIntel workflow. */ public function storeLegalEntity(Request $request): JsonResponse
+    /** Handles the store legal entity operation for the current WorkIntel workflow. */
+    public function storeLegalEntity(Request $request): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         $data = $request->validate([
@@ -345,10 +371,12 @@ use Illuminate\Validation\Rule;
             'currency' => strtoupper($data['currency']),
             'status' => $data['status'] ?? 'active',
         ]);
+
         return response()->json(['data' => $row], 201);
     }
 
-    /** Handles the store business unit operation for the current WorkIntel workflow. */ public function storeBusinessUnit(Request $request): JsonResponse
+    /** Handles the store business unit operation for the current WorkIntel workflow. */
+    public function storeBusinessUnit(Request $request): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         $data = $request->validate([
@@ -360,9 +388,15 @@ use Illuminate\Validation\Rule;
             'status' => ['sometimes', Rule::in(['active', 'inactive'])],
         ]);
 
-        if ($data['legal_entity_id'] ?? null) LegalEntity::where('workspace_id', $workspace->id)->findOrFail($data['legal_entity_id']);
-        if ($data['parent_id'] ?? null) BusinessUnit::where('workspace_id', $workspace->id)->findOrFail($data['parent_id']);
-        if ($data['leader_member_id'] ?? null) WorkspaceMember::where('workspace_id', $workspace->id)->findOrFail($data['leader_member_id']);
+        if ($data['legal_entity_id'] ?? null) {
+            LegalEntity::where('workspace_id', $workspace->id)->findOrFail($data['legal_entity_id']);
+        }
+        if ($data['parent_id'] ?? null) {
+            BusinessUnit::where('workspace_id', $workspace->id)->findOrFail($data['parent_id']);
+        }
+        if ($data['leader_member_id'] ?? null) {
+            WorkspaceMember::where('workspace_id', $workspace->id)->findOrFail($data['leader_member_id']);
+        }
 
         $row = BusinessUnit::create([
             'uuid' => (string) Str::uuid(),
@@ -370,10 +404,12 @@ use Illuminate\Validation\Rule;
             ...$data,
             'status' => $data['status'] ?? 'active',
         ]);
+
         return response()->json(['data' => $row], 201);
     }
 
-    /** Handles the save governance policy operation for the current WorkIntel workflow. */ public function saveGovernancePolicy(Request $request): JsonResponse
+    /** Handles the save governance policy operation for the current WorkIntel workflow. */
+    public function saveGovernancePolicy(Request $request): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         $data = $request->validate([
@@ -390,40 +426,49 @@ use Illuminate\Validation\Rule;
             'workspace_id' => $workspace->id,
             'dataset' => $data['dataset'],
         ]);
-        if (! $row->exists) $row->uuid = (string) Str::uuid();
+        if (! $row->exists) {
+            $row->uuid = (string) Str::uuid();
+        }
         $row->fill($data)->save();
 
         return response()->json(['data' => $row->fresh()]);
     }
 
-    /** Handles the assign member organization operation for the current WorkIntel workflow. */ public function assignMemberOrganization(Request $request, WorkspaceMember $member): JsonResponse
+    /** Handles the assign member organization operation for the current WorkIntel workflow. */
+    public function assignMemberOrganization(Request $request, WorkspaceMember $member): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         abort_unless((int) $member->workspace_id === (int) $workspace->id, 404);
         [$entityId, $unitId] = $this->validatedOrganizationAssignment($workspace->id, $request);
         $member->update(['legal_entity_id' => $entityId, 'business_unit_id' => $unitId]);
-        return response()->json(['data' => $member->fresh(['legalEntity','businessUnit','user'])]);
+
+        return response()->json(['data' => $member->fresh(['legalEntity', 'businessUnit', 'user'])]);
     }
 
-    /** Handles the assign project organization operation for the current WorkIntel workflow. */ public function assignProjectOrganization(Request $request, Project $project): JsonResponse
+    /** Handles the assign project organization operation for the current WorkIntel workflow. */
+    public function assignProjectOrganization(Request $request, Project $project): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         abort_unless((int) $project->workspace_id === (int) $workspace->id, 404);
         [$entityId, $unitId] = $this->validatedOrganizationAssignment($workspace->id, $request);
         $project->update(['legal_entity_id' => $entityId, 'business_unit_id' => $unitId]);
-        return response()->json(['data' => $project->fresh(['legalEntity','businessUnit'])]);
+
+        return response()->json(['data' => $project->fresh(['legalEntity', 'businessUnit'])]);
     }
 
-    /** Handles the assign cost center organization operation for the current WorkIntel workflow. */ public function assignCostCenterOrganization(Request $request, CostCenter $costCenter): JsonResponse
+    /** Handles the assign cost center organization operation for the current WorkIntel workflow. */
+    public function assignCostCenterOrganization(Request $request, CostCenter $costCenter): JsonResponse
     {
         $workspace = $request->attributes->get('workspace');
         abort_unless((int) $costCenter->workspace_id === (int) $workspace->id, 404);
         [$entityId, $unitId] = $this->validatedOrganizationAssignment($workspace->id, $request);
         $costCenter->update(['legal_entity_id' => $entityId, 'business_unit_id' => $unitId]);
-        return response()->json(['data' => $costCenter->fresh(['legalEntity','businessUnit'])]);
+
+        return response()->json(['data' => $costCenter->fresh(['legalEntity', 'businessUnit'])]);
     }
 
-    /** Validates validated organization assignment input before it is processed. */ private function validatedOrganizationAssignment(int $workspaceId, Request $request): array
+    /** Validates validated organization assignment input before it is processed. */
+    private function validatedOrganizationAssignment(int $workspaceId, Request $request): array
     {
         $data = $request->validate(['legal_entity_id' => 'nullable|integer', 'business_unit_id' => 'nullable|integer']);
         $entity = isset($data['legal_entity_id']) ? LegalEntity::where('workspace_id', $workspaceId)->findOrFail($data['legal_entity_id']) : null;
@@ -432,52 +477,65 @@ use Illuminate\Validation\Rule;
             abort_if($entity && (int) $entity->id !== (int) $unit->legal_entity_id, 422, 'Business unit does not belong to the selected legal entity.');
             $entity = LegalEntity::where('workspace_id', $workspaceId)->findOrFail($unit->legal_entity_id);
         }
+
         return [$entity?->id, $unit?->id];
     }
 
-    /** Handles the mfa status operation for the current WorkIntel workflow. */ public function mfaStatus(Request $request, TotpService $totp): JsonResponse
+    /** Handles the mfa status operation for the current WorkIntel workflow. */
+    public function mfaStatus(Request $request, TotpService $totp): JsonResponse
     {
         $method = $totp->method($request->user());
+
         return response()->json([
             'enabled' => (bool) $method?->confirmed_at,
             'recovery_codes_remaining' => count($method?->recovery_code_hashes ?? []),
         ]);
     }
 
-    /** Handles the begin mfa operation for the current WorkIntel workflow. */ public function beginMfa(Request $request, TotpService $totp): JsonResponse
+    /** Handles the begin mfa operation for the current WorkIntel workflow. */
+    public function beginMfa(Request $request, TotpService $totp): JsonResponse
     {
         return response()->json(['data' => $totp->begin($request->user())], 201);
     }
 
-    /** Handles the confirm mfa operation for the current WorkIntel workflow. */ public function confirmMfa(Request $request, TotpService $totp): JsonResponse
+    /** Handles the confirm mfa operation for the current WorkIntel workflow. */
+    public function confirmMfa(Request $request, TotpService $totp): JsonResponse
     {
         $data = $request->validate(['code' => 'required|string|max:32']);
         abort_unless($totp->confirm($request->user(), $data['code']), 422, 'Authenticator code is invalid.');
-        if ($request->hasSession()) $request->session()->put('mfa_verified_at', now()->toIso8601String());
+        if ($request->hasSession()) {
+            $request->session()->put('mfa_verified_at', now()->toIso8601String());
+        }
+
         return response()->json(['message' => 'MFA enabled.']);
     }
 
-    /** Handles the disable mfa operation for the current WorkIntel workflow. */ public function disableMfa(Request $request, TotpService $totp): JsonResponse
+    /** Handles the disable mfa operation for the current WorkIntel workflow. */
+    public function disableMfa(Request $request, TotpService $totp): JsonResponse
     {
         $data = $request->validate(['code' => 'required|string|max:32']);
         abort_unless($totp->verify($request->user(), $data['code']), 422, 'A valid authenticator or recovery code is required.');
         UserMfaMethod::where('user_id', $request->user()->id)->delete();
+
         return response()->json(['message' => 'MFA disabled.']);
     }
 
-    /** Handles the provider payload operation for the current WorkIntel workflow. */ private function providerPayload(EnterpriseIdentityProvider $provider): array
+    /** Handles the provider payload operation for the current WorkIntel workflow. */
+    private function providerPayload(EnterpriseIdentityProvider $provider): array
     {
         return $provider->only([
             'id', 'uuid', 'name', 'type', 'status', 'domains', 'enforce_login', 'jit_provisioning', 'default_role_slug',
         ]);
     }
 
-    /** Validates validate provider config input before it is processed. */ private function validateProviderConfig(string $type, array $config): void
+    /** Validates validate provider config input before it is processed. */
+    private function validateProviderConfig(string $type, array $config): void
     {
         if ($type === 'oidc') {
-            foreach (['client_id', 'authorization_endpoint', 'token_endpoint', 'userinfo_endpoint'] as $key) {
+            foreach (['client_id', 'issuer', 'authorization_endpoint', 'token_endpoint', 'userinfo_endpoint'] as $key) {
                 abort_unless(filled($config[$key] ?? null), 422, "OIDC config requires {$key}.");
             }
+
             return;
         }
 
@@ -486,12 +544,18 @@ use Illuminate\Validation\Rule;
         }
     }
 
-    /** Handles the valid cidr operation for the current WorkIntel workflow. */ private function validCidr(string $cidr): bool
+    /** Handles the valid cidr operation for the current WorkIntel workflow. */
+    private function validCidr(string $cidr): bool
     {
-        if (! str_contains($cidr, '/')) return filter_var($cidr, FILTER_VALIDATE_IP) !== false;
+        if (! str_contains($cidr, '/')) {
+            return filter_var($cidr, FILTER_VALIDATE_IP) !== false;
+        }
         [$ip, $prefix] = explode('/', $cidr, 2);
-        if (filter_var($ip, FILTER_VALIDATE_IP) === false || ! ctype_digit($prefix)) return false;
+        if (filter_var($ip, FILTER_VALIDATE_IP) === false || ! ctype_digit($prefix)) {
+            return false;
+        }
         $max = str_contains($ip, ':') ? 128 : 32;
+
         return (int) $prefix >= 0 && (int) $prefix <= $max;
     }
 }

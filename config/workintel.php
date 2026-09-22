@@ -44,7 +44,11 @@ return [
         'hsts_seconds' => (int) env('WORKINTEL_HSTS_SECONDS', 0),
     ],
 
-    'demo_accounts' => (bool) env('WORKINTEL_SHOW_DEMO_ACCOUNTS', env('APP_ENV', 'production') !== 'production'),
+    'demo_accounts' => env('APP_ENV', 'production') !== 'production' && filter_var(env('WORKINTEL_SHOW_DEMO_ACCOUNTS', false), FILTER_VALIDATE_BOOL),
+
+    'outbound' => [
+        'allow_private' => filter_var(env('WORKINTEL_ALLOW_PRIVATE_WEBHOOKS', false), FILTER_VALIDATE_BOOL),
+    ],
 
     'billing' => [
         'provider' => env('WORKINTEL_BILLING_PROVIDER', 'manual'),
@@ -67,6 +71,7 @@ return [
     ],
 
     'commerce' => [
+        'operator_user_ids' => array_values(array_filter(array_map('intval', explode(',', (string) env('WORKINTEL_PLATFORM_OPERATOR_USER_IDS', ''))))),
         'operator_emails' => array_values(array_filter(array_map('trim', explode(',', (string) ((trim((string) env('WORKINTEL_PLATFORM_OPERATOR_EMAILS', '')) !== '') ? env('WORKINTEL_PLATFORM_OPERATOR_EMAILS') : (env('APP_ENV', 'production') !== 'production' ? 'owner@acme.test' : '')))))),
         'dunning_max_attempts' => (int) env('WORKINTEL_DUNNING_MAX_ATTEMPTS', 4),
     ],
