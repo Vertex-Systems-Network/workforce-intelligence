@@ -127,6 +127,9 @@ function verifyEvidence(evidence, expectedRepository) {
   requireTrue(attestation.required_reviewer_independence_attested, 'attestation.required_reviewer_independence_attested')
   requireTrue(attestation.main_policy_is_branch_attested, 'attestation.main_policy_is_branch_attested')
   requireTrue(attestation.agent_v_policy_is_tag_attested, 'attestation.agent_v_policy_is_tag_attested')
+  requireTrue(attestation.release_policy_token_least_privilege_attested, 'attestation.release_policy_token_least_privilege_attested')
+  requireTrue(attestation.windows_signer_fingerprint_matches_certificate_attested, 'attestation.windows_signer_fingerprint_matches_certificate_attested')
+  requireTrue(attestation.apple_signer_fingerprint_matches_certificate_attested, 'attestation.apple_signer_fingerprint_matches_certificate_attested')
   const auditedBy = requireString(attestation.audited_by, 'attestation.audited_by')
   const auditedAt = requireTimestamp(attestation.audited_at, 'attestation.audited_at')
 
@@ -156,6 +159,9 @@ function verifyEvidence(evidence, expectedRepository) {
     attestation: {
       admin_bypass_disabled: true,
       reviewer_independence: true,
+      release_policy_token_least_privilege: true,
+      windows_signer_fingerprint_matches_certificate: true,
+      apple_signer_fingerprint_matches_certificate: true,
       audited_by: auditedBy,
       audited_at: auditedAt,
     },
