@@ -115,6 +115,20 @@ test('rejects evidence collected under a different GitHub API version', () => {
   assert.match(result.stderr, /github_api_version must be 2026-03-10/)
 })
 
+test('rejects unknown evidence or attestation fields to prevent accidental secret serialization', () => {
+  const extraEvidence = evidence()
+  extraEvidence.accidental_token = 'should-never-be-serialized'
+  const evidenceResult = verify(extraEvidence)
+  assert.notEqual(evidenceResult.status, 0)
+  assert.match(evidenceResult.stderr, /evidence contains unsupported field: accidental_token/)
+
+  const extraAttestation = evidence()
+  extraAttestation.attestation.password = 'should-never-be-serialized'
+  const attestationResult = verify(extraAttestation)
+  assert.notEqual(attestationResult.status, 0)
+  assert.match(attestationResult.stderr, /attestation contains unsupported field: password/)
+})
+
 test('fails closed when immutable releases are not verified', () => {
   const result = verify(evidence({ immutable_releases: { enabled: false } }))
   assert.notEqual(result.status, 0)
