@@ -132,9 +132,13 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
     'deployment_branch_policies',
   )
   const policies = mapByName(branchPolicyItems, 'deployment_branch_policies.branch_policies')
+  const requiredPolicyNames = ['main', 'agent-v*']
   if (!policies.has('main')) fail('deployment policies must include main')
   if (!policies.has('agent-v*')) fail('deployment policies must include agent-v*')
-  for (const name of ['main', 'agent-v*']) {
+  if (policies.size !== requiredPolicyNames.length) {
+    fail('production-release must not authorize deployment policies beyond main and agent-v*')
+  }
+  for (const name of requiredPolicyNames) {
     const policy = requireObject(policies.get(name), `deployment policy ${name}`)
     if (!Number.isInteger(policy.id) || policy.id <= 0) fail(`deployment policy ${name} id must be a positive integer`)
     requireString(policy.node_id, `deployment policy ${name} node_id`)
@@ -145,11 +149,17 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   for (const name of REQUIRED_SECRETS) {
     if (!secretMap.has(name)) fail(`missing production-release environment secret: ${name}`)
   }
+  if (secretMap.size !== REQUIRED_SECRETS.length) {
+    fail('production-release must not contain environment secrets outside the M14 allowlist')
+  }
 
   const variableItems = requireCompleteList(evidence.environment_variables, 'variables', 'environment_variables')
   const variableMap = mapByName(variableItems, 'environment_variables.variables')
   for (const name of REQUIRED_VARIABLES) {
     if (!variableMap.has(name)) fail(`missing production-release environment variable: ${name}`)
+  }
+  if (variableMap.size !== REQUIRED_VARIABLES.length) {
+    fail('production-release must not contain environment variables outside the M14 allowlist')
   }
 
   const timestampUrl = requireString(variableMap.get('WORKINTEL_WINDOWS_TIMESTAMP_URL')?.value, 'WORKINTEL_WINDOWS_TIMESTAMP_URL')
@@ -224,11 +234,14 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
 }
 
 function parseArgs(args) {
+  const allowed = new Set(['repository', 'source-sha'])
   const parsed = {}
   for (let i = 0; i < args.length; i += 1) {
     const token = args[i]
     if (!token.startsWith('--')) fail(`unexpected argument: ${token}`)
     const key = token.slice(2)
+    if (!allowed.has(key)) fail(`unsupported argument: --${key}`)
+    if (Object.hasOwn(parsed, key)) fail(`duplicate argument: --${key}`)
     const value = args[i + 1]
     if (!value || value.startsWith('--')) fail(`missing value for --${key}`)
     parsed[key] = value
@@ -241,7 +254,6 @@ const args = parseArgs(process.argv.slice(2))
 const expectedRepository = requireString(args.repository, '--repository')
 const expectedSourceSha = requireString(args['source-sha'], '--source-sha').toLowerCase()
 if (!/^[0-9a-f]{40}$/.test(expectedSourceSha)) fail('--source-sha must be a 40-hex Git commit SHA')
-if (Object.hasOwn(args, 'as-of')) fail('--as-of is not accepted; verification time is bound to the verifier system clock')
 const verifiedAt = new Date().toISOString()
 
 let raw = ''
