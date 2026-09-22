@@ -10,7 +10,6 @@ After an administrator configures M14 external release controls, collect GitHub 
 node tools/verify-m14-release-admin-config.mjs \
   --repository Vertex-Systems-Network/workforce-intelligence \
   --source-sha <exact-M14-source-sha> \
-  --as-of "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   < m14-release-admin-evidence.json
 ```
 
@@ -43,7 +42,7 @@ Environment secret list responses expose names/metadata only, not encrypted valu
 
 The final JSON object contains `source_contract_sha`, which must equal the exact source SHA supplied to `--source-sha`. This prevents an evidence packet collected for one release-trust contract from silently validating a later changed contract.
 
-It also contains `collected_at`. The verifier requires an explicit `--as-of` timestamp and rejects evidence older than 30 minutes, evidence collected after the verifier time, attestations made before collection, or attestations dated after verification. This prevents a previously valid admin snapshot from being replayed after live GitHub configuration changes.
+It also contains `collected_at`. The verifier binds verification time to its own system clock and rejects caller-controlled `--as-of` values, evidence older than 30 minutes, evidence collected after the verifier time, attestations made before collection, or attestations dated after verification. This prevents a previously valid admin snapshot from being replayed after live GitHub configuration changes by supplying an old reference time.
 
 The final JSON object also contains:
 
