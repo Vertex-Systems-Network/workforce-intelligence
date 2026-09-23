@@ -6,17 +6,17 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** Certify rehydrated PR #65 M14 production release trust on current main
+- **Current Work:** Re-certify PR #65 under owner-authorized AI-only single-maintainer review governance
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [██████░░░░] **60%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
-- **Active Issue:** #61
+- **Active Issue:** #96 / #61 / #62
 - **Active PR:** #65
 - **Active Branch:** `m14/release-trust-current-main`
-- **Last Completed:** PR #65 rehydrated onto protected main dff12ebd with org-wide next-action governance preserved.
-- **Next Action:** Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for rehydrated PR #65. If all automated gates pass, obtain genuine independent review for that exact head and merge only after that review clears. Issue #62 remains a separate external live-configuration gate.
+- **Last Completed:** Owner authorization for AI-only single-maintainer review was persisted in Issue #96 and applied to the PR #65 governance contract.
+- **Next Action:** Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for the new PR #65 head, then perform exact-SHA AI security/release review. If all gates are green, threads are 0, no high-severity finding remains and main/head freshness is unchanged, use expected-head guarded merge. Issue #62 remains separate.
 
-> Overall progress is scoped to the active release-scope modular maturity. M14 remains partially complete until its independent-review and external release/real-target evidence gates are actually satisfied.
+> Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
 
 ## Development progress & phase status
@@ -43,7 +43,7 @@ The table below is the repository-level roadmap view. `Progress` represents acce
 
 \* The canonical M0–M12 maturity record stores per-phase completion state but not precise per-phase start/end timestamps. M0–M11 therefore use the repository's initial implementation/certification evidence window instead of inventing unsupported day-level precision. M12, M13 and M14 dates are tied to explicit repository/PR authority and closure records.
 
-**Current roadmap state:** M0–M13 are accepted complete. M14 is the active authorized phase and must not be labeled `DONE` or `PRODUCTION_VERIFIED` until its independent-review and external evidence gates are actually satisfied. See `docs/architecture/MODULAR_MATURITY_STATUS.md`, `docs/architecture/M13_AGENT_LIFECYCLE_RELIABILITY.md`, `docs/architecture/M14_RELEASE_TRUST_READINESS.md`, and `docs/status/AI_CHECKPOINT.md`.
+**Current roadmap state:** M0–M13 are accepted complete. M14 is the active authorized phase and must not be labeled `DONE` or `PRODUCTION_VERIFIED` until its owner-authorized AI-only review gate and external evidence gates are actually satisfied. See `docs/architecture/MODULAR_MATURITY_STATUS.md`, `docs/architecture/M13_AGENT_LIFECYCLE_RELIABILITY.md`, `docs/architecture/M14_RELEASE_TRUST_READINESS.md`, and `docs/status/AI_CHECKPOINT.md`.
 
 ## Clean project structure
 

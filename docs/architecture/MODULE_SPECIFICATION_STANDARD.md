@@ -249,9 +249,9 @@ Classify required evidence before implementation:
 - performance/budget;
 - recovery/rollback;
 - real-target/provider;
-- independent review.
+- review assurance: independent human review when an external requirement or explicit scope mandates it; otherwise AI-only single-maintainer review may satisfy this class under `docs/architecture/AI_ONLY_SINGLE_MAINTAINER_REVIEW.md`.
 
-Use fast targeted gates during implementation and the repository's exact-head full certification at closure.
+Use fast targeted gates during implementation and the repository's exact-head full certification at closure. Review evidence must be labeled truthfully: AI/self review is not described as independent human review.
 
 ## 13. Acceptance and approval boundary
 

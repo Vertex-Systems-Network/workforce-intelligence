@@ -3,13 +3,13 @@
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
   "observed_main_sha": "dff12ebd00523073c0159315030eae184007d926",
-  "active_issue": 61,
+  "active_issue": 96,
   "active_pr": 65,
   "active_branch": "m14/release-trust-current-main",
-  "current_milestone": "Certify rehydrated PR #65 M14 production release trust on current main",
+  "current_milestone": "Re-certify PR #65 under owner-authorized AI-only single-maintainer review governance",
   "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #65 rehydrated onto protected main dff12ebd with org-wide next-action governance preserved.",
-  "exact_next_safe_action": "Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for rehydrated PR #65. If all automated gates pass, obtain genuine independent review for that exact head and merge only after that review clears. Issue #62 remains a separate external live-configuration gate.",
+  "last_completed_milestone": "Owner authorization for AI-only single-maintainer review was persisted in Issue #96 and applied to the PR #65 governance contract.",
+  "exact_next_safe_action": "Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for the new PR #65 head, then perform an explicit exact-SHA AI security/release review. If all required lanes are green, review threads are 0, no high-severity finding remains, and main/head freshness is unchanged, perform expected-head guarded merge. Issue #62 remains a separate external live-configuration gate.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,9 +23,9 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Issue #61 requires a genuine independent reviewer on the exact current PR #65 head; self-review is not independent evidence.",
-    "Issue #62 remains externally blocked: immutable GitHub Releases, the agent-v* tag ruleset/creation authority, production-release protections, and WORKINTEL_RELEASE_POLICY_READ_TOKEN placement are not yet live-verified.",
-    "Issue #70 remains open as recurrent nondeterminism; PR #89 persisted-state capture and PR #90 in-process identity diagnostics are merged, while RB-005 remains not-authorized/blocked."
+    "PR #65 exact-head certification must be rerun because the governance/source head moved; all older CI/review evidence is historical.",
+    "Issue #62 remains externally blocked: immutable GitHub Releases, the agent-v* tag ruleset/creation authority, production-release protections, credential placement, signing/notarization/publication and real-target evidence are not yet live-verified.",
+    "Issue #70 remains open as recurrent nondeterminism; RB-005 remains not-authorized/blocked."
   ],
   "timeout_control": {
     "max_consolidated_status_refreshes_per_milestone": 1,
@@ -33,14 +33,14 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-24T01:13:00+05:00",
+  "last_reconciled_at": "2026-09-24T01:52:20.052+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Certify rehydrated PR #65 M14 production release trust on current main",
+    "current_work": "Re-certify PR #65 under owner-authorized AI-only single-maintainer review governance",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 60,
-      "basis": "M14 source is rehydrated onto current protected main with the org-wide next-action/schedule governance preserved and no source-path collision. Completion still requires fresh exact-head automated certification, genuine independent review, and Issue #62 external release-trust evidence."
+      "basis": "M14 source and the owner-authorized AI-only review policy are on the candidate branch. Fresh exact-head certification and exact-SHA AI security/release review are required after the governance head move; Issue #62 external evidence remains separate."
     },
     "overall_progress": {
       "percent": 100,

@@ -3,13 +3,19 @@
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
   "observed_main_sha": "dff12ebd00523073c0159315030eae184007d926",
-  "reconciled_at": "2026-09-24T01:13:00+05:00",
+  "reconciled_at": "2026-09-24T01:52:20.052+05:00",
   "issues": [
     {
-      "number": 61,
-      "title": "M14 independent security/release review — PR #65 final head",
+      "number": 96,
+      "title": "Governance: adopt AI-only single-maintainer review mode for M14 high-risk changes",
       "state": "open",
-      "action": "independent-review-required-after-green-exact-head"
+      "action": "active-owner-authority"
+    },
+    {
+      "number": 61,
+      "title": "M14 AI-only security/release review evidence — PR #65 exact head",
+      "state": "open",
+      "action": "reconcile-after-governance-head-certification"
     },
     {
       "number": 62,

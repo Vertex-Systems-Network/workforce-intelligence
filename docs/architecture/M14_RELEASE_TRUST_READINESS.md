@@ -7,7 +7,7 @@
 **Starting protected-main SHA:** `7f46f9542bbab6fa210a5c9d30acb07d44b91fb4`  
 **Implementation branch:** `m14/release-trust-readiness`  
 **Risk:** HIGH  
-**Independent review required:** YES  
+**Review assurance:** AI-ONLY SINGLE-MAINTAINER MODE — owner-authorized by GitHub Issue #96; independent human review is optional unless a higher external requirement mandates it  
 **Real-target evidence required:** YES for `PRODUCTION_VERIFIED` / M14 `DONE`
 
 ## Objective
@@ -20,7 +20,8 @@ Turn WorkIntel's already deterministic M13 desktop-agent build into a verifiable
 - trusted GitHub Actions release workflow;
 - Windows organization code-signing identity;
 - Apple Developer ID / Apple notary service;
-- release operator reviewing exact-SHA evidence;
+- AI engineering supervisor performing exact-SHA security/release review;
+- repository owner authorizing the single-maintainer review mode and merge boundary;
 - production operator performing separately authorized real-target readiness verification.
 
 Ordinary application users, tenant administrators, employees and tracked devices receive no new permissions or product workflow from M14.
@@ -241,6 +242,14 @@ Unavailable external signing/notary/real-target evidence is reported as `Not Ver
 - schema/data rollback: N/A;
 - production restore: outside source implementation authority and requires the existing privileged recovery contract.
 
+## Review governance
+
+M14 uses the repository's owner-authorized AI-only single-maintainer review mode from `docs/architecture/AI_ONLY_SINGLE_MAINTAINER_REVIEW.md` and GitHub Issue #96.
+
+This is a truthful assurance substitution, not a claim of independent human review. Exact-head AI security/release review, terminal-green required automation, zero unresolved review threads and zero unresolved high-severity findings are mandatory before source merge. Any source-head movement invalidates older review/CI evidence.
+
+Issue #62 remains a separate external administrator/live-evidence boundary and is not satisfied by this review mode or by source merge.
+
 ## Verification
 
 ### Source / PR evidence
@@ -254,7 +263,7 @@ Unavailable external signing/notary/real-target evidence is reported as `Not Ver
 - exact-head WorkIntel CI including governance;
 - exact-head Windows Certification;
 - trusted standalone 3-OS candidate workflow when credentials/environment are available;
-- independent review with no unresolved high-severity trust finding.
+- AI-reviewed + owner-authorized exact-head closure under `docs/architecture/AI_ONLY_SINGLE_MAINTAINER_REVIEW.md`, with no unresolved high-severity trust finding; independent human review may be added but is not repository-mandatory in this mode.
 
 ### External release evidence
 
@@ -279,7 +288,7 @@ M14 is `DONE` only when:
 - every trusted artifact has a machine-readable receipt tied to exact source/run/final digest;
 - same-version M13 canonical immutability remains intact;
 - exact-head quality/CI/governance/Windows certification is green;
-- independent review has no unresolved high-severity release-trust finding;
+- AI-only single-maintainer review is recorded for the exact head with explicit owner authorization and no unresolved high-severity release-trust finding;
 - required real-target evidence has actually executed before `PRODUCTION_VERIFIED` is claimed;
 - no secret/key/token material is exposed.
 

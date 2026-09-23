@@ -169,3 +169,13 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Reconciled compact state, checkpoint, coordination queue, and README before fresh exact-head certification.
 - All prior PR #65 CI/review evidence is historical after this head move. Fresh exact-head Code Quality, Standalone Build, WorkIntel CI, Windows Certification, and genuine independent review are required.
 - Issue #62 remains a separate external live-configuration gate; RB-005 remains not-authorized/blocked.
+
+
+## 2026-09-24T01:52:20.052+05:00 — AI-only single-maintainer review governance
+
+- Owner direction to operate without a mandatory second-human reviewer was persisted as GitHub Issue #96.
+- Added the AI-only single-maintainer review policy and updated M14/module/checklist review contracts.
+- Evidence terminology remains truthful: AI/self review is not labeled independent human review.
+- PR #65 source head is intentionally moved by this governance change, invalidating all prior exact-head CI/review evidence.
+- Issue #62 external live-configuration evidence remains separate; RB-005 remains not-authorized.
+- Next action is fresh exact-head certification plus exact-SHA AI security/release review before any expected-head merge decision.
