@@ -13,8 +13,8 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Active Issue:** #62 / #70
 - **Active PR:** #91
 - **Active Branch:** `m14/admin-config-evidence-verifier`
-- **Last Completed:** PR #65 exact head passed all four required lanes, final exact-SHA AI review, and merged with expected-head protection as `70f13d249a3aceaf1eccbe502031b008744776df`; Issues #61 and #96 are closed.
-- **Next Action:** Rehydrate draft PR #91 onto protected main `70f13d249a3aceaf1eccbe502031b008744776df` without force-push, reconcile its external-admin evidence verifier against the merged M14 source, and require fresh exact-head certification before any merge decision. Keep Issue #62 open until live immutable-release, tag-ruleset, environment, credential, signing/notarization/publication and real-target evidence is verified. Do not run RB-005 without fresh explicit authority.
+- **Last Completed:** PR #65 exact head 86b2d81538950e615af388b9048014626d11b7e7 passed Standalone #61, Code Quality #371, WorkIntel CI #685, Windows #454, final exact-SHA AI review, and merged with expected-head protection as 70f13d249a3aceaf1eccbe502031b008744776df; Issues #61 and #96 are closed.
+- **Next Action:** Rehydrate draft PR #91 onto protected main 70f13d249a3aceaf1eccbe502031b008744776df without force-push, reconcile its external-admin evidence verifier against the merged M14 source, and require fresh exact-head certification before any merge decision. Keep Issue #62 open until live immutable-release, tag-ruleset, environment, credential, signing/notarization/publication and real-target evidence is verified. Do not run RB-005 without fresh explicit authority.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
