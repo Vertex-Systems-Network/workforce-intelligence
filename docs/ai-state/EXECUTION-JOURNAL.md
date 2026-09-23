@@ -159,3 +159,13 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Root cause was exact-string drift: README used concise `Last Completed` and `Next Action` values while CURRENT-STATE stored longer semantically equivalent text.
 - Corrected CURRENT-STATE to the already-published README values; no release workflow, product runtime, schema, seed, or security behavior changed.
 - Code Quality #287 and Standalone #53 were green on the failed head; CI #601 and Windows #370 are historical after this governance-only source move.
+
+## 2026-09-24T01:13:00+05:00 — PR #65 current-main rehydration after org governance updates
+
+- Rehydrated protected main `dff12ebd00523073c0159315030eae184007d926` and reconciled Issues #61/#62/#70 plus the current M14 PR lane.
+- Confirmed the four commits after the prior M14 base touch only `.ai/NEXT-ACTION-OPTIONS.md`, `.ai/schedule/SCHEDULE-PLAN.md`, and `AGENTS.md`; none overlap the 19 M14 release-trust paths.
+- Created a non-force merge-style rehydration preserving current main as primary parent and prior certified M14 head `a938a50a06de21bd337cc3b8b4128bd785576e24` as second parent.
+- Preserved org-wide next-action/schedule governance while transplanting the exact M14 source tree onto current main.
+- Reconciled compact state, checkpoint, coordination queue, and README before fresh exact-head certification.
+- All prior PR #65 CI/review evidence is historical after this head move. Fresh exact-head Code Quality, Standalone Build, WorkIntel CI, Windows Certification, and genuine independent review are required.
+- Issue #62 remains a separate external live-configuration gate; RB-005 remains not-authorized/blocked.

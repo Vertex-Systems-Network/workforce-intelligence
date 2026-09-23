@@ -1,19 +1,19 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `1be13fcab75c2fbee1a91f5dcc856bb007264085`  
+**Observed protected main:** `dff12ebd00523073c0159315030eae184007d926`  
 **Active Issue:** #61 / #62  
 **Active PR:** #65  
 **Active branch:** `m14/release-trust-current-main`  
-**Milestone:** Certify rehydrated M14 release trust on current main  
+**Milestone:** Certify rehydrated PR #65 M14 release trust on current main  
 **Status:** VERIFYING
 
 ## Verified
 
 - PR #90 is merged on protected main with in-process AccessControl identity diagnostics plus its runtime regression test.
-- PR #65 was rehydrated onto protected main with zero path collision between PR #90's three diagnostic paths and the 19 M14 release-trust paths.
-- Rehydration used a merge commit preserving the prior M14 head as parent while taking current protected main as the primary parent; no force-push was used.
-- PR #65 is 0 commits behind protected main after rehydration.
+- PR #65 is rehydrated onto protected `main@dff12ebd00523073c0159315030eae184007d926`; the four newer main commits touch only `.ai/*` and `AGENTS.md`, with zero overlap against the 19 M14 release-trust paths.
+- Rehydration used current protected main as the primary parent and preserved prior M14 head `a938a50a06de21bd337cc3b8b4128bd785576e24` as the second parent; no force-push was used.
+- PR #65 is 0 commits behind protected main after rehydration, and the org-wide next-action/scheduled-development governance files from main remain present.
 - M14 immutable-release policy checks, least-privilege policy token scoping, trusted-tag attestation, signing/notarization truth states, no-clobber publication, final live-ref/remote-byte revalidation, and native published release/asset verification remain preserved.
 - PR #89 persisted SQLite failure diagnostics and PR #90 in-process identity diagnostics are both inherited from protected main.
 - No application schema/data or tenant product/API/UI behavior is changed by M14 rehydration.

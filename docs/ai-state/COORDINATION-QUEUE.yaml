@@ -2,8 +2,8 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "1be13fcab75c2fbee1a91f5dcc856bb007264085",
-  "reconciled_at": "2026-09-22T14:44:00+05:00",
+  "observed_main_sha": "dff12ebd00523073c0159315030eae184007d926",
+  "reconciled_at": "2026-09-24T01:13:00+05:00",
   "issues": [
     {
       "number": 61,
@@ -31,9 +31,20 @@
       "state": "open",
       "draft": false,
       "head_sha": null,
-      "base_sha": "1be13fcab75c2fbee1a91f5dcc856bb007264085",
+      "base_sha": "dff12ebd00523073c0159315030eae184007d926",
       "head_ref": "m14/release-trust-current-main",
       "head_resolution": "resolve-current-head-on-resume"
+    },
+    {
+      "number": 91,
+      "title": "M14: verify external release admin evidence deterministically",
+      "state": "open",
+      "draft": true,
+      "head_sha": null,
+      "base_sha": "2e6844051d9b34a235681878630f76a3c92c7a7e",
+      "head_ref": "m14/admin-config-evidence-verifier",
+      "head_resolution": "resolve-current-head-on-resume",
+      "action": "defer-until-pr-65-resolves-then-rehydrate"
     },
     {
       "number": 78,
