@@ -14,7 +14,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Active PR:** #65
 - **Active Branch:** `m14/release-trust-current-main`
 - **Last Completed:** Owner authorization for AI-only single-maintainer review was persisted in Issue #96 and applied to the PR #65 governance contract.
-- **Next Action:** Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for the new PR #65 head, then perform exact-SHA AI security/release review. If all gates are green, threads are 0, no high-severity finding remains and main/head freshness is unchanged, use expected-head guarded merge. Issue #62 remains separate.
+- **Next Action:** Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for the new PR #65 head, then perform an explicit exact-SHA AI security/release review. If all required lanes are green, review threads are 0, no high-severity finding remains, and main/head freshness is unchanged, perform expected-head guarded merge. Issue #62 remains a separate external live-configuration gate.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
