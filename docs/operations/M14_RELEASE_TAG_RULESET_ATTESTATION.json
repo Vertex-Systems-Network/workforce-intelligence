@@ -1,0 +1,12 @@
+{
+  "schema": "workintel.release-tag-ruleset-attestation.v1",
+  "status": "NOT_CONFIGURED",
+  "ruleset_id": null,
+  "ruleset_updated_at": null,
+  "no_bypass_actors_attested": false,
+  "audited_by": "",
+  "audited_at": null,
+  "notes": "Fail-closed placeholder. After Issue #62 administrator configuration, record one dedicated active agent-v* tag ruleset only after an administrator verifies the exact ruleset has update and deletion restrictions, applies to the intended release tags, and has no bypass actors. Separately attest how repository/process permissions restrict creation of agent-v* tags to the approved release operator/process. Do not add a ruleset creation restriction while retaining a zero-bypass policy: GitHub creation restrictions are satisfiable only by bypass actors, so zero bypass plus a creation rule would make release-tag creation impossible. Copy the exact GitHub ruleset id and updated_at value from the audited snapshot, set status to VERIFIED, set both attestation booleans to true, record a non-empty tag_creation_authority_basis, identify the auditor, and commit through normal review/certification. Any later ruleset mutation changes updated_at and invalidates the snapshot.",
+  "tag_creation_authority_attested": false,
+  "tag_creation_authority_basis": ""
+}

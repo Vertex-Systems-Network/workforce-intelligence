@@ -102,3 +102,80 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Tightened trusted IdP MFA to require the explicit signed `mfa` AMR marker and added regression coverage.
 - Rehydrated the 24-path security tree onto current protected main and synchronized durable AI state/README for exact-head certification.
 - Dedicated Runner Benchmark RB-005 remains deferred/not-authorized.
+
+## 2026-09-22T05:03:00+05:00 — PR #65 exact-head governance synchronization
+
+- Reconciled protected main `0cc033029912cd1975b4dbda14efe449f6576320`, PR #65, open issues, open PRs, reviews, and exact-head workflow results.
+- Confirmed Code Quality #268 and Desktop Agent Standalone Build #44 passed on PR #65 head `3a522526014545ec031629a1e0b3939d7e63ac3b`.
+- Diagnosed CI #582 and Windows #351 as the same deterministic governance failure: README M14 progress no longer matched compact CURRENT-STATE, which still described merged PR #80.
+- Preserved M14 README truth and synchronized compact state instead of regressing the README to stale PR #80 status.
+- Issue #61 remains the primary merge blocker; Issue #62 remains a separate external release-configuration blocker.
+- RB-005 remains not-authorized/blocked; no stress benchmark was executed.
+- This source move invalidates the prior exact-head runs; fresh exact-head certification is required.
+
+## 2026-09-22T05:03:00+05:00 — M14 trusted-tag creation authority hardening
+
+- Continued static high-risk review while exact-head CI was pending instead of tight-polling workflow status.
+- Confirmed from GitHub ruleset semantics that a `creation` rule allows matching ref creation only to bypass actors.
+- Identified a contract gap: M14 required restricted `agent-v*` creation authority, but the verifier/attestation only proved update/deletion immutability plus zero bypass.
+- Hardened the attestation contract to require explicit administrator evidence for trusted tag creation authority.
+- Added fail-closed rejection of a tag ruleset that combines a `creation` restriction with the zero-bypass policy, because that configuration would make trusted tag creation impossible.
+- Added regression tests and M14 specification language; no application runtime/schema behavior changed.
+- Exact-head certification must restart after this source change.
+
+## 2026-09-22T12:11:00+05:00 — PR #89 merge + M14 current-main rehydration
+
+- PR #89 exact head `49b14a96faa75b1025176798d6d95fa61ad25650` passed Code Quality #275, WorkIntel CI #589, and Windows Certification #358 and merged as protected-main commit `ed8de6952d2617eb6ec3969c2c878e404e0521fc`.
+- Reclassified Issue #70 as recurrent nondeterministic seed failure with two historical incidents; normal certification now preserves fail-fast seed diagnostics while RB-005 remains not-authorized/blocked.
+- Reconciled PR #65 against new protected main. The only path overlap was `.github/workflows/ci.yml`.
+- Preserved PR #89 Linux seed diagnostics in the CI test lane and PR #65 M14 release-trust checks in the governance lane.
+- Prior PR #65 exact-head CI/review evidence is historical after rehydration; fresh exact-head certification and independent review are required.
+- Issue #62 remains external/Not Verified; no trusted tag/release publication was performed.
+
+## 2026-09-22 — M14 immutable-release trust hardening
+
+- High-risk publication audit established that tag immutability and workflow no-clobber logic do not themselves lock GitHub Release assets after publication.
+- GitHub's separate immutable-release policy is now a required live trust boundary.
+- Added a `production-release` policy-verification job using least-privilege `WORKINTEL_RELEASE_POLICY_READ_TOKEN` before signing/notarization.
+- Added a second immutable-release policy check immediately before final live-ref/remote-byte checks and draft-to-public exposure.
+- Updated M14 architecture/checklist/source contracts and compact state.
+- Issue #62 must externally enable/verify immutable releases and place the read token; source/CI alone cannot claim that live configuration.
+- No release was published and RB-005 was not executed.
+
+
+## 2026-09-22T14:44:00+05:00 — PR #90 merge + M14 rehydration
+
+- PR #90 exact head `3fa531f535b2588573e70ed6c0bd1ed0b0b481d9` passed Code Quality #284, WorkIntel CI #598, and Windows Certification #367 and merged as protected-main commit `1be13fcab75c2fbee1a91f5dcc856bb007264085`.
+- PR #90 adds demo-only in-process identity consistency checks immediately before AccessControl coordinator role assignment and a runtime regression proving the guard fails before role mutation.
+- RB-005 was not executed; Issue #70 remains open because root cause is still unproven.
+- Reconciled PR #65 against the new protected main and confirmed zero path overlap between PR #90's three changed paths and M14's 19 release-trust paths.
+- Rehydrated M14 with current main as primary parent and the prior M14 head as the second parent, preserving both current-main diagnostics and release-trust provenance without force-push.
+- Prior PR #65 exact-head CI/review evidence is historical after rehydration; fresh exact-head certification and genuine independent review are required.
+- Issue #62 remains external/Not Verified; no trusted tag/release publication was performed.
+
+## 2026-09-22T14:52:00+05:00 — M14 README/compact-state exact-string repair
+
+- Fresh rehydrated PR #65 runs exposed the same cross-platform governance contract failure in Linux `npm test` and Windows frontend source contracts.
+- Root cause was exact-string drift: README used concise `Last Completed` and `Next Action` values while CURRENT-STATE stored longer semantically equivalent text.
+- Corrected CURRENT-STATE to the already-published README values; no release workflow, product runtime, schema, seed, or security behavior changed.
+- Code Quality #287 and Standalone #53 were green on the failed head; CI #601 and Windows #370 are historical after this governance-only source move.
+
+## 2026-09-24T01:13:00+05:00 — PR #65 current-main rehydration after org governance updates
+
+- Rehydrated protected main `dff12ebd00523073c0159315030eae184007d926` and reconciled Issues #61/#62/#70 plus the current M14 PR lane.
+- Confirmed the four commits after the prior M14 base touch only `.ai/NEXT-ACTION-OPTIONS.md`, `.ai/schedule/SCHEDULE-PLAN.md`, and `AGENTS.md`; none overlap the 19 M14 release-trust paths.
+- Created a non-force merge-style rehydration preserving current main as primary parent and prior certified M14 head `a938a50a06de21bd337cc3b8b4128bd785576e24` as second parent.
+- Preserved org-wide next-action/schedule governance while transplanting the exact M14 source tree onto current main.
+- Reconciled compact state, checkpoint, coordination queue, and README before fresh exact-head certification.
+- All prior PR #65 CI/review evidence is historical after this head move. Fresh exact-head Code Quality, Standalone Build, WorkIntel CI, Windows Certification, and genuine independent review are required.
+- Issue #62 remains a separate external live-configuration gate; RB-005 remains not-authorized/blocked.
+
+
+## 2026-09-24T01:52:20.052+05:00 — AI-only single-maintainer review governance
+
+- Owner direction to operate without a mandatory second-human reviewer was persisted as GitHub Issue #96.
+- Added the AI-only single-maintainer review policy and updated M14/module/checklist review contracts.
+- Evidence terminology remains truthful: AI/self review is not labeled independent human review.
+- PR #65 source head is intentionally moved by this governance change, invalidating all prior exact-head CI/review evidence.
+- Issue #62 external live-configuration evidence remains separate; RB-005 remains not-authorized.
+- Next action is fresh exact-head certification plus exact-SHA AI security/release review before any expected-head merge decision.

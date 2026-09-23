@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
-  "active_issue": null,
-  "active_pr": 80,
-  "active_branch": "security/harden-auth-ssrf-oidc-2026-09-21",
-  "current_milestone": "Rehydrate and certify PR #80 security trust boundaries on current main",
+  "observed_main_sha": "dff12ebd00523073c0159315030eae184007d926",
+  "active_issue": 96,
+  "active_pr": 65,
+  "active_branch": "m14/release-trust-current-main",
+  "current_milestone": "Re-certify PR #65 under owner-authorized AI-only single-maintainer review governance",
   "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #84 merged refreshed development dependency updates onto current main.",
-  "exact_next_safe_action": "Resolve PR #80 exact head from GitHub and perform one consolidated exact-head CI/review refresh. If required checks are green and review state is clean, mark ready and merge; otherwise fix only the deterministic failing gate.",
+  "last_completed_milestone": "Owner authorization for AI-only single-maintainer review was persisted in Issue #96 and applied to the PR #65 governance contract.",
+  "exact_next_safe_action": "Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for the new PR #65 head, then perform an explicit exact-SHA AI security/release review. If all required lanes are green, review threads are 0, no high-severity finding remains, and main/head freshness is unchanged, perform expected-head guarded merge. Issue #62 remains a separate external live-configuration gate.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,9 +23,9 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Issue #70 remains open but RB-005 is not-authorized/blocked; do not execute the dedicated seed-stress Runner benchmark.",
-    "Issues #61/#62 remain blocked on independent/external M14 release-trust prerequisites.",
-    "PR #80 exact-head CI/Code Quality/Windows certification is pending after current-main rehydration and security review fixes."
+    "PR #65 exact-head certification must be rerun because the governance/source head moved; all older CI/review evidence is historical.",
+    "Issue #62 remains externally blocked: immutable GitHub Releases, the agent-v* tag ruleset/creation authority, production-release protections, credential placement, signing/notarization/publication and real-target evidence are not yet live-verified.",
+    "Issue #70 remains open as recurrent nondeterminism; RB-005 remains not-authorized/blocked."
   ],
   "timeout_control": {
     "max_consolidated_status_refreshes_per_milestone": 1,
@@ -33,20 +33,20 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-22T03:15:00+05:00",
+  "last_reconciled_at": "2026-09-24T01:52:20.052+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Rehydrate and certify PR #80 security trust boundaries on current main",
-    "current_module": "Security Hardening / Identity & Outbound Trust",
+    "current_work": "Re-certify PR #65 under owner-authorized AI-only single-maintainer review governance",
+    "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
-      "percent": 90,
-      "basis": "Security scope is rehydrated onto current main, source-reviewed, and strengthened with browser-bound OIDC state plus strict signed MFA evidence. Completion requires fresh exact-head CI/Code Quality/Windows certification and a clean merge decision."
+      "percent": 60,
+      "basis": "M14 source and the owner-authorized AI-only review policy are on the candidate branch. Fresh exact-head certification and exact-SHA AI security/release review are required after the governance head move; Issue #62 external evidence remains separate."
     },
     "overall_progress": {
       "percent": 100,
       "scope": "active release-scope modular maturity",
       "basis": "docs/architecture/MODULAR_MATURITY_STATUS.md states: Overall weighted modular maturity for the active release scope: 100%.",
-      "caveat": "Open maintenance, security, governance, provider, and future-scope work remain separate from active release-scope modular maturity."
+      "caveat": "Open maintenance, security, governance, provider, M14 release-trust, and future-scope work remain separate from active release-scope modular maturity."
     },
     "bar_cells": 10
   }

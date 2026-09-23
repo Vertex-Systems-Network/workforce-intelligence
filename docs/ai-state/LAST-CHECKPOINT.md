@@ -1,33 +1,33 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `9c93eb26e4f858262e3d9b20919b17fae1825fb8`  
-**Active PR:** #80  
-**Active branch:** `security/harden-auth-ssrf-oidc-2026-09-21`  
-**Milestone:** Rehydrate and certify PR #80 security trust boundaries on current main  
+**Observed protected main:** `dff12ebd00523073c0159315030eae184007d926`  
+**Active Issue:** #96 / #61 / #62  
+**Active PR:** #65  
+**Active branch:** `m14/release-trust-current-main`  
+**Milestone:** Re-certify PR #65 under owner-authorized AI-only single-maintainer review governance  
 **Status:** VERIFYING
 
 ## Verified
 
-- PR #84 is merged on protected main; the previous dependency-maintenance checkpoint is complete.
-- PR #80 security scope was reconstructed onto current main without carrying stale dependency/governance state.
-- OIDC authorization state is bound to the initiating browser through an encrypted, provider-scoped callback cookie.
-- Source review found and fixed a trust bug where `otp`, `totp`, `hwk`, or `swk` alone could incorrectly set `mfa_verified_at`; trusted IdP MFA now requires an explicit signed `mfa` AMR marker.
-- Regression coverage locks the strict MFA trust rule.
-- Platform-operator access requires active + verified identity and stable user ID matching in production.
-- User-configurable outbound destinations fail closed on private/reserved targets, disable redirects, and pin validated hostname resolution.
+- Repository owner explicitly selected AI-only / single-maintainer review and that authority is persisted in GitHub Issue #96.
+- The governance contract labels the assurance truthfully as `AI-reviewed + owner-authorized`; it does not fabricate an independent human review.
+- PR #65 remains the accepted M14 source path and Issue #62 remains the separate external live-configuration/evidence gate.
+- Required AI-only closure controls are exact-head automation, exact-SHA AI security/release review, zero unresolved review threads, zero unresolved high-severity findings, main/head freshness and expected-head merge protection.
+- No Runner authorization was broadened; RB-005 remains blocked/not-authorized.
 
 ## Not Verified
 
-- Fresh exact-head WorkIntel CI, Code Quality, CodeQL, and Windows Certification for the current PR #80 head have not yet been observed after the latest governance/source commits.
-- PR #80 remains draft until exact-head required checks are inspected.
-- Dedicated Runner Benchmark RB-005 remains not-authorized/blocked and has not been executed.
+- Fresh exact-head Code Quality, Standalone Build, WorkIntel CI and Windows Certification after this governance/source head movement.
+- Fresh exact-SHA AI security/release review for the new PR #65 head.
+- Issue #62 external immutable-release, tag ruleset, environment, credential, signing/notarization/publication and real-target evidence.
 
 ## Known Risk
 
-- OIDC implementation intentionally supports RS256 only; providers requiring other signing algorithms must remain disabled until explicitly implemented and verified.
-- The security PR changes authentication, outbound network behavior, seed/demo policy, and production certification posture, so merge authority must come from the fresh exact PR head rather than historical green runs.
+- AI-only single-maintainer mode reduces reviewer diversity and removes a mandatory second-human challenge layer.
+- Exact-head automation and AI review cannot prove external production/admin facts.
+- Any further PR #65 source-head move invalidates the next CI/review evidence again.
 
 ## Next Action
 
-Resolve PR #80 exact head from GitHub and perform one consolidated exact-head status/review refresh. If all required checks are green and review state is clean, mark the PR ready and merge it; otherwise fix only the deterministic failing gate.
+Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for the new PR #65 head, then perform the explicit exact-SHA AI security/release review. If all gates are green and no high-severity finding remains, use expected-head guarded merge. Issue #62 remains separate.
