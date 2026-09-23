@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** Re-certify PR #65 under owner-authorized AI-only single-maintainer review governance
+- **Current Work:** Rehydrate PR #91 on resulting main after PR #65 source merge
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [██████░░░░] **60%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
-- **Active Issue:** #96 / #61 / #62
-- **Active PR:** #65
-- **Active Branch:** `m14/release-trust-current-main`
-- **Last Completed:** Owner authorization for AI-only single-maintainer review was persisted in Issue #96 and applied to the PR #65 governance contract.
-- **Next Action:** Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for the new PR #65 head, then perform an explicit exact-SHA AI security/release review. If all required lanes are green, review threads are 0, no high-severity finding remains, and main/head freshness is unchanged, perform expected-head guarded merge. Issue #62 remains a separate external live-configuration gate.
+- **Active Issue:** #62 / #70
+- **Active PR:** #91
+- **Active Branch:** `m14/admin-config-evidence-verifier`
+- **Last Completed:** PR #65 exact head passed all four required lanes, final exact-SHA AI review, and merged with expected-head protection as `70f13d249a3aceaf1eccbe502031b008744776df`; Issues #61 and #96 are closed.
+- **Next Action:** Rehydrate draft PR #91 onto protected main `70f13d249a3aceaf1eccbe502031b008744776df` without force-push, reconcile its external-admin evidence verifier against the merged M14 source, and require fresh exact-head certification before any merge decision. Keep Issue #62 open until live immutable-release, tag-ruleset, environment, credential, signing/notarization/publication and real-target evidence is verified. Do not run RB-005 without fresh explicit authority.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
