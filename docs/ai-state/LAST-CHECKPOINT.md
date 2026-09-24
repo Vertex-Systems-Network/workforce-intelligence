@@ -1,36 +1,37 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `9e8697d6439800758a1dcd767fa2a3f0714f3065`  
+**Observed protected main:** `aa92170a992a72ad7f8fb330e5829527cff0fb77`  
 **Active Issue:** #62  
-**Active PR:** #100  
-**Active branch:** `governance/fast-batch-execution-mode`  
-**Milestone:** AI Engineering Governance — Fast-Batch execution mode rollout  
-**Status:** VERIFYING
+**Active PR:** #101  
+**Active branch:** `m14/issue-62-immutable-release-gate-reconcile`  
+**Milestone:** M14 Gate B1 — immutable Releases enablement and evidence  
+**Status:** WAITING_EXTERNAL
 
 ## Verified
 
-- PR #99 is merged and protected main is `9e8697d6439800758a1dcd767fa2a3f0714f3065`.
-- Fast-Batch canonical policy, user-response cadence, next-action handoff behavior, deterministic claims, and regression/audit coverage are committed on PR #100.
-- Fast-Batch keeps existing exact-head, security, authority, secrets, destructive-action, release, and Runner gates unchanged.
-- Routine substeps no longer require repeated `next`, `done`, or `...` confirmations inside an already-authorized bounded milestone.
-- One consolidated CI/status refresh remains the default; tight polling remains forbidden.
-- Issue #62 remains the active release-trust issue and Issue #70 remains open.
-- RB-005 remains blocked/not-authorized.
+- PR #100 merged at protected main `aa92170a992a72ad7f8fb330e5829527cff0fb77`; Fast-Batch is now protected-main policy.
+- Gate A live tag ruleset remains unchanged: ruleset `23938765`, active tag target, `refs/tags/agent-v*`, update/deletion restrictions, zero bypass actors, connected user bypass `never`.
+- Gate A2 committed attestation is merged.
+- Issue #62 remains OPEN.
+- The repository's trusted-release workflow already fails closed when immutable Releases cannot be verified.
+- RB-003/RB-004/RB-005 remain blocked/not-authorized as applicable.
 
 ## Not Verified
 
-- PR #100 exact-head Code Quality, WorkIntel CI, and Windows Certification terminal results.
-- PR #100 final review-thread cleanliness at merge time.
-- Fast-Batch protected-main activation until PR #100 merges.
-- Remaining Issue #62 external release evidence.
+- Repository immutable Releases enabled=true. The connected GitHub fetch surface rejects the repository immutable-release administration endpoint.
+- production-release environment metadata/secrets/variables through live API; current evidence remains administrator-attested.
+- Windows signing certificate/PFX/fingerprint evidence.
+- Apple Developer ID/notary/fingerprint evidence.
+- Real signing, notarization, publication, and real-target evidence.
 
 ## Known Risk
 
-- Fast-Batch reduces conversational fragmentation but cannot remove genuine external waits or user-owned credential/certificate dependencies.
-- A future policy edit could reintroduce micro-step prompting; deterministic claims and regression checks are intended to detect that drift.
-- Exact-head CI remains merge-blocking; Fast-Batch must not reinterpret waiting as success.
+- A user/admin UI confirmation is an administrator attestation, not the same as an authoritative API read.
+- Immutable Releases only protect releases published after the policy is enabled.
+- Missing signer material must remain missing; placeholder/dummy credentials are forbidden.
+- Source/CI evidence cannot substitute for provider/environment/signing evidence.
 
 ## Next Action
 
-Perform one consolidated exact-head certification observation for PR #100; if required checks are terminal green and review threads are clear, merge with expected-head protection and verify resulting main. If any required check fails, inspect only the failed job and fix the smallest source/contract defect.
+Repository admin enables Settings → Releases → Enable release immutability (or confirms an organization policy enforces it for this repository), then record the admin confirmation and obtain authoritative immutable-release endpoint evidence before treating Gate B1 as verified. Do not fabricate missing Windows/Apple signer material and do not run RB-003/RB-004/RB-005 without current authority.

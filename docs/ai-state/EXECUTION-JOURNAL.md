@@ -217,3 +217,14 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Fast-Batch automatically carries routine tightly coupled substeps inside one authorized milestone and does not require repeated `next`, `done`, or `...` replies.
 - Kept one consolidated CI/status refresh, no tight polling, expected-head merge protection, security/authority boundaries, and Runner authorization unchanged.
 - Added canonical policy, response/handoff contract changes, deterministic claims, and regression/audit coverage in PR #100.
+
+
+## 2026-09-24 — Issue #62 Gate B1 immutable-release checkpoint
+
+- Verified protected main `aa92170a992a72ad7f8fb330e5829527cff0fb77` after PR #100 merge; Fast-Batch is active policy.
+- Re-read live tag ruleset `23938765`; Gate A remains unchanged and valid.
+- Current GitHub documentation defines `GET /repos/{owner}/{repo}/immutable-releases` as the repository-level authoritative check, but the connected GitHub fetch surface rejects that endpoint as unsupported.
+- Recorded that immutable Releases therefore remain Not Verified rather than guessing enabled/disabled state.
+- Preserved prior administrator attestation for `production-release`; connector still cannot independently read environment secrets/variables/protection metadata.
+- Windows and Apple signer/notary material remain intentionally absent; no dummy credentials were introduced.
+- Opened PR #101 to reconcile durable state and README before the next external admin action.
