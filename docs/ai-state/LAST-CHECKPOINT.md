@@ -1,32 +1,30 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `b022d6a8c677983d9efc66987757f2b2b210327e`  
+**Observed protected main:** `e2d46e3b98396a4501f59ea81271f195d194541f`  
 **Active Issue:** #62  
-**Active PR:** #102  
-**Active branch:** `m14/immutable-release-api-evidence-lane`  
-**Milestone:** M14 Gate B1 — independent immutable-release API evidence lane  
+**Active PR:** #103  
+**Active branch:** `m14/gate-b1-api-evidence-closeout`  
+**Milestone:** M14 Gate B1 — immutable Releases live API evidence closeout  
 **Status:** VERIFYING
 
 ## Verified
 
-- PR #101 merged at protected main `b022d6a8c677983d9efc66987757f2b2b210327e`.
+- PR #102 merged at protected main `e2d46e3b98396a4501f59ea81271f195d194541f`.
 - Gate A tag ruleset remains verified.
-- Repository owner/admin attests immutable Releases is enabled.
-- PR #102 source implements a separate manual-only, GET-only immutable-release evidence workflow.
-- The Administration-read token is scoped to one shell step; evidence output is sanitized.
-- Protected main is checked before and after evidence collection.
-- Regression coverage forbids write HTTP methods, release publication, tag pushes, broad workflow permissions, PR/push triggers, and self-hosted runners.
-- No trusted release was published and no signer credential was fabricated.
+- Gate B1 immutable Releases is now live API-verified by workflow run `36053495999`, attempt `2`.
+- The verified artifact binds to `refs/heads/main` and source SHA `e2d46e3b98396a4501f59ea81271f195d194541f`.
+- The artifact records `immutable_releases.enabled=true` using GitHub API version `2026-03-10`.
+- The evidence lane performed no release publication, signing, notarization, or tag mutation.
+- No missing signer credential was fabricated.
 
 ## Not Verified
 
-- PR #102 exact-head terminal certification and merge.
-- A successful protected-main run of the new evidence workflow.
-- Broader production-release environment metadata through live API.
-- Windows and Apple signer identity/material.
+- Broader authoritative `production-release` environment metadata/secrets/variables evidence.
+- Windows signing certificate/PFX/fingerprint evidence.
+- Apple Developer ID/notary/fingerprint evidence.
 - Real signing, notarization, publication, and real-target evidence.
 
 ## Next Action
 
-Perform one consolidated exact-head certification observation for PR #102. If required checks are terminal green and review threads are clear, merge with expected-head protection. Then manually dispatch M14 Immutable Release Policy Evidence from protected main and collect its sanitized artifact; no trusted release publication is authorized.
+Exact-head certify PR #103 and merge with expected-head protection if required checks are terminal green. Then continue Issue #62 with the next attainable external-admin/signer evidence gate; do not publish a release or fabricate Windows/Apple signer material.

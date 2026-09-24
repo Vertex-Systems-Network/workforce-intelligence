@@ -1,0 +1,16 @@
+{
+  "schema": "workintel.m14-immutable-release-evidence.v1",
+  "github_api_version": "2026-03-10",
+  "evidence_type": "github-api-live-read",
+  "repository": "Vertex-Systems-Network/workforce-intelligence",
+  "source_sha": "e2d46e3b98396a4501f59ea81271f195d194541f",
+  "ref": "refs/heads/main",
+  "workflow": "M14 Immutable Release Policy Evidence",
+  "workflow_run_id": "36053495999",
+  "workflow_run_attempt": "2",
+  "actor": "wpessential",
+  "collected_at": "2026-09-24T20:39:56Z",
+  "immutable_releases": {
+    "enabled": true
+  }
+}
