@@ -179,3 +179,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - PR #65 source head is intentionally moved by this governance change, invalidating all prior exact-head CI/review evidence.
 - Issue #62 external live-configuration evidence remains separate; RB-005 remains not-authorized.
 - Next action is fresh exact-head certification plus exact-SHA AI security/release review before any expected-head merge decision.
+
+## 2026-09-23T21:13:56.069Z — PR #65 post-merge durable-state reconciliation
+
+- Verified protected main at `70f13d249a3aceaf1eccbe502031b008744776df`, matching the PR #65 merge result.
+- Recorded all four PR #65 exact-head certification lanes as terminal green and the final AI security/release review as complete.
+- Closed Issues #61 and #96 as completed; neither closure changes the separate external Issue #62 boundary.
+- Activated draft PR #91 as the next source work path: rehydrate it onto current protected main before fresh exact-head certification.
+- Issue #62 remains external/Not Verified; source merge is not `PRODUCTION_VERIFIED`.
+- Issue #70 remains open; RB-005 remains not-authorized/blocked and was not executed.

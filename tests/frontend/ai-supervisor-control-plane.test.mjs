@@ -24,7 +24,8 @@ test('compact AI supervisor state is machine-readable, bounded and resume-safe',
 
   assert.equal(queue.non_authoritative_resume_index,true)
   assert.ok(queue.issues.some(x=>x.number===70&&x.state==='open'))
-  assert.ok(queue.pull_requests.some(x=>x.number===65&&x.state==='open'))
+  assert.ok(queue.pull_requests.some(x=>x.number===65&&x.state==='merged'))
+  assert.ok(queue.pull_requests.some(x=>x.number===state.active_pr&&x.state==='open'))
   assert.equal(new Set(claims.claims.map(x=>x.id)).size,claims.claims.length)
 
   const ids=new Set(registry.entries.map(x=>x.id))

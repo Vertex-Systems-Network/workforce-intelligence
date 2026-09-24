@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "dff12ebd00523073c0159315030eae184007d926",
-  "active_issue": 96,
-  "active_pr": 65,
-  "active_branch": "m14/release-trust-current-main",
-  "current_milestone": "Re-certify PR #65 under owner-authorized AI-only single-maintainer review governance",
-  "milestone_status": "VERIFYING",
-  "last_completed_milestone": "Owner authorization for AI-only single-maintainer review was persisted in Issue #96 and applied to the PR #65 governance contract.",
-  "exact_next_safe_action": "Run fresh exact-head Code Quality, Standalone Build, WorkIntel CI, and Windows Certification for the new PR #65 head, then perform an explicit exact-SHA AI security/release review. If all required lanes are green, review threads are 0, no high-severity finding remains, and main/head freshness is unchanged, perform expected-head guarded merge. Issue #62 remains a separate external live-configuration gate.",
+  "observed_main_sha": "70f13d249a3aceaf1eccbe502031b008744776df",
+  "active_issue": 62,
+  "active_pr": 91,
+  "active_branch": "m14/admin-config-evidence-verifier",
+  "current_milestone": "Rehydrate PR #91 on resulting main after PR #65 source merge",
+  "milestone_status": "READY",
+  "last_completed_milestone": "PR #65 exact head 86b2d81538950e615af388b9048014626d11b7e7 passed Standalone #61, Code Quality #371, WorkIntel CI #685, Windows #454, final exact-SHA AI review, and merged with expected-head protection as 70f13d249a3aceaf1eccbe502031b008744776df; Issues #61 and #96 are closed.",
+  "exact_next_safe_action": "Rehydrate draft PR #91 onto protected main 70f13d249a3aceaf1eccbe502031b008744776df without force-push, reconcile its external-admin evidence verifier against the merged M14 source, and require fresh exact-head certification before any merge decision. Keep Issue #62 open until live immutable-release, tag-ruleset, environment, credential, signing/notarization/publication and real-target evidence is verified. Do not run RB-005 without fresh explicit authority.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,7 +23,7 @@
     "RB-005"
   ],
   "current_blockers": [
-    "PR #65 exact-head certification must be rerun because the governance/source head moved; all older CI/review evidence is historical.",
+    "PR #91 is draft and not mergeable on its stale base; it must be rehydrated onto the resulting protected main before fresh certification.",
     "Issue #62 remains externally blocked: immutable GitHub Releases, the agent-v* tag ruleset/creation authority, production-release protections, credential placement, signing/notarization/publication and real-target evidence are not yet live-verified.",
     "Issue #70 remains open as recurrent nondeterminism; RB-005 remains not-authorized/blocked."
   ],
@@ -33,14 +33,14 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-24T01:52:20.052+05:00",
+  "last_reconciled_at": "2026-09-23T21:13:56.069Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Re-certify PR #65 under owner-authorized AI-only single-maintainer review governance",
+    "current_work": "Rehydrate PR #91 on resulting main after PR #65 source merge",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 60,
-      "basis": "M14 source and the owner-authorized AI-only review policy are on the candidate branch. Fresh exact-head certification and exact-SHA AI security/release review are required after the governance head move; Issue #62 external evidence remains separate."
+      "basis": "PR #65 source/governance lane is merged and exact-head certified. PR #91 must now be rehydrated for the external-admin evidence lane; Issue #62 remains the live external configuration gate."
     },
     "overall_progress": {
       "percent": 100,
