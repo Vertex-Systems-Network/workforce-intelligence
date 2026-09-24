@@ -12,8 +12,9 @@ function isoOffset(milliseconds) {
 
 function evidence(overrides = {}) {
   return {
-    schema: 'workintel.m14-release-admin-evidence.v1',
+    schema: 'workintel.m14-release-admin-evidence.v2',
     github_api_version: '2026-03-10',
+    auditor_identity: { login: 'release-admin', id: 55, type: 'User' },
     repository,
     source_contract_sha: sourceSha,
     collected_at: isoOffset(-10 * 60 * 1000),
@@ -79,7 +80,7 @@ function evidence(overrides = {}) {
       apple_signer_fingerprint_matches_certificate_attested: true,
       no_organization_scope_release_credentials_attested: true,
       audit_token_least_privilege_attested: true,
-      audited_by: 'release-admin@example.test',
+      audited_by: 'release-admin',
       audited_at: isoOffset(-5 * 60 * 1000),
     },
     ...overrides,
@@ -91,6 +92,7 @@ function verify(payload) {
     verifier,
     '--repository', repository,
     '--source-sha', sourceSha,
+    '--offline-structural', 'true',
   ], {
     input: JSON.stringify(payload),
     encoding: 'utf8',
@@ -101,12 +103,27 @@ test('accepts complete M14 external admin evidence', () => {
   const result = verify(evidence())
   assert.equal(result.status, 0, result.stderr)
   const output = JSON.parse(result.stdout)
+  assert.equal(output.authoritative, false)
+  assert.equal(output.provenance, 'caller-supplied-structural-only')
   assert.equal(output.immutable_releases.enabled, true)
   assert.equal(output.environment.prevent_self_review, true)
   assert.equal(output.required_secret_count, 9)
   assert.equal(output.required_variable_count, 3)
   assert.equal(output.fingerprints.windows_signing_cert_sha256, 'a'.repeat(64))
   assert.equal(output.fingerprints.apple_signing_cert_sha256, 'b'.repeat(64))
+})
+
+test('authoritative mode rejects caller-supplied stdin instead of treating it as live proof', () => {
+  const result = spawnSync(process.execPath, [
+    verifier,
+    '--repository', repository,
+    '--source-sha', sourceSha,
+  ], {
+    input: JSON.stringify(evidence()),
+    encoding: 'utf8',
+  })
+  assert.notEqual(result.status, 0)
+  assert.match(result.stderr, /--attestation-file is required in authoritative live mode/)
 })
 
 test('rejects evidence collected under a different GitHub API version', () => {
@@ -370,6 +387,7 @@ test('captures verification time after delayed stdin evidence is received', asyn
     verifier,
     '--repository', repository,
     '--source-sha', sourceSha,
+    '--offline-structural', 'true',
   ], {
     stdio: ['pipe', 'pipe', 'pipe'],
   })

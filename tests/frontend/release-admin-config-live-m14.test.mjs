@@ -33,6 +33,7 @@ function response(payload, status = 200) {
 }
 
 function apiPayload(url) {
+  if (url === 'https://api.github.com/user') return { login: 'release-reviewer', id: 55, type: 'User' }
   if (url.endsWith('/immutable-releases')) return { enabled: true, enforced_by_owner: false }
   if (url.endsWith('/environments/production-release')) {
     return {
@@ -104,14 +105,22 @@ test('collects live admin evidence only from pinned GitHub API endpoints', async
     now: () => new Date('2026-09-23T12:00:00Z'),
   })
 
-  assert.equal(calls.length, 7)
+  assert.equal(calls.length, 8)
   assert.equal(evidence.repository, repository)
+  assert.deepEqual(evidence.auditor_identity, { login: 'release-reviewer', id: 55, type: 'User' })
   assert.equal(evidence.source_contract_sha, sourceSha)
   assert.equal(evidence.collected_at, '2026-09-23T12:00:00.000Z')
   assert.deepEqual(evidence.attestation, attestation)
   assert.equal(JSON.stringify(evidence).includes(auditToken), false)
 
   for (const call of calls) {
+    if (call.url === 'https://api.github.com/user') {
+      assert.equal(call.options.method, 'GET')
+      assert.equal(call.options.redirect, 'error')
+      assert.equal(call.options.headers.Authorization, `Bearer ${auditToken}`)
+      assert.equal(call.options.headers['X-GitHub-Api-Version'], '2026-03-10')
+      continue
+    }
     assert.match(call.url, /^https:\/\/api\.github\.com\/repos\/Vertex-Systems-Network\/workforce-intelligence\//)
     assert.equal(call.options.method, 'GET')
     assert.equal(call.options.redirect, 'error')
@@ -134,11 +143,35 @@ test('live collector output satisfies the verifier schema contract', async () =>
     verifier,
     '--repository', repository,
     '--source-sha', sourceSha,
+    '--offline-structural', 'true',
   ], {
     input: JSON.stringify(evidence),
     encoding: 'utf8',
   })
   assert.equal(result.status, 0, result.stderr)
+})
+
+test('binds attestation auditor identity to the authenticated audit token identity', async () => {
+  const evidence = await collectEvidence({
+    repository,
+    sourceSha,
+    attestation: { ...validAttestation, audited_by: 'different-auditor', audited_at: new Date().toISOString() },
+    token: auditToken,
+    request: async url => response(apiPayload(url)),
+    now: () => new Date(),
+  })
+
+  const result = spawnSync(process.execPath, [
+    verifier,
+    '--repository', repository,
+    '--source-sha', sourceSha,
+    '--offline-structural', 'true',
+  ], {
+    input: JSON.stringify(evidence),
+    encoding: 'utf8',
+  })
+  assert.notEqual(result.status, 0)
+  assert.match(result.stderr, /must match authenticated auditor identity release-reviewer/)
 })
 
 test('never accepts caller-controlled GitHub API origins', async () => {
@@ -196,6 +229,7 @@ test('paginates repository credential metadata so later-page M14 duplicates cann
     verifier,
     '--repository', repository,
     '--source-sha', sourceSha,
+    '--offline-structural', 'true',
   ], {
     input: JSON.stringify(evidence),
     encoding: 'utf8',

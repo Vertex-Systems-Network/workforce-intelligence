@@ -4,32 +4,30 @@ This document defines a read-only evidence packet for Issue #62. It does not con
 
 ## Purpose
 
-After an administrator configures M14 external release controls, prefer live collection directly from GitHub's pinned API origin and pipe that evidence into the verifier:
+After an administrator configures M14 external release controls, the **authoritative** verifier performs the live GitHub collection itself. Do not pipe a caller-built evidence packet into the authoritative path:
 
 ```bash
 export WORKINTEL_M14_ADMIN_AUDIT_TOKEN='<ephemeral read-only auditor token>'
-node tools/collect-m14-release-admin-evidence.mjs \
+node tools/verify-m14-release-admin-config.mjs \
   --repository Vertex-Systems-Network/workforce-intelligence \
   --source-sha <exact-M14-source-sha> \
-  --attestation-file ./m14-admin-attestation.json \
-| node tools/verify-m14-release-admin-config.mjs \
-  --repository Vertex-Systems-Network/workforce-intelligence \
-  --source-sha <exact-M14-source-sha>
+  --attestation-file ./m14-admin-attestation.json
 unset WORKINTEL_M14_ADMIN_AUDIT_TOKEN
 ```
 
-The collector hardcodes `https://api.github.com`, sends the auditor credential only in the Authorization header, disables redirects, pins GitHub API version `2026-03-10`, and never writes the token into the evidence packet. All list endpoints are fully paginated until `total_count` is collected; changing counts, premature empty pages, over-returned items, or lists above the 10,000-item safety cap fail closed.
+The verifier calls the collector in-process. The collector hardcodes `https://api.github.com`, reads `GET /user` with the same auditor credential, sends that credential only in the Authorization header, disables redirects, pins GitHub API version `2026-03-10`, and never writes the token into the evidence packet. The verifier requires `attestation.audited_by` to equal the authenticated GitHub login returned by `/user`. All list endpoints are fully paginated until `total_count` is collected; changing counts, premature empty pages, over-returned items, or lists above the 10,000-item safety cap fail closed.
 
-For archived/re-verification workflows, an already-collected packet can still be validated directly with:
+Archived packets may be checked only as **non-authoritative structural evidence**:
 
 ```bash
 node tools/verify-m14-release-admin-config.mjs \
   --repository Vertex-Systems-Network/workforce-intelligence \
   --source-sha <exact-M14-source-sha> \
+  --offline-structural true \
   < m14-release-admin-evidence.json
 ```
 
-The verifier expects schema `workintel.m14-release-admin-evidence.v1`, requires `github_api_version: "2026-03-10"`, and fails closed unless all source-visible M14 admin requirements are represented. API-version binding prevents future response-schema changes from silently reinterpreting older evidence.
+Structural mode returns `"authoritative": false` and `"provenance": "caller-supplied-structural-only"`. It cannot satisfy Issue #62 closure or substitute for a fresh live verification. The authoritative verifier expects schema `workintel.m14-release-admin-evidence.v2`, requires `github_api_version: "2026-03-10"`, and binds the evidence to both the exact source SHA and authenticated auditor identity.
 
 ## API snapshots
 
@@ -75,11 +73,11 @@ Environment secret list responses expose names/metadata only, not encrypted valu
 
 ## Evidence packet
 
-The final JSON object contains `source_contract_sha`, which must equal the exact source SHA supplied to `--source-sha`. This prevents an evidence packet collected for one release-trust contract from silently validating a later changed contract.
+The final JSON object contains `source_contract_sha`, which must equal the exact source SHA supplied to `--source-sha`. It also contains the minimized authenticated `auditor_identity` returned by GitHub `GET /user`. The verifier requires the attestation's `audited_by` value to match that live identity. This prevents a caller from fabricating an arbitrary auditor identity or reusing evidence for a different release-trust contract.
 
 It also contains `collected_at`. The verifier binds verification time to its own system clock and rejects caller-controlled `--as-of` values, snapshots older than 30 minutes, administrator attestations older than 30 minutes, and future-dated values. Because both timestamps are independently constrained to the same non-future 30-minute verification window, no separate snapshot-to-attestation distance rule is needed. The attestation may be made shortly before or shortly after the live GitHub collection while remaining fresh.
 
-The evidence schema and attestation object are exact-key allowlists. Unknown fields are rejected so tokens, passwords, or unrelated sensitive values cannot be accidentally serialized into an archived evidence packet.
+The evidence schema and attestation object are exact-key allowlists. Unknown fields are rejected so tokens, passwords, or unrelated sensitive values cannot be accidentally serialized. Archived packets remain structural records only; authoritative verification always recollects live GitHub state.
 
 The final JSON object also contains:
 

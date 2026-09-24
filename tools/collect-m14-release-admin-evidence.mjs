@@ -118,6 +118,16 @@ async function fetchCompleteList(request, url, token, key) {
   return { total_count: expectedTotal ?? 0, [key]: items }
 }
 
+function normalizeAuditorIdentity(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) fail('authenticated auditor identity must be an object')
+  const login = String(value.login || '').trim()
+  if (login === '') fail('authenticated auditor identity login is required')
+  if (!Number.isInteger(value.id) || value.id <= 0) fail('authenticated auditor identity id must be a positive integer')
+  const type = String(value.type || '').trim()
+  if (!['User', 'Bot'].includes(type)) fail('authenticated auditor identity type must be User or Bot')
+  return { login, id: value.id, type }
+}
+
 export async function collectEvidence({
   repository,
   sourceSha,
@@ -136,6 +146,7 @@ export async function collectEvidence({
   const environment = encodeURIComponent(ENVIRONMENT)
 
   const [
+    auditorIdentity,
     immutableReleases,
     environmentState,
     deploymentBranchPolicies,
@@ -144,6 +155,7 @@ export async function collectEvidence({
     repositorySecrets,
     repositoryVariables,
   ] = await Promise.all([
+    fetchJson(request, `${API_ORIGIN}/user`, token),
     fetchJson(request, `${base}/immutable-releases`, token),
     fetchJson(request, `${base}/environments/${environment}`, token),
     fetchCompleteList(request, `${base}/environments/${environment}/deployment-branch-policies?per_page=100`, token, 'branch_policies'),
@@ -154,8 +166,9 @@ export async function collectEvidence({
   ])
 
   return {
-    schema: 'workintel.m14-release-admin-evidence.v1',
+    schema: 'workintel.m14-release-admin-evidence.v2',
     github_api_version: GITHUB_API_VERSION,
+    auditor_identity: normalizeAuditorIdentity(auditorIdentity),
     repository: repo,
     source_contract_sha: sha,
     collected_at: now().toISOString(),

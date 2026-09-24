@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
+import { readFileSync } from 'node:fs'
 import process from 'node:process'
 
-const SCHEMA = 'workintel.m14-release-admin-evidence.v1'
+import { collectEvidence } from './collect-m14-release-admin-evidence.mjs'
+
+const SCHEMA = 'workintel.m14-release-admin-evidence.v2'
 const GITHUB_API_VERSION = '2026-03-10'
 const REQUIRED_ENVIRONMENT = 'production-release'
 const MAX_EVIDENCE_AGE_MS = 30 * 60 * 1000
@@ -22,7 +25,7 @@ const REQUIRED_VARIABLES = [
   'WORKINTEL_WINDOWS_SIGNING_CERT_SHA256',
   'WORKINTEL_APPLE_SIGNING_CERT_SHA256',
 ]
-const EVIDENCE_KEYS = new Set(["schema","github_api_version","repository","source_contract_sha","collected_at","immutable_releases","environment","deployment_branch_policies","environment_secrets","environment_variables","repository_secrets","repository_variables","attestation"])
+const EVIDENCE_KEYS = new Set(["schema","github_api_version","auditor_identity","repository","source_contract_sha","collected_at","immutable_releases","environment","deployment_branch_policies","environment_secrets","environment_variables","repository_secrets","repository_variables","attestation"])
 const ATTESTATION_KEYS = new Set(["admin_bypass_disabled_attested","required_reviewer_independence_attested","main_policy_is_branch_attested","agent_v_policy_is_tag_attested","release_policy_token_least_privilege_attested","windows_signer_fingerprint_matches_certificate_attested","apple_signer_fingerprint_matches_certificate_attested","no_organization_scope_release_credentials_attested","audit_token_least_privilege_attested","audited_by","audited_at"])
 
 function fail(message) {
@@ -100,6 +103,11 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   const sourceContractSha = requireString(evidence.source_contract_sha, 'source_contract_sha').toLowerCase()
   if (!/^[0-9a-f]{40}$/.test(sourceContractSha)) fail('source_contract_sha must be a 40-hex Git commit SHA')
   if (sourceContractSha !== expectedSourceSha) fail(`source_contract_sha must match expected source ${expectedSourceSha}`)
+  const auditorIdentity = requireObject(evidence.auditor_identity, 'auditor_identity')
+  const auditorLogin = requireString(auditorIdentity.login, 'auditor_identity.login')
+  if (!Number.isInteger(auditorIdentity.id) || auditorIdentity.id <= 0) fail('auditor_identity.id must be a positive integer')
+  const auditorType = requireString(auditorIdentity.type, 'auditor_identity.type')
+  if (!['User', 'Bot'].includes(auditorType)) fail('auditor_identity.type must be User or Bot')
   const collectedAt = requireTimestamp(evidence.collected_at, 'collected_at')
   const collectedAtMs = Date.parse(collectedAt)
   const verifiedAtMs = Date.parse(verifiedAt)
@@ -216,6 +224,9 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
   requireTrue(attestation.no_organization_scope_release_credentials_attested, 'attestation.no_organization_scope_release_credentials_attested')
   requireTrue(attestation.audit_token_least_privilege_attested, 'attestation.audit_token_least_privilege_attested')
   const auditedBy = requireString(attestation.audited_by, 'attestation.audited_by')
+  if (auditedBy !== auditorLogin) {
+    fail(`attestation.audited_by must match authenticated auditor identity ${auditorLogin}`)
+  }
   const auditedAt = requireTimestamp(attestation.audited_at, 'attestation.audited_at')
   const auditedAtMs = Date.parse(auditedAt)
   if (auditedAtMs > verifiedAtMs) fail('attestation.audited_at cannot be later than verifier system time')
@@ -229,6 +240,11 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
     source_contract_sha: sourceContractSha,
     collected_at: collectedAt,
     verified_at: verifiedAt,
+    auditor_identity: {
+      login: auditorLogin,
+      id: auditorIdentity.id,
+      type: auditorType,
+    },
     immutable_releases: {
       enabled: true,
       enforced_by_owner: immutable.enforced_by_owner === true,
@@ -264,7 +280,7 @@ function verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifie
 }
 
 function parseArgs(args) {
-  const allowed = new Set(['repository', 'source-sha'])
+  const allowed = new Set(['repository', 'source-sha', 'attestation-file', 'offline-structural'])
   const parsed = {}
   for (let i = 0; i < args.length; i += 1) {
     const token = args[i]
@@ -280,22 +296,66 @@ function parseArgs(args) {
   return parsed
 }
 
-const args = parseArgs(process.argv.slice(2))
-const expectedRepository = requireString(args.repository, '--repository')
-const expectedSourceSha = requireString(args['source-sha'], '--source-sha').toLowerCase()
-if (!/^[0-9a-f]{40}$/.test(expectedSourceSha)) fail('--source-sha must be a 40-hex Git commit SHA')
+async function readStdin() {
+  let raw = ''
+  process.stdin.setEncoding('utf8')
+  for await (const chunk of process.stdin) raw += chunk
+  return raw
+}
 
-let raw = ''
-process.stdin.setEncoding('utf8')
-process.stdin.on('data', chunk => { raw += chunk })
-process.stdin.on('end', () => {
+async function main() {
+  const args = parseArgs(process.argv.slice(2))
+  const expectedRepository = requireString(args.repository, '--repository')
+  const expectedSourceSha = requireString(args['source-sha'], '--source-sha').toLowerCase()
+  if (!/^[0-9a-f]{40}$/.test(expectedSourceSha)) fail('--source-sha must be a 40-hex Git commit SHA')
+
+  if (Object.hasOwn(args, 'offline-structural')) {
+    if (args['offline-structural'] !== 'true') fail('--offline-structural must be exactly true when used')
+    const raw = await readStdin()
+    let evidence
+    try {
+      evidence = JSON.parse(raw)
+    } catch (error) {
+      fail(`could not parse JSON evidence: ${error.message}`)
+    }
+    const result = verifyEvidence(evidence, expectedRepository, expectedSourceSha, new Date().toISOString())
+    console.log(JSON.stringify({
+      authoritative: false,
+      provenance: 'caller-supplied-structural-only',
+      ...result,
+    }, null, 2))
+    return
+  }
+
+  const attestationFile = String(args['attestation-file'] || '')
+  if (attestationFile === '') fail('--attestation-file is required in authoritative live mode')
+
+  let attestation
+  try {
+    attestation = JSON.parse(readFileSync(attestationFile, 'utf8'))
+  } catch (error) {
+    fail(`could not read attestation JSON: ${error.message}`)
+  }
+
+  const token = process.env.WORKINTEL_M14_ADMIN_AUDIT_TOKEN
   let evidence
   try {
-    evidence = JSON.parse(raw)
+    evidence = await collectEvidence({
+      repository: expectedRepository,
+      sourceSha: expectedSourceSha,
+      attestation,
+      token,
+    })
   } catch (error) {
-    fail(`could not parse JSON evidence: ${error.message}`)
+    fail(error.message)
   }
-  const verifiedAt = new Date().toISOString()
-  const result = verifyEvidence(evidence, expectedRepository, expectedSourceSha, verifiedAt)
-  console.log(JSON.stringify(result, null, 2))
-})
+
+  const result = verifyEvidence(evidence, expectedRepository, expectedSourceSha, new Date().toISOString())
+  console.log(JSON.stringify({
+    authoritative: true,
+    provenance: 'live-github-api+authenticated-auditor',
+    ...result,
+  }, null, 2))
+}
+
+main().catch(error => fail(error.message))
