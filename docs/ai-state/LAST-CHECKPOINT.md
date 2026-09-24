@@ -1,38 +1,32 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `aa92170a992a72ad7f8fb330e5829527cff0fb77`  
+**Observed protected main:** `b022d6a8c677983d9efc66987757f2b2b210327e`  
 **Active Issue:** #62  
-**Active PR:** #101  
-**Active branch:** `m14/issue-62-immutable-release-gate-reconcile`  
-**Milestone:** M14 Gate B1 — immutable Releases enablement and evidence  
-**Status:** WAITING_EXTERNAL
+**Active PR:** #102  
+**Active branch:** `m14/immutable-release-api-evidence-lane`  
+**Milestone:** M14 Gate B1 — independent immutable-release API evidence lane  
+**Status:** VERIFYING
 
 ## Verified
 
-- PR #100 merged at protected main `aa92170a992a72ad7f8fb330e5829527cff0fb77`; Fast-Batch is protected-main policy.
-- Gate A live tag ruleset remains unchanged and valid at ruleset `23938765`.
-- Gate A2 committed attestation is merged.
-- Repository owner/admin explicitly confirmed GitHub **Enable release immutability** was turned ON in repository Settings.
-- Issue #62 remains OPEN.
-- No release was published and no missing signer credential was fabricated.
-- RB-003/RB-004/RB-005 remain blocked/not-authorized as applicable.
+- PR #101 merged at protected main `b022d6a8c677983d9efc66987757f2b2b210327e`.
+- Gate A tag ruleset remains verified.
+- Repository owner/admin attests immutable Releases is enabled.
+- PR #102 source implements a separate manual-only, GET-only immutable-release evidence workflow.
+- The Administration-read token is scoped to one shell step; evidence output is sanitized.
+- Protected main is checked before and after evidence collection.
+- Regression coverage forbids write HTTP methods, release publication, tag pushes, broad workflow permissions, PR/push triggers, and self-hosted runners.
+- No trusted release was published and no signer credential was fabricated.
 
 ## Not Verified
 
-- Immutable Releases `enabled=true` through the authoritative GitHub administration endpoint. The current connector rejects that endpoint, so the enablement is administrator-attested rather than API-verified.
-- production-release environment metadata/secrets/variables through live API.
-- Windows signing certificate/PFX/fingerprint evidence.
-- Apple Developer ID/notary/fingerprint evidence.
+- PR #102 exact-head terminal certification and merge.
+- A successful protected-main run of the new evidence workflow.
+- Broader production-release environment metadata through live API.
+- Windows and Apple signer identity/material.
 - Real signing, notarization, publication, and real-target evidence.
-
-## Known Risk
-
-- Administrator UI confirmation and authoritative API evidence are distinct evidence classes.
-- Immutable Releases only protect releases published after enablement.
-- Missing signer material must remain missing; placeholder/dummy credentials are forbidden.
-- Source/CI evidence cannot substitute for provider/environment/signing evidence.
 
 ## Next Action
 
-Obtain authoritative immutable-release enabled=true evidence from the GitHub administration endpoint through an approved evidence path. Until then keep Gate B1 as admin-enabled/API-unverified. In parallel, do not fabricate Windows/Apple signer material; signer/publication/real-target closure remains blocked on real organization credentials and explicit authority.
+Perform one consolidated exact-head certification observation for PR #102. If required checks are terminal green and review threads are clear, merge with expected-head protection. Then manually dispatch M14 Immutable Release Policy Evidence from protected main and collect its sanitized artifact; no trusted release publication is authorized.

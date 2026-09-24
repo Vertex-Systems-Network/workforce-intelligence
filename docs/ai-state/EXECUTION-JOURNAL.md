@@ -236,3 +236,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Classified this as administrator-attested evidence only; the current GitHub connector still does not expose the authoritative immutable-release administration endpoint.
 - Gate B1 advanced to admin-enabled/API-unverified without making a false live-verification claim.
 - No trusted release was published and no signer credentials were fabricated.
+
+
+## 2026-09-24 — Gate B1 independent immutable-release API evidence lane
+
+- Reconciled protected main `b022d6a8c677983d9efc66987757f2b2b210327e` after PR #101 merge.
+- Added PR #102 with a separate manual-only immutable-release evidence workflow rather than triggering the trusted release workflow.
+- The lane is GET-only, runs in `production-release`, binds evidence to current protected main before and after collection, scopes the Administration-read token to one step, and uploads only sanitized JSON.
+- Added regression coverage forbidding write HTTP methods, release publication, tag pushes, broad write permissions, PR/push triggers, and self-hosted runners.
+- No trusted release was published and no missing signer credential was fabricated.
