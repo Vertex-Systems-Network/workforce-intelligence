@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "e2d46e3b98396a4501f59ea81271f195d194541f",
+  "observed_main_sha": "2ebe299ba594707d759167a044567dcfde7bb84a",
   "active_issue": 62,
-  "active_pr": 103,
-  "active_branch": "m14/gate-b1-api-evidence-closeout",
-  "current_milestone": "M14 Gate B1 — immutable Releases live API evidence closeout",
+  "active_pr": 104,
+  "active_branch": "m14/production-release-control-evidence",
+  "current_milestone": "M14 Gate B — production-release control-plane evidence",
   "milestone_status": "VERIFYING",
-  "last_completed_milestone": "Gate B1 live immutable-Releases API evidence verified from workflow run 36053495999 attempt 2 on protected main e2d46e3b98396a4501f59ea81271f195d194541f; sanitized artifact records immutable_releases.enabled=true.",
-  "exact_next_safe_action": "Exact-head certify PR #103 and merge with expected-head protection if required checks are terminal green. Then continue Issue #62 with the next attainable external-admin/signer evidence gate; do not publish a release or fabricate Windows/Apple signer material.",
+  "last_completed_milestone": "PR #103 merged at protected main 2ebe299ba594707d759167a044567dcfde7bb84a; Gate B1 immutable Releases is archived and live API-verified.",
+  "exact_next_safe_action": "Exact-head certify PR #104 and merge with expected-head protection if required checks are terminal green. After merge, add repository secret WORKINTEL_M14_ADMIN_AUDIT_TOKEN with read-only Administration, Actions, Environments, Secrets, and Variables permissions for this repository, then manually dispatch M14 Production Release Control Evidence from main and approve production-release with a distinct reviewer.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,7 +23,9 @@
     "RB-005"
   ],
   "current_blockers": [
-    "production-release environment protection/token placement is only partially live-verified; broader authoritative admin evidence remains incomplete.",
+    "PR #104 must merge before the production-release control evidence workflow is trusted on protected main.",
+    "A separate repository-scoped WORKINTEL_M14_ADMIN_AUDIT_TOKEN is not yet confirmed; the evidence run cannot succeed until it exists with the documented read-only permissions.",
+    "Administrator-bypass posture, main=branch policy type, agent-v*=tag policy type, and release-policy-token least privilege remain administrator-attested where GitHub read APIs do not prove them directly.",
     "Windows signing certificate/PFX/fingerprint is unavailable; Windows signing evidence cannot be completed.",
     "Apple Developer ID/notary material/fingerprint is unavailable; macOS signing/notarization evidence cannot be completed.",
     "Real signing, notarization, release publication, and real-target evidence remain incomplete.",
@@ -38,14 +40,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-24T20:42:03.732Z",
+  "last_reconciled_at": "2026-09-24T22:21:23.722Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "PR #103 — Gate B1 API evidence closeout",
+    "current_work": "PR #104 — production-release control-plane evidence",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 65,
-      "basis": "Gate A is verified and Gate B1 immutable Releases is now live API-verified from a successful protected-main evidence workflow. Broader environment evidence, signer identities, publication, and real-target closure remain incomplete."
+      "basis": "Gate A and Gate B1 are verified. PR #104 adds independent live evidence for the production-release control plane, but that evidence is not complete until the workflow merges and runs successfully; signer/publication/real-target gates remain incomplete."
     },
     "overall_progress": {
       "percent": 100,

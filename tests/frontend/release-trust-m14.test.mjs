@@ -9,6 +9,7 @@ import test from 'node:test'
 const read = file => fs.readFileSync(file, 'utf8')
 const workflow = read('.github/workflows/desktop-agent-trusted-release.yml')
 const immutableEvidenceWorkflow = read('.github/workflows/m14-immutable-release-evidence.yml')
+const productionReleaseControlEvidenceWorkflow = read('.github/workflows/m14-production-release-control-evidence.yml')
 const receiptTool = 'tools/release-trust-receipt.mjs'
 
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex')
@@ -662,4 +663,50 @@ test('M14 independent immutable-release evidence lane is read-only, main-bound a
     'gh release edit',
     'git push',
   ]) assert.ok(!immutableEvidenceWorkflow.includes(forbidden), forbidden)
+})
+
+
+test('M14 production-release control evidence lane is read-only, main-bound and excludes signer authority', () => {
+  for (const token of [
+    'workflow_dispatch:',
+    'permissions:\n  contents: read',
+    'environment: production-release',
+    'WORKINTEL_M14_ADMIN_AUDIT_TOKEN',
+    'WORKINTEL_RELEASE_POLICY_READ_TOKEN',
+    'repos/${GITHUB_REPOSITORY}/environments/production-release',
+    'deployment-branch-policies',
+    'environment_secret_names',
+    'repository_secret_names',
+    'prevent_self_review == true',
+    'custom_branch_policies == true',
+    'protected_branches == false',
+    '["agent-v*", "main"]',
+    'workintel.m14-production-release-control-evidence.v1',
+    'Protected main moved before production-release evidence collection.',
+    'Protected main moved during production-release evidence collection.',
+    'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a',
+  ]) assert.ok(productionReleaseControlEvidenceWorkflow.includes(token), token)
+
+  assert.equal(
+    productionReleaseControlEvidenceWorkflow.split('WORKINTEL_M14_ADMIN_AUDIT_TOKEN').length - 1,
+    3,
+    'admin-audit token name should appear only in the evidence secret binding and scope-placement assertions',
+  )
+
+  for (const forbidden of [
+    'pull_request:',
+    'push:',
+    'contents: write',
+    'id-token: write',
+    'self-hosted',
+    '--method POST',
+    '--method PUT',
+    '--method PATCH',
+    '--method DELETE',
+    'gh release create',
+    'gh release edit',
+    'git push',
+    'WORKINTEL_WINDOWS_SIGNING_PFX_B64: ${{ secrets.',
+    'WORKINTEL_APPLE_DEVELOPER_ID_P12_B64: ${{ secrets.',
+  ]) assert.ok(!productionReleaseControlEvidenceWorkflow.includes(forbidden), forbidden)
 })

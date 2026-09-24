@@ -1,0 +1,248 @@
+name: M14 Production Release Control Evidence
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: m14-production-release-control-evidence-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify production-release control plane
+    runs-on: ubuntu-latest
+    environment: production-release
+    permissions:
+      contents: read
+    steps:
+      - name: Require current protected-main dispatch source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo 'Production-release control evidence must be dispatched from refs/heads/main.'
+            exit 1
+          fi
+          current_main="$(gh api --method GET \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2026-03-10' \
+            "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" \
+            --jq '.object.sha')"
+          if [ "$current_main" != "$GITHUB_SHA" ]; then
+            echo 'Protected main moved before production-release evidence collection.'
+            exit 1
+          fi
+
+      - name: Collect and verify sanitized production-release control evidence
+        shell: bash
+        env:
+          ADMIN_AUDIT_TOKEN: ${{ secrets.WORKINTEL_M14_ADMIN_AUDIT_TOKEN }}
+          EVIDENCE_PATH: ${{ runner.temp }}/m14-production-release-control-evidence.json
+        run: |
+          set -euo pipefail
+          if [ -z "${ADMIN_AUDIT_TOKEN:-}" ]; then
+            echo 'M14 admin-audit token is unavailable.'
+            exit 1
+          fi
+
+          tmp="${RUNNER_TEMP}/m14-production-release-control"
+          rm -rf "$tmp"
+          mkdir -p "$tmp"
+
+          api() {
+            GH_TOKEN="$ADMIN_AUDIT_TOKEN" gh api --method GET \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2026-03-10' "$@"
+          }
+
+          collect_pages() {
+            local endpoint="$1"
+            local output="$2"
+            api --paginate "$endpoint" -f per_page=100 > "$output"
+          }
+
+          api user > "$tmp/auditor.json"
+          api "repos/${GITHUB_REPOSITORY}/immutable-releases" > "$tmp/immutable.json"
+          api "repos/${GITHUB_REPOSITORY}/environments/production-release" > "$tmp/environment.json"
+          collect_pages "repos/${GITHUB_REPOSITORY}/environments/production-release/deployment-branch-policies" "$tmp/policies.jsons"
+          collect_pages "repos/${GITHUB_REPOSITORY}/environments/production-release/secrets" "$tmp/environment-secrets.jsons"
+          collect_pages "repos/${GITHUB_REPOSITORY}/environments/production-release/variables" "$tmp/environment-variables.jsons"
+          collect_pages "repos/${GITHUB_REPOSITORY}/actions/secrets" "$tmp/repository-secrets.jsons"
+          collect_pages "repos/${GITHUB_REPOSITORY}/actions/variables" "$tmp/repository-variables.jsons"
+
+          jq -e '.enabled == true' "$tmp/immutable.json" >/dev/null
+
+          expected_url="https://api.github.com/repos/${GITHUB_REPOSITORY}/environments/production-release"
+          jq -e --arg expected_url "$expected_url" '
+            .name == "production-release"
+            and (.id | type == "number" and . > 0)
+            and .url == $expected_url
+            and ([.protection_rules[]? | select(.type == "required_reviewers")] as $rules
+              | ($rules | length) == 1
+              and $rules[0].prevent_self_review == true
+              and (($rules[0].reviewers // []) | length) >= 1)
+            and ([.protection_rules[]? | select(.type == "wait_timer")] | length) == 0
+            and ([.protection_rules[]? | select(.type == "branch_policy")] | length) == 1
+            and .deployment_branch_policy.protected_branches == false
+            and .deployment_branch_policy.custom_branch_policies == true
+          ' "$tmp/environment.json" >/dev/null
+
+          jq -s -e '
+            ([.[].total_count] | unique | length) == 1
+            and ([.[].branch_policies[]] as $items
+              | .[0].total_count == ($items | length)
+              and (($items | map(.name) | sort) == ["agent-v*", "main"])
+              and all($items[]; (.id | type == "number") and .id > 0 and (.node_id | type == "string" and length > 0)))
+          ' "$tmp/policies.jsons" >/dev/null
+
+          jq -s -e '
+            ([.[].total_count] | unique | length) == 1
+            and ([.[].secrets[]] as $items
+              | .[0].total_count == ($items | length)
+              and (($items | map(.name) | index("WORKINTEL_RELEASE_POLICY_READ_TOKEN")) != null)
+              and (($items | map(.name) | index("WORKINTEL_M14_ADMIN_AUDIT_TOKEN")) == null))
+          ' "$tmp/environment-secrets.jsons" >/dev/null
+
+          release_secrets='[
+            "WORKINTEL_RELEASE_POLICY_READ_TOKEN",
+            "WORKINTEL_WINDOWS_SIGNING_PFX_B64",
+            "WORKINTEL_WINDOWS_SIGNING_PFX_PASSWORD",
+            "WORKINTEL_APPLE_DEVELOPER_ID_P12_B64",
+            "WORKINTEL_APPLE_DEVELOPER_ID_P12_PASSWORD",
+            "WORKINTEL_APPLE_SIGNING_IDENTITY",
+            "WORKINTEL_APPLE_NOTARY_KEY_P8_B64",
+            "WORKINTEL_APPLE_NOTARY_KEY_ID",
+            "WORKINTEL_APPLE_NOTARY_ISSUER_ID"
+          ]'
+          jq -s -e --argjson release_secrets "$release_secrets" '
+            ([.[].total_count] | unique | length) == 1
+            and ([.[].secrets[]] as $items
+              | .[0].total_count == ($items | length)
+              and (($items | map(.name) | index("WORKINTEL_M14_ADMIN_AUDIT_TOKEN")) != null)
+              and all($release_secrets[] as $required; ($items | map(.name) | index($required)) == null))
+          ' "$tmp/repository-secrets.jsons" >/dev/null
+
+          release_variables='[
+            "WORKINTEL_WINDOWS_TIMESTAMP_URL",
+            "WORKINTEL_WINDOWS_SIGNING_CERT_SHA256",
+            "WORKINTEL_APPLE_SIGNING_CERT_SHA256"
+          ]'
+          jq -s -e --argjson release_variables "$release_variables" '
+            ([.[].total_count] | unique | length) == 1
+            and ([.[].variables[]] as $items
+              | .[0].total_count == ($items | length)
+              and all($release_variables[] as $required; ($items | map(.name) | index($required)) == null))
+          ' "$tmp/repository-variables.jsons" >/dev/null
+
+          jq -s -e '
+            ([.[].total_count] | unique | length) == 1
+            and ([.[].variables[]] as $items | .[0].total_count == ($items | length))
+          ' "$tmp/environment-variables.jsons" >/dev/null
+
+          collected_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          jq -n \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg source_sha "$GITHUB_SHA" \
+            --arg ref "$GITHUB_REF" \
+            --arg workflow "$GITHUB_WORKFLOW" \
+            --arg run_id "$GITHUB_RUN_ID" \
+            --arg run_attempt "$GITHUB_RUN_ATTEMPT" \
+            --arg collected_at "$collected_at" \
+            --slurpfile auditor "$tmp/auditor.json" \
+            --slurpfile immutable "$tmp/immutable.json" \
+            --slurpfile environment "$tmp/environment.json" \
+            --slurpfile policies "$tmp/policies.jsons" \
+            --slurpfile env_secrets "$tmp/environment-secrets.jsons" \
+            --slurpfile env_variables "$tmp/environment-variables.jsons" \
+            --slurpfile repo_secrets "$tmp/repository-secrets.jsons" \
+            --slurpfile repo_variables "$tmp/repository-variables.jsons" \
+            '{
+              schema: "workintel.m14-production-release-control-evidence.v1",
+              github_api_version: "2026-03-10",
+              evidence_type: "github-api-live-read",
+              repository: $repository,
+              source_sha: $source_sha,
+              ref: $ref,
+              workflow: $workflow,
+              workflow_run_id: $run_id,
+              workflow_run_attempt: $run_attempt,
+              collected_at: $collected_at,
+              auditor_identity: {
+                login: $auditor[0].login,
+                id: $auditor[0].id,
+                type: $auditor[0].type
+              },
+              immutable_releases: { enabled: $immutable[0].enabled },
+              environment: {
+                id: $environment[0].id,
+                name: $environment[0].name,
+                url: $environment[0].url,
+                required_reviewers: [
+                  $environment[0].protection_rules[]?
+                  | select(.type == "required_reviewers")
+                  | {
+                      prevent_self_review,
+                      reviewers: [
+                        .reviewers[]?
+                        | if .type == "User"
+                          then { type, login: .reviewer.login }
+                          else { type, slug: .reviewer.slug }
+                          end
+                      ]
+                    }
+                ],
+                wait_timer_rules: [
+                  $environment[0].protection_rules[]?
+                  | select(.type == "wait_timer")
+                  | { wait_timer }
+                ],
+                deployment_branch_policy: $environment[0].deployment_branch_policy
+              },
+              deployment_branch_policies: [
+                $policies[]?.branch_policies[]?
+                | { id, node_id, name }
+              ],
+              environment_secret_names: [
+                $env_secrets[]?.secrets[]?.name
+              ] | unique | sort,
+              environment_variable_names: [
+                $env_variables[]?.variables[]?.name
+              ] | unique | sort,
+              repository_secret_names: [
+                $repo_secrets[]?.secrets[]?.name
+              ] | unique | sort,
+              repository_variable_names: [
+                $repo_variables[]?.variables[]?.name
+              ] | unique | sort
+            }' > "$EVIDENCE_PATH"
+
+      - name: Revalidate protected main after collection
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          current_main="$(gh api --method GET \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2026-03-10' \
+            "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" \
+            --jq '.object.sha')"
+          if [ "$current_main" != "$GITHUB_SHA" ]; then
+            echo 'Protected main moved during production-release evidence collection.'
+            exit 1
+          fi
+
+      - name: Upload sanitized production-release control evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: m14-production-release-control-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/m14-production-release-control-evidence.json
+          if-no-files-found: error
+          retention-days: 14
+          overwrite: false
+          include-hidden-files: false

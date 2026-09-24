@@ -1,30 +1,30 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `e2d46e3b98396a4501f59ea81271f195d194541f`  
+**Observed protected main:** `2ebe299ba594707d759167a044567dcfde7bb84a`  
 **Active Issue:** #62  
-**Active PR:** #103  
-**Active branch:** `m14/gate-b1-api-evidence-closeout`  
-**Milestone:** M14 Gate B1 — immutable Releases live API evidence closeout  
+**Active PR:** #104  
+**Active branch:** `m14/production-release-control-evidence`  
+**Milestone:** M14 Gate B — production-release control-plane evidence  
 **Status:** VERIFYING
 
 ## Verified
 
-- PR #102 merged at protected main `e2d46e3b98396a4501f59ea81271f195d194541f`.
-- Gate A tag ruleset remains verified.
-- Gate B1 immutable Releases is now live API-verified by workflow run `36053495999`, attempt `2`.
-- The verified artifact binds to `refs/heads/main` and source SHA `e2d46e3b98396a4501f59ea81271f195d194541f`.
-- The artifact records `immutable_releases.enabled=true` using GitHub API version `2026-03-10`.
-- The evidence lane performed no release publication, signing, notarization, or tag mutation.
-- No missing signer credential was fabricated.
+- PR #103 merged at protected main `2ebe299ba594707d759167a044567dcfde7bb84a`.
+- Gate A tag immutability remains verified.
+- Gate B1 immutable Releases is live API-verified and archived.
+- PR #104 source provides a separate read-only production-release control evidence lane.
+- The lane verifies required reviewers/self-review protection, no wait timer, custom policy names, release-policy-token environment placement, repository-scope absence of release credentials, immutable Releases, auditor identity, and protected-main binding.
+- The lane does not expose signer authority, publish a release, mutate tags, sign/notarize artifacts, or weaken the full signer-aware verifier.
 
 ## Not Verified
 
-- Broader authoritative `production-release` environment metadata/secrets/variables evidence.
-- Windows signing certificate/PFX/fingerprint evidence.
-- Apple Developer ID/notary/fingerprint evidence.
+- PR #104 exact-head terminal certification and merge.
+- A successful protected-main run of the new production-release control evidence workflow.
+- The separate read-only admin-audit credential in repository secret `WORKINTEL_M14_ADMIN_AUDIT_TOKEN`.
+- Windows/Apple signer material and identity evidence.
 - Real signing, notarization, publication, and real-target evidence.
 
 ## Next Action
 
-Exact-head certify PR #103 and merge with expected-head protection if required checks are terminal green. Then continue Issue #62 with the next attainable external-admin/signer evidence gate; do not publish a release or fabricate Windows/Apple signer material.
+Exact-head certify PR #104 and merge with expected-head protection if required checks are terminal green. After merge, add repository secret WORKINTEL_M14_ADMIN_AUDIT_TOKEN with read-only Administration, Actions, Environments, Secrets, and Variables permissions for this repository, then manually dispatch M14 Production Release Control Evidence from main and approve production-release with a distinct reviewer.
