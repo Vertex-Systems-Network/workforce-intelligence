@@ -76,13 +76,18 @@ test('M14 trusted tag protection stays unprivileged and runs before release auth
   assert.equal(/RULESET.*TOKEN|ADMIN.*TOKEN|PAT.*TOKEN/i.test(workflow), false)
 })
 
-test('canonical attestation remains fail-closed until administrator evidence is recorded', () => {
+test('canonical attestation records a complete verified administrator snapshot before trusted release use', () => {
   const canonical = JSON.parse(fs.readFileSync(canonicalAttestationPath, 'utf8'))
   assert.equal(canonical.schema, 'workintel.release-tag-ruleset-attestation.v1')
-  assert.equal(canonical.status, 'NOT_CONFIGURED')
-  assert.equal(canonical.no_bypass_actors_attested, false)
-  assert.equal(canonical.tag_creation_authority_attested, false)
-  assert.equal(canonical.tag_creation_authority_basis, '')
+  assert.equal(canonical.status, 'VERIFIED')
+  assert.ok(Number.isInteger(canonical.ruleset_id) && canonical.ruleset_id > 0)
+  assert.ok(typeof canonical.ruleset_updated_at === 'string' && !Number.isNaN(Date.parse(canonical.ruleset_updated_at)))
+  assert.equal(canonical.no_bypass_actors_attested, true)
+  assert.equal(canonical.tag_creation_authority_attested, true)
+  assert.ok(typeof canonical.tag_creation_authority_basis === 'string' && canonical.tag_creation_authority_basis.trim() !== '')
+  assert.ok(typeof canonical.audited_by === 'string' && canonical.audited_by.trim() !== '')
+  assert.ok(typeof canonical.audited_at === 'string' && !Number.isNaN(Date.parse(canonical.audited_at)))
+  assert.ok(Date.parse(canonical.audited_at) >= Date.parse(canonical.ruleset_updated_at))
 })
 
 test('accepts hidden bypass field when exact immutable snapshot is externally attested', () => {
