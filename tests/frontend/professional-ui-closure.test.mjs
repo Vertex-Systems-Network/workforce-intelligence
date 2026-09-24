@@ -122,7 +122,8 @@ test('source hygiene rejects temporary root placeholders and dead interaction pa
 test('AI execution contract preserves supervisor resume, milestone, timeout and authority discipline', () => {
   for (const marker of [
     'docs/ai-state/CURRENT-STATE.yaml',
-    'one user `continue` or `resume` turn performs exactly one bounded logical engineering milestone',
+    'one user `continue`, `resume`, or numeric next-action selection authorizes one **bounded logical milestone**',
+    'Do not require the user to reply',
     'OPEN GitHub Issues first',
     'at most one consolidated CI/status refresh',
     'Runner registration NEVER grants execution authority',
