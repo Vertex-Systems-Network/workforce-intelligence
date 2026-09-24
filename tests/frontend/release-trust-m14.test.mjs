@@ -689,7 +689,7 @@ test('M14 production-release control evidence lane is read-only, main-bound and 
 
   assert.equal(
     productionReleaseControlEvidenceWorkflow.split('WORKINTEL_M14_ADMIN_AUDIT_TOKEN').length - 1,
-    4,
+    3,
     'admin-audit token name should appear only in the evidence secret binding and scope-placement assertions',
   )
 
