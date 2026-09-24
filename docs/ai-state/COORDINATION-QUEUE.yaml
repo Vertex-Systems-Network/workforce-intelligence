@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "e2d46e3b98396a4501f59ea81271f195d194541f",
-  "reconciled_at": "2026-09-24T20:42:03.732Z",
+  "observed_main_sha": "2ebe299ba594707d759167a044567dcfde7bb84a",
+  "reconciled_at": "2026-09-24T22:21:23.722Z",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "gate-b1-api-verified-continue-next-m14-gate"
+      "action": "gate-b-production-release-control-evidence-pr-104"
     },
     {
       "number": 70,
@@ -20,14 +20,25 @@
   ],
   "pull_requests": [
     {
-      "number": 103,
-      "title": "docs(m14): archive Gate B1 API evidence",
+      "number": 104,
+      "title": "ci(m14): verify production-release control plane",
       "state": "open",
       "draft": false,
       "head_sha": "resolve-on-resume",
+      "base_sha": "2ebe299ba594707d759167a044567dcfde7bb84a",
+      "head_ref": "m14/production-release-control-evidence",
+      "action": "exact-head-certification-required-before-merge"
+    },
+    {
+      "number": 103,
+      "title": "docs(m14): archive Gate B1 API evidence",
+      "state": "merged",
+      "draft": false,
+      "head_sha": "a53456bbcf6c05de37c1b0a9d0d399ff85a5598c",
       "base_sha": "e2d46e3b98396a4501f59ea81271f195d194541f",
       "head_ref": "m14/gate-b1-api-evidence-closeout",
-      "action": "exact-head-certification-required-before-merge"
+      "action": "completed",
+      "resulting_main_sha": "2ebe299ba594707d759167a044567dcfde7bb84a"
     },
     {
       "number": 102,

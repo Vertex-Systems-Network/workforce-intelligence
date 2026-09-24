@@ -255,3 +255,13 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Gate B1 is now live API-verified.
 - No release publication, signing, notarization, tag mutation, or missing-credential fabrication occurred.
 - Broader environment, signer, publication, and real-target gates remain open under Issue #62.
+
+
+## 2026-09-25 — Gate B production-release control evidence lane
+
+- Reconciled protected main `2ebe299ba594707d759167a044567dcfde7bb84a` after PR #103 merge.
+- Kept the full signer-aware M14 verifier strict; no signer requirement was weakened.
+- Added PR #104 with a separate manual-only, read-only control-plane evidence lane.
+- The lane verifies production-release reviewer/self-review posture, no wait timer, custom deployment policy names, immutable Releases, release-policy-token environment placement, repository-scope absence of release credentials, auditor identity, and protected-main binding.
+- The separate audit credential is repository-scoped evidence authority only and is not trusted release authority.
+- Windows/Apple signer material, real signing/notarization, publication, and real-target evidence remain separate blockers.

@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** PR #103 — Gate B1 API evidence closeout
+- **Current Work:** PR #104 — production-release control-plane evidence
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **65%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** #103
-- **Active Branch:** `m14/gate-b1-api-evidence-closeout`
-- **Last Completed:** Gate B1 live immutable-Releases API evidence verified from workflow run 36053495999 attempt 2 on protected main e2d46e3b98396a4501f59ea81271f195d194541f; sanitized artifact records immutable_releases.enabled=true.
-- **Next Action:** Exact-head certify PR #103 and merge with expected-head protection if required checks are terminal green. Then continue Issue #62 with the next attainable external-admin/signer evidence gate; do not publish a release or fabricate Windows/Apple signer material.
+- **Active PR:** #104
+- **Active Branch:** `m14/production-release-control-evidence`
+- **Last Completed:** PR #103 merged at protected main 2ebe299ba594707d759167a044567dcfde7bb84a; Gate B1 immutable Releases is archived and live API-verified.
+- **Next Action:** Exact-head certify PR #104 and merge with expected-head protection if required checks are terminal green. After merge, add repository secret WORKINTEL_M14_ADMIN_AUDIT_TOKEN with read-only Administration, Actions, Environments, Secrets, and Variables permissions for this repository, then manually dispatch M14 Production Release Control Evidence from main and approve production-release with a distinct reviewer.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
