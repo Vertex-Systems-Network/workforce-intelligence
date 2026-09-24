@@ -10,28 +10,29 @@
 
 ## Verified
 
-- PR #100 merged at protected main `aa92170a992a72ad7f8fb330e5829527cff0fb77`; Fast-Batch is now protected-main policy.
-- Gate A live tag ruleset remains unchanged: ruleset `23938765`, active tag target, `refs/tags/agent-v*`, update/deletion restrictions, zero bypass actors, connected user bypass `never`.
+- PR #100 merged at protected main `aa92170a992a72ad7f8fb330e5829527cff0fb77`; Fast-Batch is protected-main policy.
+- Gate A live tag ruleset remains unchanged and valid at ruleset `23938765`.
 - Gate A2 committed attestation is merged.
+- Repository owner/admin explicitly confirmed GitHub **Enable release immutability** was turned ON in repository Settings.
 - Issue #62 remains OPEN.
-- The repository's trusted-release workflow already fails closed when immutable Releases cannot be verified.
+- No release was published and no missing signer credential was fabricated.
 - RB-003/RB-004/RB-005 remain blocked/not-authorized as applicable.
 
 ## Not Verified
 
-- Repository immutable Releases enabled=true. The connected GitHub fetch surface rejects the repository immutable-release administration endpoint.
-- production-release environment metadata/secrets/variables through live API; current evidence remains administrator-attested.
+- Immutable Releases `enabled=true` through the authoritative GitHub administration endpoint. The current connector rejects that endpoint, so the enablement is administrator-attested rather than API-verified.
+- production-release environment metadata/secrets/variables through live API.
 - Windows signing certificate/PFX/fingerprint evidence.
 - Apple Developer ID/notary/fingerprint evidence.
 - Real signing, notarization, publication, and real-target evidence.
 
 ## Known Risk
 
-- A user/admin UI confirmation is an administrator attestation, not the same as an authoritative API read.
-- Immutable Releases only protect releases published after the policy is enabled.
+- Administrator UI confirmation and authoritative API evidence are distinct evidence classes.
+- Immutable Releases only protect releases published after enablement.
 - Missing signer material must remain missing; placeholder/dummy credentials are forbidden.
 - Source/CI evidence cannot substitute for provider/environment/signing evidence.
 
 ## Next Action
 
-Repository admin enables Settings → Releases → Enable release immutability (or confirms an organization policy enforces it for this repository), then record the admin confirmation and obtain authoritative immutable-release endpoint evidence before treating Gate B1 as verified. Do not fabricate missing Windows/Apple signer material and do not run RB-003/RB-004/RB-005 without current authority.
+Obtain authoritative immutable-release enabled=true evidence from the GitHub administration endpoint through an approved evidence path. Until then keep Gate B1 as admin-enabled/API-unverified. In parallel, do not fabricate Windows/Apple signer material; signer/publication/real-target closure remains blocked on real organization credentials and explicit authority.

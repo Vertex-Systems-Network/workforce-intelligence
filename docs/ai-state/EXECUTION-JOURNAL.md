@@ -228,3 +228,11 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Preserved prior administrator attestation for `production-release`; connector still cannot independently read environment secrets/variables/protection metadata.
 - Windows and Apple signer/notary material remain intentionally absent; no dummy credentials were introduced.
 - Opened PR #101 to reconcile durable state and README before the next external admin action.
+
+
+## 2026-09-24 — Gate B1 immutable Releases admin enablement
+
+- Repository owner/admin explicitly confirmed the repository UI setting **Enable release immutability** was turned ON.
+- Classified this as administrator-attested evidence only; the current GitHub connector still does not expose the authoritative immutable-release administration endpoint.
+- Gate B1 advanced to admin-enabled/API-unverified without making a false live-verification claim.
+- No trusted release was published and no signer credentials were fabricated.
