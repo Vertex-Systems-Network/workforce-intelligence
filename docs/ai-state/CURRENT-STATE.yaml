@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "70f13d249a3aceaf1eccbe502031b008744776df",
+  "observed_main_sha": "8ad507bb41716d32516eb199b0b27d0f6acf29d3",
   "active_issue": 62,
-  "active_pr": 91,
-  "active_branch": "m14/admin-config-evidence-verifier",
-  "current_milestone": "Rehydrate PR #91 on resulting main after PR #65 source merge",
-  "milestone_status": "READY",
-  "last_completed_milestone": "PR #65 exact head 86b2d81538950e615af388b9048014626d11b7e7 passed Standalone #61, Code Quality #371, WorkIntel CI #685, Windows #454, final exact-SHA AI review, and merged with expected-head protection as 70f13d249a3aceaf1eccbe502031b008744776df; Issues #61 and #96 are closed.",
-  "exact_next_safe_action": "Rehydrate draft PR #91 onto protected main 70f13d249a3aceaf1eccbe502031b008744776df without force-push, reconcile its external-admin evidence verifier against the merged M14 source, and require fresh exact-head certification before any merge decision. Keep Issue #62 open until live immutable-release, tag-ruleset, environment, credential, signing/notarization/publication and real-target evidence is verified. Do not run RB-005 without fresh explicit authority.",
+  "active_pr": null,
+  "active_branch": "main",
+  "current_milestone": "Issue #62 live external-admin evidence readiness audit",
+  "milestone_status": "PLANNING",
+  "last_completed_milestone": "PR #91 exact head 6c8ca2c32da00ad7f2622dce847dd2adfddbe499 passed Code Quality #377, WorkIntel CI #691, and Windows Certification #460; the authenticated-provenance security blocker was closed; PR #91 merged with expected-head protection as 8ad507bb41716d32516eb199b0b27d0f6acf29d3 and resulting main was verified.",
+  "exact_next_safe_action": "Audit Issue #62 against main 8ad507bb41716d32516eb199b0b27d0f6acf29d3 using authoritative live external-admin evidence; verify immutable releases, agent-v* tag ruleset/creation authority, production-release protections, credential placement/least privilege, signing/notarization/publication, and real-target evidence before closure. Keep Issue #70 open and do not run RB-005 without fresh explicit authority.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,8 +23,7 @@
     "RB-005"
   ],
   "current_blockers": [
-    "PR #91 is draft and not mergeable on its stale base; it must be rehydrated onto the resulting protected main before fresh certification.",
-    "Issue #62 remains externally blocked: immutable GitHub Releases, the agent-v* tag ruleset/creation authority, production-release protections, credential placement, signing/notarization/publication and real-target evidence are not yet live-verified.",
+    "Issue #62 remains externally unverified: immutable GitHub Releases, the agent-v* tag ruleset/creation authority, production-release protections, credential placement/least privilege, signing/notarization/publication, and real-target evidence must be verified live before closure.",
     "Issue #70 remains open as recurrent nondeterminism; RB-005 remains not-authorized/blocked."
   ],
   "timeout_control": {
@@ -33,14 +32,14 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-23T21:13:56.069Z",
+  "last_reconciled_at": "2026-09-24T12:04:38Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Rehydrate PR #91 on resulting main after PR #65 source merge",
+    "current_work": "Issue #62 live external-admin evidence readiness audit",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 60,
-      "basis": "PR #65 source/governance lane is merged and exact-head certified. PR #91 must now be rehydrated for the external-admin evidence lane; Issue #62 remains the live external configuration gate."
+      "basis": "PR #91 is merged and exact-head certified, including authenticated-provenance hardening for the external-admin evidence verifier. Issue #62 still requires live external configuration, credential, signing/notarization/publication, and real-target evidence."
     },
     "overall_progress": {
       "percent": 100,
