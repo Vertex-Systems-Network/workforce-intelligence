@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "b022d6a8c677983d9efc66987757f2b2b210327e",
+  "observed_main_sha": "e2d46e3b98396a4501f59ea81271f195d194541f",
   "active_issue": 62,
-  "active_pr": 102,
-  "active_branch": "m14/immutable-release-api-evidence-lane",
-  "current_milestone": "M14 Gate B1 — independent immutable-release API evidence lane",
+  "active_pr": 103,
+  "active_branch": "m14/gate-b1-api-evidence-closeout",
+  "current_milestone": "M14 Gate B1 — immutable Releases live API evidence closeout",
   "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #101 merged at protected main b022d6a8c677983d9efc66987757f2b2b210327e with exact-head Code Quality #392, WorkIntel CI #706, and Windows Certification #475 green; immutable Releases remains administrator-attested enabled and API-unverified.",
-  "exact_next_safe_action": "Perform one consolidated exact-head certification observation for PR #102. If required checks are terminal green and review threads are clear, merge with expected-head protection. Then manually dispatch M14 Immutable Release Policy Evidence from protected main and collect its sanitized artifact; no trusted release publication is authorized.",
+  "last_completed_milestone": "Gate B1 live immutable-Releases API evidence verified from workflow run 36053495999 attempt 2 on protected main e2d46e3b98396a4501f59ea81271f195d194541f; sanitized artifact records immutable_releases.enabled=true.",
+  "exact_next_safe_action": "Exact-head certify PR #103 and merge with expected-head protection if required checks are terminal green. Then continue Issue #62 with the next attainable external-admin/signer evidence gate; do not publish a release or fabricate Windows/Apple signer material.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,11 +23,10 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Independent immutable-release API evidence workflow is implemented in PR #102 but is not protected-main policy until merge.",
-    "Gate B1 remains administrator-attested/API-unverified until a successful protected-main evidence workflow run produces the sanitized artifact.",
-    "The connected GitHub tool cannot dispatch workflows, so the protected-main evidence run will require one manual GitHub Actions dispatch after merge.",
+    "production-release environment protection/token placement is only partially live-verified; broader authoritative admin evidence remains incomplete.",
     "Windows signing certificate/PFX/fingerprint is unavailable; Windows signing evidence cannot be completed.",
     "Apple Developer ID/notary material/fingerprint is unavailable; macOS signing/notarization evidence cannot be completed.",
+    "Real signing, notarization, release publication, and real-target evidence remain incomplete.",
     "Issue #70 remains open; RB-005 remains not-authorized/blocked."
   ],
   "timeout_control": {
@@ -39,14 +38,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-24T15:55:36.893Z",
+  "last_reconciled_at": "2026-09-24T20:42:03.732Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "PR #102 — independent immutable-release API evidence lane",
+    "current_work": "PR #103 — Gate B1 API evidence closeout",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
-      "percent": 60,
-      "basis": "Gate A is verified and immutable Releases is administrator-attested enabled. PR #102 implements the independent live API evidence path, but Gate B1 remains incomplete until that workflow merges and succeeds on protected main; signer/publication/real-target gates remain incomplete."
+      "percent": 65,
+      "basis": "Gate A is verified and Gate B1 immutable Releases is now live API-verified from a successful protected-main evidence workflow. Broader environment evidence, signer identities, publication, and real-target closure remain incomplete."
     },
     "overall_progress": {
       "percent": 100,

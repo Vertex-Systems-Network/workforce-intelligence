@@ -245,3 +245,13 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - The lane is GET-only, runs in `production-release`, binds evidence to current protected main before and after collection, scopes the Administration-read token to one step, and uploads only sanitized JSON.
 - Added regression coverage forbidding write HTTP methods, release publication, tag pushes, broad write permissions, PR/push triggers, and self-hosted runners.
 - No trusted release was published and no missing signer credential was fabricated.
+
+
+## 2026-09-25 — Gate B1 immutable Releases live API verification
+
+- Workflow run `36053495999` attempt `2` completed successfully after distinct `production-release` approval.
+- Downloaded and inspected sanitized artifact `m14-immutable-release-evidence-36053495999-2`.
+- Artifact binds to protected main `e2d46e3b98396a4501f59ea81271f195d194541f`, `refs/heads/main`, API version `2026-03-10`, and records `immutable_releases.enabled=true`.
+- Gate B1 is now live API-verified.
+- No release publication, signing, notarization, tag mutation, or missing-credential fabrication occurred.
+- Broader environment, signer, publication, and real-target gates remain open under Issue #62.
