@@ -29,6 +29,31 @@ node tools/verify-m14-release-admin-config.mjs \
 
 Structural mode returns `"authoritative": false` and `"provenance": "caller-supplied-structural-only"`. It cannot satisfy Issue #62 closure or substitute for a fresh live verification. The authoritative verifier expects schema `workintel.m14-release-admin-evidence.v2`, requires `github_api_version: "2026-03-10"`, and binds the evidence to both the exact source SHA and authenticated auditor identity.
 
+
+
+## Independent Gate B1 immutable-release API evidence lane
+
+For Gate B1 only, the repository also provides a narrow manual workflow:
+
+`.github/workflows/m14-immutable-release-evidence.yml`
+
+This workflow is intentionally separate from the trusted release workflow. It:
+
+- can only be started with `workflow_dispatch`;
+- must run from `refs/heads/main`;
+- uses the protected `production-release` environment;
+- scopes `WORKINTEL_RELEASE_POLICY_READ_TOKEN` to exactly one shell step;
+- performs only `GET /repos/{owner}/{repo}/immutable-releases` with GitHub API version `2026-03-10`;
+- fails unless the live response is an object with `enabled=true`;
+- checks protected `main` immediately before and after collection so evidence cannot silently bind to a stale source SHA;
+- writes only a sanitized JSON artifact containing repository/run metadata and `immutable_releases.enabled=true`; the credential and raw authorization header are never written to the artifact;
+- has read-only workflow permissions and contains no release publication, signing, tag mutation, or repository write operation.
+
+After this workflow is merged to protected `main`, run **Actions → M14 Immutable Release Policy Evidence → Run workflow** with branch `main`. If the `production-release` environment requires approval, complete that approval. The resulting `m14-immutable-release-evidence-*` artifact is the independent live API evidence for Gate B1.
+
+This lane does not satisfy the broader M14 admin-evidence verifier by itself and does not replace signer, notarization, publication, or real-target evidence.
+
+
 ## API snapshots
 
 Collect these read-only GitHub API responses with a dedicated administrator/auditor credential.
