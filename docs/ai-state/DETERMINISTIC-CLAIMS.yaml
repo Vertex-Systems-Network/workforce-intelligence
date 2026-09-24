@@ -55,6 +55,24 @@
       "subject": "readme_ai_progress_block_must_sync_each_completed_bounded_milestone",
       "value": true,
       "authority": "AGENTS.md#readme-progress-synchronization-contract"
+    },
+    {
+      "id": "CLAIM-010",
+      "subject": "fast_batch_execution_mode_default",
+      "value": true,
+      "authority": "AGENTS.md#one-user-turn--one-logical-milestone--fast-batch-default"
+    },
+    {
+      "id": "CLAIM-011",
+      "subject": "routine_substeps_require_new_user_reply",
+      "value": false,
+      "authority": "AGENTS.md#one-user-turn--one-logical-milestone--fast-batch-default"
+    },
+    {
+      "id": "CLAIM-012",
+      "subject": "pending_ci_should_be_tight_polled_or_prompt_repeated_manual_status_checks",
+      "value": false,
+      "authority": "docs/ai-state/FAST-BATCH-EXECUTION.md#ci-and-external-waits"
     }
   ]
 }

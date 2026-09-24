@@ -208,3 +208,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Repository owner/admin explicitly confirmed tag creation authority at `2026-09-24T18:14:36+05:00`: new `agent-v*` refs are reserved to the approved owner-controlled release operator/process.
 - Prepared the committed Gate A2 attestation as VERIFIED without claiming any remaining environment, immutable-release, signer, publication, or real-target gate.
 - Issue #62 remains open; Issue #70 remains open; RB-005 remains blocked/not-authorized.
+
+
+## 2026-09-24 — Fast-Batch AI Engineering execution mode
+
+- Reconciled protected main after PR #99 merge at `9e8697d6439800758a1dcd767fa2a3f0714f3065`.
+- Owner requested fewer micro-updates and faster development; adopted Fast-Batch as the default bounded-milestone execution mode.
+- Fast-Batch automatically carries routine tightly coupled substeps inside one authorized milestone and does not require repeated `next`, `done`, or `...` replies.
+- Kept one consolidated CI/status refresh, no tight polling, expected-head merge protection, security/authority boundaries, and Runner authorization unchanged.
+- Added canonical policy, response/handoff contract changes, deterministic claims, and regression/audit coverage in PR #100.

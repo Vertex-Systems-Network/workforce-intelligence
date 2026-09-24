@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "0406865ca2c13f9e8c0bf3743e97b0df57d7204f",
-  "reconciled_at": "2026-09-24T18:14:36+05:00",
+  "observed_main_sha": "9e8697d6439800758a1dcd767fa2a3f0714f3065",
+  "reconciled_at": "2026-09-24T14:39:12.137Z",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "gate-a-live-verified-gate-a2-attestation-pr-in-progress"
+      "action": "continue-after-fast-batch-governance-rollout"
     },
     {
       "number": 70,
@@ -20,14 +20,25 @@
   ],
   "pull_requests": [
     {
-      "number": 99,
-      "title": "docs(m14): verify agent-v tag ruleset attestation",
+      "number": 100,
+      "title": "docs(ai): adopt Fast-Batch execution mode",
       "state": "open",
       "draft": false,
       "head_sha": "resolve-on-resume",
+      "base_sha": "9e8697d6439800758a1dcd767fa2a3f0714f3065",
+      "head_ref": "governance/fast-batch-execution-mode",
+      "action": "exact-head-certification-required-before-merge"
+    },
+    {
+      "number": 99,
+      "title": "docs(m14): verify agent-v tag ruleset attestation",
+      "state": "merged",
+      "draft": false,
+      "head_sha": "bc58c4b9722477d26edb83f5f0a13a94a868d8d9",
       "base_sha": "0406865ca2c13f9e8c0bf3743e97b0df57d7204f",
       "head_ref": "m14/verify-agent-v-tag-ruleset-attestation",
-      "action": "exact-head-certification-required-before-merge"
+      "action": "completed",
+      "resulting_main_sha": "9e8697d6439800758a1dcd767fa2a3f0714f3065"
     },
     {
       "number": 65,

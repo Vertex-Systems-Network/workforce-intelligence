@@ -33,13 +33,29 @@ On every start, `continue`, resume, interrupted session, connector/tool failure,
 
 Compact state is a resume index and never overrides current repository/runtime truth. Chat memory is never authority. A missing or timed-out ChatGPT response is not evidence that repository work failed; verify what persisted before repeating anything.
 
-## One user turn = one logical milestone
+## One user turn = one logical milestone — Fast-Batch default
 
-By default, one user `continue` or `resume` turn performs exactly one bounded logical engineering milestone.
+By default, one user `continue`, `resume`, or numeric next-action selection authorizes one **bounded logical milestone**, not one micro-step. The default execution mode is **Fast-Batch**.
 
-Examples: reconcile/close one accepted PR; implement one coherent change and persist it; perform one exact-head verification/merge decision; reconcile durable shared state after a merge.
+A Fast-Batch milestone may complete the tightly coupled sequence needed to finish that one milestone safely, including: compact-state reconciliation -> exact main/open Issue/open PR reconciliation -> implementation -> cheap/source checks -> PR creation/update -> one consolidated exact-head certification observation -> safe expected-head merge when already terminal green -> resulting-main verification -> durable-state/README closeout.
 
-Do not chain broad audit -> multiple implementations -> repeated CI polling -> merge -> post-merge audit -> unrelated next task in one turn. Security/incident recovery may contain tightly coupled actions only when splitting them would reduce safety.
+Do not require the user to reply `next`, `done`, or `...` for routine substeps inside an already-authorized milestone. Do not split one coherent milestone into separate turns merely for file edits, test repair, PR metadata, review-thread checks, README sync, or resulting-main verification.
+
+Stop the batch and hand control back only when at least one of these is true:
+
+- a new destructive, provider/production, credential, billing, release-publication, migration, or otherwise separately authorized action is required;
+- required user-owned information, secret material, external approval, or an explicit product/scope decision is missing;
+- exact-head CI or another external gate is still running after the allowed consolidated refresh;
+- a material security finding, scope conflict, authority conflict, or blocker makes automatic continuation unsafe;
+- the logical milestone is complete.
+
+When CI is still running, do not tight-poll and do not train the user into repeated `...` messages. Record the exact runs/evidence surface and end in `WAITING_EXTERNAL`; use a condition notification/automation when available and requested.
+
+Manual setup instructions should be grouped into one consolidated checklist by default. Give one-at-a-time setup steps only when the user explicitly asks for step-by-step guidance.
+
+Security, authority, exact-head merge protection, Runner authorization, and destructive-action boundaries are unchanged by Fast-Batch. Fast-Batch removes conversational fragmentation; it never weakens a gate.
+
+Detailed policy: `docs/ai-state/FAST-BATCH-EXECUTION.md`.
 
 ## Issues / PRs first — hard gate
 
@@ -60,6 +76,8 @@ By default perform at most one consolidated CI/status refresh per milestone. Nev
 Before final exact-head CI observation, persist the milestone as `VERIFYING` or `WAITING_EXTERNAL` when remote checks are expected. If required CI is still running after the consolidated refresh, do not create another source commit solely to record pending CI; preserve durable state, record run IDs on a PR/Issue surface when possible without modifying the certified source head, report pending, and end the milestone.
 
 A second refresh in the same milestone is allowed only after a material security, merge, incident/recovery, or provider state transition requires it for a safe decision. Record that exception durably.
+
+Routine progress chatter is not a reason for another refresh. Prefer one consolidated final/status handoff over a sequence of micro-status messages. Intermediate user-facing updates are reserved for material blockers, security findings, required user action, or meaningful state transitions.
 
 ## State drift reconciliation
 

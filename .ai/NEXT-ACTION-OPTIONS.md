@@ -4,7 +4,7 @@ This repository adopts the Vertex Systems Network interactive AI-development han
 
 ## User-facing handoff
 
-After every repository-development response, expose 1 to 3 currently valid next actions derived from live repository evidence.
+At every completed, blocked, or waiting milestone handoff, expose 1 to 3 currently valid next actions derived from live repository evidence. Do not emit next-action options after internal Fast-Batch progress updates or routine substeps.
 
 - Always include the canonical/recommended next action, but do not bind it permanently to option 1.
 - When two or more valid options exist, reshuffle the visible 1/2/3 numbering on every handoff.
@@ -26,4 +26,4 @@ When the user's message contains only this repository's canonical GitHub URL (op
 
 ## Safety and local authority
 
-Repository-specific governance, security, exact-head CI, approval, migration, production/provider, release, and one-turn/one-milestone rules remain authoritative and may be stricter than this interaction contract. This file never grants execution authority and never permits bypassing an accepted actionable Issue/PR or deferred work boundary.
+Repository-specific governance, security, exact-head CI, approval, migration, production/provider, release, and one-turn/one-milestone rules remain authoritative and may be stricter than this interaction contract. Fast-Batch may complete routine tightly coupled substeps inside the selected milestone without another numeric confirmation. This file never grants execution authority and never permits bypassing an accepted actionable Issue/PR or deferred work boundary.

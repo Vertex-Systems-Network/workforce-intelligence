@@ -12,6 +12,8 @@ if(!['PLANNING','IMPLEMENTING','VERIFYING','WAITING_EXTERNAL','BLOCKED','COMPLET
 if(s.timeout_control?.max_consolidated_status_refreshes_per_milestone!==1)fail('status refresh budget must default to one')
 if(s.timeout_control?.tight_polling_allowed!==false)fail('tight polling must be false')
 if(s.timeout_control?.rerun_on_message_delivery_timeout!==false)fail('message timeout rerun must be false')
+if(s.timeout_control?.fast_batch_default!==true)fail('Fast-Batch must default true')
+if(s.timeout_control?.routine_substep_confirmation_required!==false)fail('routine substep confirmation must default false')
 const rs=s.response_status
 if(!rs||typeof rs!=='object')fail('response_status must be an object')
 for(const k of ['repository_name','current_work','current_module','module_progress','overall_progress','bar_cells'])if(!(k in rs))fail('response_status missing '+k)
@@ -48,5 +50,5 @@ const runnerIds=new Set((r.entries||[]).map(x=>x.id))
 for(const k of ['pending_runner_ids','blocked_runner_ids'])for(const id of s[k])if(!runnerIds.has(id))fail(k+' references missing '+id)
 for(const id of s.blocked_runner_ids){const e=r.entries.find(x=>x.id===id);if(e?.definition_status!=='blocked')fail(id+' is not blocked in registry')}
 for(const m of ['## Verified','## Not Verified','## Known Risk','## Next Action'])if(!cp.includes(m))fail('LAST-CHECKPOINT missing '+m)
-for(const m of ['docs/ai-state/CURRENT-STATE.yaml','Runner registration NEVER grants execution authority','at most one consolidated CI/status refresh','OPEN GitHub Issues first','Message delivery timed out','Repo:','Current Work:','Current Module:','Module Progress:','Overall Progress:','README progress synchronization contract','every completed bounded milestone'])if(!a.includes(m))fail('AGENTS missing '+m)
+for(const m of ['docs/ai-state/CURRENT-STATE.yaml','Runner registration NEVER grants execution authority','at most one consolidated CI/status refresh','OPEN GitHub Issues first','Message delivery timed out','Repo:','Current Work:','Current Module:','Module Progress:','Overall Progress:','README progress synchronization contract','every completed bounded milestone','Fast-Batch default','Do not require the user to reply'])if(!a.includes(m))fail('AGENTS missing '+m)
 console.log('AI supervisor compact state valid.')
