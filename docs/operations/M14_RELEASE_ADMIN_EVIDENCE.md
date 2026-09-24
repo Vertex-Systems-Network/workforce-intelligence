@@ -54,6 +54,32 @@ After this workflow is merged to protected `main`, run **Actions → M14 Immutab
 This lane does not satisfy the broader M14 admin-evidence verifier by itself and does not replace signer, notarization, publication, or real-target evidence.
 
 
+
+## Independent Gate B control-plane evidence lane
+
+Before real Windows/macOS signer material exists, verify the independently attainable `production-release` control plane with:
+
+`.github/workflows/m14-production-release-control-evidence.yml`
+
+This lane does **not** weaken or replace the full `verify-m14-release-admin-config.mjs` closure verifier. It intentionally verifies only controls that can be proven without real signer credentials:
+
+- required-reviewer protection exists and `prevent_self_review=true`;
+- no wait timer is configured;
+- custom deployment branch/tag policies are enabled;
+- the only deployment policy names are `main` and `agent-v*`;
+- `WORKINTEL_RELEASE_POLICY_READ_TOKEN` exists at `production-release` environment scope;
+- the release-policy token and all signer/notary secret names are absent at repository scope;
+- signer fingerprint/timestamp variable names are absent at repository scope;
+- immutable Releases remains enabled;
+- the auditor identity and exact protected-main source SHA are recorded;
+- the uploaded artifact contains names/metadata only and never credential values.
+
+GitHub's deployment policy read response does not expose whether each existing name pattern was created as branch vs tag, so the already-recorded administrator attestation remains the evidence for `main=branch` and `agent-v*=tag`. Administrator-bypass posture and the least-privilege scope of the release-policy token likewise remain explicit administrator attestations where the read APIs do not prove them.
+
+The workflow uses a separate **repository secret** named `WORKINTEL_M14_ADMIN_AUDIT_TOKEN`. Do not place that audit credential in `production-release`, because it is evidence-collection authority, not release authority. Use a fine-grained token limited to this repository with read-only permissions needed by the existing collector contract: Administration, Actions, Environments, Secrets, and Variables. This token is never passed to the trusted release workflow.
+
+After this workflow is merged to protected `main`, manually dispatch it from `main`. The `production-release` reviewer gate still applies to the evidence job.
+
 ## API snapshots
 
 Collect these read-only GitHub API responses with a dedicated administrator/auditor credential.
