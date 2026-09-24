@@ -26,6 +26,19 @@ The machine-readable baseline is `docs/ai-state/CURRENT-STATE.yaml.response_stat
 - That 100% does not erase open maintenance, security, governance, provider, release-trust, or future-scope work. Those remain visible as blockers/current work.
 - If a future authoritative scope has no defined denominator, render `Overall Progress: [░░░░░░░░░░] N/A` and explain the missing basis instead of inventing a number.
 
+## Fast-Batch response cadence
+
+Fast-Batch is the default repository-development interaction mode.
+
+- Do not emit a user-facing status message for every internal file edit, tool call, test command, PR metadata update, or review check.
+- Do not ask the user to approve routine substeps already inside the authorized milestone.
+- During a long-running milestone, surface only material blockers, security findings, required user action, or meaningful state transitions; otherwise finish the batch and return one consolidated result.
+- When external CI remains pending after the allowed consolidated observation, report the exact pending runs once and stop polling. Prefer a condition notification/automation over repeated manual `...` checks when available.
+- Group manual configuration into one checklist unless the user explicitly asks for one-by-one instructions.
+- Show numbered next-action choices at a completed/blocked/waiting milestone handoff, not after every internal progress update.
+
+Fast-Batch changes cadence only. It does not weaken authorization, security, review, exact-head certification, merge, deployment, migration, secrets, provider, or release-publication requirements.
+
 ## Exact-head protection
 
 When a PR/source head is under exact-head certification, do not commit compact-state changes merely to update the response display. Use current GitHub PR/Issue/check evidence plus the last durable compact-state baseline, so status reporting does not invalidate the head being certified.
