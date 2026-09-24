@@ -398,3 +398,9 @@ Every material AI/code-agent checkpoint must end with four explicit states:
 - **Next Action:** the single next authorized action or blocker, without auto-starting a newly activated phase/scope.
 
 Completion claims must name the exact head SHA and relevant CI/run/review/real-target evidence. A merge, issue comment or generated receipt alone is not proof that the product behavior is correct.
+
+## VSN organization next-action handoff
+
+Before every user-facing development handoff, read and follow `.ai/NEXT-ACTION-OPTIONS.md`.
+
+If the user sends only this repository's GitHub URL, perform the policy's read-only bootstrap and return shuffled numbered next-action options. A URL-only message never authorizes a repository mutation. A later numeric selection must revalidate live repository state before acting.
