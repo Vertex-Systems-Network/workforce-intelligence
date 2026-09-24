@@ -4,7 +4,7 @@
   "repository": "Vertex-Systems-Network/workforce-intelligence",
   "observed_main_sha": "0406865ca2c13f9e8c0bf3743e97b0df57d7204f",
   "active_issue": 62,
-  "active_pr": null,
+  "active_pr": 99,
   "active_branch": "m14/verify-agent-v-tag-ruleset-attestation",
   "current_milestone": "M14 Gate A2 — commit VERIFIED agent-v* tag ruleset attestation",
   "milestone_status": "IMPLEMENTING",

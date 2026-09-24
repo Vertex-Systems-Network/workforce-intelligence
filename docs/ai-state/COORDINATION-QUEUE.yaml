@@ -20,6 +20,16 @@
   ],
   "pull_requests": [
     {
+      "number": 99,
+      "title": "docs(m14): verify agent-v tag ruleset attestation",
+      "state": "open",
+      "draft": false,
+      "head_sha": "resolve-on-resume",
+      "base_sha": "0406865ca2c13f9e8c0bf3743e97b0df57d7204f",
+      "head_ref": "m14/verify-agent-v-tag-ruleset-attestation",
+      "action": "exact-head-certification-required-before-merge"
+    },
+    {
       "number": 65,
       "title": "M14: rehydrated production release trust on current main",
       "state": "merged",

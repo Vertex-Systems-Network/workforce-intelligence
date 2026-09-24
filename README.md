@@ -11,7 +11,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Module Progress:** [██████░░░░] **60%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** none
+- **Active PR:** #99
 - **Active Branch:** `m14/verify-agent-v-tag-ruleset-attestation`
 - **Last Completed:** Issue #62 Gate A live ruleset verification passed for ruleset 23938765 (agent-v-release-tags): active tag target, refs/tags/agent-v* scope, zero bypass, update/deletion restrictions, no creation restriction; owner/admin separately attested approved release-operator tag creation authority at 2026-09-24T18:14:36+05:00.
 - **Next Action:** Exact-head certify and merge the Gate A2 attestation PR, then continue Issue #62 with authoritative verification of the production-release environment, immutable Releases enabled=true, environment-only credential placement, and Windows/macOS signer identity evidence. Keep Issue #70 open and do not run RB-005 without fresh explicit authority.
