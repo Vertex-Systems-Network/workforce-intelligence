@@ -8,6 +8,7 @@ import test from 'node:test'
 
 const read = file => fs.readFileSync(file, 'utf8')
 const workflow = read('.github/workflows/desktop-agent-trusted-release.yml')
+const immutableEvidenceWorkflow = read('.github/workflows/m14-immutable-release-evidence.yml')
 const receiptTool = 'tools/release-trust-receipt.mjs'
 
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex')
@@ -619,4 +620,46 @@ test('M14 verifies the published immutable release and every asset as the final 
   const verified = workflow.lastIndexOf('if ! verify_published_immutable_release; then')
   const releaseSuccess = workflow.lastIndexOf('Published and verified immutable trusted release')
   assert.ok(expose > 0 && verified > expose && releaseSuccess > verified, 'immutable release verification must be the final publication postcondition')
+})
+
+
+test('M14 independent immutable-release evidence lane is read-only, main-bound and sanitized', () => {
+  for (const token of [
+    'workflow_dispatch:',
+    'permissions:\n  contents: read',
+    'environment: production-release',
+    'WORKINTEL_RELEASE_POLICY_READ_TOKEN',
+    'repos/${GITHUB_REPOSITORY}/immutable-releases',
+    '--method GET',
+    "X-GitHub-Api-Version: 2026-03-10",
+    "type == \"object\" and .enabled == true",
+    'refs/heads/main',
+    'Protected main moved before immutable-release evidence collection.',
+    'Protected main moved during immutable-release evidence collection.',
+    'workintel.m14-immutable-release-evidence.v1',
+    'evidence_type: "github-api-live-read"',
+    'immutable_releases: { enabled: true }',
+    'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a',
+  ]) assert.ok(immutableEvidenceWorkflow.includes(token), token)
+
+  assert.equal(
+    immutableEvidenceWorkflow.split('WORKINTEL_RELEASE_POLICY_READ_TOKEN').length - 1,
+    1,
+    'Administration-read token must be scoped to exactly one evidence step',
+  )
+
+  for (const forbidden of [
+    'pull_request:',
+    'push:',
+    'contents: write',
+    'id-token: write',
+    'self-hosted',
+    '--method POST',
+    '--method PUT',
+    '--method PATCH',
+    '--method DELETE',
+    'gh release create',
+    'gh release edit',
+    'git push',
+  ]) assert.ok(!immutableEvidenceWorkflow.includes(forbidden), forbidden)
 })

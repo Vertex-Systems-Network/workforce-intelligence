@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** Issue #62 Gate B1 — immutable Releases admin-enabled; API evidence pending
+- **Current Work:** PR #102 — independent immutable-release API evidence lane
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [██████░░░░] **60%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** #101
-- **Active Branch:** `m14/issue-62-immutable-release-gate-reconcile`
-- **Last Completed:** Repository owner/admin confirmed immutable Releases was enabled in GitHub Settings for workforce-intelligence; this is administrator-attested and remains pending authoritative API evidence because the connected GitHub surface does not expose GET /repos/{owner}/{repo}/immutable-releases.
-- **Next Action:** Obtain authoritative immutable-release enabled=true evidence from the GitHub administration endpoint through an approved evidence path. Until then keep Gate B1 as admin-enabled/API-unverified. In parallel, do not fabricate Windows/Apple signer material; signer/publication/real-target closure remains blocked on real organization credentials and explicit authority.
+- **Active PR:** #102
+- **Active Branch:** `m14/immutable-release-api-evidence-lane`
+- **Last Completed:** PR #101 merged at protected main b022d6a8c677983d9efc66987757f2b2b210327e with exact-head Code Quality #392, WorkIntel CI #706, and Windows Certification #475 green; immutable Releases remains administrator-attested enabled and API-unverified.
+- **Next Action:** Perform one consolidated exact-head certification observation for PR #102. If required checks are terminal green and review threads are clear, merge with expected-head protection. Then manually dispatch M14 Immutable Release Policy Evidence from protected main and collect its sanitized artifact; no trusted release publication is authorized.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->

@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "aa92170a992a72ad7f8fb330e5829527cff0fb77",
+  "observed_main_sha": "b022d6a8c677983d9efc66987757f2b2b210327e",
   "active_issue": 62,
-  "active_pr": 101,
-  "active_branch": "m14/issue-62-immutable-release-gate-reconcile",
-  "current_milestone": "M14 Gate B1 — immutable Releases enablement and evidence",
-  "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "Repository owner/admin confirmed immutable Releases was enabled in GitHub Settings for workforce-intelligence; this is administrator-attested and remains pending authoritative API evidence because the connected GitHub surface does not expose GET /repos/{owner}/{repo}/immutable-releases.",
-  "exact_next_safe_action": "Obtain authoritative immutable-release enabled=true evidence from the GitHub administration endpoint through an approved evidence path. Until then keep Gate B1 as admin-enabled/API-unverified. In parallel, do not fabricate Windows/Apple signer material; signer/publication/real-target closure remains blocked on real organization credentials and explicit authority.",
+  "active_pr": 102,
+  "active_branch": "m14/immutable-release-api-evidence-lane",
+  "current_milestone": "M14 Gate B1 — independent immutable-release API evidence lane",
+  "milestone_status": "VERIFYING",
+  "last_completed_milestone": "PR #101 merged at protected main b022d6a8c677983d9efc66987757f2b2b210327e with exact-head Code Quality #392, WorkIntel CI #706, and Windows Certification #475 green; immutable Releases remains administrator-attested enabled and API-unverified.",
+  "exact_next_safe_action": "Perform one consolidated exact-head certification observation for PR #102. If required checks are terminal green and review threads are clear, merge with expected-head protection. Then manually dispatch M14 Immutable Release Policy Evidence from protected main and collect its sanitized artifact; no trusted release publication is authorized.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,8 +23,9 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Immutable Releases is administrator-attested enabled but not live API-verified through the current connector.",
-    "production-release environment protection/token placement is administrator-attested, not live API-verified through this connector.",
+    "Independent immutable-release API evidence workflow is implemented in PR #102 but is not protected-main policy until merge.",
+    "Gate B1 remains administrator-attested/API-unverified until a successful protected-main evidence workflow run produces the sanitized artifact.",
+    "The connected GitHub tool cannot dispatch workflows, so the protected-main evidence run will require one manual GitHub Actions dispatch after merge.",
     "Windows signing certificate/PFX/fingerprint is unavailable; Windows signing evidence cannot be completed.",
     "Apple Developer ID/notary material/fingerprint is unavailable; macOS signing/notarization evidence cannot be completed.",
     "Issue #70 remains open; RB-005 remains not-authorized/blocked."
@@ -38,14 +39,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-24T15:21:57.678Z",
+  "last_reconciled_at": "2026-09-24T15:55:36.893Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Issue #62 Gate B1 — immutable Releases admin-enabled; API evidence pending",
+    "current_work": "PR #102 — independent immutable-release API evidence lane",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 60,
-      "basis": "Gate A is verified and immutable Releases is now administrator-attested enabled. The module remains at the existing evidence-based 60% because authoritative immutable-release/environment evidence, signer identities, publication, and real-target closure are still incomplete."
+      "basis": "Gate A is verified and immutable Releases is administrator-attested enabled. PR #102 implements the independent live API evidence path, but Gate B1 remains incomplete until that workflow merges and succeeds on protected main; signer/publication/real-target gates remain incomplete."
     },
     "overall_progress": {
       "percent": 100,

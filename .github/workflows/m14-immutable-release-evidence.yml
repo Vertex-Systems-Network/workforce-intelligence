@@ -1,0 +1,110 @@
+name: M14 Immutable Release Policy Evidence
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: m14-immutable-release-evidence-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify repository immutable release policy
+    runs-on: ubuntu-latest
+    environment: production-release
+    permissions:
+      contents: read
+    steps:
+      - name: Require current protected-main dispatch source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo 'Immutable-release evidence must be dispatched from refs/heads/main.'
+            exit 1
+          fi
+          current_main="$(gh api --method GET \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2026-03-10' \
+            "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" \
+            --jq '.object.sha')"
+          if [ "$current_main" != "$GITHUB_SHA" ]; then
+            echo 'Protected main moved before immutable-release evidence collection.'
+            exit 1
+          fi
+
+      - name: Collect sanitized immutable-release API evidence
+        shell: bash
+        env:
+          RELEASE_POLICY_TOKEN: ${{ secrets.WORKINTEL_RELEASE_POLICY_READ_TOKEN }}
+          EVIDENCE_PATH: ${{ runner.temp }}/m14-immutable-release-evidence.json
+        run: |
+          set -euo pipefail
+          if [ -z "${RELEASE_POLICY_TOKEN:-}" ]; then
+            echo 'Immutable-release policy read token is unavailable.'
+            exit 1
+          fi
+
+          response="$(GH_TOKEN="$RELEASE_POLICY_TOKEN" gh api --method GET \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2026-03-10' \
+            "repos/${GITHUB_REPOSITORY}/immutable-releases")"
+
+          printf '%s\n' "$response" | jq -e 'type == "object" and .enabled == true' >/dev/null \
+            || { echo 'GitHub immutable releases are not enabled or could not be verified.'; exit 1; }
+
+          collected_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          jq -n \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg source_sha "$GITHUB_SHA" \
+            --arg ref "$GITHUB_REF" \
+            --arg workflow "$GITHUB_WORKFLOW" \
+            --arg run_id "$GITHUB_RUN_ID" \
+            --arg run_attempt "$GITHUB_RUN_ATTEMPT" \
+            --arg actor "$GITHUB_ACTOR" \
+            --arg collected_at "$collected_at" \
+            '{
+              schema: "workintel.m14-immutable-release-evidence.v1",
+              github_api_version: "2026-03-10",
+              evidence_type: "github-api-live-read",
+              repository: $repository,
+              source_sha: $source_sha,
+              ref: $ref,
+              workflow: $workflow,
+              workflow_run_id: $run_id,
+              workflow_run_attempt: $run_attempt,
+              actor: $actor,
+              collected_at: $collected_at,
+              immutable_releases: { enabled: true }
+            }' > "$EVIDENCE_PATH"
+
+      - name: Revalidate protected main after collection
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          current_main="$(gh api --method GET \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2026-03-10' \
+            "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" \
+            --jq '.object.sha')"
+          if [ "$current_main" != "$GITHUB_SHA" ]; then
+            echo 'Protected main moved during immutable-release evidence collection.'
+            exit 1
+          fi
+
+      - name: Upload sanitized evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: m14-immutable-release-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/m14-immutable-release-evidence.json
+          if-no-files-found: error
+          retention-days: 14
+          overwrite: false
+          include-hidden-files: false

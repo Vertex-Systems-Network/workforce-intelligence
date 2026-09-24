@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "aa92170a992a72ad7f8fb330e5829527cff0fb77",
-  "reconciled_at": "2026-09-24T15:21:57.678Z",
+  "observed_main_sha": "b022d6a8c677983d9efc66987757f2b2b210327e",
+  "reconciled_at": "2026-09-24T15:55:36.893Z",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "gate-b1-admin-enabled-api-evidence-pending"
+      "action": "gate-b1-independent-api-evidence-lane-pr-102"
     },
     {
       "number": 70,
@@ -20,14 +20,25 @@
   ],
   "pull_requests": [
     {
-      "number": 101,
-      "title": "docs(m14): reconcile Issue #62 immutable-release gate",
+      "number": 102,
+      "title": "ci(m14): add immutable-release API evidence lane",
       "state": "open",
       "draft": false,
       "head_sha": "resolve-on-resume",
+      "base_sha": "b022d6a8c677983d9efc66987757f2b2b210327e",
+      "head_ref": "m14/immutable-release-api-evidence-lane",
+      "action": "exact-head-certification-required-before-merge"
+    },
+    {
+      "number": 101,
+      "title": "docs(m14): reconcile Issue #62 immutable-release gate",
+      "state": "merged",
+      "draft": false,
+      "head_sha": "274912570c57e28ce514421309de3225a5a96732",
       "base_sha": "aa92170a992a72ad7f8fb330e5829527cff0fb77",
       "head_ref": "m14/issue-62-immutable-release-gate-reconcile",
-      "action": "exact-head-certification-required-before-merge"
+      "action": "completed",
+      "resulting_main_sha": "b022d6a8c677983d9efc66987757f2b2b210327e"
     },
     {
       "number": 100,
