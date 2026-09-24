@@ -2,26 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "70f13d249a3aceaf1eccbe502031b008744776df",
-  "reconciled_at": "2026-09-23T21:13:56.069Z",
+  "observed_main_sha": "8ad507bb41716d32516eb199b0b27d0f6acf29d3",
+  "reconciled_at": "2026-09-24T12:04:38Z",
   "issues": [
-    {
-      "number": 61,
-      "title": "M14 AI-only security/release review evidence — PR #65 exact head",
-      "state": "closed",
-      "action": "completed-with-pr-65-merge"
-    },
-    {
-      "number": 96,
-      "title": "Governance: adopt AI-only single-maintainer review mode for M14 high-risk changes",
-      "state": "closed",
-      "action": "completed-policy-merged-on-main"
-    },
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "active-external-admin-gate-not-verified"
+      "action": "active-live-external-admin-evidence-readiness-audit"
     },
     {
       "number": 70,
@@ -44,13 +32,52 @@
     {
       "number": 91,
       "title": "M14: verify external release admin evidence deterministically",
-      "state": "open",
-      "draft": true,
-      "head_sha": "bbc708b19f410b55054f0ec460ba388354e7f85c",
-      "base_sha": "2e6844051d9b34a235681878630f76a3c92c7a7e",
+      "state": "merged",
+      "draft": false,
+      "head_sha": "6c8ca2c32da00ad7f2622dce847dd2adfddbe499",
+      "resulting_main_sha": "8ad507bb41716d32516eb199b0b27d0f6acf29d3",
       "head_ref": "m14/admin-config-evidence-verifier",
-      "mergeable": false,
-      "action": "next-rehydrate-on-current-main-then-fresh-certification"
+      "action": "completed-authenticated-provenance-hardened"
+    },
+    {
+      "number": 93,
+      "title": "chore(deps): bump laravel/framework from 13.29.0 to 13.32.0",
+      "state": "open",
+      "draft": false,
+      "head_sha": "5cd7ac3c04963c080a21f83febd9d616c1102cc5",
+      "base_sha": "1be13fcab75c2fbee1a91f5dcc856bb007264085",
+      "head_ref": "dependabot/composer/laravel/framework-13.32.0",
+      "action": "defer-while-m14-external-admin-lane-is-active"
+    },
+    {
+      "number": 83,
+      "title": "chore(deps): bump gridstack from 13.2.0 to 13.3.0",
+      "state": "open",
+      "draft": false,
+      "head_sha": "3064383d21cd3855c59460b220db0c2255ce7d94",
+      "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
+      "head_ref": "dependabot/npm_and_yarn/gridstack-13.3.0",
+      "action": "defer-while-m14-external-admin-lane-is-active"
+    },
+    {
+      "number": 82,
+      "title": "chore(deps): bump react-dom and @types/react-dom",
+      "state": "open",
+      "draft": false,
+      "head_sha": "d3bd2b2d195986999122a3af09871b63892f60eb",
+      "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
+      "head_ref": "dependabot/npm_and_yarn/multi-de36fa8f59",
+      "action": "defer-while-m14-external-admin-lane-is-active"
+    },
+    {
+      "number": 81,
+      "title": "chore(deps): bump lucide-react from 1.37.0 to 1.46.0",
+      "state": "open",
+      "draft": false,
+      "head_sha": "e2ed7c0a9ae5347804f01855daae135cf2d68e07",
+      "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
+      "head_ref": "dependabot/npm_and_yarn/lucide-react-1.45.0",
+      "action": "defer-while-m14-external-admin-lane-is-active"
     },
     {
       "number": 78,
@@ -59,6 +86,27 @@
       "draft": true,
       "head_sha": "fa0c95711333b5147bae874290cbfd569e316b39",
       "base_sha": "9ea4d90bea31d4bf13ebf095a15468e3c75ea39c",
+      "head_ref": "docs/readme-deep-audit-toc",
+      "action": "defer-while-m14-external-admin-lane-is-active"
+    },
+    {
+      "number": 76,
+      "title": "chore(deps-dev): bump laravel/pint from 1.30.5 to 1.32.1 in the development-minor-patch group across 1 directory",
+      "state": "open",
+      "draft": false,
+      "head_sha": "853544803b60ecc02a38954e0058a1366eee2b30",
+      "base_sha": "1be13fcab75c2fbee1a91f5dcc856bb007264085",
+      "head_ref": "dependabot/composer/development-minor-patch-60599b4d1f",
+      "action": "defer-while-m14-external-admin-lane-is-active"
+    },
+    {
+      "number": 74,
+      "title": "chore(deps): bump the tiptap-family group across 1 directory with 6 updates",
+      "state": "open",
+      "draft": false,
+      "head_sha": "95747f214debe477be0e831f8f75f0e1b22c2f62",
+      "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
+      "head_ref": "dependabot/npm_and_yarn/tiptap-family-4a8bbf4301",
       "action": "defer-while-m14-external-admin-lane-is-active"
     }
   ]

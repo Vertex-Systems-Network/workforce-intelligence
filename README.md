@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** Rehydrate PR #91 on resulting main after PR #65 source merge
+- **Current Work:** Issue #62 live external-admin evidence readiness audit
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [██████░░░░] **60%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
-- **Active Issue:** #62 / #70
-- **Active PR:** #91
-- **Active Branch:** `m14/admin-config-evidence-verifier`
-- **Last Completed:** PR #65 exact head 86b2d81538950e615af388b9048014626d11b7e7 passed Standalone #61, Code Quality #371, WorkIntel CI #685, Windows #454, final exact-SHA AI review, and merged with expected-head protection as 70f13d249a3aceaf1eccbe502031b008744776df; Issues #61 and #96 are closed.
-- **Next Action:** Rehydrate draft PR #91 onto protected main 70f13d249a3aceaf1eccbe502031b008744776df without force-push, reconcile its external-admin evidence verifier against the merged M14 source, and require fresh exact-head certification before any merge decision. Keep Issue #62 open until live immutable-release, tag-ruleset, environment, credential, signing/notarization/publication and real-target evidence is verified. Do not run RB-005 without fresh explicit authority.
+- **Active Issue:** #62
+- **Active PR:** none
+- **Active Branch:** `main`
+- **Last Completed:** PR #91 exact head 6c8ca2c32da00ad7f2622dce847dd2adfddbe499 passed Code Quality #377, WorkIntel CI #691, and Windows Certification #460; the authenticated-provenance security blocker was closed; PR #91 merged with expected-head protection as 8ad507bb41716d32516eb199b0b27d0f6acf29d3 and resulting main was verified.
+- **Next Action:** Audit Issue #62 against main 8ad507bb41716d32516eb199b0b27d0f6acf29d3 using authoritative live external-admin evidence; verify immutable releases, agent-v* tag ruleset/creation authority, production-release protections, credential placement/least privilege, signing/notarization/publication, and real-target evidence before closure. Keep Issue #70 open and do not run RB-005 without fresh explicit authority.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
@@ -39,7 +39,7 @@ The table below is the repository-level roadmap view. `Progress` represents acce
 | M11 | Role UX + Help + Onboarding | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Localized guidance/onboarding/RTL contracts complete |
 | M12 | Accessibility, Performance & Final Certification | Complete — active-scope closure | `██████████` 100% | 2026-08-21 | 2026-08-22 | Hosted + Windows certification accepted; withdrawn Laragon gate is not represented as passed |
 | M13 | Agent Lifecycle Reliability — Batches 1–6 | Complete | `██████████` 100% | 2026-08-22 | 2026-08-24 | Managed update, deterministic packaging, immutability, transactional publication, browser version authority and runtime-bound deployment accepted |
-| M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `██████░░░░` **60%** | 2026-08-31 | **Active** | Source trust lane is implemented/hardened; independent review, actual Windows/macOS trust evidence, trusted release publication and real-target/restore evidence remain open |
+| M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `██████░░░░` **60%** | 2026-08-31 | **Active** | Source trust + authenticated admin-evidence verifier are merged/certified; live external admin configuration, actual Windows/macOS trust evidence, trusted release publication and real-target/restore evidence remain open |
 
 \* The canonical M0–M12 maturity record stores per-phase completion state but not precise per-phase start/end timestamps. M0–M11 therefore use the repository's initial implementation/certification evidence window instead of inventing unsupported day-level precision. M12, M13 and M14 dates are tied to explicit repository/PR authority and closure records.
 

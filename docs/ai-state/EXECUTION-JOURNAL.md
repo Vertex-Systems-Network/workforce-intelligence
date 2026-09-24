@@ -188,3 +188,13 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Activated draft PR #91 as the next source work path: rehydrate it onto current protected main before fresh exact-head certification.
 - Issue #62 remains external/Not Verified; source merge is not `PRODUCTION_VERIFIED`.
 - Issue #70 remains open; RB-005 remains not-authorized/blocked and was not executed.
+
+
+## 2026-09-24 — PR #91 post-merge durable-state reconciliation
+
+- Verified PR #91 exact head `6c8ca2c32da00ad7f2622dce847dd2adfddbe499` passed Code Quality #377, WorkIntel CI #691, and Windows Certification #460.
+- Final exact-head security reconciliation closed the caller-supplied admin-evidence provenance blocker without claiming external configuration as verified.
+- PR #91 merged with expected-head protection as protected-main commit `8ad507bb41716d32516eb199b0b27d0f6acf29d3`; resulting main was re-read at the same SHA.
+- Activated Issue #62 as the next M14 lane; live immutable-release, tag-authority, environment, credential, signing/notarization/publication, and real-target evidence remains Not Verified.
+- Issue #70 remains open; RB-005 remains blocked/not-authorized and was not executed.
+- Synchronized compact state, checkpoint, coordination queue, execution journal, and README progress. M14 remains 60%; overall active release-scope modular maturity remains 100%.
