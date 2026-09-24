@@ -1,33 +1,39 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `8ad507bb41716d32516eb199b0b27d0f6acf29d3`  
+**Observed protected main:** `0406865ca2c13f9e8c0bf3743e97b0df57d7204f`  
 **Active Issue:** #62  
 **Active PR:** none  
-**Active branch:** `main`  
-**Milestone:** Issue #62 live external-admin evidence readiness audit  
-**Status:** PLANNING
+**Active branch:** `m14/verify-agent-v-tag-ruleset-attestation`  
+**Milestone:** M14 Gate A2 — commit VERIFIED agent-v* tag ruleset attestation  
+**Status:** IMPLEMENTING
 
 ## Verified
 
-- PR #91 exact head `6c8ca2c32da00ad7f2622dce847dd2adfddbe499` passed Code Quality #377, WorkIntel CI #691, and Windows Certification #460.
-- Exact-head security reconciliation closed the admin-evidence provenance blocker: authoritative verification recollects live GitHub state and binds auditor attestation to the authenticated GitHub identity.
-- PR #91 merged with expected-head protection as protected-main commit `8ad507bb41716d32516eb199b0b27d0f6acf29d3`.
-- Resulting protected main was re-read and verified at the same merge commit.
-- PR #91 is closed/merged with 0 unresolved review threads at merge readiness.
+- Live ruleset id `23938765`, name `agent-v-release-tags`, target `tag`, enforcement `active`.
+- Include condition is exactly `refs/tags/agent-v*`; exclusions are empty.
+- Rules include update and deletion restrictions; GitHub's creation restriction is absent.
+- Bypass actors are empty and the connected user cannot bypass.
+- Live ruleset snapshot `updated_at` is `2026-09-24T17:49:27.650+05:00`.
+- Repository owner/admin explicitly confirmed at `2026-09-24T18:14:36+05:00` that creation of `agent-v*` tags is reserved to the approved owner-controlled release operator/process.
 - RB-005 remains blocked/not-authorized.
 
 ## Not Verified
 
-- Issue #62 live immutable-release, tag ruleset/creation authority, production-release environment, credential placement/least privilege, signing/notarization/publication, and real-target evidence remains external and unverified.
-- Issue #70 root cause remains unproven.
+- `production-release` environment protection and deployment policy metadata.
+- GitHub immutable Releases `enabled=true`.
+- Environment-only placement/least privilege of M14 credentials.
+- Windows organization Code Signing certificate/fingerprint match.
+- macOS Developer ID/notary material and certificate/fingerprint match.
+- Real signing, notarization, publication, and real-target evidence.
+- Issue #70 root cause.
 
 ## Known Risk
 
-- Source and CI evidence cannot by themselves prove live provider/admin/signing/publication state.
-- Archived admin-evidence packets are structural/non-authoritative; Issue #62 closure requires authoritative live evidence.
-- AI-only single-maintainer review reduces reviewer diversity; higher external/legal/contract/platform review requirements still override when applicable.
+- The tag-creation-authority fact is an administrator attestation, not a fact proved by the ruleset API.
+- Any later mutation of ruleset `23938765` changes its `updated_at` and invalidates the committed snapshot.
+- Source/CI evidence cannot substitute for remaining live environment/provider/signing evidence.
 
 ## Next Action
 
-Audit Issue #62 against main 8ad507bb41716d32516eb199b0b27d0f6acf29d3 using authoritative live external-admin evidence; verify immutable releases, agent-v* tag ruleset/creation authority, production-release protections, credential placement/least privilege, signing/notarization/publication, and real-target evidence before closure. Keep Issue #70 open and do not run RB-005 without fresh explicit authority.
+Exact-head certify and merge the Gate A2 attestation PR, then continue Issue #62 with authoritative verification of the production-release environment, immutable Releases enabled=true, environment-only credential placement, and Windows/macOS signer identity evidence. Keep Issue #70 open and do not run RB-005 without fresh explicit authority.
