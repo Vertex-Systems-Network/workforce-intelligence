@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "9e8697d6439800758a1dcd767fa2a3f0714f3065",
+  "observed_main_sha": "aa92170a992a72ad7f8fb330e5829527cff0fb77",
   "active_issue": 62,
-  "active_pr": 100,
-  "active_branch": "governance/fast-batch-execution-mode",
-  "current_milestone": "AI Engineering Governance — Fast-Batch execution mode rollout",
-  "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #99 merged at protected main 9e8697d6439800758a1dcd767fa2a3f0714f3065 with exact-head Code Quality #384, WorkIntel CI #698, and Windows Certification #467 green; Fast-Batch policy source implementation and PR #100 creation are complete.",
-  "exact_next_safe_action": "Perform one consolidated exact-head certification observation for PR #100; if required checks are terminal green and review threads are clear, merge with expected-head protection and verify resulting main. If any required check fails, inspect only the failed job and fix the smallest source/contract defect.",
+  "active_pr": 101,
+  "active_branch": "m14/issue-62-immutable-release-gate-reconcile",
+  "current_milestone": "M14 Gate B1 — immutable Releases enablement and evidence",
+  "milestone_status": "WAITING_EXTERNAL",
+  "last_completed_milestone": "Repository owner/admin confirmed immutable Releases was enabled in GitHub Settings for workforce-intelligence; this is administrator-attested and remains pending authoritative API evidence because the connected GitHub surface does not expose GET /repos/{owner}/{repo}/immutable-releases.",
+  "exact_next_safe_action": "Obtain authoritative immutable-release enabled=true evidence from the GitHub administration endpoint through an approved evidence path. Until then keep Gate B1 as admin-enabled/API-unverified. In parallel, do not fabricate Windows/Apple signer material; signer/publication/real-target closure remains blocked on real organization credentials and explicit authority.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,8 +23,10 @@
     "RB-005"
   ],
   "current_blockers": [
-    "PR #100 exact-head certification is pending; Fast-Batch is not protected-main policy until merge.",
-    "Issue #62 remains open for immutable Releases, full production-release credential/signer evidence, real signing/notarization/publication, and real-target closure.",
+    "Immutable Releases is administrator-attested enabled but not live API-verified through the current connector.",
+    "production-release environment protection/token placement is administrator-attested, not live API-verified through this connector.",
+    "Windows signing certificate/PFX/fingerprint is unavailable; Windows signing evidence cannot be completed.",
+    "Apple Developer ID/notary material/fingerprint is unavailable; macOS signing/notarization evidence cannot be completed.",
     "Issue #70 remains open; RB-005 remains not-authorized/blocked."
   ],
   "timeout_control": {
@@ -36,14 +38,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-24T14:39:12.137Z",
+  "last_reconciled_at": "2026-09-24T15:21:57.678Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "PR #100 — Fast-Batch policy exact-head certification",
-    "current_module": "AI Engineering Governance — Fast-Batch Execution",
+    "current_work": "Issue #62 Gate B1 — immutable Releases admin-enabled; API evidence pending",
+    "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
-      "percent": 83,
-      "basis": "5 of 6 rollout gates are complete: canonical policy, response cadence, next-action handoff, deterministic claims/regression coverage, and durable-state integration. Exact-head certification/merge is the remaining gate."
+      "percent": 60,
+      "basis": "Gate A is verified and immutable Releases is now administrator-attested enabled. The module remains at the existing evidence-based 60% because authoritative immutable-release/environment evidence, signer identities, publication, and real-target closure are still incomplete."
     },
     "overall_progress": {
       "percent": 100,

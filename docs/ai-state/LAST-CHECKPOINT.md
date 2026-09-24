@@ -1,36 +1,38 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `9e8697d6439800758a1dcd767fa2a3f0714f3065`  
+**Observed protected main:** `aa92170a992a72ad7f8fb330e5829527cff0fb77`  
 **Active Issue:** #62  
-**Active PR:** #100  
-**Active branch:** `governance/fast-batch-execution-mode`  
-**Milestone:** AI Engineering Governance — Fast-Batch execution mode rollout  
-**Status:** VERIFYING
+**Active PR:** #101  
+**Active branch:** `m14/issue-62-immutable-release-gate-reconcile`  
+**Milestone:** M14 Gate B1 — immutable Releases enablement and evidence  
+**Status:** WAITING_EXTERNAL
 
 ## Verified
 
-- PR #99 is merged and protected main is `9e8697d6439800758a1dcd767fa2a3f0714f3065`.
-- Fast-Batch canonical policy, user-response cadence, next-action handoff behavior, deterministic claims, and regression/audit coverage are committed on PR #100.
-- Fast-Batch keeps existing exact-head, security, authority, secrets, destructive-action, release, and Runner gates unchanged.
-- Routine substeps no longer require repeated `next`, `done`, or `...` confirmations inside an already-authorized bounded milestone.
-- One consolidated CI/status refresh remains the default; tight polling remains forbidden.
-- Issue #62 remains the active release-trust issue and Issue #70 remains open.
-- RB-005 remains blocked/not-authorized.
+- PR #100 merged at protected main `aa92170a992a72ad7f8fb330e5829527cff0fb77`; Fast-Batch is protected-main policy.
+- Gate A live tag ruleset remains unchanged and valid at ruleset `23938765`.
+- Gate A2 committed attestation is merged.
+- Repository owner/admin explicitly confirmed GitHub **Enable release immutability** was turned ON in repository Settings.
+- Issue #62 remains OPEN.
+- No release was published and no missing signer credential was fabricated.
+- RB-003/RB-004/RB-005 remain blocked/not-authorized as applicable.
 
 ## Not Verified
 
-- PR #100 exact-head Code Quality, WorkIntel CI, and Windows Certification terminal results.
-- PR #100 final review-thread cleanliness at merge time.
-- Fast-Batch protected-main activation until PR #100 merges.
-- Remaining Issue #62 external release evidence.
+- Immutable Releases `enabled=true` through the authoritative GitHub administration endpoint. The current connector rejects that endpoint, so the enablement is administrator-attested rather than API-verified.
+- production-release environment metadata/secrets/variables through live API.
+- Windows signing certificate/PFX/fingerprint evidence.
+- Apple Developer ID/notary/fingerprint evidence.
+- Real signing, notarization, publication, and real-target evidence.
 
 ## Known Risk
 
-- Fast-Batch reduces conversational fragmentation but cannot remove genuine external waits or user-owned credential/certificate dependencies.
-- A future policy edit could reintroduce micro-step prompting; deterministic claims and regression checks are intended to detect that drift.
-- Exact-head CI remains merge-blocking; Fast-Batch must not reinterpret waiting as success.
+- Administrator UI confirmation and authoritative API evidence are distinct evidence classes.
+- Immutable Releases only protect releases published after enablement.
+- Missing signer material must remain missing; placeholder/dummy credentials are forbidden.
+- Source/CI evidence cannot substitute for provider/environment/signing evidence.
 
 ## Next Action
 
-Perform one consolidated exact-head certification observation for PR #100; if required checks are terminal green and review threads are clear, merge with expected-head protection and verify resulting main. If any required check fails, inspect only the failed job and fix the smallest source/contract defect.
+Obtain authoritative immutable-release enabled=true evidence from the GitHub administration endpoint through an approved evidence path. Until then keep Gate B1 as admin-enabled/API-unverified. In parallel, do not fabricate Windows/Apple signer material; signer/publication/real-target closure remains blocked on real organization credentials and explicit authority.
