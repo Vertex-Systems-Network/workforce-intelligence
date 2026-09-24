@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "8ad507bb41716d32516eb199b0b27d0f6acf29d3",
-  "reconciled_at": "2026-09-24T12:04:38Z",
+  "observed_main_sha": "0406865ca2c13f9e8c0bf3743e97b0df57d7204f",
+  "reconciled_at": "2026-09-24T18:14:36+05:00",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "active-live-external-admin-evidence-readiness-audit"
+      "action": "gate-a-live-verified-gate-a2-attestation-pr-in-progress"
     },
     {
       "number": 70,
@@ -19,6 +19,16 @@
     }
   ],
   "pull_requests": [
+    {
+      "number": 99,
+      "title": "docs(m14): verify agent-v tag ruleset attestation",
+      "state": "open",
+      "draft": false,
+      "head_sha": "resolve-on-resume",
+      "base_sha": "0406865ca2c13f9e8c0bf3743e97b0df57d7204f",
+      "head_ref": "m14/verify-agent-v-tag-ruleset-attestation",
+      "action": "exact-head-certification-required-before-merge"
+    },
     {
       "number": 65,
       "title": "M14: rehydrated production release trust on current main",

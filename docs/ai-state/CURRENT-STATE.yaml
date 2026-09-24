@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "8ad507bb41716d32516eb199b0b27d0f6acf29d3",
+  "observed_main_sha": "0406865ca2c13f9e8c0bf3743e97b0df57d7204f",
   "active_issue": 62,
-  "active_pr": null,
-  "active_branch": "main",
-  "current_milestone": "Issue #62 live external-admin evidence readiness audit",
-  "milestone_status": "PLANNING",
-  "last_completed_milestone": "PR #91 exact head 6c8ca2c32da00ad7f2622dce847dd2adfddbe499 passed Code Quality #377, WorkIntel CI #691, and Windows Certification #460; the authenticated-provenance security blocker was closed; PR #91 merged with expected-head protection as 8ad507bb41716d32516eb199b0b27d0f6acf29d3 and resulting main was verified.",
-  "exact_next_safe_action": "Audit Issue #62 against main 8ad507bb41716d32516eb199b0b27d0f6acf29d3 using authoritative live external-admin evidence; verify immutable releases, agent-v* tag ruleset/creation authority, production-release protections, credential placement/least privilege, signing/notarization/publication, and real-target evidence before closure. Keep Issue #70 open and do not run RB-005 without fresh explicit authority.",
+  "active_pr": 99,
+  "active_branch": "m14/verify-agent-v-tag-ruleset-attestation",
+  "current_milestone": "M14 Gate A2 — commit VERIFIED agent-v* tag ruleset attestation",
+  "milestone_status": "IMPLEMENTING",
+  "last_completed_milestone": "Issue #62 Gate A live ruleset verification passed for ruleset 23938765 (agent-v-release-tags): active tag target, refs/tags/agent-v* scope, zero bypass, update/deletion restrictions, no creation restriction; owner/admin separately attested approved release-operator tag creation authority at 2026-09-24T18:14:36+05:00.",
+  "exact_next_safe_action": "Exact-head certify and merge the Gate A2 attestation PR, then continue Issue #62 with authoritative verification of the production-release environment, immutable Releases enabled=true, environment-only credential placement, and Windows/macOS signer identity evidence. Keep Issue #70 open and do not run RB-005 without fresh explicit authority.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,7 +23,7 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Issue #62 remains externally unverified: immutable GitHub Releases, the agent-v* tag ruleset/creation authority, production-release protections, credential placement/least privilege, signing/notarization/publication, and real-target evidence must be verified live before closure.",
+    "Issue #62 remaining external gates are not yet verified: production-release environment protection, immutable GitHub Releases enabled=true, environment-only release credential placement/least privilege, Windows signing identity, macOS signing/notary identity, and real signing/publication/real-target evidence.",
     "Issue #70 remains open as recurrent nondeterminism; RB-005 remains not-authorized/blocked."
   ],
   "timeout_control": {
@@ -32,14 +32,14 @@
     "rerun_on_message_delivery_timeout": false,
     "second_refresh_requires_material_transition": true
   },
-  "last_reconciled_at": "2026-09-24T12:04:38Z",
+  "last_reconciled_at": "2026-09-24T18:14:36+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Issue #62 live external-admin evidence readiness audit",
+    "current_work": "M14 Gate A2 — VERIFIED agent-v* tag ruleset attestation",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 60,
-      "basis": "PR #91 is merged and exact-head certified, including authenticated-provenance hardening for the external-admin evidence verifier. Issue #62 still requires live external configuration, credential, signing/notarization/publication, and real-target evidence."
+      "basis": "Gate A live agent-v* tag immutability is verified and the owner/admin tag-creation authority attestation is being committed. Remaining Issue #62 environment, immutable-release, credential, signer, publication, and real-target gates are still external/Not Verified."
     },
     "overall_progress": {
       "percent": 100,

@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** Issue #62 live external-admin evidence readiness audit
+- **Current Work:** M14 Gate A2 — VERIFIED agent-v* tag ruleset attestation
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [██████░░░░] **60%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** none
-- **Active Branch:** `main`
-- **Last Completed:** PR #91 exact head 6c8ca2c32da00ad7f2622dce847dd2adfddbe499 passed Code Quality #377, WorkIntel CI #691, and Windows Certification #460; the authenticated-provenance security blocker was closed; PR #91 merged with expected-head protection as 8ad507bb41716d32516eb199b0b27d0f6acf29d3 and resulting main was verified.
-- **Next Action:** Audit Issue #62 against main 8ad507bb41716d32516eb199b0b27d0f6acf29d3 using authoritative live external-admin evidence; verify immutable releases, agent-v* tag ruleset/creation authority, production-release protections, credential placement/least privilege, signing/notarization/publication, and real-target evidence before closure. Keep Issue #70 open and do not run RB-005 without fresh explicit authority.
+- **Active PR:** #99
+- **Active Branch:** `m14/verify-agent-v-tag-ruleset-attestation`
+- **Last Completed:** Issue #62 Gate A live ruleset verification passed for ruleset 23938765 (agent-v-release-tags): active tag target, refs/tags/agent-v* scope, zero bypass, update/deletion restrictions, no creation restriction; owner/admin separately attested approved release-operator tag creation authority at 2026-09-24T18:14:36+05:00.
+- **Next Action:** Exact-head certify and merge the Gate A2 attestation PR, then continue Issue #62 with authoritative verification of the production-release environment, immutable Releases enabled=true, environment-only credential placement, and Windows/macOS signer identity evidence. Keep Issue #70 open and do not run RB-005 without fresh explicit authority.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->

@@ -198,3 +198,13 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Activated Issue #62 as the next M14 lane; live immutable-release, tag-authority, environment, credential, signing/notarization/publication, and real-target evidence remains Not Verified.
 - Issue #70 remains open; RB-005 remains blocked/not-authorized and was not executed.
 - Synchronized compact state, checkpoint, coordination queue, execution journal, and README progress. M14 remains 60%; overall active release-scope modular maturity remains 100%.
+
+
+## 2026-09-24 — Issue #62 Gate A live verification + Gate A2 attestation
+
+- Verified live GitHub ruleset `23938765` (`agent-v-release-tags`) is active, targets tags, includes `refs/tags/agent-v*`, has zero bypass actors, restricts update/deletion, and omits the incompatible creation restriction.
+- Captured exact ruleset snapshot `updated_at=2026-09-24T17:49:27.650+05:00`.
+- Authenticated GitHub auditor identity is `wpessential`.
+- Repository owner/admin explicitly confirmed tag creation authority at `2026-09-24T18:14:36+05:00`: new `agent-v*` refs are reserved to the approved owner-controlled release operator/process.
+- Prepared the committed Gate A2 attestation as VERIFIED without claiming any remaining environment, immutable-release, signer, publication, or real-target gate.
+- Issue #62 remains open; Issue #70 remains open; RB-005 remains blocked/not-authorized.
