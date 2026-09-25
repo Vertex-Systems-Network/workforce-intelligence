@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "a168673e3ac38f3b7cc966945ec9a0a23b45fbb5",
-  "reconciled_at": "2026-09-25T20:45:04.674Z",
+  "observed_main_sha": "000947729360b728595c540af3a5ad1f3e52d538",
+  "reconciled_at": "2026-09-25T21:07:19.943Z",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "gate-b3-apple-signer-readiness-after-control-plane-verification"
+      "action": "external-signer-material-readiness-blocked"
     },
     {
       "number": 70,
@@ -22,22 +22,24 @@
     {
       "number": 108,
       "title": "ci(m14): add Apple signer material readiness lane",
-      "state": "open",
+      "state": "merged",
       "draft": false,
-      "head_sha": "8db3f673db92857a72be92af015e8c828791348c",
+      "head_sha": "6051ca4731eae17ff9b5567a3efd438f9cfaf179",
       "base_sha": "a168673e3ac38f3b7cc966945ec9a0a23b45fbb5",
       "head_ref": "m14/apple-signer-readiness",
-      "action": "exact-head-certification-required-before-merge"
+      "action": "completed",
+      "resulting_main_sha": "000947729360b728595c540af3a5ad1f3e52d538"
     },
     {
       "number": 104,
       "title": "ci(m14): verify production-release control plane",
-      "state": "open",
+      "state": "merged",
       "draft": false,
-      "head_sha": "resolve-on-resume",
+      "head_sha": "2c560361c983e6646e781e109a8c419a2680ed74",
       "base_sha": "2ebe299ba594707d759167a044567dcfde7bb84a",
       "head_ref": "m14/production-release-control-evidence",
-      "action": "exact-head-certification-required-before-merge"
+      "action": "completed",
+      "resulting_main_sha": "76dd6961f3db5921d2e0bff6c8c25421a23e3942"
     },
     {
       "number": 103,
