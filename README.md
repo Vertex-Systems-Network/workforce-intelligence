@@ -6,15 +6,14 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** PR #104 — production-release control-plane evidence
+- **Current Work:** Apple signer/notary readiness lane
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **65%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** #104
-- **Active Branch:** `m14/production-release-control-evidence`
-- **Last Completed:** PR #103 merged at protected main 2ebe299ba594707d759167a044567dcfde7bb84a; Gate B1 immutable Releases is archived and live API-verified.
-- **Next Action:** Exact-head certify PR #104 and merge with expected-head protection if required checks are terminal green. After merge, add repository secret WORKINTEL_M14_ADMIN_AUDIT_TOKEN with read-only Administration, Actions, Environments, Secrets, and Variables permissions for this repository, then manually dispatch M14 Production Release Control Evidence from main and approve production-release with a distinct reviewer.
+- **Active Branch:** `m14/apple-signer-readiness`
+- **Last Completed:** PR #107 merged at protected main `a168673e3ac38f3b7cc966945ec9a0a23b45fbb5`; production-release jq predicates corrected.
+- **Next Action:** Exact-head certify and merge the Apple signer readiness PR; do not run it until real Apple signer/notary material exists.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
