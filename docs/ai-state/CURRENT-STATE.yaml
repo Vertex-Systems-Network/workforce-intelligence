@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "71e9c970f7db34710dd42d0400fa772d81c30fd0",
+  "observed_main_sha": "80f07812d62f9ec70af500c6aaff8b2dac2c73de",
   "active_issue": 62,
-  "active_pr": 114,
-  "active_branch": "m14/windows-provider-compatibility-audit",
-  "current_milestone": "M14 Gate B6 — Windows public-trust provider compatibility",
-  "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #113 merged at protected main 71e9c970f7db34710dd42d0400fa772d81c30fd0; post-checklist durable state cleanup is complete.",
-  "exact_next_safe_action": "Exact-head certify PR #114 and merge with expected-head protection if required checks are terminal green. After merge, externally qualify SSL.com eSigner and DigiCert against the documented Pakistan-entity, GitHub-hosted CI, HSM custody, timestamp, signer-identity, rotation and audit-log gates before any purchase.",
+  "active_pr": null,
+  "active_branch": "main",
+  "current_milestone": "M14 Gate B7 — external provider qualification",
+  "milestone_status": "BLOCKED_EXTERNAL",
+  "last_completed_milestone": "PR #114 merged at protected main 80f07812d62f9ec70af500c6aaff8b2dac2c73de; Windows public-trust signing provider compatibility audit is now on main.",
+  "exact_next_safe_action": "Keep GitHub release controls unchanged. Externally qualify SSL.com eSigner and DigiCert against the documented Pakistan-entity, GitHub-hosted CI, HSM custody, timestamp, signer-identity, rotation and audit-log gates; do not purchase or add provider credentials until those requirements are confirmed.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -41,14 +41,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-25T23:39:08.366Z",
+  "last_reconciled_at": "2026-09-25T23:53:26.797Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "PR #114 — Windows public-trust signing provider compatibility audit",
+    "current_work": "M14 external Windows signing provider qualification",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Control-plane evidence, platform readiness lanes, credential acquisition checklist, and provider compatibility research are prepared. Real provider confirmation, signer credentials, provider-specific remote-signing integration, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
+      "basis": "Control-plane evidence, Apple/Windows readiness lanes, signer acquisition checklist, and the Windows provider compatibility audit are on main. External provider confirmation, provider-specific integration, real signer material, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
     },
     "overall_progress": {
       "percent": 100,
