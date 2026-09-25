@@ -1,0 +1,160 @@
+name: M14 Windows Signer Material Readiness Evidence
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: m14-windows-signer-readiness-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify Windows signer material readiness
+    runs-on: windows-latest
+    environment: production-release
+    permissions:
+      contents: read
+    steps:
+      - name: Require current protected-main dispatch source
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ($env:GITHUB_REF -ne 'refs/heads/main') {
+            throw 'Windows signer readiness evidence must be dispatched from refs/heads/main.'
+          }
+
+          $currentMain = gh api --method GET -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$env:GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha'
+          if ($LASTEXITCODE -ne 0) { throw 'Could not resolve protected main before Windows signer readiness verification.' }
+          if ($currentMain.Trim() -ne $env:GITHUB_SHA) {
+            throw 'Protected main moved before Windows signer readiness verification.'
+          }
+
+      - name: Verify Windows signer material without signing or timestamping
+        shell: pwsh
+        env:
+          WINDOWS_SIGNING_PFX_B64: ${{ secrets.WORKINTEL_WINDOWS_SIGNING_PFX_B64 }}
+          WINDOWS_SIGNING_PFX_PASSWORD: ${{ secrets.WORKINTEL_WINDOWS_SIGNING_PFX_PASSWORD }}
+          WINDOWS_SIGNING_CERT_SHA256: ${{ vars.WORKINTEL_WINDOWS_SIGNING_CERT_SHA256 }}
+          WINDOWS_TIMESTAMP_URL: ${{ vars.WORKINTEL_WINDOWS_TIMESTAMP_URL }}
+          EVIDENCE_PATH: ${{ runner.temp }}\m14-windows-signer-readiness-evidence.json
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:WINDOWS_SIGNING_PFX_B64)) { throw 'Windows signing certificate secret is unavailable.' }
+          if ([string]::IsNullOrWhiteSpace($env:WINDOWS_SIGNING_PFX_PASSWORD)) { throw 'Windows signing certificate password is unavailable.' }
+          if ([string]::IsNullOrWhiteSpace($env:WINDOWS_SIGNING_CERT_SHA256)) { throw 'Expected Windows signing certificate SHA-256 fingerprint is unavailable.' }
+          if ([string]::IsNullOrWhiteSpace($env:WINDOWS_TIMESTAMP_URL)) { throw 'Windows RFC3161 timestamp URL is unavailable.' }
+
+          $expectedCertificateSha256 = $env:WINDOWS_SIGNING_CERT_SHA256.Trim().ToLowerInvariant()
+          if ($expectedCertificateSha256 -notmatch '^[0-9a-f]{64}$') {
+            throw 'Expected Windows signing certificate SHA-256 fingerprint must be 64 hexadecimal characters.'
+          }
+
+          try {
+            $timestampUri = [Uri]$env:WINDOWS_TIMESTAMP_URL
+          }
+          catch {
+            throw 'Windows RFC3161 timestamp URL is not a valid absolute URI.'
+          }
+          if (-not $timestampUri.IsAbsoluteUri -or $timestampUri.Scheme -ne 'https') {
+            throw 'Windows RFC3161 timestamp URL must use HTTPS.'
+          }
+
+          $certificatePath = Join-Path $env:RUNNER_TEMP 'workintel-windows-readiness.pfx'
+          $certificateStorePath = 'Cert:\CurrentUser\My'
+          $certificateStoreBefore = @(Get-ChildItem $certificateStorePath | ForEach-Object { $_.Thumbprint })
+          $importedThumbprints = @()
+
+          try {
+            $certificateBytes = [Convert]::FromBase64String($env:WINDOWS_SIGNING_PFX_B64)
+            if ($certificateBytes.Length -le 0) { throw 'Windows signing certificate decoded to empty bytes.' }
+            [IO.File]::WriteAllBytes($certificatePath, $certificateBytes)
+
+            $securePassword = ConvertTo-SecureString $env:WINDOWS_SIGNING_PFX_PASSWORD -AsPlainText -Force
+            $importedCertificates = @(Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation $certificateStorePath -Password $securePassword -Exportable:$false)
+            if ($importedCertificates.Count -eq 0) { throw 'Windows signing certificate import failed.' }
+
+            $newCertificates = @(Get-ChildItem $certificateStorePath | Where-Object {
+              $_.Thumbprint -and $_.Thumbprint -notin $certificateStoreBefore
+            })
+            $importedThumbprints = @($newCertificates | ForEach-Object { $_.Thumbprint } | Sort-Object -Unique)
+
+            $codeSigningCandidates = @($newCertificates | Where-Object {
+              $ekuOids = @($_.EnhancedKeyUsageList | ForEach-Object { $_.ObjectId.Value })
+              $_.HasPrivateKey -and ($ekuOids -contains '1.3.6.1.5.5.7.3.3')
+            })
+            if ($codeSigningCandidates.Count -ne 1) {
+              throw "Expected exactly one newly imported Code Signing certificate with a private key; found $($codeSigningCandidates.Count)."
+            }
+
+            $certificate = $codeSigningCandidates[0]
+            if ($certificate.NotAfter.ToUniversalTime() -le [DateTime]::UtcNow) {
+              throw 'Windows Code Signing certificate is expired.'
+            }
+            if ($certificate.NotBefore.ToUniversalTime() -gt [DateTime]::UtcNow) {
+              throw 'Windows Code Signing certificate is not yet valid.'
+            }
+
+            $certificateSha256 = $certificate.GetCertHashString([System.Security.Cryptography.HashAlgorithmName]::SHA256).ToLowerInvariant()
+            if ($certificateSha256 -notmatch '^[0-9a-f]{64}$') {
+              throw 'Windows Code Signing certificate SHA-256 fingerprint could not be derived.'
+            }
+            if ($certificateSha256 -ne $expectedCertificateSha256) {
+              throw 'Imported Windows Code Signing certificate SHA-256 fingerprint does not match the approved signer identity.'
+            }
+
+            $evidence = [ordered]@{
+              schema = 'workintel.m14-windows-signer-readiness-evidence.v1'
+              evidence_type = 'protected-material-readiness'
+              repository = $env:GITHUB_REPOSITORY
+              source_sha = $env:GITHUB_SHA
+              ref = $env:GITHUB_REF
+              workflow = $env:GITHUB_WORKFLOW
+              workflow_run_id = $env:GITHUB_RUN_ID
+              workflow_run_attempt = $env:GITHUB_RUN_ATTEMPT
+              collected_at = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')
+              windows_signing_cert_sha256 = $certificateSha256
+              code_signing_candidate_count = 1
+              private_key_present = $true
+              code_signing_eku_present = $true
+              certificate_currently_valid = $true
+              timestamp_url_scheme = 'https'
+              signing_performed = $false
+              timestamp_request_performed = $false
+              publication_performed = $false
+            }
+
+            $json = $evidence | ConvertTo-Json -Depth 5
+            [IO.File]::WriteAllText($env:EVIDENCE_PATH, $json + [Environment]::NewLine)
+          }
+          finally {
+            foreach ($thumbprint in $importedThumbprints) {
+              if (-not [string]::IsNullOrWhiteSpace($thumbprint)) {
+                Remove-Item "$certificateStorePath\$thumbprint" -Force -ErrorAction SilentlyContinue
+              }
+            }
+            Remove-Item $certificatePath -Force -ErrorAction SilentlyContinue
+          }
+
+      - name: Revalidate protected main after verification
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $currentMain = gh api --method GET -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$env:GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha'
+          if ($LASTEXITCODE -ne 0) { throw 'Could not resolve protected main after Windows signer readiness verification.' }
+          if ($currentMain.Trim() -ne $env:GITHUB_SHA) {
+            throw 'Protected main moved during Windows signer readiness verification.'
+          }
+
+      - name: Upload sanitized Windows signer readiness evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: m14-windows-signer-readiness-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}\m14-windows-signer-readiness-evidence.json
+          if-no-files-found: error
+          retention-days: 14
+          overwrite: false
+          include-hidden-files: false

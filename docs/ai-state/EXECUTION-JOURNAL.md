@@ -291,3 +291,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Protected Apple signer material-readiness lane and archived Gate B production-release control evidence are now on main.
 - Reconciled PR #104 and PR #108 as merged; active PR is now none and active branch is main.
 - M14 remains externally blocked on truthful Apple/Windows signer material, actual signing/notarization, publication, and real-target evidence.
+
+
+## 2026-09-26 — Windows signer material readiness preparation
+
+- Reconciled protected main `f26ff92133c03a5118e6a4fa3c2399f22c09200b` after PR #109.
+- Added manual-only `production-release` Windows signer material-readiness lane in PR #110.
+- Lane validates PFX decode/import, one newly imported private-key Code Signing certificate, Code Signing EKU, current certificate validity, exact approved SHA-256 fingerprint, and HTTPS RFC3161 timestamp URL.
+- Lane explicitly performs no Authenticode signing, timestamp request, publication, tag mutation or Runner task execution.
+- Real organization-controlled Windows signing material remains external and was not fabricated.

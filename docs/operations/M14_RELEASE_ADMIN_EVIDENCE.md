@@ -108,6 +108,30 @@ The uploaded evidence is sanitized and contains only source/run metadata, the ma
 
 A successful readiness run proves **material readiness only**. It does not satisfy the later requirement for an actual Developer ID signature, an Apple `notarytool` `Accepted` result, or published immutable release evidence.
 
+## Windows signer material readiness gate
+
+Before real Windows Authenticode signing is attempted, the repository provides a protected manual readiness lane:
+
+`.github/workflows/m14-windows-signer-readiness-evidence.yml`
+
+It must be dispatched from protected `main` and uses the `production-release` environment. It validates the exact Windows signer material contract without signing an artifact, requesting an RFC3161 timestamp, publishing a release, or mutating a tag.
+
+Required **production-release environment secrets**:
+
+- `WORKINTEL_WINDOWS_SIGNING_PFX_B64`
+- `WORKINTEL_WINDOWS_SIGNING_PFX_PASSWORD`
+
+Required **production-release environment variables**:
+
+- `WORKINTEL_WINDOWS_SIGNING_CERT_SHA256` — the approved 64-hex SHA-256 fingerprint of the organization-controlled Code Signing certificate.
+- `WORKINTEL_WINDOWS_TIMESTAMP_URL` — the approved HTTPS RFC3161 timestamp endpoint.
+
+The readiness workflow decodes the PFX only into a runner-temporary file, imports it non-exportably into the current-user certificate store, identifies certificates newly introduced by that import, requires exactly one certificate with a private key and Code Signing EKU `1.3.6.1.5.5.7.3.3`, requires the certificate to be currently valid, derives and matches its SHA-256 fingerprint, validates that the timestamp URL is absolute HTTPS, then removes the imported certificate(s) and temporary PFX.
+
+The uploaded evidence is sanitized and contains only source/run metadata, the matched certificate fingerprint, readiness booleans/counts, and explicit `signing_performed=false`, `timestamp_request_performed=false`, `publication_performed=false`.
+
+A successful readiness run proves **material readiness only**. It does not satisfy the later requirement for an actual Authenticode signature, successful RFC3161 timestamp verification, or published immutable release evidence.
+
 ## API snapshots
 
 Collect these read-only GitHub API responses with a dedicated administrator/auditor credential.
