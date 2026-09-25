@@ -11,6 +11,7 @@ const workflow = read('.github/workflows/desktop-agent-trusted-release.yml')
 const immutableEvidenceWorkflow = read('.github/workflows/m14-immutable-release-evidence.yml')
 const productionReleaseControlEvidenceWorkflow = read('.github/workflows/m14-production-release-control-evidence.yml')
 const appleSignerReadinessWorkflow = read('.github/workflows/m14-apple-signer-readiness-evidence.yml')
+const windowsSignerReadinessWorkflow = read('.github/workflows/m14-windows-signer-readiness-evidence.yml')
 const receiptTool = 'tools/release-trust-receipt.mjs'
 
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex')
@@ -779,4 +780,42 @@ test('M14 Apple signer readiness lane validates protected material without signi
     'gh release edit',
     'git push',
   ]) assert.ok(!appleSignerReadinessWorkflow.includes(forbidden), forbidden)
+})
+
+
+test('M14 Windows signer readiness lane validates protected material without signing or timestamping', () => {
+  for (const token of [
+    'workflow_dispatch:',
+    'permissions:\n  contents: read',
+    'runs-on: windows-latest',
+    'environment: production-release',
+    'WORKINTEL_WINDOWS_SIGNING_PFX_B64',
+    'WORKINTEL_WINDOWS_SIGNING_PFX_PASSWORD',
+    'WORKINTEL_WINDOWS_SIGNING_CERT_SHA256',
+    'WORKINTEL_WINDOWS_TIMESTAMP_URL',
+    "1.3.6.1.5.5.7.3.3",
+    '$_.HasPrivateKey',
+    'Expected exactly one newly imported Code Signing certificate with a private key',
+    'Windows RFC3161 timestamp URL must use HTTPS.',
+    'Imported Windows Code Signing certificate SHA-256 fingerprint does not match the approved signer identity.',
+    'workintel.m14-windows-signer-readiness-evidence.v1',
+    'signing_performed = $false',
+    'timestamp_request_performed = $false',
+    'publication_performed = $false',
+    'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a',
+  ]) assert.ok(windowsSignerReadinessWorkflow.includes(token), token)
+
+  for (const forbidden of [
+    'pull_request:',
+    'push:',
+    'contents: write',
+    'id-token: write',
+    'self-hosted',
+    'signtool.exe',
+    ' /tr ',
+    'Authenticode signing failed',
+    'gh release create',
+    'gh release edit',
+    'git push',
+  ]) assert.ok(!windowsSignerReadinessWorkflow.includes(forbidden), forbidden)
 })
