@@ -1,32 +1,30 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `924a36fd4b705c049e191eea200902e310f112ea`  
+**Observed protected main:** `71e9c970f7db34710dd42d0400fa772d81c30fd0`  
 **Active Issue:** #62  
-**Active PR:** none  
-**Active branch:** `main`  
-**Milestone:** M14 Gate B6 — external signer material acquisition and Windows provider selection  
-**Status:** BLOCKED_EXTERNAL
+**Active PR:** #114  
+**Active branch:** `m14/windows-provider-compatibility-audit`  
+**Milestone:** M14 Gate B6 — Windows public-trust provider compatibility  
+**Status:** VERIFYING
 
-## Completed
+## Audited
 
-- PR #112 exact head `1d093ea793949cb6fcf05429f89ee96550f42374` passed WorkIntel CI #750, Code Quality #436, Windows Certification #519, with zero unresolved review threads.
-- PR #112 merged with expected-head protection to protected main `924a36fd4b705c049e191eea200902e310f112ea`.
-- Signer credential acquisition and `production-release` placement checklist is now on `main`.
-- Apple credential acquisition is aligned with the existing protected P12 + Team API-key readiness lane.
-- Windows public-trust acquisition now has an explicit HSM/cloud-signing compatibility gate; the existing PFX lane must not be populated for public trust without provider-policy proof.
+- PR #114 adds `docs/operations/M14_WINDOWS_PROVIDER_COMPATIBILITY_AUDIT.md`.
+- SSL.com eSigner is the first provider to qualify based on explicit Pakistan country support, managed HSM custody, Authenticode and GitHub Actions support.
+- DigiCert KeyLocker / Software Trust Manager is the enterprise fallback with current GitHub Binary Signing integration.
+- Sectigo supports compliant customer-controlled HSM options but requires more integration work.
+- GlobalSign remains a viable HSM alternative pending explicit Pakistan and GitHub-hosted automation confirmation.
+- Public-trust Windows private signing keys remain prohibited from being treated as portable GitHub PFX secrets.
 
-## Still Blocked / Not Verified
+## Still Not Verified
 
-- Real Apple Developer ID/notary material.
-- Real Windows public-trust provider/material.
-- Provider-specific Windows remote-signing integration.
-- Successful live Apple or Windows readiness evidence.
-- Actual Authenticode signing/timestamp verification.
-- Actual Developer ID signing and Apple notarization Accepted evidence.
-- Immutable release publication and real-target production evidence.
-- Issue #70 remains open; RB-005 remains not-authorized/blocked.
+- Provider written confirmation for the actual WorkIntel legal entity.
+- Final provider commercial terms and onboarding eligibility.
+- Provider-specific GitHub authentication/rotation/audit-log contract.
+- Provider-specific remote-signing integration.
+- Real signer material, signing/timestamp verification, publication, and real-target evidence.
 
 ## Next Action
 
-Keep existing GitHub control-plane settings unchanged. Acquire Apple credentials through the organization account; for Windows public trust, select and verify a CA/B-compliant HSM/cloud signing provider before adding any Windows signing credentials or changing the trusted release workflow.
+Exact-head certify PR #114 and merge with expected-head protection if required checks are terminal green. After merge, externally qualify SSL.com eSigner and DigiCert against the documented Pakistan-entity, GitHub-hosted CI, HSM custody, timestamp, signer-identity, rotation and audit-log gates before any purchase.

@@ -329,3 +329,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Apple path remains compatible with the protected P12 + Team API-key readiness lane.
 - Windows public-trust path remains blocked on selecting a CA/B-compliant HSM/cloud signing provider and a provider-specific remote-signing integration.
 - No credential, signing, notarization, publication, provider purchase or Runner task was executed.
+
+
+## 2026-09-26 — Windows public-trust provider compatibility audit
+
+- Reconciled protected main `71e9c970f7db34710dd42d0400fa772d81c30fd0`.
+- Added PR #114 with current official-provider evidence for SSL.com, DigiCert, Sectigo and GlobalSign.
+- SSL.com eSigner is first external qualification target; DigiCert is the enterprise fallback.
+- Public-trust Windows PFX secret placement remains blocked until a provider-specific compliant remote-signing contract is selected.
+- No provider purchase, credential placement, signing, timestamp request, publication or Runner execution occurred.
