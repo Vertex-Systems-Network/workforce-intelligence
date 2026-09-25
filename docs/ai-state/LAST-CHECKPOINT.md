@@ -3,25 +3,30 @@
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
 **Observed protected main:** `a168673e3ac38f3b7cc966945ec9a0a23b45fbb5`  
 **Active Issue:** #62  
+**Active PR:** #108  
 **Active branch:** `m14/apple-signer-readiness`  
 **Milestone:** M14 Gate B3 — Apple signer/notary material readiness  
-**Status:** IMPLEMENTING
+**Status:** VERIFYING
 
-## Verified
+## Newly Verified
 
-- Gate A remains verified.
-- Gate B1 immutable Releases remains live API-verified.
-- PR #107 merged at protected main `a168673e3ac38f3b7cc966945ec9a0a23b45fbb5`.
-- Existing trusted release workflow already fail-closes on missing/mismatched Apple Developer ID and notary material.
-- The new readiness lane validates Apple material without signing, notarizing, publishing, or mutating tags.
+- `M14 Production Release Control Evidence` run `36176653160` / attempt 1 completed successfully on protected main `a168673e3ac38f3b7cc966945ec9a0a23b45fbb5`.
+- Immutable Releases is enabled.
+- `production-release` exposes required reviewers with `prevent_self_review=true`.
+- No wait timer is configured.
+- Custom deployment policies are enabled and the exact policy names are `main` and `agent-v*`.
+- Environment secret scope contains `WORKINTEL_RELEASE_POLICY_READ_TOKEN` only.
+- Repository secret scope contains `WORKINTEL_M14_ADMIN_AUDIT_TOKEN` only.
+- Environment and repository M14 variables are empty at this pre-signer stage.
+- Sanitized evidence is archived under `docs/operations/evidence/M14_PRODUCTION_RELEASE_CONTROL_EVIDENCE.*`.
 
-## Not Verified
+## Still Not Verified
 
-- Real Apple Developer ID P12/password/signing identity.
-- Approved Apple Developer ID leaf certificate SHA-256 fingerprint.
-- Apple notary API key P8/key ID/issuer ID.
-- Actual Developer ID signing, Apple notarization Accepted evidence, publication, and real-target evidence.
+- GitHub facts that remain administrator-attested rather than API-proven: admin-bypass posture, `main` as branch policy type, `agent-v*` as tag policy type, and release-policy-token least privilege.
+- Real Apple Developer ID / notary material.
+- Real Windows signing material.
+- Actual signing, notarization, publication, and real-target evidence.
 
 ## Next Action
 
-Open and exact-head certify the Apple signer readiness PR; merge only if required checks are terminal green. Do not run the readiness workflow until real organization-controlled Apple material exists in `production-release`.
+Exact-head certify PR #108 and merge with expected-head protection if required checks are terminal green. After merge, do not run Apple signer readiness until real organization-controlled Apple Developer ID P12, approved certificate fingerprint, signing identity, and Apple notary API key material exist in production-release.
