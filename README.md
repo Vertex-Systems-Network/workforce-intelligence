@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 external signer material acquisition and Windows provider selection
+- **Current Work:** PR #114 — Windows public-trust signing provider compatibility audit
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** none
-- **Active Branch:** `main`
-- **Last Completed:** PR #112 merged at protected main 924a36fd4b705c049e191eea200902e310f112ea; signer credential acquisition and production-release placement checklist is now on main.
-- **Next Action:** Keep existing GitHub control-plane settings unchanged. Acquire Apple credentials through the organization account; for Windows public trust, select and verify a CA/B-compliant HSM/cloud signing provider before adding any Windows signing credentials or changing the trusted release workflow.
+- **Active PR:** #114
+- **Active Branch:** `m14/windows-provider-compatibility-audit`
+- **Last Completed:** PR #113 merged at protected main 71e9c970f7db34710dd42d0400fa772d81c30fd0; post-checklist durable state cleanup is complete.
+- **Next Action:** Exact-head certify PR #114 and merge with expected-head protection if required checks are terminal green. After merge, externally qualify SSL.com eSigner and DigiCert against the documented Pakistan-entity, GitHub-hosted CI, HSM custody, timestamp, signer-identity, rotation and audit-log gates before any purchase.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
