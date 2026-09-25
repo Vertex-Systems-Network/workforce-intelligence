@@ -338,3 +338,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - SSL.com eSigner is first external qualification target; DigiCert is the enterprise fallback.
 - Public-trust Windows PFX secret placement remains blocked until a provider-specific compliant remote-signing contract is selected.
 - No provider purchase, credential placement, signing, timestamp request, publication or Runner execution occurred.
+
+
+## 2026-09-26 — PR #114 merged and provider audit finalized
+
+- PR #114 exact head `917f8744e1f4573649d351fbdc048bd8a0cb1cbe` passed WorkIntel CI #759, Code Quality #445, Windows Certification #528, with zero unresolved review threads.
+- Merged with expected-head protection to protected main `80f07812d62f9ec70af500c6aaff8b2dac2c73de`.
+- Windows public-trust provider compatibility audit is now on main.
+- SSL.com eSigner remains first external qualification target; DigiCert remains enterprise fallback.
+- No provider purchase, credential placement, signing, timestamp request, publication or Runner execution occurred.
