@@ -81,6 +81,33 @@ The workflow uses a separate **repository secret** named `WORKINTEL_M14_ADMIN_AU
 
 After this workflow is merged to protected `main`, manually dispatch it from `main`. The `production-release` reviewer gate still applies to the evidence job.
 
+## Apple signer material readiness gate
+
+Before real macOS signing/notarization is attempted, the repository provides a protected manual readiness lane:
+
+`.github/workflows/m14-apple-signer-readiness-evidence.yml`
+
+It must be dispatched from protected `main` and uses the `production-release` environment. It validates the exact Apple material contract without signing an artifact, contacting Apple notarization, publishing a release, or mutating a tag.
+
+Required **production-release environment secrets**:
+
+- `WORKINTEL_APPLE_DEVELOPER_ID_P12_B64`
+- `WORKINTEL_APPLE_DEVELOPER_ID_P12_PASSWORD`
+- `WORKINTEL_APPLE_SIGNING_IDENTITY`
+- `WORKINTEL_APPLE_NOTARY_KEY_P8_B64`
+- `WORKINTEL_APPLE_NOTARY_KEY_ID`
+- `WORKINTEL_APPLE_NOTARY_ISSUER_ID`
+
+Required **production-release environment variable**:
+
+- `WORKINTEL_APPLE_SIGNING_CERT_SHA256` — the approved 64-hex SHA-256 fingerprint of the organization-controlled Developer ID leaf certificate.
+
+The readiness workflow decodes material only into runner-temporary files, extracts exactly one leaf certificate from the P12, derives and matches its SHA-256 fingerprint, imports the P12 into a temporary keychain, requires exactly one matching Code Signing identity, and verifies that the notary P8 is a parseable private key. Cleanup removes the temporary keychain and files.
+
+The uploaded evidence is sanitized and contains only source/run metadata, the matched certificate fingerprint, boolean/count readiness results, and explicit `signing_performed=false`, `notarization_performed=false`, `publication_performed=false`.
+
+A successful readiness run proves **material readiness only**. It does not satisfy the later requirement for an actual Developer ID signature, an Apple `notarytool` `Accepted` result, or published immutable release evidence.
+
 ## API snapshots
 
 Collect these read-only GitHub API responses with a dedicated administrator/auditor credential.
