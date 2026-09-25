@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "2ebe299ba594707d759167a044567dcfde7bb84a",
+  "observed_main_sha": "a168673e3ac38f3b7cc966945ec9a0a23b45fbb5",
   "active_issue": 62,
-  "active_pr": 104,
-  "active_branch": "m14/production-release-control-evidence",
-  "current_milestone": "M14 Gate B — production-release control-plane evidence",
-  "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #103 merged at protected main 2ebe299ba594707d759167a044567dcfde7bb84a; Gate B1 immutable Releases is archived and live API-verified.",
-  "exact_next_safe_action": "Exact-head certify PR #104 and merge with expected-head protection if required checks are terminal green. After merge, add repository secret WORKINTEL_M14_ADMIN_AUDIT_TOKEN with read-only Administration, Actions, Environments, Secrets, and Variables permissions for this repository, then manually dispatch M14 Production Release Control Evidence from main and approve production-release with a distinct reviewer.",
+  "active_pr": null,
+  "active_branch": "m14/apple-signer-readiness",
+  "current_milestone": "M14 Gate B3 — Apple signer/notary material readiness",
+  "milestone_status": "IMPLEMENTING",
+  "last_completed_milestone": "PR #107 merged at protected main a168673e3ac38f3b7cc966945ec9a0a23b45fbb5; production-release evidence jq predicates corrected while current secret placement remains valid.",
+  "exact_next_safe_action": "Open and exact-head certify the Apple signer readiness PR; merge only if required checks are terminal green. Do not run the readiness workflow until real organization-controlled Apple Developer ID P12, approved certificate fingerprint, signing identity, and Apple notary API key material exist in production-release.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,11 +23,10 @@
     "RB-005"
   ],
   "current_blockers": [
-    "PR #104 must merge before the production-release control evidence workflow is trusted on protected main.",
-    "A separate repository-scoped WORKINTEL_M14_ADMIN_AUDIT_TOKEN is not yet confirmed; the evidence run cannot succeed until it exists with the documented read-only permissions.",
-    "Administrator-bypass posture, main=branch policy type, agent-v*=tag policy type, and release-policy-token least privilege remain administrator-attested where GitHub read APIs do not prove them directly.",
-    "Windows signing certificate/PFX/fingerprint is unavailable; Windows signing evidence cannot be completed.",
-    "Apple Developer ID/notary material/fingerprint is unavailable; macOS signing/notarization evidence cannot be completed.",
+    "Apple Developer ID P12/password/signing identity are unavailable; Apple signer readiness cannot be live-verified yet.",
+    "Apple notary API key P8/key ID/issuer ID are unavailable; notarization readiness cannot be live-verified yet.",
+    "WORKINTEL_APPLE_SIGNING_CERT_SHA256 cannot be truthfully configured until the approved organization Developer ID leaf certificate is available.",
+    "Windows signing certificate/PFX/fingerprint remains unavailable.",
     "Real signing, notarization, release publication, and real-target evidence remain incomplete.",
     "Issue #70 remains open; RB-005 remains not-authorized/blocked."
   ],
@@ -40,14 +39,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-24T22:21:23.722Z",
+  "last_reconciled_at": "2026-09-25T19:04:03.970Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "PR #104 — production-release control-plane evidence",
+    "current_work": "Apple signer/notary readiness lane",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 65,
-      "basis": "Gate A and Gate B1 are verified. PR #104 adds independent live evidence for the production-release control plane, but that evidence is not complete until the workflow merges and runs successfully; signer/publication/real-target gates remain incomplete."
+      "basis": "Gate A and Gate B1 are verified; control-plane remediation is in progress, and the Apple signer material readiness lane is being prepared. No real Apple signer/notary material has been supplied or verified."
     },
     "overall_progress": {
       "percent": 100,
