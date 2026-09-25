@@ -147,7 +147,8 @@ jobs:
             and ([.[].secrets[]] as $items
               | .[0].total_count == ($items | length)
               and (($items | map(.name) | index("WORKINTEL_M14_ADMIN_AUDIT_TOKEN")) != null)
-              and all($release_secrets[] as $required; ($items | map(.name) | index($required)) == null))
+              and (($items | map(.name)) as $names
+                | all($release_secrets[]; . as $required | ($names | index($required)) == null)))
           ' "$tmp/repository-secrets.jsons" >/dev/null; then
             echo 'FAIL repository secret isolation: admin-audit token must exist here and release/signing secret names must not.'
             exit 1
@@ -165,7 +166,8 @@ jobs:
             ([.[].total_count] | unique | length) == 1
             and ([.[].variables[]] as $items
               | .[0].total_count == ($items | length)
-              and all($release_variables[] as $required; ($items | map(.name) | index($required)) == null))
+              and (($items | map(.name)) as $names
+                | all($release_variables[]; . as $required | ($names | index($required)) == null)))
           ' "$tmp/repository-variables.jsons" >/dev/null; then
             echo 'FAIL repository variable isolation: M14 signer/timestamp variables must not exist at repository scope.'
             exit 1
