@@ -309,3 +309,13 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Both Apple and Windows protected signer-material readiness lanes are now on main.
 - No real signer credential was fabricated, committed, or used; live material readiness remains externally blocked.
 - Active PR is cleared and active branch returns to `main`.
+
+
+## 2026-09-26 — signer credential acquisition checklist
+
+- Reconciled protected main `29f95ddc1d75f74c5241231a6eaecfdd868c7144`.
+- Added PR #112 with exact Apple credential acquisition and GitHub `production-release` placement steps.
+- Recorded the 2026 CA/B Forum requirement that publicly trusted Windows Code Signing subscriber private keys remain protected by compliant HSM/cloud/signing-service controls.
+- Prevented the existing Windows PFX lane from being treated as a valid public-trust credential-placement path without provider-policy proof.
+- Added a provider-selection compatibility gate before any Windows purchase or credential placement.
+- No real credential, signing, notarization, publication or Runner task was executed.
