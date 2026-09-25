@@ -300,3 +300,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Lane validates PFX decode/import, one newly imported private-key Code Signing certificate, Code Signing EKU, current certificate validity, exact approved SHA-256 fingerprint, and HTTPS RFC3161 timestamp URL.
 - Lane explicitly performs no Authenticode signing, timestamp request, publication, tag mutation or Runner task execution.
 - Real organization-controlled Windows signing material remains external and was not fabricated.
+
+
+## 2026-09-26 — PR #110 merged and Windows readiness source completed
+
+- PR #110 exact head `756e6406be34c2ef94078731fd283ce2ac1ac68e` passed WorkIntel CI #741, Code Quality #427, Windows Certification #510, with zero unresolved review threads.
+- Merged with expected-head protection to protected main `a45a285c0c2243d7dc68e43b9b26ac019e9ac064`.
+- Both Apple and Windows protected signer-material readiness lanes are now on main.
+- No real signer credential was fabricated, committed, or used; live material readiness remains externally blocked.
+- Active PR is cleared and active branch returns to `main`.
