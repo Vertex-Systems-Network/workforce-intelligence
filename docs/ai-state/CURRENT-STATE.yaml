@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "924a36fd4b705c049e191eea200902e310f112ea",
+  "observed_main_sha": "71e9c970f7db34710dd42d0400fa772d81c30fd0",
   "active_issue": 62,
-  "active_pr": null,
-  "active_branch": "main",
-  "current_milestone": "M14 Gate B6 — external signer material acquisition and Windows provider selection",
-  "milestone_status": "BLOCKED_EXTERNAL",
-  "last_completed_milestone": "PR #112 merged at protected main 924a36fd4b705c049e191eea200902e310f112ea; signer credential acquisition and production-release placement checklist is now on main.",
-  "exact_next_safe_action": "Keep existing GitHub control-plane settings unchanged. Acquire Apple credentials through the organization account; for Windows public trust, select and verify a CA/B-compliant HSM/cloud signing provider before adding any Windows signing credentials or changing the trusted release workflow.",
+  "active_pr": 114,
+  "active_branch": "m14/windows-provider-compatibility-audit",
+  "current_milestone": "M14 Gate B6 — Windows public-trust provider compatibility",
+  "milestone_status": "VERIFYING",
+  "last_completed_milestone": "PR #113 merged at protected main 71e9c970f7db34710dd42d0400fa772d81c30fd0; post-checklist durable state cleanup is complete.",
+  "exact_next_safe_action": "Exact-head certify PR #114 and merge with expected-head protection if required checks are terminal green. After merge, externally qualify SSL.com eSigner and DigiCert against the documented Pakistan-entity, GitHub-hosted CI, HSM custody, timestamp, signer-identity, rotation and audit-log gates before any purchase.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -41,14 +41,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-25T23:00:06.186Z",
+  "last_reconciled_at": "2026-09-25T23:39:08.366Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 external signer material acquisition and Windows provider selection",
+    "current_work": "PR #114 — Windows public-trust signing provider compatibility audit",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Control-plane evidence, Apple/Windows readiness lanes, and the signer credential acquisition/placement checklist are on main. Real signer material, live readiness evidence, provider-specific Windows remote-signing integration, actual signing/notarization, publication, and real-target evidence remain incomplete."
+      "basis": "Control-plane evidence, platform readiness lanes, credential acquisition checklist, and provider compatibility research are prepared. Real provider confirmation, signer credentials, provider-specific remote-signing integration, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
     },
     "overall_progress": {
       "percent": 100,
