@@ -11,9 +11,10 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Module Progress:** [███████░░░] **65%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
+- **Active PR:** #108
 - **Active Branch:** `m14/apple-signer-readiness`
-- **Last Completed:** PR #107 merged at protected main `a168673e3ac38f3b7cc966945ec9a0a23b45fbb5`; production-release jq predicates corrected.
-- **Next Action:** Exact-head certify and merge the Apple signer readiness PR; do not run it until real Apple signer/notary material exists.
+- **Last Completed:** PR #107 merged at protected main a168673e3ac38f3b7cc966945ec9a0a23b45fbb5; production-release evidence jq predicates corrected while current secret placement remains valid.
+- **Next Action:** Exact-head certify PR #108 and merge with expected-head protection if required checks are terminal green. After merge, do not run Apple signer readiness until real organization-controlled Apple Developer ID P12, approved certificate fingerprint, signing identity, and Apple notary API key material exist in production-release.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
