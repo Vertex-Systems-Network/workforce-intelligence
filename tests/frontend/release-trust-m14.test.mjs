@@ -708,6 +708,16 @@ test('M14 production-release control evidence lane is read-only, main-bound and 
     'FAIL deployment policies: expected exactly main and agent-v*.',
   ]) assert.ok(productionReleaseControlEvidenceWorkflow.includes(token), token)
 
+  for (const token of [
+    'all($release_secrets[]; . as $required | ($names | index($required)) == null)',
+    'all($release_variables[]; . as $required | ($names | index($required)) == null)',
+  ]) assert.ok(productionReleaseControlEvidenceWorkflow.includes(token), token)
+
+  for (const invalid of [
+    'all($release_secrets[] as $required;',
+    'all($release_variables[] as $required;',
+  ]) assert.ok(!productionReleaseControlEvidenceWorkflow.includes(invalid), invalid)
+
   for (const forbidden of [
     'pull_request:',
     'push:',
