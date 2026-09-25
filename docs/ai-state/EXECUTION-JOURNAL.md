@@ -282,3 +282,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Live API evidence confirms immutable Releases enabled, required reviewers with self-review prevention, no wait timer, custom deployment policies `main` + `agent-v*`, release-policy token at environment scope, and audit token at repository scope.
 - Sanitized evidence archived at `docs/operations/evidence/M14_PRODUCTION_RELEASE_CONTROL_EVIDENCE.json` and companion Markdown.
 - This verifies the independent control-plane subset only; signer material, actual signing/notarization, publication, real-target evidence, and administrator-attested-only facts remain open.
+
+
+## 2026-09-26 — PR #108 merged and post-merge state reconciled
+
+- PR #108 `ci(m14): add Apple signer material readiness lane` exact-head `6051ca4731eae17ff9b5567a3efd438f9cfaf179` passed WorkIntel CI #732, Code Quality #418, Windows Certification #501, with zero unresolved review threads.
+- Merged with expected-head protection to protected main `000947729360b728595c540af3a5ad1f3e52d538`.
+- Protected Apple signer material-readiness lane and archived Gate B production-release control evidence are now on main.
+- Reconciled PR #104 and PR #108 as merged; active PR is now none and active branch is main.
+- M14 remains externally blocked on truthful Apple/Windows signer material, actual signing/notarization, publication, and real-target evidence.
