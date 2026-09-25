@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "000947729360b728595c540af3a5ad1f3e52d538",
+  "observed_main_sha": "f26ff92133c03a5118e6a4fa3c2399f22c09200b",
   "active_issue": 62,
-  "active_pr": null,
-  "active_branch": "main",
-  "current_milestone": "M14 Gate B3 — external signer material acquisition and readiness",
-  "milestone_status": "BLOCKED_EXTERNAL",
-  "last_completed_milestone": "PR #108 merged at protected main 000947729360b728595c540af3a5ad1f3e52d538; Apple signer readiness lane and archived Gate B production-release control evidence are now on main.",
-  "exact_next_safe_action": "Keep GitHub control-plane settings unchanged. Obtain real organization-controlled Apple Developer ID/notary material or prepare the Windows signer-readiness lane; do not run Apple signer readiness or claim signing/notarization until truthful external credentials exist.",
+  "active_pr": 110,
+  "active_branch": "m14/windows-signer-readiness",
+  "current_milestone": "M14 Gate B4 — Windows signer material readiness",
+  "milestone_status": "VERIFYING",
+  "last_completed_milestone": "PR #109 merged at protected main f26ff92133c03a5118e6a4fa3c2399f22c09200b; durable state and README were reconciled after the Apple readiness merge.",
+  "exact_next_safe_action": "Exact-head certify PR #110 and merge with expected-head protection if required checks are terminal green. After merge, do not run Windows signer readiness until real organization-controlled PFX/password, approved certificate SHA-256 fingerprint, and HTTPS RFC3161 timestamp URL exist in production-release.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,10 +23,11 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Apple Developer ID P12/password/signing identity are unavailable; Apple signer readiness cannot be live-verified yet.",
-    "Apple notary API key P8/key ID/issuer ID are unavailable; notarization readiness cannot be live-verified yet.",
-    "WORKINTEL_APPLE_SIGNING_CERT_SHA256 cannot be truthfully configured until the approved organization Developer ID leaf certificate is available.",
-    "Windows signing certificate/PFX/fingerprint remains unavailable.",
+    "Windows signing certificate/PFX/password is unavailable; Windows signer readiness cannot be live-verified yet.",
+    "WORKINTEL_WINDOWS_SIGNING_CERT_SHA256 cannot be truthfully configured until the approved organization Code Signing certificate is available.",
+    "WORKINTEL_WINDOWS_TIMESTAMP_URL must be the approved HTTPS RFC3161 endpoint before Windows readiness can run.",
+    "Apple Developer ID P12/password/signing identity remain unavailable.",
+    "Apple notary API key P8/key ID/issuer ID remain unavailable.",
     "Administrator-bypass posture, main=branch policy type, agent-v*=tag policy type, and release-policy-token least privilege remain administrator-attested where GitHub read APIs do not prove them directly.",
     "Real signing, notarization, release publication, and real-target evidence remain incomplete.",
     "Issue #70 remains open; RB-005 remains not-authorized/blocked."
@@ -40,14 +41,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-25T21:07:19.943Z",
+  "last_reconciled_at": "2026-09-25T21:39:17.629Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 external signer material readiness after PR #108 merge",
+    "current_work": "PR #110 — Windows signer material readiness",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Gate A, Gate B1 immutable Releases, and the independent Gate B production-release control plane are live API-verified. PR #108 added the protected Apple material-readiness lane, but real Apple/Windows signer material, actual signing/notarization, publication, and real-target evidence remain incomplete."
+      "basis": "Gate A, Gate B1 immutable Releases, and the independent Gate B production-release control plane are live API-verified. Apple readiness is on main and PR #110 prepares Windows material readiness, but real Apple/Windows signer material, actual signing/notarization, publication, and real-target evidence remain incomplete."
     },
     "overall_progress": {
       "percent": 100,
