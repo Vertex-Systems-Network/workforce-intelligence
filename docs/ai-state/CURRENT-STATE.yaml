@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "a168673e3ac38f3b7cc966945ec9a0a23b45fbb5",
+  "observed_main_sha": "000947729360b728595c540af3a5ad1f3e52d538",
   "active_issue": 62,
-  "active_pr": 108,
-  "active_branch": "m14/apple-signer-readiness",
-  "current_milestone": "M14 Gate B3 — Apple signer/notary material readiness",
-  "milestone_status": "VERIFYING",
-  "last_completed_milestone": "Gate B production-release control plane live API-verified by workflow run 36176653160 on protected main a168673e3ac38f3b7cc966945ec9a0a23b45fbb5 and archived in docs/operations/evidence.",
-  "exact_next_safe_action": "Exact-head certify PR #108 and merge with expected-head protection if required checks are terminal green. After merge, do not run Apple signer readiness until real organization-controlled Apple Developer ID P12, approved certificate fingerprint, signing identity, and Apple notary API key material exist in production-release.",
+  "active_pr": null,
+  "active_branch": "main",
+  "current_milestone": "M14 Gate B3 — external signer material acquisition and readiness",
+  "milestone_status": "BLOCKED_EXTERNAL",
+  "last_completed_milestone": "PR #108 merged at protected main 000947729360b728595c540af3a5ad1f3e52d538; Apple signer readiness lane and archived Gate B production-release control evidence are now on main.",
+  "exact_next_safe_action": "Keep GitHub control-plane settings unchanged. Obtain real organization-controlled Apple Developer ID/notary material or prepare the Windows signer-readiness lane; do not run Apple signer readiness or claim signing/notarization until truthful external credentials exist.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -40,14 +40,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-25T20:45:04.674Z",
+  "last_reconciled_at": "2026-09-25T21:07:19.943Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "PR #108 — Apple signer/notary readiness; Gate B control plane verified",
+    "current_work": "M14 external signer material readiness after PR #108 merge",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Gate A, Gate B1 immutable Releases, and the independent Gate B production-release control plane are live API-verified. Apple/Windows signer material, actual signing/notarization, publication, and real-target evidence remain incomplete."
+      "basis": "Gate A, Gate B1 immutable Releases, and the independent Gate B production-release control plane are live API-verified. PR #108 added the protected Apple material-readiness lane, but real Apple/Windows signer material, actual signing/notarization, publication, and real-target evidence remain incomplete."
     },
     "overall_progress": {
       "percent": 100,
