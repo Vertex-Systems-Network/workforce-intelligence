@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "29f95ddc1d75f74c5241231a6eaecfdd868c7144",
-  "reconciled_at": "2026-09-25T22:38:33.282Z",
+  "observed_main_sha": "924a36fd4b705c049e191eea200902e310f112ea",
+  "reconciled_at": "2026-09-25T23:00:06.186Z",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "signer-credential-acquisition-and-provider-compatibility"
+      "action": "external-signer-material-acquisition-and-windows-provider-selection"
     },
     {
       "number": 70,
@@ -22,12 +22,13 @@
     {
       "number": 112,
       "title": "docs(m14): add signer credential acquisition checklist",
-      "state": "open",
+      "state": "merged",
       "draft": false,
-      "head_sha": "resolve-on-resume",
+      "head_sha": "1d093ea793949cb6fcf05429f89ee96550f42374",
       "base_sha": "29f95ddc1d75f74c5241231a6eaecfdd868c7144",
       "head_ref": "m14/signer-credential-acquisition-checklist",
-      "action": "exact-head-certification-required-before-merge"
+      "action": "completed",
+      "resulting_main_sha": "924a36fd4b705c049e191eea200902e310f112ea"
     },
     {
       "number": 110,
