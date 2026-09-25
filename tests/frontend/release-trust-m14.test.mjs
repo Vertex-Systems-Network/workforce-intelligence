@@ -678,6 +678,7 @@ test('M14 production-release control evidence lane is read-only, main-bound and 
     'environment_secret_names',
     'repository_secret_names',
     'prevent_self_review == true',
+    'deployment_branch_policy.protected_branches == false',
     'custom_branch_policies == true',
     'protected_branches == false',
     '["agent-v*", "main"]',
@@ -708,5 +709,7 @@ test('M14 production-release control evidence lane is read-only, main-bound and 
     'git push',
     'WORKINTEL_WINDOWS_SIGNING_PFX_B64: ${{ secrets.',
     'WORKINTEL_APPLE_DEVELOPER_ID_P12_B64: ${{ secrets.',
+  assert.ok(!productionReleaseControlEvidenceWorkflow.includes('select(.type == "branch_policy")'), 'deployment policy must be validated from deployment_branch_policy plus the policy list, not protection_rules')
+
   ]) assert.ok(!productionReleaseControlEvidenceWorkflow.includes(forbidden), forbidden)
 })

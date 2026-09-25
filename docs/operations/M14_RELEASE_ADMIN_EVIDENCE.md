@@ -66,6 +66,7 @@ This lane does **not** weaken or replace the full `verify-m14-release-admin-conf
 - required-reviewer protection exists and `prevent_self_review=true`;
 - no wait timer is configured;
 - custom deployment branch/tag policies are enabled;
+- deployment policy activation is read from the top-level `deployment_branch_policy` object; `protection_rules` is not required to expose a synthetic `branch_policy` rule;
 - the only deployment policy names are `main` and `agent-v*`;
 - `WORKINTEL_RELEASE_POLICY_READ_TOKEN` exists at `production-release` environment scope;
 - the release-policy token and all signer/notary secret names are absent at repository scope;
