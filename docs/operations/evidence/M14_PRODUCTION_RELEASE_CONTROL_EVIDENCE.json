@@ -1,0 +1,65 @@
+{
+  "schema": "workintel.m14-production-release-control-evidence.v1",
+  "github_api_version": "2026-03-10",
+  "evidence_type": "github-api-live-read",
+  "repository": "Vertex-Systems-Network/workforce-intelligence",
+  "source_sha": "a168673e3ac38f3b7cc966945ec9a0a23b45fbb5",
+  "ref": "refs/heads/main",
+  "workflow": "M14 Production Release Control Evidence",
+  "workflow_run_id": "36176653160",
+  "workflow_run_attempt": "1",
+  "collected_at": "2026-09-25T18:57:27Z",
+  "auditor_identity": {
+    "login": "wpessential",
+    "id": 24288930,
+    "type": "User"
+  },
+  "immutable_releases": {
+    "enabled": true
+  },
+  "environment": {
+    "id": 22658938972,
+    "name": "production-release",
+    "url": "https://api.github.com/repos/Vertex-Systems-Network/workforce-intelligence/environments/production-release",
+    "required_reviewers": [
+      {
+        "prevent_self_review": true,
+        "reviewers": [
+          {
+            "type": "User",
+            "login": "wpessential"
+          },
+          {
+            "type": "User",
+            "login": "VertexSN"
+          }
+        ]
+      }
+    ],
+    "wait_timer_rules": [],
+    "deployment_branch_policy": {
+      "protected_branches": false,
+      "custom_branch_policies": true
+    }
+  },
+  "deployment_branch_policies": [
+    {
+      "id": 60912789,
+      "node_id": "MDE2OkdhdGVCcmFuY2hQb2xpY3k2MDkxMjc4OQ==",
+      "name": "main"
+    },
+    {
+      "id": 60912801,
+      "node_id": "MDE2OkdhdGVCcmFuY2hQb2xpY3k2MDkxMjgwMQ==",
+      "name": "agent-v*"
+    }
+  ],
+  "environment_secret_names": [
+    "WORKINTEL_RELEASE_POLICY_READ_TOKEN"
+  ],
+  "environment_variable_names": [],
+  "repository_secret_names": [
+    "WORKINTEL_M14_ADMIN_AUDIT_TOKEN"
+  ],
+  "repository_variable_names": []
+}

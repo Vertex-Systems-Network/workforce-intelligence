@@ -265,3 +265,20 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - The lane verifies production-release reviewer/self-review posture, no wait timer, custom deployment policy names, immutable Releases, release-policy-token environment placement, repository-scope absence of release credentials, auditor identity, and protected-main binding.
 - The separate audit credential is repository-scoped evidence authority only and is not trusted release authority.
 - Windows/Apple signer material, real signing/notarization, publication, and real-target evidence remain separate blockers.
+
+
+## 2026-09-25 — Apple signer/notary readiness preparation
+
+- Reconciled protected main `a168673e3ac38f3b7cc966945ec9a0a23b45fbb5` after PR #107.
+- Preserved the trusted release workflow's fail-closed Apple signer/notary contract.
+- Added a separate manual `production-release` readiness lane that validates Apple P12 leaf identity/fingerprint, temporary keychain Code Signing identity, and parseable notary private key without signing/notarizing/publishing.
+- Evidence output is sanitized and explicitly records that signing, notarization and publication were not performed.
+- Real organization-controlled Apple credentials remain external blockers and were not fabricated.
+
+
+## 2026-09-25 — Gate B production-release control plane live verified
+
+- Workflow run `36176653160` / attempt 1 succeeded on protected main `a168673e3ac38f3b7cc966945ec9a0a23b45fbb5`.
+- Live API evidence confirms immutable Releases enabled, required reviewers with self-review prevention, no wait timer, custom deployment policies `main` + `agent-v*`, release-policy token at environment scope, and audit token at repository scope.
+- Sanitized evidence archived at `docs/operations/evidence/M14_PRODUCTION_RELEASE_CONTROL_EVIDENCE.json` and companion Markdown.
+- This verifies the independent control-plane subset only; signer material, actual signing/notarization, publication, real-target evidence, and administrator-attested-only facts remain open.
