@@ -319,3 +319,13 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Prevented the existing Windows PFX lane from being treated as a valid public-trust credential-placement path without provider-policy proof.
 - Added a provider-selection compatibility gate before any Windows purchase or credential placement.
 - No real credential, signing, notarization, publication or Runner task was executed.
+
+
+## 2026-09-26 — PR #112 merged and signer acquisition checklist finalized
+
+- PR #112 exact head `1d093ea793949cb6fcf05429f89ee96550f42374` passed WorkIntel CI #750, Code Quality #436, Windows Certification #519, with zero unresolved review threads.
+- Merged with expected-head protection to protected main `924a36fd4b705c049e191eea200902e310f112ea`.
+- Signer credential acquisition and `production-release` placement checklist is now on main.
+- Apple path remains compatible with the protected P12 + Team API-key readiness lane.
+- Windows public-trust path remains blocked on selecting a CA/B-compliant HSM/cloud signing provider and a provider-specific remote-signing integration.
+- No credential, signing, notarization, publication, provider purchase or Runner task was executed.
