@@ -10,6 +10,7 @@ const read = file => fs.readFileSync(file, 'utf8')
 const workflow = read('.github/workflows/desktop-agent-trusted-release.yml')
 const immutableEvidenceWorkflow = read('.github/workflows/m14-immutable-release-evidence.yml')
 const productionReleaseControlEvidenceWorkflow = read('.github/workflows/m14-production-release-control-evidence.yml')
+const appleSignerReadinessWorkflow = read('.github/workflows/m14-apple-signer-readiness-evidence.yml')
 const receiptTool = 'tools/release-trust-receipt.mjs'
 
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex')
@@ -739,4 +740,43 @@ test('M14 production-release control evidence lane is read-only, main-bound and 
     !productionReleaseControlEvidenceWorkflow.includes('select(.type == "branch_policy")'),
     'deployment policy must be validated from deployment_branch_policy plus the policy list, not protection_rules',
   )
+})
+
+
+test('M14 Apple signer readiness lane validates protected material without signing or notarizing', () => {
+  for (const token of [
+    'workflow_dispatch:',
+    'permissions:\n  contents: read',
+    'runs-on: macos-latest',
+    'environment: production-release',
+    'WORKINTEL_APPLE_DEVELOPER_ID_P12_B64',
+    'WORKINTEL_APPLE_DEVELOPER_ID_P12_PASSWORD',
+    'WORKINTEL_APPLE_SIGNING_IDENTITY',
+    'WORKINTEL_APPLE_SIGNING_CERT_SHA256',
+    'WORKINTEL_APPLE_NOTARY_KEY_P8_B64',
+    'WORKINTEL_APPLE_NOTARY_KEY_ID',
+    'WORKINTEL_APPLE_NOTARY_ISSUER_ID',
+    'openssl pkcs12 -in "$p12_path" -clcerts -nokeys',
+    'openssl pkey -in "$notary_key_path" -check -noout',
+    'security find-identity -v -p codesigning',
+    'Imported Apple Developer ID certificate SHA-256 fingerprint does not match the approved signer identity.',
+    'workintel.m14-apple-signer-readiness-evidence.v1',
+    'signing_performed: false',
+    'notarization_performed: false',
+    'publication_performed: false',
+    'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a',
+  ]) assert.ok(appleSignerReadinessWorkflow.includes(token), token)
+
+  for (const forbidden of [
+    'pull_request:',
+    'push:',
+    'contents: write',
+    'id-token: write',
+    'self-hosted',
+    'codesign --force',
+    'xcrun notarytool submit',
+    'gh release create',
+    'gh release edit',
+    'git push',
+  ]) assert.ok(!appleSignerReadinessWorkflow.includes(forbidden), forbidden)
 })
