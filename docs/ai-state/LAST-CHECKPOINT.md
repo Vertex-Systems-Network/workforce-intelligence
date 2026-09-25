@@ -1,32 +1,29 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `a45a285c0c2243d7dc68e43b9b26ac019e9ac064`  
+**Observed protected main:** `29f95ddc1d75f74c5241231a6eaecfdd868c7144`  
 **Active Issue:** #62  
-**Active PR:** none  
-**Active branch:** `main`  
-**Milestone:** M14 Gate B5 — external signer material acquisition and live readiness  
-**Status:** BLOCKED_EXTERNAL
+**Active PR:** #112  
+**Active branch:** `m14/signer-credential-acquisition-checklist`  
+**Milestone:** M14 Gate B5 — signer credential acquisition and provider compatibility  
+**Status:** VERIFYING
 
-## Completed
+## Prepared
 
-- PR #110 exact head `756e6406be34c2ef94078731fd283ce2ac1ac68e` passed WorkIntel CI #741, Code Quality #427, Windows Certification #510, with zero unresolved review threads.
-- PR #110 merged with expected-head protection to `a45a285c0c2243d7dc68e43b9b26ac019e9ac064`.
-- Protected Windows signer material-readiness workflow is now on `main`.
-- Protected Apple signer material-readiness workflow remains on `main`.
-- Gate B production-release control-plane live evidence remains archived and verified.
+- PR #112 adds `docs/operations/M14_SIGNER_CREDENTIAL_ACQUISITION_CHECKLIST.md`.
+- Apple path documents Organization enrollment, Developer ID Application P12 acquisition, Team API notarization key acquisition, fingerprint verification, and exact `production-release` placement.
+- Windows path records the 2026 CA/B public Code Signing HSM/cloud-signing constraint.
+- Windows public-trust PFX secrets are explicitly blocked from population until a provider-specific compliant remote-signing architecture is selected.
+- Microsoft Public Trust Artifact Signing is not treated as the assumed Pakistan-entity route because Microsoft's published geographic list does not currently include Pakistan.
+- No signer credential, release, tag, signing, notarization or provider purchase was performed.
 
-## Still Blocked / Not Verified
+## Still Not Verified
 
-- Real organization-controlled Windows PFX/password, approved Code Signing certificate SHA-256 fingerprint, and approved HTTPS RFC3161 timestamp endpoint.
-- Real Apple Developer ID P12/password/signing identity, approved certificate SHA-256 fingerprint, and notary API key material.
-- Live successful signer-material readiness evidence for either platform.
-- Actual Authenticode signing/timestamp verification.
-- Actual Developer ID signing and Apple notarization Accepted evidence.
-- Immutable release publication and real-target production evidence.
-- Administrator-attested-only GitHub facts remain attested where read APIs do not prove them directly.
-- Issue #70 remains open; RB-005 remains not-authorized/blocked.
+- Real Apple Developer ID/notary material.
+- Real Windows public-trust signing provider/material.
+- Successful live Apple or Windows readiness evidence.
+- Actual signing/notarization, publication, and real-target production evidence.
 
 ## Next Action
 
-Keep GitHub control-plane settings unchanged. Obtain truthful organization-controlled Apple and/or Windows signer material, place it only in the documented production-release secrets/variables, then run the corresponding readiness workflow before any real signing/notarization or publication claim.
+Exact-head certify PR #112 and merge with expected-head protection if required checks are terminal green. After merge, acquire Apple credentials through the organization account; for Windows public trust, select a CA/B-compliant HSM/cloud signing provider before adding any Windows signing secrets.
