@@ -75,11 +75,15 @@ jobs:
           collect_pages "repos/${GITHUB_REPOSITORY}/actions/secrets" "$tmp/repository-secrets.jsons"
           collect_pages "repos/${GITHUB_REPOSITORY}/actions/variables" "$tmp/repository-variables.jsons"
 
-          jq -e '.enabled == true' "$tmp/immutable.json" >/dev/null
+          echo 'CHECK immutable-releases enabled'
+          if ! jq -e '.enabled == true' "$tmp/immutable.json" >/dev/null; then
+            echo 'FAIL immutable-releases: enabled must be true.'
+            exit 1
+          fi
 
           expected_url="https://api.github.com/repos/${GITHUB_REPOSITORY}/environments/production-release"
-          echo 'Verifying production-release environment protection metadata.'
-          jq -e --arg expected_url "$expected_url" '
+          echo 'CHECK production-release environment protection metadata'
+          if ! jq -e --arg expected_url "$expected_url" '
             .name == "production-release"
             and (.id | type == "number" and . > 0)
             and .url == $expected_url
@@ -90,24 +94,39 @@ jobs:
             and ([.protection_rules[]? | select(.type == "wait_timer")] | length) == 0
             and .deployment_branch_policy.protected_branches == false
             and .deployment_branch_policy.custom_branch_policies == true
-          ' "$tmp/environment.json" >/dev/null
+          ' "$tmp/environment.json" >/dev/null; then
+            echo 'FAIL environment protection metadata: required reviewer/self-review or deployment_branch_policy posture does not match the contract.'
+            jq '{name, protection_rules: [.protection_rules[]? | if .type == "required_reviewers" then {type, prevent_self_review, reviewer_count: ((.reviewers // []) | length)} elif .type == "wait_timer" then {type, wait_timer} else {type} end], deployment_branch_policy}' "$tmp/environment.json"
+            exit 1
+          fi
 
-          echo 'Verifying exact production-release deployment policy names.'
-          jq -s -e '
+          echo 'CHECK exact production-release deployment policy names'
+          echo 'Observed deployment policy names:'
+          jq -s -c '[.[].branch_policies[]?.name] | unique | sort' "$tmp/policies.jsons"
+          if ! jq -s -e '
             ([.[].total_count] | unique | length) == 1
             and ([.[].branch_policies[]] as $items
               | .[0].total_count == ($items | length)
               and (($items | map(.name) | sort) == ["agent-v*", "main"])
               and all($items[]; (.id | type == "number") and .id > 0 and (.node_id | type == "string" and length > 0)))
-          ' "$tmp/policies.jsons" >/dev/null
+          ' "$tmp/policies.jsons" >/dev/null; then
+            echo 'FAIL deployment policies: expected exactly main and agent-v*.'
+            exit 1
+          fi
 
-          jq -s -e '
+          echo 'CHECK environment secret placement'
+          echo 'Observed production-release secret names:'
+          jq -s -c '[.[].secrets[]?.name] | unique | sort' "$tmp/environment-secrets.jsons"
+          if ! jq -s -e '
             ([.[].total_count] | unique | length) == 1
             and ([.[].secrets[]] as $items
               | .[0].total_count == ($items | length)
               and (($items | map(.name) | index("WORKINTEL_RELEASE_POLICY_READ_TOKEN")) != null)
               and (($items | map(.name) | index("WORKINTEL_M14_ADMIN_AUDIT_TOKEN")) == null))
-          ' "$tmp/environment-secrets.jsons" >/dev/null
+          ' "$tmp/environment-secrets.jsons" >/dev/null; then
+            echo 'FAIL environment secret placement: release-policy token must be environment-scoped and admin-audit token must not be environment-scoped.'
+            exit 1
+          fi
 
           release_secrets='[
             "WORKINTEL_RELEASE_POLICY_READ_TOKEN",
@@ -120,30 +139,46 @@ jobs:
             "WORKINTEL_APPLE_NOTARY_KEY_ID",
             "WORKINTEL_APPLE_NOTARY_ISSUER_ID"
           ]'
-          jq -s -e --argjson release_secrets "$release_secrets" '
+          echo 'CHECK repository secret isolation'
+          echo 'Observed repository secret names:'
+          jq -s -c '[.[].secrets[]?.name] | unique | sort' "$tmp/repository-secrets.jsons"
+          if ! jq -s -e --argjson release_secrets "$release_secrets" '
             ([.[].total_count] | unique | length) == 1
             and ([.[].secrets[]] as $items
               | .[0].total_count == ($items | length)
               and (($items | map(.name) | index("WORKINTEL_M14_ADMIN_AUDIT_TOKEN")) != null)
               and all($release_secrets[] as $required; ($items | map(.name) | index($required)) == null))
-          ' "$tmp/repository-secrets.jsons" >/dev/null
+          ' "$tmp/repository-secrets.jsons" >/dev/null; then
+            echo 'FAIL repository secret isolation: admin-audit token must exist here and release/signing secret names must not.'
+            exit 1
+          fi
 
           release_variables='[
             "WORKINTEL_WINDOWS_TIMESTAMP_URL",
             "WORKINTEL_WINDOWS_SIGNING_CERT_SHA256",
             "WORKINTEL_APPLE_SIGNING_CERT_SHA256"
           ]'
-          jq -s -e --argjson release_variables "$release_variables" '
+          echo 'CHECK repository variable isolation'
+          echo 'Observed repository variable names:'
+          jq -s -c '[.[].variables[]?.name] | unique | sort' "$tmp/repository-variables.jsons"
+          if ! jq -s -e --argjson release_variables "$release_variables" '
             ([.[].total_count] | unique | length) == 1
             and ([.[].variables[]] as $items
               | .[0].total_count == ($items | length)
               and all($release_variables[] as $required; ($items | map(.name) | index($required)) == null))
-          ' "$tmp/repository-variables.jsons" >/dev/null
+          ' "$tmp/repository-variables.jsons" >/dev/null; then
+            echo 'FAIL repository variable isolation: M14 signer/timestamp variables must not exist at repository scope.'
+            exit 1
+          fi
 
-          jq -s -e '
+          echo 'CHECK environment variable list completeness'
+          if ! jq -s -e '
             ([.[].total_count] | unique | length) == 1
             and ([.[].variables[]] as $items | .[0].total_count == ($items | length))
-          ' "$tmp/environment-variables.jsons" >/dev/null
+          ' "$tmp/environment-variables.jsons" >/dev/null; then
+            echo 'FAIL environment variable list completeness.'
+            exit 1
+          fi
 
           collected_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           jq -n \
