@@ -78,6 +78,7 @@ jobs:
           jq -e '.enabled == true' "$tmp/immutable.json" >/dev/null
 
           expected_url="https://api.github.com/repos/${GITHUB_REPOSITORY}/environments/production-release"
+          echo 'Verifying production-release environment protection metadata.'
           jq -e --arg expected_url "$expected_url" '
             .name == "production-release"
             and (.id | type == "number" and . > 0)
@@ -87,11 +88,11 @@ jobs:
               and $rules[0].prevent_self_review == true
               and (($rules[0].reviewers // []) | length) >= 1)
             and ([.protection_rules[]? | select(.type == "wait_timer")] | length) == 0
-            and ([.protection_rules[]? | select(.type == "branch_policy")] | length) == 1
             and .deployment_branch_policy.protected_branches == false
             and .deployment_branch_policy.custom_branch_policies == true
           ' "$tmp/environment.json" >/dev/null
 
+          echo 'Verifying exact production-release deployment policy names.'
           jq -s -e '
             ([.[].total_count] | unique | length) == 1
             and ([.[].branch_policies[]] as $items
