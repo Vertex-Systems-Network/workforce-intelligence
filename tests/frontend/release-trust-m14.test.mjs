@@ -694,6 +694,20 @@ test('M14 production-release control evidence lane is read-only, main-bound and 
     'admin-audit token name should appear only in the evidence secret binding and scope-placement assertions',
   )
 
+  for (const token of [
+    'CHECK immutable-releases enabled',
+    'CHECK production-release environment protection metadata',
+    'CHECK exact production-release deployment policy names',
+    'Observed deployment policy names:',
+    'CHECK environment secret placement',
+    'Observed production-release secret names:',
+    'CHECK repository secret isolation',
+    'Observed repository secret names:',
+    'CHECK repository variable isolation',
+    'Observed repository variable names:',
+    'FAIL deployment policies: expected exactly main and agent-v*.',
+  ]) assert.ok(productionReleaseControlEvidenceWorkflow.includes(token), token)
+
   for (const forbidden of [
     'pull_request:',
     'push:',
