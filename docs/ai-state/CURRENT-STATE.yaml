@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "29f95ddc1d75f74c5241231a6eaecfdd868c7144",
+  "observed_main_sha": "924a36fd4b705c049e191eea200902e310f112ea",
   "active_issue": 62,
-  "active_pr": 112,
-  "active_branch": "m14/signer-credential-acquisition-checklist",
-  "current_milestone": "M14 Gate B5 — signer credential acquisition and provider compatibility",
-  "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #111 merged at protected main 29f95ddc1d75f74c5241231a6eaecfdd868c7144; durable state cleanup after Windows readiness merge is complete.",
-  "exact_next_safe_action": "Exact-head certify PR #112 and merge with expected-head protection if required checks are terminal green. After merge, acquire Apple credentials through the organization account; for Windows public trust, select a CA/B-compliant HSM/cloud signing provider before adding any Windows signing secrets.",
+  "active_pr": null,
+  "active_branch": "main",
+  "current_milestone": "M14 Gate B6 — external signer material acquisition and Windows provider selection",
+  "milestone_status": "BLOCKED_EXTERNAL",
+  "last_completed_milestone": "PR #112 merged at protected main 924a36fd4b705c049e191eea200902e310f112ea; signer credential acquisition and production-release placement checklist is now on main.",
+  "exact_next_safe_action": "Keep existing GitHub control-plane settings unchanged. Acquire Apple credentials through the organization account; for Windows public trust, select and verify a CA/B-compliant HSM/cloud signing provider before adding any Windows signing credentials or changing the trusted release workflow.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -41,14 +41,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-25T22:38:33.282Z",
+  "last_reconciled_at": "2026-09-25T23:00:06.186Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "PR #112 — signer credential acquisition + production-release placement checklist",
+    "current_work": "M14 external signer material acquisition and Windows provider selection",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Control-plane evidence and Apple/Windows readiness lanes are on main. PR #112 documents truthful credential acquisition and detects the Windows public-trust PFX/HSM compatibility constraint, but real credentials, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
+      "basis": "Control-plane evidence, Apple/Windows readiness lanes, and the signer credential acquisition/placement checklist are on main. Real signer material, live readiness evidence, provider-specific Windows remote-signing integration, actual signing/notarization, publication, and real-target evidence remain incomplete."
     },
     "overall_progress": {
       "percent": 100,
