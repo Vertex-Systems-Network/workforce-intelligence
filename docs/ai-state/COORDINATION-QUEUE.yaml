@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "924a36fd4b705c049e191eea200902e310f112ea",
-  "reconciled_at": "2026-09-25T23:00:06.186Z",
+  "observed_main_sha": "71e9c970f7db34710dd42d0400fa772d81c30fd0",
+  "reconciled_at": "2026-09-25T23:39:08.366Z",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "external-signer-material-acquisition-and-windows-provider-selection"
+      "action": "windows-provider-compatibility-audit-and-external-qualification"
     },
     {
       "number": 70,
@@ -19,6 +19,16 @@
     }
   ],
   "pull_requests": [
+    {
+      "number": 114,
+      "title": "docs(m14): audit Windows public-trust signing providers",
+      "state": "open",
+      "draft": false,
+      "head_sha": "resolve-on-resume",
+      "base_sha": "71e9c970f7db34710dd42d0400fa772d81c30fd0",
+      "head_ref": "m14/windows-provider-compatibility-audit",
+      "action": "exact-head-certification-required-before-merge"
+    },
     {
       "number": 112,
       "title": "docs(m14): add signer credential acquisition checklist",
