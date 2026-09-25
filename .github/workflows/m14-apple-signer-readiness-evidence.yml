@@ -1,0 +1,172 @@
+name: M14 Apple Signer Material Readiness Evidence
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: m14-apple-signer-readiness-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify Apple signer material readiness
+    runs-on: macos-latest
+    environment: production-release
+    permissions:
+      contents: read
+    steps:
+      - name: Require current protected-main dispatch source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo 'Apple signer readiness evidence must be dispatched from refs/heads/main.'
+            exit 1
+          fi
+          current_main="$(gh api --method GET \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2026-03-10' \
+            "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" \
+            --jq '.object.sha')"
+          if [ "$current_main" != "$GITHUB_SHA" ]; then
+            echo 'Protected main moved before Apple signer readiness verification.'
+            exit 1
+          fi
+
+      - name: Verify Apple signer material without signing or notarizing
+        shell: bash
+        env:
+          APPLE_DEVELOPER_ID_P12_B64: ${{ secrets.WORKINTEL_APPLE_DEVELOPER_ID_P12_B64 }}
+          APPLE_DEVELOPER_ID_P12_PASSWORD: ${{ secrets.WORKINTEL_APPLE_DEVELOPER_ID_P12_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.WORKINTEL_APPLE_SIGNING_IDENTITY }}
+          APPLE_SIGNING_CERT_SHA256: ${{ vars.WORKINTEL_APPLE_SIGNING_CERT_SHA256 }}
+          APPLE_NOTARY_KEY_P8_B64: ${{ secrets.WORKINTEL_APPLE_NOTARY_KEY_P8_B64 }}
+          APPLE_NOTARY_KEY_ID: ${{ secrets.WORKINTEL_APPLE_NOTARY_KEY_ID }}
+          APPLE_NOTARY_ISSUER_ID: ${{ secrets.WORKINTEL_APPLE_NOTARY_ISSUER_ID }}
+          EVIDENCE_PATH: ${{ runner.temp }}/m14-apple-signer-readiness-evidence.json
+        run: |
+          set -euo pipefail
+
+          for variable in APPLE_DEVELOPER_ID_P12_B64 APPLE_DEVELOPER_ID_P12_PASSWORD APPLE_SIGNING_IDENTITY APPLE_SIGNING_CERT_SHA256 APPLE_NOTARY_KEY_P8_B64 APPLE_NOTARY_KEY_ID APPLE_NOTARY_ISSUER_ID; do
+            if [ -z "${!variable:-}" ]; then
+              echo "Required Apple signer readiness credential reference is unavailable: $variable"
+              exit 1
+            fi
+          done
+
+          expected_certificate_sha256="$(printf '%s' "$APPLE_SIGNING_CERT_SHA256" | tr '[:upper:]' '[:lower:]')"
+          if ! [[ "$expected_certificate_sha256" =~ ^[0-9a-f]{64}$ ]]; then
+            echo 'Expected Apple Developer ID certificate SHA-256 fingerprint must be 64 hexadecimal characters.'
+            exit 1
+          fi
+
+          p12_path="$RUNNER_TEMP/workintel-apple-readiness.p12"
+          leaf_cert_path="$RUNNER_TEMP/workintel-apple-readiness-leaf.pem"
+          notary_key_path="$RUNNER_TEMP/workintel-apple-readiness-notary.p8"
+          keychain="$RUNNER_TEMP/workintel-apple-readiness.keychain-db"
+          keychain_password="$(uuidgen)"
+
+          cleanup() {
+            security delete-keychain "$keychain" >/dev/null 2>&1 || true
+            rm -f "$p12_path" "$leaf_cert_path" "$notary_key_path"
+          }
+          trap cleanup EXIT
+
+          P12_PATH="$p12_path" node --input-type=commonjs -e "const fs=require('node:fs');fs.writeFileSync(process.env.P12_PATH,Buffer.from(process.env.APPLE_DEVELOPER_ID_P12_B64,'base64'));"
+          NOTARY_KEY_PATH="$notary_key_path" node --input-type=commonjs -e "const fs=require('node:fs');fs.writeFileSync(process.env.NOTARY_KEY_PATH,Buffer.from(process.env.APPLE_NOTARY_KEY_P8_B64,'base64'));"
+          chmod 600 "$p12_path" "$notary_key_path"
+
+          openssl pkcs12 -in "$p12_path" -clcerts -nokeys -passin env:APPLE_DEVELOPER_ID_P12_PASSWORD -out "$leaf_cert_path"
+          leaf_certificate_count="$(grep -c -- '-----BEGIN CERTIFICATE-----' "$leaf_cert_path" || true)"
+          if [ "$leaf_certificate_count" -ne 1 ]; then
+            echo "Expected exactly one leaf certificate in the Apple Developer ID P12; found $leaf_certificate_count."
+            exit 1
+          fi
+
+          actual_certificate_sha256="$(openssl x509 -in "$leaf_cert_path" -noout -fingerprint -sha256 | sed -E 's/^[^=]+=//; s/://g' | tr '[:upper:]' '[:lower:]')"
+          if ! [[ "$actual_certificate_sha256" =~ ^[0-9a-f]{64}$ ]]; then
+            echo 'Apple Developer ID certificate SHA-256 fingerprint could not be derived.'
+            exit 1
+          fi
+          if [ "$actual_certificate_sha256" != "$expected_certificate_sha256" ]; then
+            echo 'Imported Apple Developer ID certificate SHA-256 fingerprint does not match the approved signer identity.'
+            exit 1
+          fi
+
+          if ! openssl pkey -in "$notary_key_path" -check -noout >/dev/null 2>&1; then
+            echo 'Apple notary private key is not a parseable private key.'
+            exit 1
+          fi
+
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          security import "$p12_path" -k "$keychain" -P "$APPLE_DEVELOPER_ID_P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain" >/dev/null
+
+          matching_identity_lines="$(security find-identity -v -p codesigning "$keychain" | grep -F "\"$APPLE_SIGNING_IDENTITY\"" || true)"
+          matching_identity_count="$(printf '%s\n' "$matching_identity_lines" | sed '/^[[:space:]]*$/d' | wc -l | tr -d '[:space:]')"
+          if [ "$matching_identity_count" -ne 1 ]; then
+            echo "Expected exactly one imported macOS Code Signing identity matching the approved Developer ID; found $matching_identity_count."
+            exit 1
+          fi
+
+          collected_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          jq -n \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg source_sha "$GITHUB_SHA" \
+            --arg ref "$GITHUB_REF" \
+            --arg workflow "$GITHUB_WORKFLOW" \
+            --arg run_id "$GITHUB_RUN_ID" \
+            --arg run_attempt "$GITHUB_RUN_ATTEMPT" \
+            --arg collected_at "$collected_at" \
+            --arg cert_sha256 "$actual_certificate_sha256" \
+            '{
+              schema: "workintel.m14-apple-signer-readiness-evidence.v1",
+              evidence_type: "protected-material-readiness",
+              repository: $repository,
+              source_sha: $source_sha,
+              ref: $ref,
+              workflow: $workflow,
+              workflow_run_id: $run_id,
+              workflow_run_attempt: $run_attempt,
+              collected_at: $collected_at,
+              apple_signing_cert_sha256: $cert_sha256,
+              leaf_certificate_count: 1,
+              signing_identity_match_count: 1,
+              notary_private_key_parseable: true,
+              signing_performed: false,
+              notarization_performed: false,
+              publication_performed: false
+            }' > "$EVIDENCE_PATH"
+
+      - name: Revalidate protected main after verification
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          current_main="$(gh api --method GET \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2026-03-10' \
+            "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" \
+            --jq '.object.sha')"
+          if [ "$current_main" != "$GITHUB_SHA" ]; then
+            echo 'Protected main moved during Apple signer readiness verification.'
+            exit 1
+          fi
+
+      - name: Upload sanitized Apple signer readiness evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: m14-apple-signer-readiness-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/m14-apple-signer-readiness-evidence.json
+          if-no-files-found: error
+          retention-days: 14
+          overwrite: false
+          include-hidden-files: false
