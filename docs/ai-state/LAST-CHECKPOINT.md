@@ -1,29 +1,32 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `f26ff92133c03a5118e6a4fa3c2399f22c09200b`  
+**Observed protected main:** `a45a285c0c2243d7dc68e43b9b26ac019e9ac064`  
 **Active Issue:** #62  
-**Active PR:** #110  
-**Active branch:** `m14/windows-signer-readiness`  
-**Milestone:** M14 Gate B4 — Windows signer material readiness  
-**Status:** VERIFYING
+**Active PR:** none  
+**Active branch:** `main`  
+**Milestone:** M14 Gate B5 — external signer material acquisition and live readiness  
+**Status:** BLOCKED_EXTERNAL
 
-## Prepared
+## Completed
 
-- PR #110 adds a manual-only, `production-release`-protected Windows signer material-readiness lane.
-- The lane requires PFX/password secrets plus approved signer fingerprint and HTTPS RFC3161 timestamp variables.
-- It imports the PFX non-exportably, requires exactly one newly imported private-key Code Signing certificate with EKU `1.3.6.1.5.5.7.3.3`, checks certificate validity, pins the exact SHA-256 fingerprint, and validates the timestamp URL scheme.
-- The lane uploads sanitized evidence only and explicitly performs no signing, timestamp request, publication or tag mutation.
-- Regression tests and M14 operational documentation cover the new contract.
+- PR #110 exact head `756e6406be34c2ef94078731fd283ce2ac1ac68e` passed WorkIntel CI #741, Code Quality #427, Windows Certification #510, with zero unresolved review threads.
+- PR #110 merged with expected-head protection to `a45a285c0c2243d7dc68e43b9b26ac019e9ac064`.
+- Protected Windows signer material-readiness workflow is now on `main`.
+- Protected Apple signer material-readiness workflow remains on `main`.
+- Gate B production-release control-plane live evidence remains archived and verified.
 
-## Still Not Verified
+## Still Blocked / Not Verified
 
-- Real organization-controlled Windows PFX/password.
-- Approved Windows Code Signing certificate SHA-256 fingerprint.
-- Approved HTTPS RFC3161 timestamp endpoint.
+- Real organization-controlled Windows PFX/password, approved Code Signing certificate SHA-256 fingerprint, and approved HTTPS RFC3161 timestamp endpoint.
+- Real Apple Developer ID P12/password/signing identity, approved certificate SHA-256 fingerprint, and notary API key material.
+- Live successful signer-material readiness evidence for either platform.
 - Actual Authenticode signing/timestamp verification.
-- Real Apple signer/notary material, publication, and real-target evidence.
+- Actual Developer ID signing and Apple notarization Accepted evidence.
+- Immutable release publication and real-target production evidence.
+- Administrator-attested-only GitHub facts remain attested where read APIs do not prove them directly.
+- Issue #70 remains open; RB-005 remains not-authorized/blocked.
 
 ## Next Action
 
-Exact-head certify PR #110 and merge with expected-head protection if required checks are terminal green. After merge, do not run Windows signer readiness until real organization-controlled PFX/password, approved certificate SHA-256 fingerprint, and HTTPS RFC3161 timestamp URL exist in production-release.
+Keep GitHub control-plane settings unchanged. Obtain truthful organization-controlled Apple and/or Windows signer material, place it only in the documented production-release secrets/variables, then run the corresponding readiness workflow before any real signing/notarization or publication claim.

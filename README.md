@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** PR #110 — Windows signer material readiness
+- **Current Work:** M14 external signer material acquisition after PR #110 merge
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** #110
-- **Active Branch:** `m14/windows-signer-readiness`
-- **Last Completed:** PR #109 merged at protected main f26ff92133c03a5118e6a4fa3c2399f22c09200b; durable state and README were reconciled after the Apple readiness merge.
-- **Next Action:** Exact-head certify PR #110 and merge with expected-head protection if required checks are terminal green. After merge, do not run Windows signer readiness until real organization-controlled PFX/password, approved certificate SHA-256 fingerprint, and HTTPS RFC3161 timestamp URL exist in production-release.
+- **Active PR:** none
+- **Active Branch:** `main`
+- **Last Completed:** PR #110 merged at protected main a45a285c0c2243d7dc68e43b9b26ac019e9ac064; both Apple and Windows protected signer-material readiness lanes are now on main.
+- **Next Action:** Keep GitHub control-plane settings unchanged. Obtain truthful organization-controlled Apple and/or Windows signer material, place it only in the documented production-release secrets/variables, then run the corresponding readiness workflow before any real signing/notarization or publication claim.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->

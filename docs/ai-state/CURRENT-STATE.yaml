@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "f26ff92133c03a5118e6a4fa3c2399f22c09200b",
+  "observed_main_sha": "a45a285c0c2243d7dc68e43b9b26ac019e9ac064",
   "active_issue": 62,
-  "active_pr": 110,
-  "active_branch": "m14/windows-signer-readiness",
-  "current_milestone": "M14 Gate B4 — Windows signer material readiness",
-  "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #109 merged at protected main f26ff92133c03a5118e6a4fa3c2399f22c09200b; durable state and README were reconciled after the Apple readiness merge.",
-  "exact_next_safe_action": "Exact-head certify PR #110 and merge with expected-head protection if required checks are terminal green. After merge, do not run Windows signer readiness until real organization-controlled PFX/password, approved certificate SHA-256 fingerprint, and HTTPS RFC3161 timestamp URL exist in production-release.",
+  "active_pr": null,
+  "active_branch": "main",
+  "current_milestone": "M14 Gate B5 — external signer material acquisition and live readiness",
+  "milestone_status": "BLOCKED_EXTERNAL",
+  "last_completed_milestone": "PR #110 merged at protected main a45a285c0c2243d7dc68e43b9b26ac019e9ac064; both Apple and Windows protected signer-material readiness lanes are now on main.",
+  "exact_next_safe_action": "Keep GitHub control-plane settings unchanged. Obtain truthful organization-controlled Apple and/or Windows signer material, place it only in the documented production-release secrets/variables, then run the corresponding readiness workflow before any real signing/notarization or publication claim.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -41,14 +41,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-25T21:39:17.629Z",
+  "last_reconciled_at": "2026-09-25T21:58:17.035Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "PR #110 — Windows signer material readiness",
+    "current_work": "M14 external signer material acquisition after PR #110 merge",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Gate A, Gate B1 immutable Releases, and the independent Gate B production-release control plane are live API-verified. Apple readiness is on main and PR #110 prepares Windows material readiness, but real Apple/Windows signer material, actual signing/notarization, publication, and real-target evidence remain incomplete."
+      "basis": "Gate A, Gate B1 immutable Releases, and the independent Gate B production-release control plane are live API-verified. Apple and Windows protected signer-material readiness lanes are now on main, but real signer material, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
     },
     "overall_progress": {
       "percent": 100,
