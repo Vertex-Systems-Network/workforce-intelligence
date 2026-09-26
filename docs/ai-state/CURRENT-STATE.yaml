@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "baec59634ee93a8bbb6b7b714c9e38c1ee73849b",
+  "observed_main_sha": "03c028c24987a0c83666d45bbbbdc053295b46cf",
   "active_issue": 62,
   "active_pr": null,
   "active_branch": "main",
-  "current_milestone": "M14 Gate B8 — external Windows provider written-response collection",
+  "current_milestone": "M14 Gate B8 — parallel external trust acquisition",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "SSL.com and DigiCert qualification inquiries were sent on 2026-09-26 through verified Sales channels with no attachments or credentials; Issue #62 contains non-secret send evidence.",
-  "exact_next_safe_action": "Wait for written SSL.com and/or DigiCert responses, then evaluate each non-secret reply against the documented provider acceptance checklist. Do not purchase, create provider-specific credentials, or integrate Windows signing until a provider passes all mandatory gates.",
+  "last_completed_milestone": "PR #120 merged at protected main 03c028c24987a0c83666d45bbbbdc053295b46cf; provider inquiries-sent state is now durable. M14 remaining critical path was re-audited without advancing evidence progress.",
+  "exact_next_safe_action": "Continue waiting for written SSL.com/DigiCert qualification responses. In parallel, inventory existing Apple organization enrollment and Developer ID/notary credential readiness without purchasing, exposing, or placing secrets. Provider-specific Windows integration remains blocked until one provider passes every mandatory qualification gate.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -44,11 +44,11 @@
   "last_reconciled_at": "2026-09-26T16:11:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 awaiting SSL.com + DigiCert written qualification responses",
+    "current_work": "M14 parallel trust acquisition — provider responses + Apple credential readiness inventory",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Control-plane evidence, platform readiness lanes, provider audit, inquiry drafts, verified provider contact/send paths, and outbound qualification emails are complete. Written provider qualification, provider-specific integration, real signer material, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
+      "basis": "M14 critical-path audit confirms source/control-plane preparation and outbound Windows qualification are complete. Remaining work is external Windows provider qualification/integration, real Windows and Apple signer authority, live readiness, actual signing/notarization, immutable publication, and real-target/restore evidence."
     },
     "overall_progress": {
       "percent": 100,
