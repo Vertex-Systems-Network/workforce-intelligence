@@ -1,30 +1,32 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `4aa496bb4f16514711618aac675aafbdfb4e28ec`  
+**Observed protected main:** `baec59634ee93a8bbb6b7b714c9e38c1ee73849b`  
 **Active Issue:** #62  
 **Active PR:** none  
 **Active branch:** `main`  
-**Milestone:** M14 Gate B8 — external Windows provider response collection  
-**Status:** BLOCKED_EXTERNAL
+**Milestone:** M14 Gate B8 — external Windows provider written-response collection  
+**Status:** WAITING_EXTERNAL
 
 ## Completed
 
-- PR #118 exact head `70c280c10b0c8d9bdb849d36b633c55ee04bd7b6` passed WorkIntel Code Quality #463, WorkIntel CI #777, and WorkIntel Windows Certification #546, with zero unresolved review threads.
-- PR #118 merged with expected-head protection to protected main `4aa496bb4f16514711618aac675aafbdfb4e28ec`.
-- Verified SSL.com and DigiCert official contact/send paths and duplicate-ticket avoidance rules are now on `main`.
-- Provider qualification inquiry package remains ready to send.
-- No provider purchase, credential placement, signing, notarization, publication or Runner execution occurred.
+- PR #119 merged to protected main `baec59634ee93a8bbb6b7b714c9e38c1ee73849b`, completing post-PR #118 durable-state reconciliation.
+- SSL.com qualification inquiry was sent on 2026-09-26 to `sales@ssl.com`.
+- DigiCert qualification inquiry was sent on 2026-09-26 to `Sales@digicert.com`.
+- Both messages used the approved repository inquiry bodies and verified Sales channels.
+- No attachments, identity documents, private keys, certificates, API credentials, GitHub secrets, provider purchase, credential placement, signing, notarization, publication or Runner execution occurred.
+- Non-secret send metadata is recorded in Issue #62.
 
 ## Still Blocked / Not Verified
 
-- Written response from SSL.com and/or DigiCert for the actual WorkIntel legal entity.
-- Final Windows public-trust provider selection/purchase.
-- Provider-specific secret/variable contract and remote-signing integration.
-- Real Apple or Windows signer material.
-- Live readiness, actual signing/notarization, publication and real-target evidence.
+- No written provider response has been received yet in either sent Gmail thread.
+- Pakistan legal-entity eligibility and exact product/SKU remain unconfirmed.
+- GitHub-hosted unattended signing, HSM custody, authentication model, fingerprint verification, RFC3161 timestamping, audit logging, credential rotation/revocation, pricing and onboarding remain unconfirmed.
+- Final Windows public-trust provider selection/purchase remains blocked.
+- Provider-specific secret/variable contract and remote-signing integration remain blocked.
+- Real Apple or Windows signer material, actual signing/notarization, publication and real-target evidence remain incomplete.
 - Issue #70 remains open; RB-005 remains not-authorized/blocked.
 
 ## Next Action
 
-Send the approved SSL.com and DigiCert qualification inquiries through the verified Sales channels, collect written non-secret responses, and evaluate them against the documented acceptance gates before any purchase, provider-specific credential naming, or Windows signing integration.
+Wait for written SSL.com and/or DigiCert responses, then evaluate each non-secret reply against the documented provider acceptance checklist. Do not purchase, create provider-specific credentials, or integrate Windows signing until a provider passes all mandatory gates.
