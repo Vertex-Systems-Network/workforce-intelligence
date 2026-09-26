@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** PR #118 — verified SSL.com + DigiCert contact/send paths
+- **Current Work:** M14 external Windows provider written qualification
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** #118
-- **Active Branch:** `m14/provider-contact-send-paths`
-- **Last Completed:** PR #117 merged at protected main 607f48dcd53aa2813b808b0c167644bad1740126; provider inquiry package state reconciliation is complete.
-- **Next Action:** Exact-head certify PR #118 and merge with expected-head protection if required checks are terminal green. After merge, send the approved SSL.com and DigiCert qualification inquiries through the verified Sales channels and collect written non-secret responses before any purchase or provider-specific integration.
+- **Active PR:** none
+- **Active Branch:** `main`
+- **Last Completed:** PR #118 merged at protected main 4aa496bb4f16514711618aac675aafbdfb4e28ec; verified SSL.com and DigiCert contact/send paths are now on main.
+- **Next Action:** Send the approved SSL.com and DigiCert qualification inquiries through the verified Sales channels, collect written non-secret responses, and evaluate them against the documented acceptance gates before any purchase, provider-specific credential naming, or Windows signing integration.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
