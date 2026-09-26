@@ -373,3 +373,10 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Added PR #118 with official SSL.com and DigiCert Sales/Support contact channels and an exact outbound sequence.
 - Added duplicate-ticket avoidance, escalation order, first-response acceptance markers and safe metadata archival rules.
 - No inquiry was sent; no provider purchase, credential placement, signing, timestamp request, publication or Runner execution occurred.
+## 2026-09-26 — PR #118 merged; provider contact/send paths finalized
+
+- PR #118 exact head `70c280c10b0c8d9bdb849d36b633c55ee04bd7b6` passed WorkIntel Code Quality #463, WorkIntel CI #777, and WorkIntel Windows Certification #546, with zero unresolved review threads.
+- Merged with expected-head protection to protected main `4aa496bb4f16514711618aac675aafbdfb4e28ec`.
+- Verified SSL.com and DigiCert provider contact/send paths are now on main, including duplicate-ticket avoidance, escalation order, first-response acceptance markers, and safe metadata archival rules.
+- M14 returns to external-response collection: approved qualification inquiries must be sent and written non-secret provider responses evaluated before any provider purchase or provider-specific signing integration.
+- No provider purchase, credential placement, signing, timestamp request, notarization, publication or Runner execution occurred.
