@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "dedf5028ac7047c7a167570bb96ba668daaeef9b",
+  "observed_main_sha": "0e6262ddbf32ce23f3d7ee3f8b9886ea7e95da1c",
   "active_issue": 62,
   "active_pr": null,
   "active_branch": "main",
-  "current_milestone": "M14 Windows/Linux release trust — provider response wait",
+  "current_milestone": "M14 Windows/Linux release trust — real-target/recovery evidence prepared",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "PR #124 merged at protected main dedf5028ac7047c7a167570bb96ba668daaeef9b; Apple/macOS signing and notarization are deferred to future Issue #123 without being marked complete. Active M14 execution is Windows/Linux release trust.",
-  "exact_next_safe_action": "Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory Windows provider gate. In parallel, advance non-Apple M14 work: Windows provider readiness, trusted publication preparation, and real-target/restore evidence preparation.",
+  "last_completed_milestone": "PR #125 merged to protected main 0e6262ddbf32ce23f3d7ee3f8b9886ea7e95da1c. The active Windows/Linux M14 real-target and recovery evidence contract is now source-prepared without executing production, restore, publication, signing, or Runner actions.",
+  "exact_next_safe_action": "Continue waiting for written SSL.com/DigiCert qualification responses. In parallel, collect only non-secret target facts needed by M14_REAL_TARGET_RECOVERY_EVIDENCE_PLAN.md (target identity, deployment topology, database/storage/queue/scheduler topology, backup mechanism, and isolated restore destination). Do not deploy, restore, publish, sign, or run Runner tasks without the required separate authority.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -39,14 +39,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-26T18:48:00+05:00",
+  "last_reconciled_at": "2026-09-26T20:10:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 Windows/Linux release trust — waiting on Windows provider replies",
+    "current_work": "M14 Windows/Linux trust — provider replies pending; real-target/recovery evidence plan prepared",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Apple/macOS signing and notarization are deferred to future Issue #123 and are not counted as complete. Active M14 work remains Windows provider qualification/integration, Windows signer authority/readiness, Linux provenance, immutable publication, and real-target/restore evidence."
+      "basis": "Apple/macOS remains deferred to Issue #123. Windows/Linux real-target and recovery evidence is now source-prepared, but no live target, restore, signing, publication, or provider qualification evidence has executed; M14 remains 70%."
     },
     "overall_progress": {
       "percent": 100,
