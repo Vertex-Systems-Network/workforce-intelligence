@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "80f07812d62f9ec70af500c6aaff8b2dac2c73de",
+  "observed_main_sha": "06db81372dbac02a94f9869abaead8392bcf9aeb",
   "active_issue": 62,
-  "active_pr": null,
-  "active_branch": "main",
-  "current_milestone": "M14 Gate B7 — external provider qualification",
-  "milestone_status": "BLOCKED_EXTERNAL",
-  "last_completed_milestone": "PR #114 merged at protected main 80f07812d62f9ec70af500c6aaff8b2dac2c73de; Windows public-trust signing provider compatibility audit is now on main.",
-  "exact_next_safe_action": "Keep GitHub release controls unchanged. Externally qualify SSL.com eSigner and DigiCert against the documented Pakistan-entity, GitHub-hosted CI, HSM custody, timestamp, signer-identity, rotation and audit-log gates; do not purchase or add provider credentials until those requirements are confirmed.",
+  "active_pr": 116,
+  "active_branch": "m14/provider-qualification-inquiry-drafts",
+  "current_milestone": "M14 Gate B7 — Windows provider written qualification",
+  "milestone_status": "VERIFYING",
+  "last_completed_milestone": "PR #115 merged at protected main 06db81372dbac02a94f9869abaead8392bcf9aeb; provider-audit post-merge state semantics are complete.",
+  "exact_next_safe_action": "Exact-head certify PR #116 and merge with expected-head protection if required checks are terminal green. After merge, send the approved inquiry to SSL.com and DigiCert and wait for written qualification responses before any provider purchase, provider-specific credential naming, or Windows signing integration.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,13 +23,13 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Windows signing certificate/PFX/password is unavailable; Windows signer readiness cannot be live-verified yet.",
-    "WORKINTEL_WINDOWS_SIGNING_CERT_SHA256 cannot be truthfully configured until the approved organization Code Signing certificate is available.",
-    "WORKINTEL_WINDOWS_TIMESTAMP_URL must be the approved HTTPS RFC3161 endpoint before Windows readiness can run.",
+    "Written confirmation from SSL.com and/or DigiCert for the actual Pakistan legal entity, exact public Code Signing product eligibility, GitHub-hosted CI support, HSM custody, headless authentication, RFC3161 timestamping, signer fingerprint verification, audit logging, credential rotation/revocation, pricing and onboarding is not yet available.",
+    "No Windows public-trust provider has been selected; provider-specific remote-HSM signing integration and readiness evidence cannot be finalized yet.",
+    "Public-trust Windows private signing keys must not be treated as portable GitHub PFX secrets; existing PFX secrets remain unset for the public-trust path.",
     "Apple Developer ID P12/password/signing identity remain unavailable.",
-    "Apple notary API key P8/key ID/issuer ID remain unavailable.",
+    "Apple notary Team API key P8/key ID/issuer ID remain unavailable.",
     "Administrator-bypass posture, main=branch policy type, agent-v*=tag policy type, and release-policy-token least privilege remain administrator-attested where GitHub read APIs do not prove them directly.",
-    "Real signing, notarization, release publication, and real-target evidence remain incomplete.",
+    "Real Windows signing/timestamp verification, Apple signing/notarization, release publication, and real-target evidence remain incomplete.",
     "Issue #70 remains open; RB-005 remains not-authorized/blocked."
   ],
   "timeout_control": {
@@ -41,14 +41,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-25T23:53:26.797Z",
+  "last_reconciled_at": "2026-09-26T00:19:48.577Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 external Windows signing provider qualification",
+    "current_work": "PR #116 — SSL.com + DigiCert provider qualification inquiry drafts",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Control-plane evidence, Apple/Windows readiness lanes, signer acquisition checklist, and the Windows provider compatibility audit are on main. External provider confirmation, provider-specific integration, real signer material, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
+      "basis": "Control-plane evidence, platform readiness lanes, signer acquisition checklist, provider compatibility audit, and written qualification inquiry package are prepared. Written provider responses, provider-specific Windows integration, real signer material, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
     },
     "overall_progress": {
       "percent": 100,
