@@ -365,3 +365,11 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - SSL.com + DigiCert qualification inquiry package is now on main.
 - M14 is now externally blocked on sending inquiries and collecting written provider responses.
 - No provider purchase, credential placement, signing, timestamp request, publication or Runner execution occurred.
+
+
+## 2026-09-26 — verified provider contact/send paths
+
+- Reconciled protected main `607f48dcd53aa2813b808b0c167644bad1740126`.
+- Added PR #118 with official SSL.com and DigiCert Sales/Support contact channels and an exact outbound sequence.
+- Added duplicate-ticket avoidance, escalation order, first-response acceptance markers and safe metadata archival rules.
+- No inquiry was sent; no provider purchase, credential placement, signing, timestamp request, publication or Runner execution occurred.
