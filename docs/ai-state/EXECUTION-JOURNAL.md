@@ -356,3 +356,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Added explicit response acceptance gates covering Pakistan legal-entity eligibility, GitHub-hosted CI, HSM custody, headless authentication, credential rotation/revocation, certificate fingerprint verification, RFC3161 timestamping, audit logging, pricing and onboarding.
 - Updated durable blockers to use the provider-qualified remote-HSM public-trust model instead of the obsolete assumption that a portable Windows PFX is the target architecture.
 - No provider contact, purchase, credential placement, signing, timestamp request, publication or Runner execution occurred.
+
+
+## 2026-09-26 — PR #116 merged; provider inquiry package finalized
+
+- PR #116 exact head `112792710c22ab22d9408712bab7748813aa0d0a` passed WorkIntel CI #768, Code Quality #454, Windows Certification #537, with zero unresolved review threads.
+- Merged with expected-head protection to protected main `5e090abb47ef065e03bc8705bc60e069b41227d4`.
+- SSL.com + DigiCert qualification inquiry package is now on main.
+- M14 is now externally blocked on sending inquiries and collecting written provider responses.
+- No provider purchase, credential placement, signing, timestamp request, publication or Runner execution occurred.
