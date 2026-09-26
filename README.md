@@ -13,8 +13,8 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Active Issue:** #62
 - **Active PR:** none
 - **Active Branch:** `main`
-- **Last Completed:** PR #120 merged at protected main 03c028c24987a0c83666d45bbbbdc053295b46cf; provider inquiries-sent state is durable and the remaining M14 critical path has been re-audited.
-- **Next Action:** Continue waiting for written SSL.com/DigiCert qualification responses. In parallel, inventory existing Apple organization enrollment and Developer ID/notary credential readiness without purchasing or exposing secrets.
+- **Last Completed:** PR #120 merged at protected main 03c028c24987a0c83666d45bbbbdc053295b46cf; provider inquiries-sent state is now durable. M14 remaining critical path was re-audited without advancing evidence progress.
+- **Next Action:** Continue waiting for written SSL.com/DigiCert qualification responses. In parallel, inventory existing Apple organization enrollment and Developer ID/notary credential readiness without purchasing, exposing, or placing secrets. Provider-specific Windows integration remains blocked until one provider passes every mandatory qualification gate.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->
