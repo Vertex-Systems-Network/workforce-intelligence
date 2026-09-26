@@ -347,3 +347,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Windows public-trust provider compatibility audit is now on main.
 - SSL.com eSigner remains first external qualification target; DigiCert remains enterprise fallback.
 - No provider purchase, credential placement, signing, timestamp request, publication or Runner execution occurred.
+
+
+## 2026-09-26 — Windows provider qualification inquiry package
+
+- Reconciled protected main `06db81372dbac02a94f9869abaead8392bcf9aeb`.
+- Added PR #116 with ready-to-send qualification inquiries for SSL.com eSigner and DigiCert KeyLocker / Software Trust Manager.
+- Added explicit response acceptance gates covering Pakistan legal-entity eligibility, GitHub-hosted CI, HSM custody, headless authentication, credential rotation/revocation, certificate fingerprint verification, RFC3161 timestamping, audit logging, pricing and onboarding.
+- Updated durable blockers to use the provider-qualified remote-HSM public-trust model instead of the obsolete assumption that a portable Windows PFX is the target architecture.
+- No provider contact, purchase, credential placement, signing, timestamp request, publication or Runner execution occurred.
