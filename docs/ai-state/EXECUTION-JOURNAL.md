@@ -389,3 +389,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Non-secret send metadata was recorded in Issue #62.
 - Read-back of both Gmail threads shows no provider reply yet; Gate B8 is now WAITING_EXTERNAL on written responses.
 - Next action is reply evaluation against the provider acceptance checklist before any provider selection or integration.
+## 2026-09-26 — M14 remaining critical-path audit
+
+- Reconciled protected main `03c028c24987a0c83666d45bbbbdc053295b46cf` after PR #120 merge.
+- Added `docs/operations/M14_REMAINING_CRITICAL_PATH_AUDIT.md`.
+- Confirmed the remaining 30% is not a set of equal weighted tasks; no unsupported sub-percent scoring was invented.
+- Identified two independent pre-convergence lanes: Windows provider qualification/integration and Apple organization credential acquisition/readiness.
+- Confirmed Issue #70, deferred dependency PRs and unauthorized Runner tasks are not current M14 critical-path work unless new evidence proves otherwise.
+- Corrected the README roadmap M14 row from stale 60% to the canonical current 70% without advancing progress.
+- No provider purchase, Apple enrollment purchase, credential placement, signing, notarization, trusted tag creation, publication, real-target action, restore operation or Runner execution occurred.
