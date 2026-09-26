@@ -253,3 +253,11 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - Active M14 execution is Windows/Linux release trust, trusted publication controls, and real-target/recovery evidence.
 - No Apple purchase/enrollment, credential placement, signing, notarization, publication, or Runner execution occurred.
 - M14 remains 70%.
+## 2026-09-26 — PR #125 merged + real-target/recovery evidence preparation
+
+- PR #125 exact head `0721be76de984d6b269c0fd22c4edb3bae232897` passed Code Quality #476, WorkIntel CI #790 and Windows Certification #559 with zero unresolved review threads, then merged to protected main `0e6262ddbf32ce23f3d7ee3f8b9886ea7e95da1c`.
+- Re-checked SSL.com and DigiCert exact inquiry threads; no written response is present.
+- Added `docs/operations/M14_REAL_TARGET_RECOVERY_EVIDENCE_PLAN.md` for the active Windows/Linux scope.
+- Defined deterministic target identity, runtime health, DB/migration, queue/scheduler, storage, auth/workspace isolation, release download, isolated restore, rollback and final PRODUCTION_VERIFIED evidence requirements.
+- No production deployment, restore, signing, publication, provider purchase or Runner execution occurred.
+- M14 remains 70%; planning/preparation alone does not advance evidence progress.
