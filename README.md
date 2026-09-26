@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 Windows/Linux release trust — waiting on Windows provider replies
+- **Current Work:** M14 Windows/Linux trust — provider replies pending; real-target/recovery evidence plan prepared
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
 - **Active PR:** none
 - **Active Branch:** `main`
-- **Last Completed:** PR #124 merged at protected main dedf5028ac7047c7a167570bb96ba668daaeef9b; Apple/macOS signing and notarization are deferred to future Issue #123 without being marked complete. Active M14 execution is Windows/Linux release trust.
-- **Next Action:** Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory Windows provider gate. In parallel, advance non-Apple M14 work: Windows provider readiness, trusted publication preparation, and real-target/restore evidence preparation.
+- **Last Completed:** PR #125 merged to protected main 0e6262ddbf32ce23f3d7ee3f8b9886ea7e95da1c. The active Windows/Linux M14 real-target and recovery evidence contract is now source-prepared without executing production, restore, publication, signing, or Runner actions.
+- **Next Action:** Continue waiting for written SSL.com/DigiCert qualification responses. In parallel, collect only non-secret target facts needed by M14_REAL_TARGET_RECOVERY_EVIDENCE_PLAN.md (target identity, deployment topology, database/storage/queue/scheduler topology, backup mechanism, and isolated restore destination). Do not deploy, restore, publish, sign, or run Runner tasks without the required separate authority.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
