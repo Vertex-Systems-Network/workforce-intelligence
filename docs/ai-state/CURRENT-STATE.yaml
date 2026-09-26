@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "87763089d44fa5f22f9ca4127294456efdac8eb8",
+  "observed_main_sha": "dedf5028ac7047c7a167570bb96ba668daaeef9b",
   "active_issue": 62,
   "active_pr": null,
   "active_branch": "main",
-  "current_milestone": "M14 active Windows/Linux release trust — provider response wait",
+  "current_milestone": "M14 Windows/Linux release trust — provider response wait",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "Owner deferred Apple/macOS signing and notarization to future Issue #123 because the required subscription/tooling is not currently available. Apple remains fail-closed and explicitly incomplete; active M14 work now focuses on Windows/Linux trust, publication controls, and real-target/recovery evidence.",
-  "exact_next_safe_action": "Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory Windows provider gate. In parallel, advance only non-Apple work such as Windows provider readiness, trusted publication preparation, and real-target/restore evidence preparation. Do not purchase or configure Apple tooling until Issue #123 is explicitly resumed.",
+  "last_completed_milestone": "PR #124 merged at protected main dedf5028ac7047c7a167570bb96ba668daaeef9b; Apple/macOS signing and notarization are deferred to future Issue #123 without being marked complete. Active M14 execution is Windows/Linux release trust.",
+  "exact_next_safe_action": "Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory Windows provider gate. In parallel, advance non-Apple M14 work: Windows provider readiness, trusted publication preparation, and real-target/restore evidence preparation.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -39,14 +39,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-26T18:02:00+05:00",
+  "last_reconciled_at": "2026-09-26T18:48:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
     "current_work": "M14 Windows/Linux release trust — waiting on Windows provider replies",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Owner deferred Apple/macOS signing and notarization to future Issue #123 without claiming completion. Active M14 work remains Windows provider qualification/integration, Windows signer authority/readiness, Linux provenance, immutable publication, and real-target/restore evidence. No percentage is advanced merely because scope was deferred."
+      "basis": "Apple/macOS signing and notarization are deferred to future Issue #123 and are not counted as complete. Active M14 work remains Windows provider qualification/integration, Windows signer authority/readiness, Linux provenance, immutable publication, and real-target/restore evidence."
     },
     "overall_progress": {
       "percent": 100,
