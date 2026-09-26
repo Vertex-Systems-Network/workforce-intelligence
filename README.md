@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** PR #116 — SSL.com + DigiCert provider qualification inquiry drafts
+- **Current Work:** M14 external Windows provider written qualification
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** #116
-- **Active Branch:** `m14/provider-qualification-inquiry-drafts`
-- **Last Completed:** PR #115 merged at protected main 06db81372dbac02a94f9869abaead8392bcf9aeb; provider-audit post-merge state semantics are complete.
-- **Next Action:** Exact-head certify PR #116 and merge with expected-head protection if required checks are terminal green. After merge, send the approved inquiry to SSL.com and DigiCert and wait for written qualification responses before any provider purchase, provider-specific credential naming, or Windows signing integration.
+- **Active PR:** none
+- **Active Branch:** `main`
+- **Last Completed:** PR #116 merged at protected main 5e090abb47ef065e03bc8705bc60e069b41227d4; SSL.com and DigiCert qualification inquiry package is now on main.
+- **Next Action:** Keep GitHub release controls unchanged. Send the approved qualification inquiry to SSL.com and DigiCert through their verified support/sales channels, collect written non-secret responses, then evaluate them against the documented acceptance gates before any purchase, provider-specific credential naming, or Windows signing integration.
 
 > Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
 <!-- AI-PROGRESS:END -->

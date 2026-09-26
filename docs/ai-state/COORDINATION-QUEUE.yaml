@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "06db81372dbac02a94f9869abaead8392bcf9aeb",
-  "reconciled_at": "2026-09-26T00:19:48.577Z",
+  "observed_main_sha": "5e090abb47ef065e03bc8705bc60e069b41227d4",
+  "reconciled_at": "2026-09-26T00:46:00.612Z",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "windows-provider-written-qualification"
+      "action": "collect-and-evaluate-windows-provider-responses"
     },
     {
       "number": 70,
@@ -22,12 +22,13 @@
     {
       "number": 116,
       "title": "docs(m14): add Windows provider qualification inquiries",
-      "state": "open",
+      "state": "merged",
       "draft": false,
-      "head_sha": "resolve-on-resume",
+      "head_sha": "112792710c22ab22d9408712bab7748813aa0d0a",
       "base_sha": "06db81372dbac02a94f9869abaead8392bcf9aeb",
       "head_ref": "m14/provider-qualification-inquiry-drafts",
-      "action": "exact-head-certification-required-before-merge"
+      "action": "completed",
+      "resulting_main_sha": "5e090abb47ef065e03bc8705bc60e069b41227d4"
     },
     {
       "number": 114,
