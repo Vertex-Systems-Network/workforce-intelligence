@@ -14,11 +14,45 @@ M14 source trust and control-plane preparation are substantially complete. The r
 The fastest safe path is **parallel**:
 
 - **Windows lane:** wait for written SSL.com / DigiCert qualification, then select and integrate exactly one compliant remote-HSM provider.
-- **Apple lane:** independently prepare organization enrollment / Developer ID / notarization credential acquisition and placement readiness. This lane does not depend on the Windows provider response.
+- **Apple lane:** deferred to future Issue #123; it is no longer an active execution lane and is not represented as complete.
 - The lanes converge before trusted candidate execution and immutable publication.
 - Real-target production and restore evidence remain the final closure gate.
 
 No provider purchase, Apple membership purchase, credential placement, trusted tag creation, release publication, or production/restore action is authorized by this audit.
+
+## Owner scope override — Apple deferred to future Issue #123
+
+On 2026-09-26 the owner explicitly deferred Apple/macOS signing and notarization because the required subscription/tooling is not currently available.
+
+Effective active-scope rules:
+
+- Apple Gate R3-A, Apple portion of R4, Apple portion of R5, and macOS publication/real-target evidence are moved to future Issue #123.
+- These items are **DEFERRED**, not **COMPLETE** and not **VERIFIED**.
+- Existing Apple fail-closed source remains intact and must not be weakened or removed merely because the lane is deferred.
+- No Apple subscription purchase, organization enrollment, certificate/API-key creation, GitHub secret placement, signing or notarization is authorized in the active lane.
+- The active M14 critical path is now Windows qualification/integration -> Windows readiness/signing plus Linux provenance -> trusted publication -> real-target/recovery evidence.
+- If Issue #123 is resumed later, Apple must rejoin through its existing readiness/signing/notarization gates before any macOS completion claim.
+- The M14 percentage remains 70%; scope deferral alone is not evidence and does not earn progress.
+
+### Active dependency graph after deferral
+
+```text
+Windows:
+Provider replies (R1)
+  -> provider selection/integration (R2)
+  -> real Windows authority (R3-W)
+  -> Windows readiness (R4-W)
+  -> actual Windows signing (R5-W)
+                         \
+                          -> active-scope trusted publication (R6)
+                         /      -> real-target + restore evidence (R7)
+Linux:                  /
+Existing deterministic/provenance path
+  -> trusted candidate evidence (R5-L)
+
+Apple/macOS:
+DEFERRED -> Issue #123 -> resume only on explicit owner authorization
+```
 
 ## Already complete — do not repeat
 
@@ -194,11 +228,11 @@ A newly discovered security/release regression can still become a blocker if rep
 ## Fastest safe execution order
 
 1. Continue waiting for SSL.com/DigiCert written replies; evaluate immediately when received.
-2. In parallel, inventory whether the WorkIntel legal entity already has Apple organization enrollment, D-U-N-S, organization-domain email/site, Developer ID certificate, or notary API credentials. Do not purchase anything without separate authorization.
+2. Keep Apple/macOS work parked in Issue #123 until the owner explicitly resumes it and the required subscription/tooling is available.
 3. Do not build speculative provider-specific Windows integration before R1 selects a qualified provider.
 4. Once a provider passes R1, perform R2 and provider onboarding as one bounded lane.
-5. Run Windows and Apple material-readiness lanes as soon as their credentials independently become available.
-6. Converge only at trusted candidate execution, then publication, then real-target/restore verification.
+5. Run Windows material-readiness as soon as qualified provider credentials become available; Apple readiness remains deferred under Issue #123.
+6. For the active Windows/Linux scope, converge at trusted candidate execution, then publication, then real-target/restore verification.
 
 ## Progress truthfulness
 
