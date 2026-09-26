@@ -1,33 +1,41 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `8d43375b4c281a2bf7750e7b94f907937abdda2c`  
+**Observed protected main:** `87763089d44fa5f22f9ca4127294456efdac8eb8`  
 **Active Issue:** #62  
+**Deferred Future Issue:** #123 — Apple signing, notarization and macOS release trust  
 **Active PR:** none  
 **Active branch:** `main`  
-**Milestone:** M14 Gate B8 — external provider response wait + parallel Apple prerequisites  
+**Milestone:** M14 active Windows/Linux release trust — provider response wait  
 **Status:** WAITING_EXTERNAL
 
-## Completed
+## Owner Scope Decision
 
-- PR #121 merged to protected main `8d43375b4c281a2bf7750e7b94f907937abdda2c`.
-- M14 remaining critical-path audit is now on main.
-- The rolling execution journal was compacted back under the 32 KiB bound and older detail archived.
-- SSL.com and DigiCert exact qualification threads were re-checked at 2026-09-26 17:19 Asia/Karachi.
-- A broader mailbox search found no alternate/new-thread inbound message from either provider domain.
-- Issue #62 records the latest non-secret response-check evidence.
-- Apple credential evidence inventory found no connected-mail evidence for D-U-N-S, Organization enrollment, Developer ID, or App Store Connect Team API key; those remain NOT VERIFIED rather than assumed absent.
-- No purchase, credential placement, signing, notarization, tag creation, publication, production action, restore action or Runner execution occurred.
+- Apple/macOS signing and notarization are deferred to future Issue #123 because the required subscription/tooling is not currently available.
+- Apple work is not an active blocker for the current Windows/Linux release-trust lane.
+- Existing Apple fail-closed workflow/readiness source remains intact.
+- Apple credentials, subscription, signing, notarization and macOS release evidence remain explicitly incomplete; no completion claim is made.
+- No progress percentage is increased merely because Apple was deferred.
 
-## Still Blocked / Not Verified
+## Active M14 Critical Chain
 
-- No written SSL.com or DigiCert qualification response has been received.
-- Pakistan legal-entity eligibility, exact public Code Signing product support, GitHub-hosted CI, HSM custody, headless authentication, fingerprint verification, RFC3161 timestamping, audit controls, pricing and onboarding remain UNCONFIRMED.
-- Provider-specific Windows remote-HSM integration remains blocked until one provider passes every mandatory gate.
-- Apple D-U-N-S, organization-domain email, public legal-entity website, Organization membership, Developer ID certificate, and Team API-key/notary material remain NOT VERIFIED.
-- Real Windows/Apple signer material, readiness evidence, actual signing/notarization, publication and real-target/restore evidence remain incomplete.
-- Issue #70 remains open; RB-005 remains not-authorized/blocked.
+1. Written SSL.com/DigiCert Windows provider qualification.
+2. Qualified Windows provider selection + provider-specific remote-HSM integration.
+3. Real Windows organization signing authority.
+4. Protected Windows signer-material readiness evidence.
+5. Actual Windows signing + RFC3161 verification; Linux final provenance evidence.
+6. Authorized immutable trusted publication for the active platform scope.
+7. Real-target production + isolated backup-to-restore verification.
+
+## Deferred Future Chain
+
+Issue #123 owns:
+- Apple Developer Program organization enrollment/subscription;
+- Developer ID Application certificate;
+- Team API notarization key;
+- Apple protected environment placement/readiness;
+- real macOS signing/notarization/publication evidence.
 
 ## Next Action
 
-Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory provider gate. In parallel, verify non-secret Apple prerequisites (D-U-N-S, organization-domain email, public legal-entity website, existing Organization membership) without purchasing, creating credentials, or exposing secrets.
+Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory Windows provider gate. In parallel, advance only non-Apple work such as Windows provider readiness, trusted publication preparation, and real-target/restore evidence preparation. Do not purchase or configure Apple tooling until Issue #123 is explicitly resumed.

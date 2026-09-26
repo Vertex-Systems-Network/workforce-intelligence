@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "8d43375b4c281a2bf7750e7b94f907937abdda2c",
+  "observed_main_sha": "87763089d44fa5f22f9ca4127294456efdac8eb8",
   "active_issue": 62,
   "active_pr": null,
   "active_branch": "main",
-  "current_milestone": "M14 Gate B8 — external provider response wait + parallel Apple prerequisites",
+  "current_milestone": "M14 active Windows/Linux release trust — provider response wait",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "PR #121 merged at protected main 8d43375b4c281a2bf7750e7b94f907937abdda2c; M14 remaining critical-path audit is on main. SSL.com and DigiCert were re-checked at 2026-09-26 17:19 Asia/Karachi with no inbound response found.",
-  "exact_next_safe_action": "Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory provider gate. In parallel, verify non-secret Apple prerequisites (D-U-N-S, organization-domain email, public legal-entity website, existing Organization membership) without purchasing, creating credentials, or exposing secrets.",
+  "last_completed_milestone": "Owner deferred Apple/macOS signing and notarization to future Issue #123 because the required subscription/tooling is not currently available. Apple remains fail-closed and explicitly incomplete; active M14 work now focuses on Windows/Linux trust, publication controls, and real-target/recovery evidence.",
+  "exact_next_safe_action": "Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory Windows provider gate. In parallel, advance only non-Apple work such as Windows provider readiness, trusted publication preparation, and real-target/restore evidence preparation. Do not purchase or configure Apple tooling until Issue #123 is explicitly resumed.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -26,11 +26,9 @@
     "Written confirmation from SSL.com and/or DigiCert is pending after qualification inquiries were sent on 2026-09-26; Pakistan legal-entity eligibility, exact public Code Signing product eligibility, GitHub-hosted CI support, HSM custody, headless authentication, RFC3161 timestamping, signer fingerprint verification, audit logging, credential rotation/revocation, pricing and onboarding remain unconfirmed.",
     "No Windows public-trust provider has been selected; provider-specific remote-HSM signing integration and readiness evidence cannot be finalized yet.",
     "Public-trust Windows private signing keys must not be treated as portable GitHub PFX secrets; existing PFX secrets remain unset for the public-trust path.",
-    "Apple Developer ID P12/password/signing identity remain unavailable.",
-    "Apple notary Team API key P8/key ID/issuer ID remain unavailable.",
     "Administrator-bypass posture, main=branch policy type, agent-v*=tag policy type, and release-policy-token least privilege remain administrator-attested where GitHub read APIs do not prove them directly.",
-    "Real Windows signing/timestamp verification, Apple signing/notarization, release publication, and real-target evidence remain incomplete.",
-    "Issue #70 remains open; RB-005 remains not-authorized/blocked."
+    "Issue #70 remains open; RB-005 remains not-authorized/blocked.",
+    "Apple/macOS signing and notarization are intentionally deferred to future Issue #123 and are not an active M14 execution blocker; do not claim Apple completion."
   ],
   "timeout_control": {
     "max_consolidated_status_refreshes_per_milestone": 1,
@@ -41,14 +39,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-26T17:19:00+05:00",
+  "last_reconciled_at": "2026-09-26T18:02:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 waiting on Windows provider replies + verifying Apple non-secret prerequisites",
+    "current_work": "M14 Windows/Linux release trust — waiting on Windows provider replies",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "M14 source/control-plane preparation, provider qualification outreach, critical-path audit, and Apple evidence inventory are complete. Written Windows provider qualification, provider-specific integration, real Windows/Apple signer authority, live readiness, actual signing/notarization, immutable publication, and real-target/restore evidence remain incomplete."
+      "basis": "Owner deferred Apple/macOS signing and notarization to future Issue #123 without claiming completion. Active M14 work remains Windows provider qualification/integration, Windows signer authority/readiness, Linux provenance, immutable publication, and real-target/restore evidence. No percentage is advanced merely because scope was deferred."
     },
     "overall_progress": {
       "percent": 100,

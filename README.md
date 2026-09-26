@@ -6,17 +6,17 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 waiting on Windows provider replies + verifying Apple non-secret prerequisites
+- **Current Work:** M14 Windows/Linux release trust — waiting on Windows provider replies
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
 - **Active PR:** none
 - **Active Branch:** `main`
-- **Last Completed:** PR #121 merged at protected main 8d43375b4c281a2bf7750e7b94f907937abdda2c; M14 remaining critical-path audit is on main. SSL.com and DigiCert were re-checked at 2026-09-26 17:19 Asia/Karachi with no inbound response found.
-- **Next Action:** Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory provider gate. In parallel, verify non-secret Apple prerequisites (D-U-N-S, organization-domain email, public legal-entity website, existing Organization membership) without purchasing, creating credentials, or exposing secrets.
+- **Last Completed:** Owner deferred Apple/macOS signing and notarization to future Issue #123 because the required subscription/tooling is not currently available. Apple remains fail-closed and explicitly incomplete; active M14 work now focuses on Windows/Linux trust, publication controls, and real-target/recovery evidence.
+- **Next Action:** Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory Windows provider gate. In parallel, advance only non-Apple work such as Windows provider readiness, trusted publication preparation, and real-target/restore evidence preparation. Do not purchase or configure Apple tooling until Issue #123 is explicitly resumed.
 
-> Overall progress is scoped to the active release-scope modular maturity. Open maintenance, security, governance, provider, M14 release-trust, and future-scope work can still remain.
+> Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
 
 ## Development progress & phase status
@@ -39,7 +39,7 @@ The table below is the repository-level roadmap view. `Progress` represents acce
 | M11 | Role UX + Help + Onboarding | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Localized guidance/onboarding/RTL contracts complete |
 | M12 | Accessibility, Performance & Final Certification | Complete — active-scope closure | `██████████` 100% | 2026-08-21 | 2026-08-22 | Hosted + Windows certification accepted; withdrawn Laragon gate is not represented as passed |
 | M13 | Agent Lifecycle Reliability — Batches 1–6 | Complete | `██████████` 100% | 2026-08-22 | 2026-08-24 | Managed update, deterministic packaging, immutability, transactional publication, browser version authority and runtime-bound deployment accepted |
-| M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `███████░░░` **70%** | 2026-08-31 | **Active** | Provider qualification inquiries sent; source/control-plane and readiness lanes are prepared. Written provider qualification, real Windows/Apple signer authority, actual signing/notarization, immutable publication and real-target/restore evidence remain open |
+| M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `███████░░░` **70%** | 2026-08-31 | **Active** | Active scope: Windows/Linux trust, publication and real-target/recovery. Apple/macOS trust is deferred to future Issue #123 and is not claimed complete |
 
 \* The canonical M0–M12 maturity record stores per-phase completion state but not precise per-phase start/end timestamps. M0–M11 therefore use the repository's initial implementation/certification evidence window instead of inventing unsupported day-level precision. M12, M13 and M14 dates are tied to explicit repository/PR authority and closure records.
 
