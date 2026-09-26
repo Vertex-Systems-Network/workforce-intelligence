@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "80f07812d62f9ec70af500c6aaff8b2dac2c73de",
-  "reconciled_at": "2026-09-25T23:53:26.797Z",
+  "observed_main_sha": "06db81372dbac02a94f9869abaead8392bcf9aeb",
+  "reconciled_at": "2026-09-26T00:19:48.577Z",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "external-windows-provider-qualification"
+      "action": "windows-provider-written-qualification"
     },
     {
       "number": 70,
@@ -19,6 +19,16 @@
     }
   ],
   "pull_requests": [
+    {
+      "number": 116,
+      "title": "docs(m14): add Windows provider qualification inquiries",
+      "state": "open",
+      "draft": false,
+      "head_sha": "resolve-on-resume",
+      "base_sha": "06db81372dbac02a94f9869abaead8392bcf9aeb",
+      "head_ref": "m14/provider-qualification-inquiry-drafts",
+      "action": "exact-head-certification-required-before-merge"
+    },
     {
       "number": 114,
       "title": "docs(m14): audit Windows public-trust signing providers",
