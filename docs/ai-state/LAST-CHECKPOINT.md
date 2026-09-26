@@ -1,32 +1,34 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `baec59634ee93a8bbb6b7b714c9e38c1ee73849b`  
+**Observed protected main:** `03c028c24987a0c83666d45bbbbdc053295b46cf`  
 **Active Issue:** #62  
 **Active PR:** none  
 **Active branch:** `main`  
-**Milestone:** M14 Gate B8 — external Windows provider written-response collection  
+**Milestone:** M14 Gate B8 — parallel external trust acquisition  
 **Status:** WAITING_EXTERNAL
 
 ## Completed
 
-- PR #119 merged to protected main `baec59634ee93a8bbb6b7b714c9e38c1ee73849b`, completing post-PR #118 durable-state reconciliation.
-- SSL.com qualification inquiry was sent on 2026-09-26 to `sales@ssl.com`.
-- DigiCert qualification inquiry was sent on 2026-09-26 to `Sales@digicert.com`.
-- Both messages used the approved repository inquiry bodies and verified Sales channels.
-- No attachments, identity documents, private keys, certificates, API credentials, GitHub secrets, provider purchase, credential placement, signing, notarization, publication or Runner execution occurred.
-- Non-secret send metadata is recorded in Issue #62.
+- PR #120 merged to protected main `03c028c24987a0c83666d45bbbbdc053295b46cf`; provider inquiries-sent state is durable.
+- SSL.com and DigiCert qualification inquiries remain sent through verified Sales channels.
+- M14 remaining critical path was deeply reconciled in `docs/operations/M14_REMAINING_CRITICAL_PATH_AUDIT.md`.
+- The audit confirms the Windows provider-response lane and Apple organization credential-acquisition lane can progress independently until trusted candidate execution.
+- No module percentage was advanced for planning/audit-only work.
+- No provider purchase, Apple membership purchase, credential placement, signing, notarization, tag creation, publication, production deployment, restore operation or Runner execution occurred.
 
-## Still Blocked / Not Verified
+## Remaining Critical Chain
 
-- No written provider response has been received yet in either sent Gmail thread.
-- Pakistan legal-entity eligibility and exact product/SKU remain unconfirmed.
-- GitHub-hosted unattended signing, HSM custody, authentication model, fingerprint verification, RFC3161 timestamping, audit logging, credential rotation/revocation, pricing and onboarding remain unconfirmed.
-- Final Windows public-trust provider selection/purchase remains blocked.
-- Provider-specific secret/variable contract and remote-signing integration remain blocked.
-- Real Apple or Windows signer material, actual signing/notarization, publication and real-target evidence remain incomplete.
-- Issue #70 remains open; RB-005 remains not-authorized/blocked.
+1. Written Windows provider qualification.
+2. Qualified-provider selection + provider-specific remote-HSM integration.
+3. Real Windows signing authority and Apple Developer ID/notary authority.
+4. Protected signer-material readiness evidence.
+5. Actual trusted candidate signing/notarization.
+6. Authorized immutable trusted release publication.
+7. Real-target production and isolated backup-to-restore verification.
+
+Issue #70 and deferred dependency PRs remain parallel/non-critical unless new evidence proves they affect M14.
 
 ## Next Action
 
-Wait for written SSL.com and/or DigiCert responses, then evaluate each non-secret reply against the documented provider acceptance checklist. Do not purchase, create provider-specific credentials, or integrate Windows signing until a provider passes all mandatory gates.
+Continue waiting for written SSL.com/DigiCert qualification responses. In parallel, inventory existing Apple organization enrollment and Developer ID/notary credential readiness without purchasing, exposing, or placing secrets. Provider-specific Windows integration remains blocked until one provider passes every mandatory qualification gate.
