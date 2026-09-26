@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "4aa496bb4f16514711618aac675aafbdfb4e28ec",
+  "observed_main_sha": "baec59634ee93a8bbb6b7b714c9e38c1ee73849b",
   "active_issue": 62,
   "active_pr": null,
   "active_branch": "main",
-  "current_milestone": "M14 Gate B8 — external Windows provider response collection",
-  "milestone_status": "BLOCKED_EXTERNAL",
-  "last_completed_milestone": "PR #118 merged at protected main 4aa496bb4f16514711618aac675aafbdfb4e28ec; verified SSL.com and DigiCert contact/send paths are now on main.",
-  "exact_next_safe_action": "Send the approved SSL.com and DigiCert qualification inquiries through the verified Sales channels, collect written non-secret responses, and evaluate them against the documented acceptance gates before any purchase, provider-specific credential naming, or Windows signing integration.",
+  "current_milestone": "M14 Gate B8 — external Windows provider written-response collection",
+  "milestone_status": "WAITING_EXTERNAL",
+  "last_completed_milestone": "SSL.com and DigiCert qualification inquiries were sent on 2026-09-26 through verified Sales channels with no attachments or credentials; Issue #62 contains non-secret send evidence.",
+  "exact_next_safe_action": "Wait for written SSL.com and/or DigiCert responses, then evaluate each non-secret reply against the documented provider acceptance checklist. Do not purchase, create provider-specific credentials, or integrate Windows signing until a provider passes all mandatory gates.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,7 +23,7 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Written confirmation from SSL.com and/or DigiCert for the actual Pakistan legal entity, exact public Code Signing product eligibility, GitHub-hosted CI support, HSM custody, headless authentication, RFC3161 timestamping, signer fingerprint verification, audit logging, credential rotation/revocation, pricing and onboarding is not yet available.",
+    "Written confirmation from SSL.com and/or DigiCert is pending after qualification inquiries were sent on 2026-09-26; Pakistan legal-entity eligibility, exact public Code Signing product eligibility, GitHub-hosted CI support, HSM custody, headless authentication, RFC3161 timestamping, signer fingerprint verification, audit logging, credential rotation/revocation, pricing and onboarding remain unconfirmed.",
     "No Windows public-trust provider has been selected; provider-specific remote-HSM signing integration and readiness evidence cannot be finalized yet.",
     "Public-trust Windows private signing keys must not be treated as portable GitHub PFX secrets; existing PFX secrets remain unset for the public-trust path.",
     "Apple Developer ID P12/password/signing identity remain unavailable.",
@@ -41,14 +41,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-26T09:02:48Z",
+  "last_reconciled_at": "2026-09-26T16:11:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 external Windows provider written qualification",
+    "current_work": "M14 awaiting SSL.com + DigiCert written qualification responses",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Control-plane evidence, platform readiness lanes, provider audit, inquiry drafts, and verified provider contact/send paths are on main. Provider responses, provider-specific integration, real signer material, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
+      "basis": "Control-plane evidence, platform readiness lanes, provider audit, inquiry drafts, verified provider contact/send paths, and outbound qualification emails are complete. Written provider qualification, provider-specific integration, real signer material, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
     },
     "overall_progress": {
       "percent": 100,

@@ -380,3 +380,12 @@ Rolling journal; keep under 32 KiB and archive older entries when necessary.
 - Verified SSL.com and DigiCert provider contact/send paths are now on main, including duplicate-ticket avoidance, escalation order, first-response acceptance markers, and safe metadata archival rules.
 - M14 returns to external-response collection: approved qualification inquiries must be sent and written non-secret provider responses evaluated before any provider purchase or provider-specific signing integration.
 - No provider purchase, credential placement, signing, timestamp request, notarization, publication or Runner execution occurred.
+## 2026-09-26 — Windows provider qualification inquiries sent
+
+- Reconciled protected main `baec59634ee93a8bbb6b7b714c9e38c1ee73849b` after PR #119 merge.
+- Sent the approved SSL.com qualification inquiry to `sales@ssl.com` and the approved DigiCert qualification inquiry to `Sales@digicert.com`.
+- Both messages used the verified Sales paths documented on main; no duplicate Sales/Support/Validation submissions were created.
+- No attachments, identity documents, private keys, certificates, API credentials, GitHub secrets, provider purchase, credential placement, signing, timestamp request, notarization, publication or Runner task were performed.
+- Non-secret send metadata was recorded in Issue #62.
+- Read-back of both Gmail threads shows no provider reply yet; Gate B8 is now WAITING_EXTERNAL on written responses.
+- Next action is reply evaluation against the provider acceptance checklist before any provider selection or integration.
