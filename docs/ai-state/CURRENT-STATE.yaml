@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "5e090abb47ef065e03bc8705bc60e069b41227d4",
+  "observed_main_sha": "607f48dcd53aa2813b808b0c167644bad1740126",
   "active_issue": 62,
-  "active_pr": null,
-  "active_branch": "main",
-  "current_milestone": "M14 Gate B8 — external Windows provider response collection",
-  "milestone_status": "BLOCKED_EXTERNAL",
-  "last_completed_milestone": "PR #116 merged at protected main 5e090abb47ef065e03bc8705bc60e069b41227d4; SSL.com and DigiCert qualification inquiry package is now on main.",
-  "exact_next_safe_action": "Keep GitHub release controls unchanged. Send the approved qualification inquiry to SSL.com and DigiCert through their verified support/sales channels, collect written non-secret responses, then evaluate them against the documented acceptance gates before any purchase, provider-specific credential naming, or Windows signing integration.",
+  "active_pr": 118,
+  "active_branch": "m14/provider-contact-send-paths",
+  "current_milestone": "M14 Gate B8 — provider contact/send-path verification",
+  "milestone_status": "VERIFYING",
+  "last_completed_milestone": "PR #117 merged at protected main 607f48dcd53aa2813b808b0c167644bad1740126; provider inquiry package state reconciliation is complete.",
+  "exact_next_safe_action": "Exact-head certify PR #118 and merge with expected-head protection if required checks are terminal green. After merge, send the approved SSL.com and DigiCert qualification inquiries through the verified Sales channels and collect written non-secret responses before any purchase or provider-specific integration.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -41,14 +41,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-26T00:46:00.612Z",
+  "last_reconciled_at": "2026-09-26T01:07:28.101Z",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 external Windows provider written qualification",
+    "current_work": "PR #118 — verified SSL.com + DigiCert contact/send paths",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Control-plane evidence, platform readiness lanes, signer acquisition checklist, provider compatibility audit, and ready-to-send provider qualification inquiries are on main. Provider responses, provider-specific integration, real signer material, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
+      "basis": "Control-plane evidence, platform readiness lanes, provider audit, inquiry drafts, and verified provider contact/send paths are prepared. Provider responses, provider-specific integration, real signer material, live readiness evidence, actual signing/notarization, publication, and real-target evidence remain incomplete."
     },
     "overall_progress": {
       "percent": 100,
