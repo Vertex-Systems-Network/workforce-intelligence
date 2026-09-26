@@ -245,3 +245,11 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - Existing fail-closed Apple workflow/readiness source remains preserved; no Apple subscription, enrollment, certificate, API key, credential placement, signing or notarization was performed.
 - Active M14 execution now focuses on Windows provider qualification/integration, Windows signer authority/readiness, Linux provenance, trusted publication controls and real-target/recovery evidence.
 - M14 remains 70%; no percentage was advanced for scope deferral.
+## 2026-09-26 — PR #124 merged; Apple future-scope deferral finalized
+
+- PR #124 exact head `03f7dcfcec889306fb9c843089fbf1af76294a0c` passed WorkIntel Code Quality #474, WorkIntel CI #788, and Windows Certification #557 with zero unresolved review threads.
+- Merged with expected-head protection to protected main `dedf5028ac7047c7a167570bb96ba668daaeef9b`.
+- Apple/macOS signing and notarization are now durably parked in future Issue #123 without any completion claim.
+- Active M14 execution is Windows/Linux release trust, trusted publication controls, and real-target/recovery evidence.
+- No Apple purchase/enrollment, credential placement, signing, notarization, publication, or Runner execution occurred.
+- M14 remains 70%.

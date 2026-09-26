@@ -13,8 +13,8 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Active Issue:** #62
 - **Active PR:** none
 - **Active Branch:** `main`
-- **Last Completed:** Owner deferred Apple/macOS signing and notarization to future Issue #123 because the required subscription/tooling is not currently available. Apple remains fail-closed and explicitly incomplete; active M14 work now focuses on Windows/Linux trust, publication controls, and real-target/recovery evidence.
-- **Next Action:** Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory Windows provider gate. In parallel, advance only non-Apple work such as Windows provider readiness, trusted publication preparation, and real-target/restore evidence preparation. Do not purchase or configure Apple tooling until Issue #123 is explicitly resumed.
+- **Last Completed:** PR #124 merged at protected main dedf5028ac7047c7a167570bb96ba668daaeef9b; Apple/macOS signing and notarization are deferred to future Issue #123 without being marked complete. Active M14 execution is Windows/Linux release trust.
+- **Next Action:** Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory Windows provider gate. In parallel, advance non-Apple M14 work: Windows provider readiness, trusted publication preparation, and real-target/restore evidence preparation.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
