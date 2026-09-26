@@ -1,30 +1,30 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `80f07812d62f9ec70af500c6aaff8b2dac2c73de`  
+**Observed protected main:** `06db81372dbac02a94f9869abaead8392bcf9aeb`  
 **Active Issue:** #62  
-**Active PR:** none  
-**Active branch:** `main`  
-**Milestone:** M14 Gate B7 — external provider qualification  
-**Status:** BLOCKED_EXTERNAL
+**Active PR:** #116  
+**Active branch:** `m14/provider-qualification-inquiry-drafts`  
+**Milestone:** M14 Gate B7 — Windows provider written qualification  
+**Status:** VERIFYING
 
-## Completed
+## Prepared
 
-- PR #114 exact head `917f8744e1f4573649d351fbdc048bd8a0cb1cbe` passed WorkIntel CI #759, Code Quality #445, Windows Certification #528, with zero unresolved review threads.
-- PR #114 merged with expected-head protection to protected main `80f07812d62f9ec70af500c6aaff8b2dac2c73de`.
-- Windows public-trust signing provider compatibility audit is now on `main`.
-- SSL.com eSigner is the first qualification target; DigiCert KeyLocker / Software Trust Manager is the enterprise fallback.
-- Public-trust Windows private keys remain prohibited from being treated as portable GitHub PFX secrets.
+- PR #116 adds `docs/operations/M14_WINDOWS_PROVIDER_QUALIFICATION_INQUIRIES.md`.
+- Ready-to-send inquiry drafts exist for SSL.com eSigner and DigiCert KeyLocker / Software Trust Manager.
+- Both drafts request explicit written confirmation for Pakistan legal-entity eligibility, exact publisher identity, GitHub-hosted CI, HSM key custody, headless authentication, credential rotation/revocation, signer fingerprint verification, RFC3161 timestamping, audit logs, pricing and onboarding.
+- Provider-response acceptance criteria are documented.
+- Durable Windows blocker language now reflects the remote-HSM/public-trust architecture rather than treating a portable PFX as the target.
 
-## Still Blocked / Not Verified
+## Still Not Verified
 
-- Written provider confirmation for the actual WorkIntel legal entity.
-- Provider-specific GitHub authentication, rotation and audit-log contract.
-- Provider-specific remote HSM signing integration.
-- Real Apple signer/notary material and Windows provider credentials.
-- Live readiness evidence, actual signing/notarization, publication and real-target evidence.
-- Issue #70 remains open; RB-005 remains not-authorized/blocked.
+- Any written provider response for the actual WorkIntel legal entity.
+- Final provider selection or purchase.
+- Provider-specific secret/variable contract.
+- Provider-specific remote-signing integration.
+- Real Apple or Windows signer material.
+- Live readiness, actual signing/notarization, publication or real-target evidence.
 
 ## Next Action
 
-Keep GitHub release controls unchanged. Externally qualify SSL.com eSigner and DigiCert against the documented Pakistan-entity, GitHub-hosted CI, HSM custody, timestamp, signer-identity, rotation and audit-log gates; do not purchase or add provider credentials until those requirements are confirmed.
+Exact-head certify PR #116 and merge with expected-head protection if required checks are terminal green. After merge, send the approved inquiry to SSL.com and DigiCert and wait for written qualification responses before any provider purchase, provider-specific credential naming, or Windows signing integration.
