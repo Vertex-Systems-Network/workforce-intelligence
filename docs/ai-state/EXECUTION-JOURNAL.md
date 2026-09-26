@@ -237,3 +237,11 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - Recorded the no-response result in Issue #62 without advancing any qualification gate.
 - Apple evidence inventory remains NOT VERIFIED for D-U-N-S, Organization enrollment, Developer ID and App Store Connect Team API-key evidence.
 - M14 remains 70% and WAITING_EXTERNAL; no purchase, credential placement, signing, publication or Runner execution occurred.
+## 2026-09-26 — Apple/macOS release trust deferred to future scope
+
+- Owner directed Apple development/signing/notarization to be set aside because the required subscription/tooling is not currently available.
+- Created Issue #123 to preserve the deferred Apple/macOS trust lane without losing its requirements.
+- Apple is removed from the active M14 execution critical path but is not represented as complete.
+- Existing fail-closed Apple workflow/readiness source remains preserved; no Apple subscription, enrollment, certificate, API key, credential placement, signing or notarization was performed.
+- Active M14 execution now focuses on Windows provider qualification/integration, Windows signer authority/readiness, Linux provenance, trusted publication controls and real-target/recovery evidence.
+- M14 remains 70%; no percentage was advanced for scope deferral.
