@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "03c028c24987a0c83666d45bbbbdc053295b46cf",
-  "reconciled_at": "2026-09-26T16:11:00+05:00",
+  "observed_main_sha": "8d43375b4c281a2bf7750e7b94f907937abdda2c",
+  "reconciled_at": "2026-09-26T17:19:00+05:00",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "parallel-await-windows-provider-responses-and-inventory-apple-readiness"
+      "action": "await-written-provider-responses-and-verify-apple-nonsecret-prerequisites"
     },
     {
       "number": 70,

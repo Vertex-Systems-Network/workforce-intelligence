@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "03c028c24987a0c83666d45bbbbdc053295b46cf",
+  "observed_main_sha": "8d43375b4c281a2bf7750e7b94f907937abdda2c",
   "active_issue": 62,
   "active_pr": null,
   "active_branch": "main",
-  "current_milestone": "M14 Gate B8 — parallel external trust acquisition",
+  "current_milestone": "M14 Gate B8 — external provider response wait + parallel Apple prerequisites",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "PR #120 merged at protected main 03c028c24987a0c83666d45bbbbdc053295b46cf; provider inquiries-sent state is now durable. M14 remaining critical path was re-audited without advancing evidence progress.",
-  "exact_next_safe_action": "Continue waiting for written SSL.com/DigiCert qualification responses. In parallel, inventory existing Apple organization enrollment and Developer ID/notary credential readiness without purchasing, exposing, or placing secrets. Provider-specific Windows integration remains blocked until one provider passes every mandatory qualification gate.",
+  "last_completed_milestone": "PR #121 merged at protected main 8d43375b4c281a2bf7750e7b94f907937abdda2c; M14 remaining critical-path audit is on main. SSL.com and DigiCert were re-checked at 2026-09-26 17:19 Asia/Karachi with no inbound response found.",
+  "exact_next_safe_action": "Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory provider gate. In parallel, verify non-secret Apple prerequisites (D-U-N-S, organization-domain email, public legal-entity website, existing Organization membership) without purchasing, creating credentials, or exposing secrets.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -41,14 +41,14 @@
     "routine_substep_confirmation_required": false,
     "manual_setup_grouped_default": true
   },
-  "last_reconciled_at": "2026-09-26T16:11:00+05:00",
+  "last_reconciled_at": "2026-09-26T17:19:00+05:00",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 parallel trust acquisition — provider responses + Apple credential readiness inventory",
+    "current_work": "M14 waiting on Windows provider replies + verifying Apple non-secret prerequisites",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "M14 critical-path audit confirms source/control-plane preparation and outbound Windows qualification are complete. Remaining work is external Windows provider qualification/integration, real Windows and Apple signer authority, live readiness, actual signing/notarization, immutable publication, and real-target/restore evidence."
+      "basis": "M14 source/control-plane preparation, provider qualification outreach, critical-path audit, and Apple evidence inventory are complete. Written Windows provider qualification, provider-specific integration, real Windows/Apple signer authority, live readiness, actual signing/notarization, immutable publication, and real-target/restore evidence remain incomplete."
     },
     "overall_progress": {
       "percent": 100,

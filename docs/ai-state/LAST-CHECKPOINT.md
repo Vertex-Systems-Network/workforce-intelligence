@@ -1,34 +1,33 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `03c028c24987a0c83666d45bbbbdc053295b46cf`  
+**Observed protected main:** `8d43375b4c281a2bf7750e7b94f907937abdda2c`  
 **Active Issue:** #62  
 **Active PR:** none  
 **Active branch:** `main`  
-**Milestone:** M14 Gate B8 — parallel external trust acquisition  
+**Milestone:** M14 Gate B8 — external provider response wait + parallel Apple prerequisites  
 **Status:** WAITING_EXTERNAL
 
 ## Completed
 
-- PR #120 merged to protected main `03c028c24987a0c83666d45bbbbdc053295b46cf`; provider inquiries-sent state is durable.
-- SSL.com and DigiCert qualification inquiries remain sent through verified Sales channels.
-- M14 remaining critical path was deeply reconciled in `docs/operations/M14_REMAINING_CRITICAL_PATH_AUDIT.md`.
-- The audit confirms the Windows provider-response lane and Apple organization credential-acquisition lane can progress independently until trusted candidate execution.
-- No module percentage was advanced for planning/audit-only work.
-- No provider purchase, Apple membership purchase, credential placement, signing, notarization, tag creation, publication, production deployment, restore operation or Runner execution occurred.
+- PR #121 merged to protected main `8d43375b4c281a2bf7750e7b94f907937abdda2c`.
+- M14 remaining critical-path audit is now on main.
+- The rolling execution journal was compacted back under the 32 KiB bound and older detail archived.
+- SSL.com and DigiCert exact qualification threads were re-checked at 2026-09-26 17:19 Asia/Karachi.
+- A broader mailbox search found no alternate/new-thread inbound message from either provider domain.
+- Issue #62 records the latest non-secret response-check evidence.
+- Apple credential evidence inventory found no connected-mail evidence for D-U-N-S, Organization enrollment, Developer ID, or App Store Connect Team API key; those remain NOT VERIFIED rather than assumed absent.
+- No purchase, credential placement, signing, notarization, tag creation, publication, production action, restore action or Runner execution occurred.
 
-## Remaining Critical Chain
+## Still Blocked / Not Verified
 
-1. Written Windows provider qualification.
-2. Qualified-provider selection + provider-specific remote-HSM integration.
-3. Real Windows signing authority and Apple Developer ID/notary authority.
-4. Protected signer-material readiness evidence.
-5. Actual trusted candidate signing/notarization.
-6. Authorized immutable trusted release publication.
-7. Real-target production and isolated backup-to-restore verification.
-
-Issue #70 and deferred dependency PRs remain parallel/non-critical unless new evidence proves they affect M14.
+- No written SSL.com or DigiCert qualification response has been received.
+- Pakistan legal-entity eligibility, exact public Code Signing product support, GitHub-hosted CI, HSM custody, headless authentication, fingerprint verification, RFC3161 timestamping, audit controls, pricing and onboarding remain UNCONFIRMED.
+- Provider-specific Windows remote-HSM integration remains blocked until one provider passes every mandatory gate.
+- Apple D-U-N-S, organization-domain email, public legal-entity website, Organization membership, Developer ID certificate, and Team API-key/notary material remain NOT VERIFIED.
+- Real Windows/Apple signer material, readiness evidence, actual signing/notarization, publication and real-target/restore evidence remain incomplete.
+- Issue #70 remains open; RB-005 remains not-authorized/blocked.
 
 ## Next Action
 
-Continue waiting for written SSL.com/DigiCert qualification responses. In parallel, inventory existing Apple organization enrollment and Developer ID/notary credential readiness without purchasing, exposing, or placing secrets. Provider-specific Windows integration remains blocked until one provider passes every mandatory qualification gate.
+Continue waiting for written SSL.com/DigiCert qualification responses and evaluate any reply against every mandatory provider gate. In parallel, verify non-secret Apple prerequisites (D-U-N-S, organization-domain email, public legal-entity website, existing Organization membership) without purchasing, creating credentials, or exposing secrets.
