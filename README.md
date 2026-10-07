@@ -19,32 +19,6 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
 
-## Development progress & phase status
-
-The table below is the repository-level roadmap view. `Progress` represents accepted phase completion/evidence gates, not code volume. A green source/CI state is not the same as `PRODUCTION_VERIFIED`; external signing, release and real-target evidence remain separate gates where required.
-
-| Phase | Module / scope | Status | Progress | Start date | End date | Current gate / note |
-|---|---|---|---|---|---|---|
-| M0 | Roadmap & Acceptance Criteria | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Historical roadmap foundation complete |
-| M1 | Full System Inventory & Module Map | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Inventory/classification accepted |
-| M2 | WorkIntel Design System V1 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Source ratchets + build/browser certification complete |
-| M3 | Application Shell & Information Architecture | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Responsive/browser certification complete |
-| M4 | Shared UX Systems V3 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Shared UX contracts complete |
-| M5 | Core Workforce Module Conversion | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Core workforce conversion closed |
-| M6 | Business/Admin Module Conversion | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Business/admin conversion closed |
-| M7 | Media DAM V3 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | DB-backed, build/typecheck and browser evidence complete |
-| M8 | Website Studio V3 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Publishing/editor/browser contracts complete |
-| M9 | Document Studio V6 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | MySQL/PHPUnit/build/browser evidence complete |
-| M10 | Chat & Collaboration V4 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | DB/build/browser/accessibility evidence complete |
-| M11 | Role UX + Help + Onboarding | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Localized guidance/onboarding/RTL contracts complete |
-| M12 | Accessibility, Performance & Final Certification | Complete — active-scope closure | `██████████` 100% | 2026-08-21 | 2026-08-22 | Hosted + Windows certification accepted; withdrawn Laragon gate is not represented as passed |
-| M13 | Agent Lifecycle Reliability — Batches 1–6 | Complete | `██████████` 100% | 2026-08-22 | 2026-08-24 | Managed update, deterministic packaging, immutability, transactional publication, browser version authority and runtime-bound deployment accepted |
-| M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `███████░░░` **70%** | 2026-08-31 | **Active** | Active scope: Windows/Linux trust, publication and real-target/recovery. Apple/macOS trust is deferred to future Issue #123 and is not claimed complete |
-
-\* The canonical M0–M12 maturity record stores per-phase completion state but not precise per-phase start/end timestamps. M0–M11 therefore use the repository's initial implementation/certification evidence window instead of inventing unsupported day-level precision. M12, M13 and M14 dates are tied to explicit repository/PR authority and closure records.
-
-**Current roadmap state:** M0–M13 are accepted complete. M14 is the active authorized phase and must not be labeled `DONE` or `PRODUCTION_VERIFIED` until its owner-authorized AI-only review gate and external evidence gates are actually satisfied. See `docs/architecture/MODULAR_MATURITY_STATUS.md`, `docs/architecture/M13_AGENT_LIFECYCLE_RELIABILITY.md`, `docs/architecture/M14_RELEASE_TRUST_READINESS.md`, and `docs/status/AI_CHECKPOINT.md`.
-
 
 ## Table of contents
 
@@ -90,6 +64,34 @@ This continuation index reflects the repository state observed on **2026-10-08**
 - Issue #70's owner-role invariant must not be weakened; retries must not mask seed failures.
 - Issue #62's external configuration evidence is separate from product code and does not authorize deployment, publication, signing, restore, or Runner execution.
 - Unchecked production checklist items remain target-specific evidence gates, not proof of missing source features.
+
+
+## Development progress & phase status
+
+The table below is the repository-level roadmap view. `Progress` represents accepted phase completion/evidence gates, not code volume. A green source/CI state is not the same as `PRODUCTION_VERIFIED`; external signing, release and real-target evidence remain separate gates where required.
+
+| Phase | Module / scope | Status | Progress | Start date | End date | Current gate / note |
+|---|---|---|---|---|---|---|
+| M0 | Roadmap & Acceptance Criteria | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Historical roadmap foundation complete |
+| M1 | Full System Inventory & Module Map | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Inventory/classification accepted |
+| M2 | WorkIntel Design System V1 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Source ratchets + build/browser certification complete |
+| M3 | Application Shell & Information Architecture | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Responsive/browser certification complete |
+| M4 | Shared UX Systems V3 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Shared UX contracts complete |
+| M5 | Core Workforce Module Conversion | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Core workforce conversion closed |
+| M6 | Business/Admin Module Conversion | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Business/admin conversion closed |
+| M7 | Media DAM V3 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | DB-backed, build/typecheck and browser evidence complete |
+| M8 | Website Studio V3 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Publishing/editor/browser contracts complete |
+| M9 | Document Studio V6 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | MySQL/PHPUnit/build/browser evidence complete |
+| M10 | Chat & Collaboration V4 | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | DB/build/browser/accessibility evidence complete |
+| M11 | Role UX + Help + Onboarding | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Localized guidance/onboarding/RTL contracts complete |
+| M12 | Accessibility, Performance & Final Certification | Complete — active-scope closure | `██████████` 100% | 2026-08-21 | 2026-08-22 | Hosted + Windows certification accepted; withdrawn Laragon gate is not represented as passed |
+| M13 | Agent Lifecycle Reliability — Batches 1–6 | Complete | `██████████` 100% | 2026-08-22 | 2026-08-24 | Managed update, deterministic packaging, immutability, transactional publication, browser version authority and runtime-bound deployment accepted |
+| M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `███████░░░` **70%** | 2026-08-31 | **Active** | Active scope: Windows/Linux trust, publication and real-target/recovery. Apple/macOS trust is deferred to future Issue #123 and is not claimed complete |
+
+\* The canonical M0–M12 maturity record stores per-phase completion state but not precise per-phase start/end timestamps. M0–M11 therefore use the repository's initial implementation/certification evidence window instead of inventing unsupported day-level precision. M12, M13 and M14 dates are tied to explicit repository/PR authority and closure records.
+
+**Current roadmap state:** M0–M13 are accepted complete. M14 is the active authorized phase and must not be labeled `DONE` or `PRODUCTION_VERIFIED` until its owner-authorized AI-only review gate and external evidence gates are actually satisfied. See `docs/architecture/MODULAR_MATURITY_STATUS.md`, `docs/architecture/M13_AGENT_LIFECYCLE_RELIABILITY.md`, `docs/architecture/M14_RELEASE_TRUST_READINESS.md`, and `docs/status/AI_CHECKPOINT.md`.
+
 
 ## Clean project structure
 
