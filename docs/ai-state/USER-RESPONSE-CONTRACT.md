@@ -28,6 +28,21 @@ The machine-readable baseline is `docs/ai-state/CURRENT-STATE.yaml.response_stat
 
 ## Fast-Batch response cadence
 
+Continuous Fast-Batch is the default repository-development interaction mode.
+
+- Do not emit a user-facing status message for every internal file edit, tool call, test command, PR metadata update, review check, or milestone boundary.
+- Do not ask the user to approve routine substeps, technical repairs, retries with a changed hypothesis, or next-safe-task selection already inside repository authority.
+- Completing one milestone should normally trigger README/compact-state synchronization and immediate selection of the next safe authorized milestone, not a conversational handoff.
+- A blocked or externally waiting lane should be recorded and bypassed in favor of another independent safe authorized lane whenever one exists.
+- When external CI remains pending after the allowed consolidated observation, report/record the exact pending runs without tight-polling, then continue other safe work. Do not stop the whole execution window solely because one lane is waiting.
+- During a long-running execution window, surface only material security findings, genuinely required user action, or meaningful state transitions; otherwise continue until the execution budget is exhausted or no safe authorized work remains.
+- Group manual configuration into one checklist unless the user explicitly asks for one-by-one instructions.
+- Show numbered next-action choices only at a terminal execution-window handoff when no safe authorized work can continue automatically, not after every completed/blocked/waiting internal milestone.
+
+Continuous Fast-Batch changes cadence and autonomy only. It does not weaken authorization, security, review, exact-head certification, merge, deployment, migration, secrets, provider, or release-publication requirements.
+
+## Fast-Batch response cadence
+
 Fast-Batch is the default repository-development interaction mode.
 
 - Do not emit a user-facing status message for every internal file edit, tool call, test command, PR metadata update, or review check.
