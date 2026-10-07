@@ -30,10 +30,9 @@
       "title": "docs: refresh README audit and progress on current main",
       "state": "open",
       "draft": false,
-      "head_sha": "22ea3b6863f7873d1529aa50fc9c47e1aa838094",
       "base_sha": "87a0d679c3737c785ad3a2988d9ace97ffa45c80",
       "head_ref": "docs/readme-current-audit-2026-10-08",
-      "action": "verifying-exact-head-ci"
+      "action": "verifying-exact-head-ci; see PR for live candidate SHA and run IDs"
     },
     {
       "number": 132,
