@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 Windows/Linux trust — provider replies pending; real-target/recovery evidence plan prepared
+- **Current Work:** Dependency maintenance PRs #76, #82, #83, and #132 are undergoing exact-head certification; M14 external provider replies and real-target facts remain pending.
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** none
+- **Active PRs:** #76, #82, #83, #132
 - **Active Branch:** `main`
-- **Last Completed:** PR #125 merged to protected main 0e6262ddbf32ce23f3d7ee3f8b9886ea7e95da1c. The active Windows/Linux M14 real-target and recovery evidence contract is now source-prepared without executing production, restore, publication, signing, or Runner actions.
-- **Next Action:** Continue waiting for written SSL.com/DigiCert qualification responses. In parallel, collect only non-secret target facts needed by M14_REAL_TARGET_RECOVERY_EVIDENCE_PLAN.md (target identity, deployment topology, database/storage/queue/scheduler topology, backup mechanism, and isolated restore destination). Do not deploy, restore, publish, sign, or run Runner tasks without the required separate authority.
+- **Last Completed:** Dependency PR #127 merged to protected main at `87a0d679c3737c785ad3a2988d9ace97ffa45c80`. This does not advance M14 evidence progress.
+- **Next Action:** Complete exact-head certification and review for the active dependency PRs. Continue the M14 evidence path when written provider responses and non-secret target facts are available; do not deploy, restore, publish, sign, or run Runner tasks without their required separate authority.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
@@ -44,6 +44,52 @@ The table below is the repository-level roadmap view. `Progress` represents acce
 \* The canonical M0–M12 maturity record stores per-phase completion state but not precise per-phase start/end timestamps. M0–M11 therefore use the repository's initial implementation/certification evidence window instead of inventing unsupported day-level precision. M12, M13 and M14 dates are tied to explicit repository/PR authority and closure records.
 
 **Current roadmap state:** M0–M13 are accepted complete. M14 is the active authorized phase and must not be labeled `DONE` or `PRODUCTION_VERIFIED` until its owner-authorized AI-only review gate and external evidence gates are actually satisfied. See `docs/architecture/MODULAR_MATURITY_STATUS.md`, `docs/architecture/M13_AGENT_LIFECYCLE_RELIABILITY.md`, `docs/architecture/M14_RELEASE_TRUST_READINESS.md`, and `docs/status/AI_CHECKPOINT.md`.
+
+
+## Table of contents
+
+- [Audit snapshot and incomplete tracked work](#audit-snapshot-and-incomplete-tracked-work)
+- [Audit exclusions and intentional limitations](#audit-exclusions-and-intentional-limitations)
+- [Development progress & phase status](#development-progress--phase-status)
+- [Clean project structure](#clean-project-structure)
+- [Requirements](#requirements)
+- [Fresh zero installation](#fresh-zero-installation)
+- [Strict clean-install verification](#strict-clean-install-verification)
+- [Seeded local accounts](#seeded-local-accounts)
+- [Frontend development](#frontend-development)
+- [Database upgrade rule](#database-upgrade-rule)
+- [Current platform areas](#current-platform-areas)
+- [Drag/drop policy](#dragdrop-policy)
+- [Realtime chat](#realtime-chat)
+- [Source quality gates](#source-quality-gates)
+
+## Audit snapshot and incomplete tracked work
+
+This continuation index reflects the repository state observed on **2026-10-08** at protected `main` `87a0d679c3737c785ad3a2988d9ace97ffa45c80`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
+
+| Priority | Work item | Current state | Completion condition |
+|---|---|---|---|
+| P0 | M14 external release configuration — Issue #62 | Provider responses and real-target facts are pending. External ruleset/environment evidence is not verified; this issue does not authorize deployment, publication, signing, or recovery execution. | Record verified provider/admin and real-target evidence under Issue #62; preserve production and Runner authorization boundaries. |
+| P1 | Intermittent seed failure — Issue #70 | Root cause remains unproven. Existing diagnostics preserve failure evidence; Runner RB-005 remains blocked/not authorized. | Capture a future recurrence or prove a deterministic cause, then make a focused fail-closed repair with exact-head certification. |
+| Deferred | Apple release trust — Issue #123 | Deferred pending owner authorization and required Apple subscription/tooling. | Resume only with explicit authorization and required credentials/tooling. |
+| Maintenance | Dependency PR #76 | Laravel Pint 1.32.1; head `2bb11f27cdd299681d8ab393136285a541833bd9`, based on `main@87a0d679c3737c785ad3a2988d9ace97ffa45c80`; Code Quality passed, CI and Windows certification were running at audit time. | All required checks pass on exact head, review is clean, and base remains current. |
+| Maintenance | Dependency PR #82 | React DOM/types 19.3.0; head `b876925ba483df9069aa9038f2a4821a8faede48`, based on `main@87a0d679c3737c785ad3a2988d9ace97ffa45c80`; Code Quality passed, CI and Windows certification were running at audit time. | All required checks pass on exact head, review is clean, and base remains current. |
+| Maintenance | Dependency PR #83 | Gridstack 13.3.0; head `91e469360e561058005d2a978a82127cd2fb732f`, based on `main@87a0d679c3737c785ad3a2988d9ace97ffa45c80`; Code Quality passed, CI and Windows certification were running at audit time. | All required checks pass on exact head, review is clean, and base remains current. |
+| Maintenance | Dependency PR #132 | Laravel 13.34.0 / Commonmark 2.10.3; head `6894b8291a925af2a2bf410d8dc7bfb8de24b8e3`, based on `main@87a0d679c3737c785ad3a2988d9ace97ffa45c80`; Code Quality passed, CI and Windows certification were running at audit time. An earlier MySQL seed smoke failed and needs fresh current-head confirmation. | Fresh MySQL migration/seed smoke and all required checks pass on exact head; review clean; base current. |
+
+### Continuation order
+
+1. Finish or diagnose the exact-head dependency checks; do not merge a stale or failing head.
+2. Rebase remaining candidates and re-certify after each protected-main advance.
+3. Resume M14 external-evidence work when provider responses/target facts arrive, without entering production or Runner lanes without separate authority.
+4. Keep Issue #70 open until evidence proves a root cause and focused fix.
+
+## Audit exclusions and intentional limitations
+
+- Issue #123's Apple work is explicitly deferred and is not an active implementation task.
+- Issue #70's owner-role invariant must not be weakened; retries must not mask seed failures.
+- Issue #62's external configuration evidence is separate from product code and does not authorize deployment, publication, signing, restore, or Runner execution.
+- Unchecked production checklist items remain target-specific evidence gates, not proof of missing source features.
 
 ## Clean project structure
 
