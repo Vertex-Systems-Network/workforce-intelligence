@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** Dependency maintenance PRs #76, #82, #83, and #132 are undergoing exact-head certification; M14 external provider replies and real-target facts remain pending.
+- **Current Work:** M14 Windows/Linux trust — provider replies pending; dependency certification for #76, #82, #83, and #132 continues
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PRs:** #76, #82, #83, #132
+- **Active PR:** #134
 - **Active Branch:** `main`
-- **Last Completed:** Dependency PR #127 merged to protected main at `87a0d679c3737c785ad3a2988d9ace97ffa45c80`. This does not advance M14 evidence progress.
-- **Next Action:** Complete exact-head certification and review for the active dependency PRs. Continue the M14 evidence path when written provider responses and non-secret target facts are available; do not deploy, restore, publish, sign, or run Runner tasks without their required separate authority.
+- **Last Completed:** Dependency PR #127 merged to protected main 87a0d679c3737c785ad3a2988d9ace97ffa45c80. M14 evidence remains at 70%.
+- **Next Action:** Complete exact-head CI and review for dependency PRs #76, #82, #83, and #132. For M14, continue waiting for written SSL.com/DigiCert responses and collect only non-secret target facts. Do not deploy, restore, publish, sign, or run Runner tasks without required separate authority.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
