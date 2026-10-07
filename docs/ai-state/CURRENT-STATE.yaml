@@ -37,7 +37,12 @@
     "second_refresh_requires_material_transition": true,
     "fast_batch_default": true,
     "routine_substep_confirmation_required": false,
-    "manual_setup_grouped_default": true
+    "manual_setup_grouped_default": true,
+    "continuous_execution_default": true,
+    "chain_safe_milestones_without_user_reply": true,
+    "technical_blocker_confirmation_required": false,
+    "waiting_external_lane_stops_execution_window": false,
+    "readme_progress_sync_each_milestone": true
   },
   "last_reconciled_at": "2026-09-26T20:10:00+05:00",
   "response_status": {

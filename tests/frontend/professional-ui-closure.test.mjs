@@ -119,11 +119,14 @@ test('source hygiene rejects temporary root placeholders and dead interaction pa
   assert.ok(hygieneAudit.includes('unfinished-comment'))
 })
 
-test('AI execution contract preserves supervisor resume, milestone, timeout and authority discipline', () => {
+test('AI execution contract preserves continuous supervisor execution, timeout and authority discipline', () => {
   for (const marker of [
     'docs/ai-state/CURRENT-STATE.yaml',
-    'one user `continue`, `resume`, or numeric next-action selection authorizes one **bounded logical milestone**',
-    'Do not require the user to reply',
+    'Continuous autonomous execution window',
+    'Milestone completion is a checkpoint',
+    'Do **not** ask the user to diagnose or confirm a technical repair',
+    'A single blocked lane',
+    'host/session execution budget is exhausted',
     'OPEN GitHub Issues first',
     'at most one consolidated CI/status refresh',
     'Runner registration NEVER grants execution authority',

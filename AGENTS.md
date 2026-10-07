@@ -33,27 +33,43 @@ On every start, `continue`, resume, interrupted session, connector/tool failure,
 
 Compact state is a resume index and never overrides current repository/runtime truth. Chat memory is never authority. A missing or timed-out ChatGPT response is not evidence that repository work failed; verify what persisted before repeating anything.
 
-## One user turn = one logical milestone — Fast-Batch default
+## Continuous autonomous execution window — Fast-Batch default
 
-By default, one user `continue`, `resume`, or numeric next-action selection authorizes one **bounded logical milestone**, not one micro-step. The default execution mode is **Fast-Batch**.
+By default, one user `continue`, `resume`, numeric next-action selection, or explicit development instruction opens one **continuous safe execution window**, not one micro-step and not only one bounded milestone. The default execution mode remains **Fast-Batch**, but Fast-Batch must chain successive safe, already-authorized milestones without asking for another user reply.
 
-A Fast-Batch milestone may complete the tightly coupled sequence needed to finish that one milestone safely, including: compact-state reconciliation -> exact main/open Issue/open PR reconciliation -> implementation -> cheap/source checks -> PR creation/update -> one consolidated exact-head certification observation -> safe expected-head merge when already terminal green -> resulting-main verification -> durable-state/README closeout.
+A continuous execution window may carry out the complete safe sequence for one milestone and then immediately select the next highest-priority safe authorized milestone:
 
-Do not require the user to reply `next`, `done`, or `...` for routine substeps inside an already-authorized milestone. Do not split one coherent milestone into separate turns merely for file edits, test repair, PR metadata, review-thread checks, README sync, or resulting-main verification.
+`reconcile -> implement -> source checks -> PR/create-or-update -> exact-head observation -> merge when terminal green and already authorized -> resulting-main verification -> durable-state/README progress sync -> next safe milestone`
 
-Stop the batch and hand control back only when at least one of these is true:
+Do not require the user to reply `next`, `done`, `...`, approve a repair, choose another option, or confirm a routine technical decision while safe authorized work remains. Milestone completion is a checkpoint, **not** a reason to hand control back.
 
-- a new destructive, provider/production, credential, billing, release-publication, migration, or otherwise separately authorized action is required;
-- required user-owned information, secret material, external approval, or an explicit product/scope decision is missing;
-- exact-head CI or another external gate is still running after the allowed consolidated refresh;
-- a material security finding, scope conflict, authority conflict, or blocker makes automatic continuation unsafe;
-- the logical milestone is complete.
+### Autonomous blocker and error handling
 
-When CI is still running, do not tight-poll and do not train the user into repeated `...` messages. Record the exact runs/evidence surface and end in `WAITING_EXTERNAL`; use a condition notification/automation when available and requested.
+Technical blockers and ordinary engineering failures are owned by the AI supervisor. Do **not** ask the user to diagnose or confirm a technical repair. Use this order:
+
+1. capture the exact error, scope, source identity and environment;
+2. inspect the nearest authoritative source, logs, tests and recent relevant changes;
+3. form a changed hypothesis before retrying;
+4. implement the smallest safe repair inside existing authority;
+5. run the cheapest relevant verification first, then required exact-head checks;
+6. if that lane is externally waiting or cannot be repaired safely inside current authority, record it durably and immediately continue the next independent safe authorized task.
+
+Never weaken tests, security, review, tenant isolation, release trust, destructive-action boundaries, migration safeguards or authorization just to keep moving.
+
+A single blocked lane, pending CI run, provider wait, unavailable credential, external approval, or deferred task must **not** stop the whole execution window when another safe authorized task exists. Mark the lane `WAITING_EXTERNAL` or `BLOCKED`, preserve evidence, and continue elsewhere.
+
+Hand control back only when one of these terminal execution-window conditions is true:
+
+- the host/session execution budget is exhausted;
+- no safe authorized work remains because every reachable lane requires user-owned information, secret material, explicit product/scope authority, destructive/provider/production/release/migration authority, or an external decision;
+- a material security or authority conflict makes all further automatic work unsafe;
+- the repository's currently authorized work is fully complete and there is no next safe authorized milestone.
+
+When CI or another external gate is still running after the allowed consolidated refresh, do not tight-poll and do not train the user into repeated `...` messages. Record the exact run/evidence surface, mark that lane `WAITING_EXTERNAL`, and continue other safe work. Only end the execution window if no independent safe work remains.
 
 Manual setup instructions should be grouped into one consolidated checklist by default. Give one-at-a-time setup steps only when the user explicitly asks for step-by-step guidance.
 
-Security, authority, exact-head merge protection, Runner authorization, and destructive-action boundaries are unchanged by Fast-Batch. Fast-Batch removes conversational fragmentation; it never weakens a gate.
+Security, authority, exact-head merge protection, Runner authorization, and destructive-action boundaries are unchanged by continuous Fast-Batch. The purpose is to remove conversational fragmentation and technical-confirmation dependency, not to weaken gates.
 
 Detailed policy: `docs/ai-state/FAST-BATCH-EXECUTION.md`.
 
@@ -73,7 +89,7 @@ Batch related read-only calls when supported and read only what the active miles
 
 By default perform at most one consolidated CI/status refresh per milestone. Never tight-poll CI/workflows/deployments/providers/status endpoints, repeatedly fetch unchanged workflow state while waiting, or rerun a workflow merely because a ChatGPT/UI/message response timed out.
 
-Before final exact-head CI observation, persist the milestone as `VERIFYING` or `WAITING_EXTERNAL` when remote checks are expected. If required CI is still running after the consolidated refresh, do not create another source commit solely to record pending CI; preserve durable state, record run IDs on a PR/Issue surface when possible without modifying the certified source head, report pending, and end the milestone.
+Before final exact-head CI observation, persist the lane as `VERIFYING` or `WAITING_EXTERNAL` when remote checks are expected. If required CI is still running after the consolidated refresh, do not create another source commit solely to record pending CI; preserve durable state and record run IDs on a PR/Issue surface when possible without modifying the certified source head. Then continue another independent safe authorized lane instead of ending the execution window solely because CI is pending.
 
 A second refresh in the same milestone is allowed only after a material security, merge, incident/recovery, or provider state transition requires it for a safe decision. Record that exception durably.
 
@@ -344,7 +360,7 @@ Update a large public/module dashboard only when underlying module lifecycle/pro
 
 ## README progress synchronization contract
 
-The root `README.md` contains one compact `AI Development Progress` block. Synchronize that block with `docs/ai-state/CURRENT-STATE.yaml` in every completed bounded milestone commit.
+The root `README.md` contains one compact `AI Development Progress` block. Synchronize that block with `docs/ai-state/CURRENT-STATE.yaml` at every completed milestone and every meaningful durable progress checkpoint during a continuous execution window. Do not defer visible progress synchronization until the user sends another message.
 
 The compact block must show:
 
@@ -363,8 +379,9 @@ Rules:
 
 - The README progress block is a compact operational mirror, not an authority source. `CURRENT-STATE.yaml`, GitHub truth, and repository authority remain canonical.
 - Do not invent percentages. README values must be derived from `response_status` in compact state.
-- Large README lifecycle dashboards still change only when public lifecycle truth changes. The compact AI progress block is the exception and is updated on every completed bounded milestone.
-- Before closing a milestone, update compact state and README progress together in the same source commit when source mutation is safe.
+- Large README lifecycle dashboards still change only when public lifecycle truth changes. The compact AI progress block is the exception and is updated on every completed milestone or meaningful durable progress checkpoint.
+- Before chaining to the next milestone, update compact state and README progress together in the same source commit when source mutation is safe.
+- Continuous execution must keep the README progress block moving with repository truth; it must not wait for another user prompt merely to publish progress.
 - During exact-head certification, do not mutate the candidate source merely to refresh README with pending/terminal CI. Keep README frozen at the certified source baseline, use PR/Issue evidence for live remote status, then synchronize README in the next safe source-changing milestone (for example post-merge reconciliation).
 - A missing/stale README progress block is a governance defect and must fail the AI supervisor state audit.
 

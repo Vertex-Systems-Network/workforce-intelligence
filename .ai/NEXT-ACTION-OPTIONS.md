@@ -4,13 +4,15 @@ This repository adopts the Vertex Systems Network interactive AI-development han
 
 ## User-facing handoff
 
-At every completed, blocked, or waiting milestone handoff, expose 1 to 3 currently valid next actions derived from live repository evidence. Do not emit next-action options after internal Fast-Batch progress updates or routine substeps.
+Do not hand control back merely because an internal milestone completed, one lane became blocked, or one external check is waiting. While the host/session execution budget remains and at least one safe authorized task exists, synchronize durable progress and continue automatically.
+
+Expose 1 to 3 currently valid next actions only at a **terminal execution-window handoff**: no safe authorized work remains, all reachable lanes require user/external authority or information, a material security/authority conflict blocks further work, all authorized work is complete, or the host/session execution budget is exhausted. Do not emit next-action options after internal continuous Fast-Batch progress updates or routine milestone boundaries.
 
 - Always include the canonical/recommended next action, but do not bind it permanently to option 1.
 - When two or more valid options exist, reshuffle the visible 1/2/3 numbering on every handoff.
 - If the previously selected action identity and number are known, that same action must move to a different visible number on the next handoff. With only one valid action, number reuse is allowed.
 - Mark the canonical action as **Recommended**. Numbering is ephemeral presentation state and never changes priority, safety, scope, or authorization.
-- A reply containing only an option number is a request to start the corresponding next turn. Re-read current repository state before any mutation. If the option became stale or unsafe, fail closed and show the new valid options instead.
+- A reply containing only an option number starts the corresponding continuous execution window. Re-read current repository state before any mutation. If the option became stale or unsafe, fail closed on that option and continue/recompute any other safe authorized path; show new options only if no safe automatic path remains.
 - Interactive buttons may be used when the host supports them; otherwise numbered one-line options are the mandatory fallback.
 
 ## URL-only repository entry
@@ -26,4 +28,4 @@ When the user's message contains only this repository's canonical GitHub URL (op
 
 ## Safety and local authority
 
-Repository-specific governance, security, exact-head CI, approval, migration, production/provider, release, and one-turn/one-milestone rules remain authoritative and may be stricter than this interaction contract. Fast-Batch may complete routine tightly coupled substeps inside the selected milestone without another numeric confirmation. This file never grants execution authority and never permits bypassing an accepted actionable Issue/PR or deferred work boundary.
+Repository-specific governance, security, exact-head CI, approval, migration, production/provider, release, and continuous-execution rules remain authoritative and may be stricter than this interaction contract. Fast-Batch may complete and chain routine safe milestones without another numeric confirmation. This file never grants execution authority and never permits bypassing an accepted actionable Issue/PR or deferred work boundary.

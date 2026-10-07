@@ -1,51 +1,71 @@
-# Fast-Batch Execution Mode
+# Fast-Batch Continuous Execution Mode
 
 Fast-Batch is the default AI Engineering Supervisor execution mode for this repository.
 
 ## Goal
 
-Reduce conversational fragmentation and repeated user prompts while preserving every repository security, authority, exact-head, review, release, and Runner gate.
+Keep development moving across successive safe, already-authorized milestones without repeated user prompts, while preserving every repository security, authority, exact-head, review, release, migration and Runner gate.
 
-## Batch boundary
+## Execution window
 
-One user turn authorizes one bounded logical milestone. Within that milestone, the supervisor should automatically carry out all routine, tightly coupled, already-authorized substeps that are necessary and safe.
+One user development instruction opens a continuous safe execution window. A milestone is a durable checkpoint inside that window, not an automatic conversational boundary.
 
-Typical bounded sequence:
+Typical continuous sequence:
 
-`reconcile -> implement -> source checks -> PR -> exact-head observation -> merge if already terminal green -> resulting-main verification -> durable-state/README closeout`
+`reconcile -> implement -> source checks -> PR -> exact-head observation -> merge if already authorized and terminal green -> resulting-main verification -> durable-state/README progress sync -> select next safe milestone -> repeat`
 
-The sequence may stop earlier whenever an external wait or authorization boundary is reached.
+Continue chaining safe authorized milestones until the host/session execution budget is exhausted or no safe authorized work remains.
 
-## Do not stop for routine substeps
+## Do not stop for routine substeps or technical failures
 
 Do not require a new user reply merely to:
 
 - edit another file in the same coherent change;
+- choose the next safe task after a milestone completes;
+- diagnose an error or approve a technical repair;
 - repair a test that became stale because the intended contract changed;
 - update PR metadata or resolve a routine review-thread state;
 - run cheap/source checks;
-- perform the single allowed consolidated CI/status observation;
+- perform the allowed consolidated CI/status observation;
 - merge an already-authorized, exact-head-certified, review-clean PR;
 - verify the resulting main SHA;
-- synchronize compact state and the README progress block at milestone closeout.
+- synchronize compact state and the README progress block;
+- move to another safe lane when the current lane is blocked or waiting externally.
 
-## Mandatory stop conditions
+For a technical blocker, capture evidence, change the hypothesis, repair inside current authority, verify, and continue. Repeated identical failure without new evidence still triggers the repository circuit breaker; the response to that circuit breaker is diagnosis or another safe lane, not asking the user to debug the repository.
 
-Stop and hand control back when:
+## External waits and blocked lanes
 
-- a separately authorized destructive/provider/production/release-publication/migration action is next;
-- a user-owned secret, certificate, credential, approval, product decision, or external fact is required;
-- required CI/external checks remain non-terminal after the consolidated status refresh;
-- a material security/scope/authority conflict appears;
-- the milestone is complete.
+A blocked lane is not automatically a blocked execution window.
 
-## CI and external waits
+When a provider, credential, approval, CI run, external fact or other dependency is unavailable:
 
-Never tight-poll. One consolidated refresh is the default budget. If checks remain pending, persist/record the waiting state without changing the candidate source solely for status, then end the turn. Prefer condition-based notification over repeated manual status prompts when the host supports it.
+1. record the exact blocker and evidence;
+2. mark only that lane `WAITING_EXTERNAL` or `BLOCKED`;
+3. preserve exact-head/source identity;
+4. continue the next independent safe authorized task.
+
+Hand control back only when every reachable lane is blocked by an authority/user/external dependency, when all authorized work is complete, when a material security/authority conflict makes further work unsafe, or when the host/session execution budget is exhausted.
+
+## CI and remote-call budget
+
+Never tight-poll. One consolidated refresh per milestone/lane is the default budget. If checks remain pending, persist the waiting state without changing candidate source solely for status, then continue other safe work. A later refresh is allowed only after a material transition makes it necessary for a safe decision.
+
+## User confirmation policy
+
+Routine technical work never requires user confirmation. The supervisor must not ask the user to confirm an error repair, retry, test fix, refactor, PR metadata update, safe merge that is already authorized, or next safe milestone selection.
+
+User input remains required only for information or authority the repository cannot legitimately infer or self-create, such as user-owned secrets, explicit product/scope decisions, legal/commercial decisions, or separately protected destructive/provider/production/release/migration actions. Even then, block that lane and continue another safe lane when possible.
+
+## README progress synchronization
+
+At every completed milestone and meaningful durable progress checkpoint, synchronize `docs/ai-state/CURRENT-STATE.yaml` and the root `README.md` **AI Development Progress** block before chaining onward, when source mutation is safe.
+
+Do not invent percentages. Preserve the exact-head rule: while a candidate head is under certification, do not mutate it solely for status; record live remote status on the PR/Issue evidence surface and synchronize README at the next safe source-changing checkpoint.
 
 ## User updates
 
-Internal tool activity is not itself a user-facing update. Surface interim messages only for material blockers, security findings, required user action, or meaningful state transitions. Final handoff should be compact and consolidated.
+Internal tool activity is not itself a user-facing update. Surface interim messages only for material security findings, genuinely required user action, or meaningful state transitions. Do not present next-action choices merely because an internal milestone completed while safe work remains.
 
 ## Manual configuration
 
@@ -53,8 +73,8 @@ Default to a single consolidated checklist. Switch to one-by-one instructions on
 
 ## Runner policy
 
-Fast-Batch does not change Runner authorization. Safe non-blocking Runner tasks remain deferred to the final batch; exact-head merge-required and other repository-policy immediate checks remain immediate only when the active milestone requires them.
+Continuous Fast-Batch does not change Runner authorization. Safe non-blocking Runner tasks remain governed by the registry; exact-head merge-required and other repository-policy immediate checks remain immediate only when the active milestone requires them.
 
 ## Security invariant
 
-Fast-Batch optimizes interaction count, not safety. It must never bypass exact-head certification, review cleanliness, least privilege, secret handling, destructive-action authority, environment protection, migration safeguards, or release trust.
+Continuous Fast-Batch optimizes uninterrupted safe execution, not safety. It must never bypass exact-head certification, review cleanliness, least privilege, secret handling, destructive-action authority, environment protection, migration safeguards, tenant isolation, release trust, or explicit scope authority.
