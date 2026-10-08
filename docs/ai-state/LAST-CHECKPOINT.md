@@ -52,7 +52,7 @@
 
 ## Next Action
 
-This is not a repository-wide stop. Issue #151 is the next safe maintenance lane: investigate the recurring failed trusted-release workflow run records with no jobs using available GitHub-native evidence. Do not dispatch a trusted-release action as a diagnostic. If required check-suite evidence remains unavailable, preserve that exact limitation and continue another safe maintenance lane.
+This is not a repository-wide stop. A bounded maintenance scan found that Linux CI, governance, CodeQL and Pint jobs lacked explicit runtime limits, while Windows Certification already has a 90-minute cap. PR #153 adds 90 minutes for full Linux CI, 10 minutes for governance, and 45 minutes for CodeQL/Pint. After exact-head and resulting-main checks, resume Issue #151's failed trusted-release/no-jobs investigation using GitHub-native evidence. Do not dispatch trusted-release actions.
 
 Before any future no-work handoff, reconcile live GitHub PRs, Issues and CI and run the mandatory maintenance-discovery sweep. A no-work handoff is valid only after that bounded fresh sweep is clean.
 
