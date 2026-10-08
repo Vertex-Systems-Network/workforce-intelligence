@@ -9,7 +9,7 @@
   "current_milestone": "M14 Windows/Linux release trust — real-target/recovery evidence prepared",
   "milestone_status": "WAITING_EXTERNAL",
   "last_completed_milestone": "Dependency PR #140 (Laravel Framework 13.34.0 / League CommonMark 2.10.3, preserving Pint 1.32.1) merged to protected main at 9fca2c4ee028d2011faf9c232296f5984e8ec7c7 after all six exact-head checks passed on d87285a0a11e6089dc2c2b5c1162b55a832ceac4. PRs #129–#131 closed as superseded. M14 evidence remains at 70%.",
-  "exact_next_safe_action": "Continue Issue #62 only when written SSL.com/DigiCert replies or non-secret real-target facts are available; otherwise keep M14 WAITING_EXTERNAL. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority. Keep Issue #70 open until recurrence/root-cause evidence supports a focused fix; Apple remains deferred under Issue #123.",
+  "exact_next_safe_action": "Keep Issue #62 M14 lane WAITING_EXTERNAL until written SSL.com/DigiCert replies or non-secret real-target facts arrive. While it waits, run the mandatory fallback work scan and automatically continue the first safe authorized PR, Issue, CI/test/security/review/audit repair, dependency-maintenance, docs/state/lifecycle reconciliation, or non-destructive blocker-evidence lane. Do not ask the owner to choose routine fallback work and do not voluntarily stop for token/context conservation. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority; Issue #70 remains evidence-gated and Apple remains deferred under Issue #123.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
