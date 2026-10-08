@@ -14,7 +14,7 @@ Typical continuous sequence:
 
 `reconcile -> implement -> source checks -> PR -> exact-head observation -> merge if already authorized and terminal green -> resulting-main verification -> durable-state/README progress sync -> select next safe milestone -> repeat`
 
-Continue chaining safe authorized milestones until the host/session execution budget is exhausted or no safe authorized work remains.
+Continue chaining safe authorized milestones while execution capacity is available. Do not pre-compute, target, or voluntarily stop for a token/session budget; only a real host interruption may cut the run short, and durable state must make the next resume automatic.
 
 ## Do not stop for routine substeps or technical failures
 
