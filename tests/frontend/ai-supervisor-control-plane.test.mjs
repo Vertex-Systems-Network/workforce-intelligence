@@ -131,6 +131,22 @@ test('README AI progress block stays synchronized with compact state', () => {
   for(const volatile of ['**Active PR:**','**Active Branch:**','**Last Completed:**']) assert.equal(block.includes(volatile),false)
 })
 
+test('historical M14 authority remains provenance and never a repeat-approval prompt', () => {
+  const agents=read('AGENTS.md')
+  const checkpoint=read('docs/status/AI_CHECKPOINT.md')
+  const m14=read('docs/architecture/M14_RELEASE_TRUST_READINESS.md')
+  assert.ok(agents.includes('Historical GitHub Issue #50 is closed'))
+  assert.ok(checkpoint.includes('Current continuation semantics — 2026-10-08'))
+  assert.ok(checkpoint.includes('closed authorization provenance'))
+  assert.ok(checkpoint.includes('not a live gate'))
+  assert.ok(checkpoint.includes('Live PR, branch, check and protected-main identities are resolved from GitHub at runtime'))
+  assert.ok(m14.includes('**State:** `VERIFYING / PARTIALLY COMPLETE`'))
+  assert.ok(m14.includes('**Authority provenance:** historical owner approval in closed GitHub Issue #50'))
+  assert.ok(m14.includes('**Current continuation authority:** open Issue #62'))
+  assert.ok(m14.includes('never a reason to prompt for re-approval'))
+  assert.equal(m14.includes('**State:** `IMPLEMENTING`'),false)
+})
+
 test('Continuous Fast-Batch chains safe milestones without routine user confirmation or weakened gates', () => {
   const agents=read('AGENTS.md')
   const fastBatch=read('docs/ai-state/FAST-BATCH-EXECUTION.md')
