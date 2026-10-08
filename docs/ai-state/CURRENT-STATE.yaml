@@ -8,8 +8,8 @@
   "active_branch": "main",
   "current_milestone": "M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "Continuous no-idle execution, stale-authority prompt suppression, merge-stable semantic state, CI server supervision, and superseded historical review-gate reconciliation are integrated. Exact PR/check/merge transaction evidence lives on GitHub PR/Issue surfaces and is resolved live at runtime.",
-  "exact_next_safe_action": "On every resume, reconcile live GitHub OPEN PRs and Issues first and automatically repair/review/merge the highest-priority safe authorized lane. If M14 Issue #62 remains externally blocked, continue the deterministic fallback ladder without asking the owner to choose routine engineering work. Ask only when all safe lanes are exhausted and a genuinely user-owned fact, new product/legal-commercial decision, or separately protected authority is required.",
+  "last_completed_milestone": "Continuous no-idle execution now requires active maintenance discovery before any no-actionable-work handoff; stale authority/review prompt suppression and merge-stable semantic state remain integrated.",
+  "exact_next_safe_action": "On every resume, reconcile live GitHub work first. If no surfaced safe task exists, run the bounded maintenance-discovery sweep across reliability, dependency/security, source/test gaps, semantic drift, certification gaps, and blocker diagnostics; automatically turn concrete findings into maintenance Issue/PR work and continue without asking the owner to choose routine engineering work.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -50,7 +50,7 @@
   "last_reconciled_at": "2026-10-08",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 release-trust evidence remains partially external; autonomous repository execution is hardened against stale authority, stale review gates, routine confirmation prompts, and post-merge state loops.",
+    "current_work": "Autonomous execution now treats empty PR queues, green CI, and externally blocked M14 as inputs to maintenance discovery rather than proof that development should stop.",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
@@ -75,10 +75,13 @@
       "ci_test_security_review_audit_state_branch_repair",
       "authorized_dependency_supply_chain_maintenance",
       "docs_compact_state_readme_coordination_lifecycle_reconciliation",
-      "non_destructive_evidence_diagnostics_for_existing_blocker"
+      "non_destructive_evidence_diagnostics_for_existing_blocker",
+      "maintenance_discovery_sweep"
     ],
     "may_invent_product_scope": false,
-    "state_pointer_only_drift_is_actionable": false
+    "state_pointer_only_drift_is_actionable": false,
+    "empty_queue_green_ci_is_terminal_proof": false,
+    "maintenance_discovery_required_before_terminal": true
   },
   "state_sync_policy": {
     "observed_main_sha_is_resume_anchor_not_live_authority": true,
@@ -94,5 +97,22 @@
     "post_merge_state_only_reconciliation_required": false,
     "closed_authority_issue_requires_user_prompt": false,
     "last_completed_transaction_evidence_may_live_on_github": true
+  },
+  "maintenance_discovery_policy": {
+    "enabled": true,
+    "required_before_no_actionable_work_claim": true,
+    "one_bounded_fresh_pass_per_execution_window": true,
+    "no_tight_repeat_of_clean_lane": true,
+    "finding_becomes_actionable_maintenance_lane": true,
+    "may_create_tracking_issue_for_concrete_finding": true,
+    "no_noop_or_status_only_commits": true,
+    "lanes": [
+      "ci_test_reliability",
+      "dependency_supply_chain_security",
+      "source_quality_regression_test_gaps",
+      "semantic_docs_governance_drift",
+      "accessibility_performance_browser_runtime",
+      "blocked_issue_non_destructive_diagnostics"
+    ]
   }
 }

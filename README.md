@@ -6,12 +6,12 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 release-trust evidence remains partially external; autonomous repository execution is hardened against stale authority, stale review gates, routine confirmation prompts, and post-merge state loops.
+- **Current Work:** Autonomous execution now treats empty PR queues, green CI, and externally blocked M14 as inputs to maintenance discovery rather than proof that development should stop.
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Next Action:** On every resume, reconcile live GitHub OPEN PRs and Issues first and automatically repair/review/merge the highest-priority safe authorized lane. If M14 Issue #62 remains externally blocked, continue the deterministic fallback ladder without asking the owner to choose routine engineering work. Ask only when all safe lanes are exhausted and a genuinely user-owned fact, new product/legal-commercial decision, or separately protected authority is required.
+- **Next Action:** On every resume, reconcile live GitHub work first. If no surfaced safe task exists, run the bounded maintenance-discovery sweep across reliability, dependency/security, source/test gaps, semantic drift, certification gaps, and blocker diagnostics; automatically turn concrete findings into maintenance Issue/PR work and continue without asking the owner to choose routine engineering work.
 
 > Live PR number, working branch, check run IDs, and merge SHA are intentionally read from GitHub at runtime rather than committed here. Apple/macOS release trust remains deferred under Issue #123.
 <!-- AI-PROGRESS:END -->

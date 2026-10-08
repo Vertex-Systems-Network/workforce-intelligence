@@ -181,6 +181,24 @@
       "subject": "historical_m14_second_human_review_is_live_gate",
       "value": false,
       "authority": "docs/status/AI_CHECKPOINT.md#current-continuation-semantics--2026-10-08"
+    },
+    {
+      "id": "CLAIM-031",
+      "subject": "empty_pr_queue_green_ci_external_wait_is_terminal_proof",
+      "value": false,
+      "authority": "AGENTS.md#mandatory-maintenance-discovery-sweep-before-no-actionable-work"
+    },
+    {
+      "id": "CLAIM-032",
+      "subject": "maintenance_discovery_required_before_no_actionable_work_claim",
+      "value": true,
+      "authority": "AGENTS.md#mandatory-maintenance-discovery-sweep-before-no-actionable-work"
+    },
+    {
+      "id": "CLAIM-033",
+      "subject": "external_m14_wait_stops_repository_wide_maintenance_discovery",
+      "value": false,
+      "authority": "docs/ai-state/LAST-CHECKPOINT.md#next-action"
     }
   ]
 }

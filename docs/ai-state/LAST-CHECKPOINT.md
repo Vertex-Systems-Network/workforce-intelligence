@@ -52,4 +52,4 @@
 
 ## Next Action
 
-Issue #62's remaining production-release, immutable-release and real-target evidence requires administrator/target evidence unavailable through this connector. Continue only when new authorized non-secret evidence is available; signing, publication, production, restore and Runner execution remain blocked or deferred. Keep M14 at 70% until the applicable evidence gates pass.
+Issue #62 remains externally waiting and M14 stays at 70%. This is not a repository-wide stop. Reconcile live PRs, Issues and CI first; if none yields safe work, run the mandatory maintenance-discovery sweep defined in AGENTS.md. Convert any concrete safe maintenance finding into tracked Issue/PR work and continue automatically. A no-work handoff is valid only after that bounded fresh sweep is clean. Protected release, production and Runner actions still keep their existing separate authority gates.

@@ -58,9 +58,25 @@ The owner standing maintenance authority recorded in `.ai/schedule/SCHEDULE-PLAN
 
 If a safe fallback exists, choose it automatically. Do not ask the user to choose a fallback and do not end the execution window.
 
+### Maintenance discovery when surfaced queues are empty
+
+Do not equate `no open PR + green CI + externally blocked active milestone` with `no work`.
+
+Before a voluntary no-work handoff, run one bounded fresh discovery pass across:
+- CI/test reliability and flaky/failure history;
+- dependency, supply-chain and security evidence;
+- source-quality, invariant and regression-test gaps;
+- semantic documentation/governance drift;
+- accessibility, performance, browser and runtime certification gaps;
+- non-destructive diagnostics for existing blocked Issues.
+
+A concrete evidence-backed finding becomes an autonomous maintenance lane: open/update an Issue when durable tracking is useful, create a branch/PR when a source fix is justified, verify it, and continue. This standing maintenance authority never permits speculative product features, fabricated evidence, protected production/provider/release actions, or no-op commits.
+
+If every discovery lane is clean or requires unavailable protected/external authority, record that sweep result and only then permit terminal status.
+
 Do not voluntarily stop to conserve tokens/context. Persist a compact checkpoint and continue. A host/session hard termination can interrupt execution, but it is not a repository decision; resume from durable state on the next turn.
 
-Hand control back voluntarily only when the fallback scan proves every reachable lane needs unavailable user/external/protected authority, a material security/authority conflict makes further work unsafe, or all authorized product and maintenance work is complete. At that point, do not offer engineering choices by default: report the blocker/status. Ask one minimal concrete question only if a user-owned fact or authority is actually required to proceed.
+Hand control back voluntarily only when the fallback scan **plus the maintenance-discovery pass** prove every reachable/discovered lane needs unavailable user/external/protected authority, a material security/authority conflict makes further work unsafe, or all authorized product and maintenance work is complete. An empty surfaced queue alone is not terminal proof. At that point, do not offer engineering choices by default: report the blocker/status and that the discovery pass was clean. Ask one minimal concrete question only if a user-owned fact or authority is actually required to proceed.
 
 ## CI and remote-call budget
 

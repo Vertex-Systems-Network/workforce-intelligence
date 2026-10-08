@@ -8,7 +8,7 @@ This repository overrides interactive-choice handoffs in favor of autonomous con
 
 - Do **not** present numbered 1/2/3 engineering choices during ordinary development, after milestone completion, after CI failure, after a merge, during external waits, or because compact state moved.
 - Run the mandatory fallback work scan and select the highest-priority safe authorized action automatically.
-- At a genuine terminal condition, report the exact blocker/status without asking the owner to choose between engineering tasks.
+- At a genuine terminal condition, report the exact blocker/status without asking the owner to choose between engineering tasks. A terminal no-work condition is genuine only after the normal fallback scan and the bounded maintenance-discovery sweep both find no concrete safe task; empty PR/Issue queues or green CI alone are insufficient.
 - Ask a single minimal concrete question only when a user-owned fact, secret, legal/commercial decision, explicit new product scope, or separately protected destructive/provider/production/release/migration authority is actually required and no independent safe lane remains.
 - If the user explicitly asks for options, up to 3 current safe choices may be shown; otherwise autonomous execution is the default.
 - A numeric reply, when the user explicitly requested options earlier, starts the selected continuous execution window after fresh revalidation.
