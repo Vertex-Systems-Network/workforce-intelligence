@@ -20,6 +20,7 @@
 - Dependency PR #137 merged at `ce4d13affcf0b0d13a668c19c96db102aae47119`; Gridstack 13.3.0 and its matching regression test are integrated.
 - M14 remains 70%; dependency maintenance does not advance M14 evidence progress.
 - Owner directed on 2026-10-08 that third-party Windows trusted-signing provider qualification/integration be deferred to future authorization. Issue #62's GitHub release-control/admin evidence and non-secret target facts remain separate external gates; no signature/publication evidence is claimed.
+- Read-only GitHub API reconciliation verified Gate A/A2 on 2026-10-08: active `agent-v-release-tags` ruleset 23938765 has zero bypass actors and update/deletion restrictions, and the protected-main attestation is VERIFIED for exact `updated_at` `2026-09-24T17:49:27.650+05:00`. `production-release`, immutable-releases, and target evidence remain Not Verified.
 - Apple/macOS trust remains deferred to Issue #123. Issue #70 remains open with its root cause unproven and RB-005 blocked/not-authorized.
 - No production deployment, migration, traffic mutation, restore, signing, publication, provider purchase or RB-005 execution occurred.
 
@@ -31,7 +32,7 @@
 
 ## Active M14 evidence lanes
 
-1. Continue only the already-authorized GitHub release-control evidence lane in Issue #62; administrator-only settings that the connector cannot verify remain Not Verified.
+1. Gate A/A2 are verified. Continue only the already-authorized remaining GitHub release-control evidence lane in Issue #62; `production-release` protection, immutable-releases, and non-secret target facts remain Not Verified.
 2. Keep non-secret real-target and recovery evidence separate and do not execute target, restore, signing, publication or Runner tasks without their required authority.
 3. Third-party Windows trusted signing and Apple/macOS signing are deferred to future owner authorization; do not purchase/configure signing material or claim trusted signatures.
 

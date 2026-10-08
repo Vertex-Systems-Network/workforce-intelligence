@@ -26,7 +26,7 @@
     "Third-party Windows trust-signing provider qualification/integration is deferred by owner on 2026-10-08 until future authorization; provider replies are not a blocker for current safe repository maintenance.",
     "No Windows public-trust provider has been selected; do not build provider-specific signing integration, configure signing secrets, or claim trusted signatures while this lane is deferred.",
     "Public-trust Windows private signing keys must not be treated as portable GitHub PFX secrets; existing PFX secrets remain unset for the public-trust path.",
-    "Administrator-bypass posture, main=branch policy type, agent-v*=tag policy type, and release-policy-token least privilege remain administrator-attested where GitHub read APIs do not prove them directly.",
+    "Live GitHub readback on 2026-10-08 confirms active main branch ruleset 21176050 with zero bypass actors and active `agent-v-release-tags` ruleset 23938765 for `refs/tags/agent-v*` with zero bypass actors plus update/deletion restrictions; the VERIFIED attestation matches updated_at `2026-09-24T17:49:27.650+05:00`. `production-release` environment protection, token placement/least privilege, and immutable-releases setting remain Not Verified because the connector cannot read those admin endpoints.",
     "Issue #70 remains open; RB-005 remains not-authorized/blocked.",
     "Apple/macOS signing and notarization are intentionally deferred to future Issue #123 and are not an active M14 execution blocker; do not claim Apple completion."
   ],
