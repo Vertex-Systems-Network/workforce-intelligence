@@ -261,3 +261,13 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - Defined deterministic target identity, runtime health, DB/migration, queue/scheduler, storage, auth/workspace isolation, release download, isolated restore, rollback and final PRODUCTION_VERIFIED evidence requirements.
 - No production deployment, restore, signing, publication, provider purchase or Runner execution occurred.
 - M14 remains 70%; planning/preparation alone does not advance evidence progress.
+
+
+## 2026-10-08 — PR #140 merge and dependency-lane reconciliation
+
+- Rehydrated protected `main` at `569c633cb297771717864703635eaefa6245d732` and verified PR #140 head `d87285a0a11e6089dc2c2b5c1162b55a832ceac4` targeted that exact base.
+- All six exact-head checks passed: `governance`, `CodeQL`, `windows-certification`, `CodeQL JS/TS quality analysis`, `test`, and `Laravel Pint changed-PHP quality gate`; no unresolved review threads remained. The diff changed only `composer.lock`.
+- Merged PR #140 at protected-main commit `9fca2c4ee028d2011faf9c232296f5984e8ec7c7`. Verified lockfile versions: Laravel Framework `v13.34.0`, League CommonMark `2.10.3`, Laravel Pint `v1.32.1`.
+- Closed PRs #129, #130, and #131 as superseded by #140; each received a rationale comment.
+- M14 remains `WAITING_EXTERNAL` at 70%; dependency maintenance does not advance release-trust evidence. Issue #62 provider/target facts remain pending, Issue #70 root cause remains unproven and RB-005 unauthorized, and Apple remains deferred under Issue #123.
+- No product source, production deployment, migration, restore, signing, publication, provider purchase, or Runner task changed or ran.
