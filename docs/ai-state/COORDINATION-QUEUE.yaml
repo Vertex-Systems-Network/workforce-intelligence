@@ -2,7 +2,7 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "dfb4fc7ec9536a304b7df582027968dc60f3e53a",
+  "observed_main_sha": "33411a06b2585705880181f056d7b42d3bdf7458",
   "reconciled_at": "2026-10-08",
   "issues": [
     {
@@ -26,12 +26,21 @@
   ],
   "pull_requests": [
     {
-      "number": 144,
-      "title": "governance: prevent recursive state-only reconciliation loops",
+      "number": 146,
+      "title": "docs(m14): track release-trust subtasks in README",
       "state": "open",
       "draft": false,
+      "head_ref": "docs/m14-readme-subtask-progress-20261008",
+      "head_sha": "d9793944dde9fdada1cf3041bc01bf1160504796",
+      "action": "repair-readme-compact-state-sync-before-recertification"
+    },
+    {
+      "number": 144,
+      "title": "governance: prevent recursive state-only reconciliation loops",
+      "state": "merged",
+      "draft": false,
       "head_ref": "governance/no-recursive-state-sync",
-      "action": "owner-defers-provider-signing; exact-head-certification-pending"
+      "action": "merged-as-33411a06b2585705880181f056d7b42d3bdf7458"
     },
     {
       "number": 145,
