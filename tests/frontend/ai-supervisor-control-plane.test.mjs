@@ -131,6 +131,8 @@ test('Continuous Fast-Batch chains safe milestones without routine user confirma
   assert.ok(fastBatch.includes('Never tight-poll'))
   assert.ok(responseContract.includes('Continuous Fast-Batch is the default'))
   assert.ok(responseContract.includes('immediate selection of the next safe authorized milestone'))
+  assert.ok(responseContract.includes('mandatory fallback work scan'))
+  assert.ok(responseContract.includes('Do not voluntarily end a development response merely to conserve tokens/context'))
   assert.ok(options.includes('terminal execution-window handoff'))
   assert.ok(options.includes('continue automatically'))
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-010')?.value,true)
