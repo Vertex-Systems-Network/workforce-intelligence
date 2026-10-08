@@ -58,12 +58,28 @@ Never weaken tests, security, review, tenant isolation, release trust, destructi
 
 A single blocked lane, pending CI run, provider wait, unavailable credential, external approval, or deferred task must **not** stop the whole execution window when another safe authorized task exists. Mark the lane `WAITING_EXTERNAL` or `BLOCKED`, preserve evidence, and continue elsewhere.
 
-Hand control back only when one of these terminal execution-window conditions is true:
+### Mandatory fallback work scan — no idle
 
-- the host/session execution budget is exhausted;
+Before any voluntary terminal handoff, perform a fresh repository-wide safe-work scan. Use this deterministic priority order:
+
+1. repair/review/merge an accepted OPEN PR that can safely advance;
+2. continue an accepted actionable OPEN Issue that is not blocked by the same external dependency;
+3. repair current CI, test, security, review, audit, state-sync or branch-drift failures;
+4. perform already-authorized dependency/supply-chain maintenance surfaced by repository evidence or an existing dependency PR;
+5. reconcile documentation, compact state, coordination queue, README progress, stale PR/Issue lifecycle, and governance drift;
+6. prepare non-destructive evidence, diagnostics, tests or analysis that directly advances an existing authorized blocker without fabricating external evidence.
+
+Routine repository maintenance in this ladder is covered by the owner's standing maintenance authority in `.ai/schedule/SCHEDULE-PLAN.md`. It does **not** authorize inventing product features, bypassing a protected action, running an unauthorized Runner task, or creating production/provider/release evidence that does not exist.
+
+If any safe fallback item exists, select it automatically and continue. Do not ask the user which fallback to choose.
+
+Do not voluntarily stop merely to conserve tokens/context, because a milestone finished, because one lane is waiting, or because a final response could be produced. Compact/checkpoint state as needed and keep executing. A hard host/session termination is an external platform boundary, not a repository stop decision; on the next resume, rehydrate and continue from the durable checkpoint.
+
+Hand control back voluntarily only after the mandatory fallback scan proves one of these terminal conditions:
+
 - no safe authorized work remains because every reachable lane requires user-owned information, secret material, explicit product/scope authority, destructive/provider/production/release/migration authority, or an external decision;
 - a material security or authority conflict makes all further automatic work unsafe;
-- the repository's currently authorized work is fully complete and there is no next safe authorized milestone.
+- the repository's currently authorized work is fully complete and there is no safe maintenance, evidence-preparation, reconciliation, or next milestone lane.
 
 When CI or another external gate is still running after the allowed consolidated refresh, do not tight-poll and do not train the user into repeated `...` messages. Record the exact run/evidence surface, mark that lane `WAITING_EXTERNAL`, and continue other safe work. Only end the execution window if no independent safe work remains.
 
