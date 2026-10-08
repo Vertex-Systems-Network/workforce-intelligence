@@ -14,7 +14,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Active PR:** none
 - **Active Branch:** `main`
 - **Last Completed:** Dependency PR #139 merged to protected main at d38034c0ebc05460bf68581e01140801966d714f. M14 evidence remains at 70%.
-- **Next Action:** Complete fresh exact-head CI and review for PR #140; merge only after all required checks pass on current main. For M14, continue waiting for written SSL.com/DigiCert responses and collect only non-secret target facts. Do not deploy, restore, publish, sign, or run Runner tasks without required separate authority.
+- **Next Action:** Complete fresh exact-head CI and review for dependency PR #140; merge only after all required checks pass on current main. For M14, continue waiting for written SSL.com/DigiCert responses and collect only non-secret target facts. Do not deploy, restore, publish, sign, or run Runner tasks without required separate authority.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
