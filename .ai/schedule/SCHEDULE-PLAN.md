@@ -43,7 +43,7 @@ Do not use no-op/status-only commits as progress. Do not fabricate runtime, secu
 
 ### Deterministic fallback priority
 
-Before a run can become idle or return control while execution capacity remains, scan in this order: accepted open PRs; accepted actionable Issues; CI/test/security/review/audit repairs; authorized dependency maintenance; docs/state/README/coordination and stale lifecycle reconciliation; then non-destructive evidence preparation for an existing blocker. Select the first safe non-conflicting lane automatically.
+Before a run can become idle or return control while execution capacity remains, scan in this order: accepted open PRs; accepted actionable Issues; CI/test/security/review/audit repairs; authorized dependency maintenance; **semantic** docs/state/README/coordination and stale lifecycle reconciliation; then non-destructive evidence preparation for an existing blocker. Expected post-merge pointer drift alone must not create a recursive state-only PR. Select the first safe non-conflicting lane automatically.
 
 Do not stop early merely to conserve tokens/context. Compact durable state and continue. A host hard limit may interrupt the run, but the next run must resume from the durable checkpoint without requiring a new technical decision from the owner.
 

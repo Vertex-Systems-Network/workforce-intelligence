@@ -1,16 +1,19 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `9fca2c4ee028d2011faf9c232296f5984e8ec7c7`  
+**Observed protected main:** `dfb4fc7ec9536a304b7df582027968dc60f3e53a`
 **Active Issue:** #62  
 **Deferred Future Issue:** #123 — Apple signing, notarization and macOS release trust  
-**Active PR:** none for M14 source implementation  
-**Active branch:** `main`  
+**Active PR:** #144 — governance/no-recursive-state-sync
+**Active branch:** `governance/no-recursive-state-sync`
 **Milestone:** M14 Windows/Linux release trust — real-target/recovery evidence prepared  
-**Status:** WAITING_EXTERNAL for M14; dependency maintenance checks run independently.
+**Status:** PR #144 exact-head certification pending; M14 remains WAITING_EXTERNAL.
 
 ## Completed
 
+- PR #145 merged to protected main at `dfb4fc7ec9536a304b7df582027968dc60f3e53a` after all six exact-head checks passed on `dab1ad7af440334d6ed7a7847665659216fedb69`; it adds bounded supervision/recovery for the Laravel E2E server. Zero unresolved review threads.
+
+- PR #143 merged to protected main at `9e6e95082fd8bc5511dc5502a3e3259203667356` after exact-head Code Quality, Linux CI and Windows Certification passed; continuous no-idle fallback execution is integrated.
 - Dependency PR #76 merged to protected main at `2e623b4e22111a88a42fd749dbe24f5de6fe0a9f`.
 - Dependency PR #137 merged at `ce4d13affcf0b0d13a668c19c96db102aae47119`; Gridstack 13.3.0 and its matching regression test are integrated.
 - M14 remains 70%; dependency maintenance does not advance M14 evidence progress.
@@ -35,4 +38,4 @@
 
 ## Next Action
 
-Keep Issue #62 M14 lane WAITING_EXTERNAL until written SSL.com/DigiCert replies or non-secret real-target facts arrive. While M14 waits, run the mandatory fallback scan and automatically continue the first safe authorized maintenance/development lane. Routine fallback selection must not require owner confirmation and must not stop early for token/context conservation. Preserve separate authority for production, restore, signing, publication, migrations, provider credentials and Runner execution. Issue #70 remains evidence-gated; Apple remains deferred under Issue #123.
+Reconcile PR #144 after it was rebased onto protected main dfb4fc7ec9536a304b7df582027968dc60f3e53a. Observe one consolidated exact-head check/review refresh; merge only if all required checks pass and the head remains unchanged. Keep M14 at 70% WAITING_EXTERNAL for provider/target evidence. Do not deploy, restore, sign, publish or run Runner tasks without separate authority.

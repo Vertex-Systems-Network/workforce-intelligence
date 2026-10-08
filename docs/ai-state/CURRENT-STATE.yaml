@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "9fca2c4ee028d2011faf9c232296f5984e8ec7c7",
+  "observed_main_sha": "dfb4fc7ec9536a304b7df582027968dc60f3e53a",
   "active_issue": 62,
-  "active_pr": null,
-  "active_branch": "main",
+  "active_pr": 144,
+  "active_branch": "governance/no-recursive-state-sync",
   "current_milestone": "M14 Windows/Linux release trust — real-target/recovery evidence prepared",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "Dependency PR #140 (Laravel Framework 13.34.0 / League CommonMark 2.10.3, preserving Pint 1.32.1) merged to protected main at 9fca2c4ee028d2011faf9c232296f5984e8ec7c7 after all six exact-head checks passed on d87285a0a11e6089dc2c2b5c1162b55a832ceac4. PRs #129–#131 closed as superseded. M14 evidence remains at 70%.",
-  "exact_next_safe_action": "Keep Issue #62 M14 lane WAITING_EXTERNAL until written SSL.com/DigiCert replies or non-secret real-target facts arrive. While it waits, run the mandatory fallback work scan and automatically continue the first safe authorized PR, Issue, CI/test/security/review/audit repair, dependency-maintenance, docs/state/lifecycle reconciliation, or non-destructive blocker-evidence lane. Do not ask the owner to choose routine fallback work and do not voluntarily stop for token/context conservation. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority; Issue #70 remains evidence-gated and Apple remains deferred under Issue #123.",
+  "last_completed_milestone": "PR #145 merged to protected main at dfb4fc7ec9536a304b7df582027968dc60f3e53a after all six exact-head checks passed on dab1ad7af440334d6ed7a7847665659216fedb69; zero unresolved review threads.",
+  "exact_next_safe_action": "Reconcile PR #144 after rebasing it onto protected main dfb4fc7ec9536a304b7df582027968dc60f3e53a. Observe one consolidated exact-head check/review refresh; merge only if all required checks pass and the head remains unchanged. Keep M14 at 70% WAITING_EXTERNAL for provider/target evidence; do not deploy, restore, sign, publish, or run Runner tasks without separate authority.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -47,7 +47,7 @@
   "last_reconciled_at": "2026-10-08",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 Windows/Linux trust — provider replies and non-secret target facts pending; dependency PR #140 merged; stale dependency PRs #129–#131 closed",
+    "current_work": "PR #144 governance change rebased onto current main; exact-head certification pending. M14 provider/target evidence remains externally blocked.",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
@@ -74,6 +74,14 @@
       "docs_compact_state_readme_coordination_lifecycle_reconciliation",
       "non_destructive_evidence_diagnostics_for_existing_blocker"
     ],
-    "may_invent_product_scope": false
+    "may_invent_product_scope": false,
+    "state_pointer_only_drift_is_actionable": false
+  },
+  "state_sync_policy": {
+    "observed_main_sha_is_resume_anchor_not_live_authority": true,
+    "recursive_post_merge_state_only_pr_forbidden": true,
+    "pointer_only_drift_reconciled_in_memory": true,
+    "semantic_status_drift_requires_source_sync": true,
+    "merge_evidence_may_live_on_pr_issue_until_next_substantive_mutation": true
   }
 }
