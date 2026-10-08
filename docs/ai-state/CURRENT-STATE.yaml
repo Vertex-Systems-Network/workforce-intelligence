@@ -9,7 +9,7 @@
   "current_milestone": "M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate",
   "milestone_status": "WAITING_EXTERNAL",
   "last_completed_milestone": "Continuous no-idle execution now requires active maintenance discovery before any no-actionable-work handoff; stale authority/review prompt suppression and merge-stable semantic state remain integrated.",
-  "exact_next_safe_action": "Investigate Issue #151's recurring failed trusted-release run records with no jobs using available GitHub-native evidence; do not dispatch trusted-release actions. If the connector still cannot expose the check suite/root cause, retain the issue as blocked on that evidence and continue the next safe maintenance discovery lane. M14 remains 70% and WAITING_EXTERNAL for production-release/immutable-release/real-target evidence.",
+  "exact_next_safe_action": "Finish exact-head and resulting-main verification for the bounded CI job runtimes, then resume Issue #151 with GitHub-native evidence; do not dispatch trusted-release actions. M14 remains 70% and WAITING_EXTERNAL for production-release/immutable-release/real-target evidence.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -50,7 +50,7 @@
   "last_reconciled_at": "2026-10-08",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 remains waiting on external release/target evidence; the next safe maintenance task is Issue #151, investigating failed trusted-release workflow records that contain no jobs.",
+    "current_work": "M14 remains waiting on external release/target evidence; explicit time bounds for CI and Code Quality jobs are being added while Issue #151's empty-job workflow root cause remains unavailable through GitHub evidence.",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
