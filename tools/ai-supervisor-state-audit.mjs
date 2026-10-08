@@ -75,11 +75,12 @@ const readmeExpected=[
   '**Module Progress:** ['+progressBar(rs.module_progress.percent)+'] **'+rs.module_progress.percent+'%**',
   '**Overall Progress:** ['+progressBar(rs.overall_progress.percent)+'] **'+rs.overall_progress.percent+'%** — '+rs.overall_progress.scope,
   '**Active Issue:** '+(s.active_issue===null?'none':'#'+s.active_issue),
+  '**Last Completed:** '+s.last_completed_milestone,
   '**Next Action:** '+s.exact_next_safe_action,
 ]
 for(const marker of readmeExpected)if(!readme.includes(marker))fail('README progress block stale/missing: '+marker)
 const progressBlock=readme.slice(readme.indexOf('<!-- AI-PROGRESS:START -->'),readme.indexOf('<!-- AI-PROGRESS:END -->'))
-for(const volatile of ['**Active PR:**','**Active Branch:**','**Last Completed:**'])if(progressBlock.includes(volatile))fail('README progress block contains volatile transaction field '+volatile)
+for(const volatile of ['**Active PR:**','**Active Branch:**'])if(progressBlock.includes(volatile))fail('README progress block contains volatile transaction field '+volatile)
 
 if(q.non_authoritative_resume_index!==true)fail('coordination queue must be non-authoritative')
 if(!Array.isArray(q.issues)||!Array.isArray(q.pull_requests))fail('coordination queue arrays missing')
