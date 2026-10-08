@@ -68,7 +68,7 @@ export default defineConfig({
     video: 'off',
   },
   webServer: {
-    command: 'php artisan serve --host=127.0.0.1 --port=8777',
+    command: 'php artisan serve --no-reload --host=127.0.0.1 --port=8777',
     cwd: root,
     url: `${baseURL}/health/live`,
     reuseExistingServer: false,
