@@ -2,7 +2,7 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "d38034c0ebc05460bf68581e01140801966d714f",
+  "observed_main_sha": "9fca2c4ee028d2011faf9c232296f5984e8ec7c7",
   "reconciled_at": "2026-10-08",
   "issues": [
     {
@@ -26,23 +26,55 @@
   ],
   "pull_requests": [
     {
+      "number": 129,
+      "title": "chore(deps): bump laravel/framework from 13.29.0 to 13.33.0",
+      "state": "closed",
+      "draft": false,
+      "head_sha": "8c0c12090d031e90f06061f6c4f13c602684fd2b",
+      "base_sha": "70579530d3ac78868adeefeb3d91fe20d9c30b4c",
+      "head_ref": "dependabot/composer/laravel/framework-13.33.0",
+      "action": "closed-superseded-by-PR-140"
+    },
+    {
+      "number": 130,
+      "title": "chore(deps): bump laravel/framework from 13.29.0 to 13.30.0",
+      "state": "closed",
+      "draft": false,
+      "head_sha": "cf0eaa97d479d50869da247ef9d73b692f64bc7b",
+      "base_sha": "2e623b4e22111a88a42fd749dbe24f5de6fe0a9f",
+      "head_ref": "dependabot/composer/laravel/framework-13.30.0",
+      "action": "closed-superseded-by-PR-140"
+    },
+    {
+      "number": 131,
+      "title": "chore(deps): bump league/commonmark from 2.10.0 to 2.10.3",
+      "state": "closed",
+      "draft": false,
+      "head_sha": "a1aaa4361c38d3be5b2f5a0e4c2aa47d6380927f",
+      "base_sha": "2e623b4e22111a88a42fd749dbe24f5de6fe0a9f",
+      "head_ref": "dependabot/composer/league/commonmark-2.10.3",
+      "action": "closed-superseded-by-PR-140"
+    },
+    {
       "number": 141,
       "title": "docs: reconcile README and AI state after Gridstack merge",
-      "state": "open",
+      "state": "merged",
       "draft": false,
       "base_sha": "d38034c0ebc05460bf68581e01140801966d714f",
       "head_ref": "docs/ai-state-after-gridstack-2026-10-08",
-      "action": "rebase-and-recertify-after-main-advance"
+      "action": "completed",
+      "resulting_main_sha": "46381d7752f914e5d70f6a71bd125a887ba0f6f7"
     },
     {
       "number": 140,
       "title": "chore(deps): bump laravel/framework and related packages",
-      "state": "open",
+      "state": "merged",
       "draft": false,
-      "base_sha": "d38034c0ebc05460bf68581e01140801966d714f",
-      "head_sha": "ea1268f1fa1a26399358d2a6713d173e767c32fc",
+      "base_sha": "569c633cb297771717864703635eaefa6245d732",
+      "head_sha": "d87285a0a11e6089dc2c2b5c1162b55a832ceac4",
       "head_ref": "codex/rebase-laravel-13-34-after-gridstack-2026-10-08",
-      "action": "fresh-exact-head-ci-windows-certification-pending"
+      "action": "completed-exact-head-checks-green",
+      "resulting_main_sha": "9fca2c4ee028d2011faf9c232296f5984e8ec7c7"
     },
     {
       "number": 139,
