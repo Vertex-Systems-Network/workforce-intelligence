@@ -295,3 +295,11 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - Merged PR #145 to protected main at `dfb4fc7ec9536a304b7df582027968dc60f3e53a`. The change adds bounded recovery supervision for the Laravel E2E server after PR #144's Windows certification hit connection refusals during browser accessibility coverage.
 - PR #144 was behind after the merge. Its existing changes touched 11 files, while main's only commit beyond its base changed `tools/e2e-server-supervisor.mjs` and `tools/playwright.config.mjs`; those paths do not overlap. The PR branch was rebased onto the exact current main while preserving its accepted governance changes.
 - PR #144 exact-head checks must pass before merge. M14 remains 70% WAITING_EXTERNAL; no production deployment, migration, restore, signing, publication, provider purchase or Runner task occurred.
+
+
+## 2026-10-08 — owner defers third-party Windows trust signing
+
+- Owner directed that trusted digital signing via SSL.com/DigiCert or another third-party provider is not required in the current scope and may be added in the future.
+- Provider qualification/integration is recorded as deferred until future owner authorization. Do not purchase or configure signing material or claim trusted signatures. This does not block unrelated safe repository maintenance.
+- M14 remains 70%; deferred signing is not represented as complete. Production, restore, publication and Runner authority remain separate.
+- PR #144's first current-main certification test on head `4701c1d42502a2847f377a2304c440fbb1a49c60` failed because README wrapped SHAs in backticks while the progress-state contract requires exact text. Removed those backticks on head `3ad2962fe8d88bd9e170e86a896ed9d1bec21221`; the next exact-head checks are not yet visible.

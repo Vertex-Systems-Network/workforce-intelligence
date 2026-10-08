@@ -6,10 +6,13 @@
 **Deferred Future Issue:** #123 — Apple signing, notarization and macOS release trust  
 **Active PR:** #144 — governance/no-recursive-state-sync
 **Active branch:** `governance/no-recursive-state-sync`
-**Milestone:** M14 Windows/Linux release trust — real-target/recovery evidence prepared  
-**Status:** PR #144 exact-head certification pending; M14 remains WAITING_EXTERNAL.
+**Milestone:** M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate
+**Status:** PR #144 exact-head certification pending; provider-based Windows trust signing deferred by owner; M14 remains 70%.
 
 ## Completed
+
+- Owner decision on 2026-10-08: defer third-party Windows trust-signing provider qualification/integration to future scope. Do not purchase/configure signing material or claim trusted signatures; this does not block safe repository maintenance.
+- PR #145 merged to protected main at `dfb4fc7ec9536a304b7df582027968dc60f3e53a` after all six exact-head checks passed on `dab1ad7af440334d6ed7a7847665659216fedb69`; it adds bounded supervision/recovery for the Laravel E2E server. Zero unresolved review threads.
 
 - PR #145 merged to protected main at `dfb4fc7ec9536a304b7df582027968dc60f3e53a` after all six exact-head checks passed on `dab1ad7af440334d6ed7a7847665659216fedb69`; it adds bounded supervision/recovery for the Laravel E2E server. Zero unresolved review threads.
 
@@ -38,4 +41,4 @@
 
 ## Next Action
 
-Reconcile PR #144 after it was rebased onto protected main dfb4fc7ec9536a304b7df582027968dc60f3e53a. Observe one consolidated exact-head check/review refresh; merge only if all required checks pass and the head remains unchanged. Keep M14 at 70% WAITING_EXTERNAL for provider/target evidence. Do not deploy, restore, sign, publish or run Runner tasks without separate authority.
+Finish PR #144 exact-head certification and merge only if all required checks pass at the unchanged head. Defer third-party Windows trust-signing provider qualification/integration until future owner authorization; continue safe authorized repository work independently. Keep M14 at 70% until real external evidence gates pass. Do not deploy, restore, publish, sign or run Runner tasks without separate authority.
