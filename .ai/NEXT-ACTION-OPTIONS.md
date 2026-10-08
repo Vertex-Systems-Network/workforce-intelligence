@@ -4,7 +4,7 @@ This repository adopts the Vertex Systems Network interactive AI-development han
 
 ## User-facing handoff
 
-Do not hand control back merely because an internal milestone completed, one lane became blocked, or one external check is waiting. While the host/session execution budget remains and at least one safe authorized task exists, synchronize durable progress and continue automatically.
+Do not hand control back merely because an internal milestone completed, one lane became blocked, or one external check is waiting. While execution can continue and at least one safe authorized task exists, synchronize durable progress and continue automatically; do not pre-estimate a host/token budget as a stopping rule.
 
 Expose 1 to 3 currently valid next actions only at a **terminal execution-window handoff**, and only after the mandatory fallback work scan in `AGENTS.md` proves no safe automatic lane remains. A completed milestone, waiting CI/provider lane, repairable failure, available maintenance task, state drift, or host-token conservation preference is not a valid reason to present options. Do not emit next-action options after internal continuous Fast-Batch progress updates or routine milestone boundaries.
 
