@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 Windows/Linux trust — provider replies and non-secret target facts pending; dependency PR #140 merged; stale dependency PRs #129–#131 closed
+- **Current Work:** M14 externally waiting; continuous no-idle fallback governance integrated; recursive state-only sync prevention active
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
 - **Active PR:** none
 - **Active Branch:** `main`
-- **Last Completed:** Dependency PR #140 (Laravel Framework 13.34.0 / League CommonMark 2.10.3, preserving Pint 1.32.1) merged to protected main at 9fca2c4ee028d2011faf9c232296f5984e8ec7c7 after all six exact-head checks passed on d87285a0a11e6089dc2c2b5c1162b55a832ceac4. PRs #129–#131 closed as superseded. M14 evidence remains at 70%.
-- **Next Action:** Keep Issue #62 M14 lane WAITING_EXTERNAL until written SSL.com/DigiCert replies or non-secret real-target facts arrive. While it waits, run the mandatory fallback work scan and automatically continue the first safe authorized PR, Issue, CI/test/security/review/audit repair, dependency-maintenance, docs/state/lifecycle reconciliation, or non-destructive blocker-evidence lane. Do not ask the owner to choose routine fallback work and do not voluntarily stop for token/context conservation. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority; Issue #70 remains evidence-gated and Apple remains deferred under Issue #123.
+- **Last Completed:** PR #143 merged to protected main at 9e6e95082fd8bc5511dc5502a3e3259203667356 after exact-head Code Quality, Linux CI, and Windows Certification passed on 14709d071048725ff6e065b9422d26c514b17326. Continuous no-idle fallback execution is integrated.
+- **Next Action:** Keep Issue #62 M14 lane WAITING_EXTERNAL until written SSL.com/DigiCert replies or non-secret real-target facts arrive. While it waits, run the mandatory fallback work scan and automatically continue the first safe authorized PR, Issue, CI/test/security/review/audit repair, dependency-maintenance, semantic docs/state/lifecycle reconciliation, or non-destructive blocker-evidence lane. Pointer-only post-merge state drift is not standalone work and must not create a recursive sync PR. Do not ask the owner to choose routine fallback work and do not voluntarily stop for token/context conservation. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority; Issue #70 remains evidence-gated and Apple remains deferred under Issue #123.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
@@ -39,7 +39,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 
 ## Audit snapshot and incomplete tracked work
 
-This continuation index reflects the state observed on **2026-10-08** at protected `main` `9fca2c4ee028d2011faf9c232296f5984e8ec7c7`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
+This continuation index reflects the state observed on **2026-10-08** at protected `main` `9e6e95082fd8bc5511dc5502a3e3259203667356`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
 
 | Priority | Work item | Current state | Completion condition |
 |---|---|---|---|
@@ -48,14 +48,15 @@ This continuation index reflects the state observed on **2026-10-08** at protect
 | Deferred | Apple release trust — Issue #123 | Deferred pending owner authorization and required Apple subscription/tooling. | Resume only with explicit authorization and required credentials/tooling. |
 | Completed | Dependency PR #139 | React DOM/types 19.3.0 merged to protected main at `d38034c0ebc05460bf68581e01140801966d714f`. | Complete. |
 | Completed | Dependency PR #140 | Laravel Framework 13.34.0 / CommonMark 2.10.3, preserving Pint 1.32.1; merged at `9fca2c4ee028d2011faf9c232296f5984e8ec7c7`. Six exact-head checks passed on `d87285a0a11e6089dc2c2b5c1162b55a832ceac4`; diff was `composer.lock` only. | Complete. |
+| Completed | Governance PR #143 | Continuous no-idle fallback execution merged at `9e6e95082fd8bc5511dc5502a3e3259203667356`; exact-head Code Quality, Linux CI, and Windows Certification passed on `14709d071048725ff6e065b9422d26c514b17326`. | Complete. |
 | Closed | Dependency PRs #129–#131 | Closed as superseded by merged PR #140, which carries the selected current dependency versions. | Complete. |
 | Completed | Dependency PR #76 | Laravel Pint 1.32.1 merged to protected main before this snapshot. | Complete. |
 | Completed | Dependency PR #137 | Gridstack 13.3.0 and matching drag/drop test merged to protected main at `ce4d13affcf0b0d13a668c19c96db102aae47119`. | Complete. |
 
 ### Continuation order
 
-1. PR #140 is merged and PRs #129–#131 are closed as superseded.
-2. Resume Issue #62 external-evidence work when provider responses or non-secret target facts arrive; do not enter production or Runner lanes without separate authority.
+1. Continuous fallback governance from PR #143 is merged; pointer-only post-merge state drift must not create recursive sync PRs.
+2. While Issue #62 is externally waiting, run the mandatory fallback scan and automatically continue safe authorized maintenance/development work.
 3. Keep Issue #70 open until evidence proves a root cause and focused fix; RB-005 remains not-authorized.
 4. Apple release trust remains deferred under Issue #123.
 
