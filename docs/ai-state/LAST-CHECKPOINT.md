@@ -9,7 +9,7 @@
 **Milestone:** M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate
 **Status:** PR #146 merged after all three exact-head checks passed; M14 remains 70% and is waiting on external admin/target evidence; provider-based Windows and Apple signing remain deferred.
 
-## Completed
+## Verified
 
 - PR #146 merged to protected main as 09e9dac0d09b5ac8521006721001eca9611f5c8a after WorkIntel CI, Code Quality and Windows Certification passed on exact head c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b; zero submitted reviews and zero unresolved review threads.
 
@@ -37,6 +37,18 @@
 1. Gate A/A2 are verified. Continue only the already-authorized remaining GitHub release-control evidence lane in Issue #62; `production-release` protection, immutable-releases, and non-secret target facts remain Not Verified.
 2. Keep non-secret real-target and recovery evidence separate and do not execute target, restore, signing, publication or Runner tasks without their required authority.
 3. Third-party Windows trusted signing and Apple/macOS signing are deferred to future owner authorization; do not purchase/configure signing material or claim trusted signatures.
+
+## Not Verified
+
+- `production-release` environment protection, immutable-release administration read-back, trusted artifact signing/publication, real-target readiness and restore evidence remain unverified or not run.
+- No Windows public-trust signer has been selected or configured; provider-based signing is deferred.
+- Apple Developer ID/notarization evidence remains deferred under Issue #123.
+
+## Known Risk
+
+- Issue #70 remains a real recurrent-but-unproven AccessControl seed risk; fail-closed diagnostics are integrated and RB-005 remains blocked/not-authorized.
+- External release/admin/target facts must not be inferred from green source CI.
+- Live PR/branch/check/merge transaction state must be read from GitHub at runtime; committed checkpoint pointers are non-authoritative resume hints.
 
 ## Next Action
 
