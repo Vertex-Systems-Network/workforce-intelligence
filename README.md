@@ -13,7 +13,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Active Issue:** #62
 - **Active PR:** #144
 - **Active Branch:** `governance/no-recursive-state-sync`
-- **Last Completed:** PR #145 merged to protected main at `dfb4fc7ec9536a304b7df582027968dc60f3e53a` after all six exact-head checks passed on `dab1ad7af440334d6ed7a7847665659216fedb69`; zero unresolved review threads.
+- **Last Completed:** PR #145 merged to protected main at dfb4fc7ec9536a304b7df582027968dc60f3e53a after all six exact-head checks passed on dab1ad7af440334d6ed7a7847665659216fedb69; zero unresolved review threads.
 - **Next Action:** Reconcile PR #144 after rebasing it onto protected main dfb4fc7ec9536a304b7df582027968dc60f3e53a. Observe one consolidated exact-head check/review refresh; merge only if all required checks pass and the head remains unchanged. Keep M14 at 70% WAITING_EXTERNAL for provider/target evidence; do not deploy, restore, sign, publish, or run Runner tasks without separate authority.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
