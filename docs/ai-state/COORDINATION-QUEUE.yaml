@@ -2,7 +2,7 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "9fca2c4ee028d2011faf9c232296f5984e8ec7c7",
+  "observed_main_sha": "9e6e95082fd8bc5511dc5502a3e3259203667356",
   "reconciled_at": "2026-10-08",
   "issues": [
     {
@@ -25,6 +25,17 @@
     }
   ],
   "pull_requests": [
+    {
+      "number": 143,
+      "title": "governance: enforce no-idle fallback execution and reconcile state",
+      "state": "merged",
+      "draft": false,
+      "head_sha": "14709d071048725ff6e065b9422d26c514b17326",
+      "base_sha": "9fca2c4ee028d2011faf9c232296f5984e8ec7c7",
+      "head_ref": "docs/post-pr140-state-sync-20261008",
+      "action": "completed-no-idle-fallback-governance",
+      "resulting_main_sha": "9e6e95082fd8bc5511dc5502a3e3259203667356"
+    },
     {
       "number": 129,
       "title": "chore(deps): bump laravel/framework from 13.29.0 to 13.33.0",
