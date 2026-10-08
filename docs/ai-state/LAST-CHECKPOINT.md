@@ -1,13 +1,13 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `dfb4fc7ec9536a304b7df582027968dc60f3e53a`
+**Observed protected main:** `33411a06b2585705880181f056d7b42d3bdf7458`
 **Active Issue:** #62  
 **Deferred Future Issue:** #123 — Apple signing, notarization and macOS release trust  
-**Active PR:** #144 — governance/no-recursive-state-sync
-**Active branch:** `governance/no-recursive-state-sync`
+**Active PR:** #146 — M14 README subtask progress
+**Active branch:** `docs/m14-readme-subtask-progress-20261008`
 **Milestone:** M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate
-**Status:** PR #144 exact-head certification pending; provider-based Windows trust signing deferred by owner; M14 remains 70%.
+**Status:** PR #146 is being repaired after exact-head checks found README/compact-state drift; provider-based Windows signing is deferred; M14 remains 70%.
 
 ## Completed
 
@@ -38,4 +38,4 @@
 
 ## Next Action
 
-Finish PR #144 exact-head certification and merge only if all required checks pass at the unchanged head. Defer third-party Windows trust-signing provider qualification/integration until future owner authorization; continue safe authorized repository work independently. Keep M14 at 70% until real external evidence gates pass. Do not deploy, restore, publish, sign or run Runner tasks without separate authority.
+Synchronize the README AI progress block with compact state in PR #146, then require exact-head CI, Code Quality and Windows Certification to pass before merge. Keep M14 at 70%; external release-policy, signing, publication, real-target and restore evidence remain unverified, deferred or not run. Do not deploy, restore, publish, sign or run Runner tasks without separate authority.

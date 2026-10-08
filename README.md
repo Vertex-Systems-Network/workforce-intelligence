@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 gate-by-gate status is tracked below; provider-based Windows signing and Apple signing are deferred, while external release-policy and real-target evidence remain open.
+- **Current Work:** PR #146 README M14 subtask table is open; exact-head CI and Windows Certification exposed a failing README/compact-state synchronization contract, and the docs/state repair is in progress.
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** none
-- **Active Branch:** `main`
-- **Last Completed:** PR #144 merged to protected main as `33411a06b2585705880181f056d7b42d3bdf7458`; all six required PR-head checks were green on `989ededc74ce6bc72191ca740ae313aae64babde`.
-- **Next Action:** Track each M14 evidence gate in the subtask table below and update its status only when repository or external evidence changes. Keep provider-based Windows signing deferred until future owner authorization; Apple remains deferred under Issue #123. Do not claim trusted signatures/publication or run production, restore, target, or unauthorized Runner work.
+- **Active PR:** #146
+- **Active Branch:** `docs/m14-readme-subtask-progress-20261008`
+- **Last Completed:** PR #144 merged to protected main as 33411a06b2585705880181f056d7b42d3bdf7458 after all six required PR-head checks passed on 989ededc74ce6bc72191ca740ae313aae64babde.
+- **Next Action:** Synchronize the README AI progress block with compact state in PR #146, then require exact-head CI, Code Quality and Windows Certification to pass before merge. Keep M14 at 70%; external release-policy, signing, publication, real-target and restore evidence remain unverified, deferred or not run.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
