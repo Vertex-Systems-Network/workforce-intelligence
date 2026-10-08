@@ -6,18 +6,64 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 Windows/Linux trust — provider replies pending; real-target/recovery evidence plan prepared
+- **Current Work:** M14 Windows/Linux trust — provider replies pending; dependency maintenance PRs #135, #136, and #137 are in exact-head certification
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
 - **Active PR:** none
 - **Active Branch:** `main`
-- **Last Completed:** PR #125 merged to protected main 0e6262ddbf32ce23f3d7ee3f8b9886ea7e95da1c. The active Windows/Linux M14 real-target and recovery evidence contract is now source-prepared without executing production, restore, publication, signing, or Runner actions.
-- **Next Action:** Continue waiting for written SSL.com/DigiCert qualification responses. In parallel, collect only non-secret target facts needed by M14_REAL_TARGET_RECOVERY_EVIDENCE_PLAN.md (target identity, deployment topology, database/storage/queue/scheduler topology, backup mechanism, and isolated restore destination). Do not deploy, restore, publish, sign, or run Runner tasks without the required separate authority.
+- **Last Completed:** Dependency PR #76 merged to protected main at 2e623b4e22111a88a42fd749dbe24f5de6fe0a9f. M14 evidence remains at 70%.
+- **Next Action:** Complete exact-head CI and review for dependency PRs #135, #136, and #137; merge only green, review-clean candidates on current main. For M14, continue waiting for written SSL.com/DigiCert responses and collect only non-secret target facts. Do not deploy, restore, publish, sign, or run Runner tasks without required separate authority.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
+
+
+## Table of contents
+
+- [Audit snapshot and incomplete tracked work](#audit-snapshot-and-incomplete-tracked-work)
+- [Audit exclusions and intentional limitations](#audit-exclusions-and-intentional-limitations)
+- [Development progress & phase status](#development-progress--phase-status)
+- [Clean project structure](#clean-project-structure)
+- [Requirements](#requirements)
+- [Fresh zero installation](#fresh-zero-installation)
+- [Strict clean-install verification](#strict-clean-install-verification)
+- [Seeded local accounts](#seeded-local-accounts)
+- [Frontend development](#frontend-development)
+- [Database upgrade rule](#database-upgrade-rule)
+- [Current platform areas](#current-platform-areas)
+- [Drag/drop policy](#dragdrop-policy)
+- [Realtime chat](#realtime-chat)
+- [Source quality gates](#source-quality-gates)
+
+## Audit snapshot and incomplete tracked work
+
+This continuation index reflects the state observed on **2026-10-08** at protected `main` `2e623b4e22111a88a42fd749dbe24f5de6fe0a9f`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
+
+| Priority | Work item | Current state | Completion condition |
+|---|---|---|---|
+| P0 | M14 external release configuration — Issue #62 | No SSL.com/DigiCert reply was found after 2026-09-27; provider qualification and non-secret real-target facts remain pending. This does not authorize production, publication, signing, restore, or Runner execution. | Record written provider/admin and real-target evidence under Issue #62 while preserving separate production and Runner authority boundaries. |
+| P1 | Intermittent seed failure — Issue #70 | Root cause remains unproven. Existing diagnostics preserve failure evidence; Runner RB-005 remains blocked/not authorized. | Capture a future recurrence or prove a deterministic cause, then make a focused fail-closed repair with exact-head certification. |
+| Deferred | Apple release trust — Issue #123 | Deferred pending owner authorization and required Apple subscription/tooling. | Resume only with explicit authorization and required credentials/tooling. |
+| Maintenance | Dependency PR #135 | React DOM/types 19.3.0; head `5f60551d38eded1f2eda66160cf7bb3e45e4d7ad`, based on `main@2e623b4e22111a88a42fd749dbe24f5de6fe0a9f`; Code Quality passed, CI and Windows Certification were running at audit time. | All required checks pass on exact head, review is clean, and base remains current. |
+| Maintenance | Dependency PR #136 | Laravel 13.34.0/Commonmark 2.10.3; head `ef71b8d81419f096af6517fb099fa0b033380a6d`, based on `main@2e623b4e22111a88a42fd749dbe24f5de6fe0a9f`; Code Quality passed; CI and Windows Certification were running. CI had passed SQLite migration/idempotency and PHP tests were active; MySQL smoke was still pending at audit time. | Fresh MySQL migration/seed smoke and all required checks pass on exact head; review clean; base current. |
+| Maintenance | Dependency PR #137 | Gridstack 13.3.0; head `e6df47de4e55a19c0ec8d93e6100b1bbab0f12bc`, based on `main@2e623b4e22111a88a42fd749dbe24f5de6fe0a9f`; Code Quality passed, CI and Windows Certification were running at audit time. | All required checks pass on exact head, review is clean, and base remains current. |
+| Completed | Dependency PR #76 | Laravel Pint 1.32.1 merged to protected main at `2e623b4e22111a88a42fd749dbe24f5de6fe0a9f` after exact-head CI, Code Quality, Windows, review, and thread gates passed. | Complete. |
+
+### Continuation order
+
+1. Finish or diagnose the exact-head checks for PRs #135–#137; do not merge a stale or failing head.
+2. Rebase and re-certify after each protected-main advance.
+3. Resume M14 external-evidence work when provider responses/target facts arrive; do not enter production or Runner lanes without separate authority.
+4. Keep Issue #70 open until evidence proves a root cause and focused fix.
+
+## Audit exclusions and intentional limitations
+
+- Issue #123's Apple work is explicitly deferred and is not an active implementation task.
+- Issue #70's owner-role invariant must not be weakened; retries must not mask seed failures.
+- Issue #62's external configuration evidence is separate from product code and does not authorize production, publication, signing, restore, or Runner execution.
+- Unchecked production checklist items remain target-specific evidence gates, not proof of missing source features.
 
 ## Development progress & phase status
 
