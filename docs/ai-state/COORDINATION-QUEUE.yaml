@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "0e6262ddbf32ce23f3d7ee3f8b9886ea7e95da1c",
-  "reconciled_at": "2026-09-26T20:10:00+05:00",
+  "observed_main_sha": "d38034c0ebc05460bf68581e01140801966d714f",
+  "reconciled_at": "2026-10-08",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "await-windows-provider-responses-collect-nonsecret-real-target-facts"
+      "action": "await-provider-replies-and-nonsecret-target-facts-no-production-or-runner-authority"
     },
     {
       "number": 70,
@@ -25,6 +25,36 @@
     }
   ],
   "pull_requests": [
+    {
+      "number": 141,
+      "title": "docs: reconcile README and AI state after Gridstack merge",
+      "state": "open",
+      "draft": false,
+      "base_sha": "d38034c0ebc05460bf68581e01140801966d714f",
+      "head_ref": "docs/ai-state-after-gridstack-2026-10-08",
+      "action": "rebase-and-recertify-after-main-advance"
+    },
+    {
+      "number": 140,
+      "title": "chore(deps): bump laravel/framework and related packages",
+      "state": "open",
+      "draft": false,
+      "base_sha": "d38034c0ebc05460bf68581e01140801966d714f",
+      "head_sha": "ea1268f1fa1a26399358d2a6713d173e767c32fc",
+      "head_ref": "codex/rebase-laravel-13-34-after-gridstack-2026-10-08",
+      "action": "fresh-exact-head-ci-windows-certification-pending"
+    },
+    {
+      "number": 139,
+      "title": "chore(deps): bump react-dom and @types/react-dom",
+      "state": "merged",
+      "draft": false,
+      "base_sha": "ce4d13affcf0b0d13a668c19c96db102aae47119",
+      "head_sha": "d50ee3d0e1051bc0693349da90a385b325d8a91e",
+      "head_ref": "codex/rebase-react-dom-after-gridstack-2026-10-08",
+      "action": "completed",
+      "resulting_main_sha": "d38034c0ebc05460bf68581e01140801966d714f"
+    },
     {
       "number": 118,
       "title": "docs(m14): add verified provider contact send paths",
@@ -180,72 +210,75 @@
     {
       "number": 93,
       "title": "chore(deps): bump laravel/framework from 13.29.0 to 13.32.0",
-      "state": "open",
+      "state": "closed",
       "draft": false,
       "head_sha": "5cd7ac3c04963c080a21f83febd9d616c1102cc5",
       "base_sha": "1be13fcab75c2fbee1a91f5dcc856bb007264085",
       "head_ref": "dependabot/composer/laravel/framework-13.32.0",
-      "action": "defer-while-m14-external-admin-lane-is-active"
+      "action": "closed-superseded"
     },
     {
       "number": 83,
       "title": "chore(deps): bump gridstack from 13.2.0 to 13.3.0",
-      "state": "open",
+      "state": "closed",
       "draft": false,
       "head_sha": "3064383d21cd3855c59460b220db0c2255ce7d94",
       "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
       "head_ref": "dependabot/npm_and_yarn/gridstack-13.3.0",
-      "action": "defer-while-m14-external-admin-lane-is-active"
+      "action": "superseded-by-PR-137",
+      "resulting_main_sha": "ce4d13affcf0b0d13a668c19c96db102aae47119"
     },
     {
       "number": 82,
       "title": "chore(deps): bump react-dom and @types/react-dom",
-      "state": "open",
+      "state": "closed",
       "draft": false,
       "head_sha": "d3bd2b2d195986999122a3af09871b63892f60eb",
       "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
       "head_ref": "dependabot/npm_and_yarn/multi-de36fa8f59",
-      "action": "defer-while-m14-external-admin-lane-is-active"
+      "action": "superseded-by-PR-139"
     },
     {
       "number": 81,
       "title": "chore(deps): bump lucide-react from 1.37.0 to 1.46.0",
-      "state": "open",
+      "state": "closed",
       "draft": false,
       "head_sha": "e2ed7c0a9ae5347804f01855daae135cf2d68e07",
       "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
       "head_ref": "dependabot/npm_and_yarn/lucide-react-1.45.0",
-      "action": "defer-while-m14-external-admin-lane-is-active"
+      "action": "closed-superseded"
     },
     {
       "number": 78,
       "title": "docs: add README deep-audit TOC and incomplete-work index",
-      "state": "open",
+      "state": "closed",
       "draft": true,
       "head_sha": "fa0c95711333b5147bae874290cbfd569e316b39",
       "base_sha": "9ea4d90bea31d4bf13ebf095a15468e3c75ea39c",
       "head_ref": "docs/readme-deep-audit-toc",
-      "action": "defer-while-m14-external-admin-lane-is-active"
+      "action": "superseded-by-current-main-state-refresh"
     },
     {
       "number": 76,
       "title": "chore(deps-dev): bump laravel/pint from 1.30.5 to 1.32.1 in the development-minor-patch group across 1 directory",
-      "state": "open",
+      "state": "merged",
       "draft": false,
       "head_sha": "853544803b60ecc02a38954e0058a1366eee2b30",
       "base_sha": "1be13fcab75c2fbee1a91f5dcc856bb007264085",
       "head_ref": "dependabot/composer/development-minor-patch-60599b4d1f",
-      "action": "defer-while-m14-external-admin-lane-is-active"
+      "action": "completed",
+      "resulting_main_sha": "2e623b4e22111a88a42fd749dbe24f5de6fe0a9f"
     },
     {
       "number": 74,
       "title": "chore(deps): bump the tiptap-family group across 1 directory with 6 updates",
-      "state": "open",
+      "state": "merged",
       "draft": false,
       "head_sha": "95747f214debe477be0e831f8f75f0e1b22c2f62",
       "base_sha": "9c93eb26e4f858262e3d9b20919b17fae1825fb8",
       "head_ref": "dependabot/npm_and_yarn/tiptap-family-4a8bbf4301",
-      "action": "defer-while-m14-external-admin-lane-is-active"
+      "action": "completed",
+      "resulting_main_sha": "1047a7b3db5fc569bee2e1a8ea03f35dd6671b0e"
     }
   ]
 }
