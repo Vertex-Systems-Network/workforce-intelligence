@@ -1,7 +1,7 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `d38034c0ebc05460bf68581e01140801966d714f`  
+**Observed protected main:** `9fca2c4ee028d2011faf9c232296f5984e8ec7c7`  
 **Active Issue:** #62  
 **Deferred Future Issue:** #123 — Apple signing, notarization and macOS release trust  
 **Active PR:** none for M14 source implementation  
@@ -21,9 +21,8 @@
 ## Active maintenance candidates
 
 - PR #139 — React DOM/types 19.3.0 merged to protected main at `d38034c0ebc05460bf68581e01140801966d714f`; all three required checks passed.
-- PR #140 — Laravel 13.34.0/Commonmark 2.10.3, rebased head `ea1268f1fa1a26399358d2a6713d173e767c32fc` on current main; fresh CI, Code Quality and Windows certification pending. Prior Windows run lost its local app server during browser certification; fresh MySQL smoke required.
-- Earlier #135/#136/#132 and #82 were superseded; #129–#131 remain older-base alternatives pending #140 resolution.
-- Previous README synchronization PRs #134/#138 were closed after their bases moved; this branch refreshes status on the current main.
+- PRs #129–#131 are closed as superseded by #140; protected-main lockfile versions are Laravel Framework 13.34.0, League CommonMark 2.10.3, and Laravel Pint 1.32.1.
+- PR #141 — README/AI-state reconciliation after PR #139 — merged at `46381d7752f914e5d70f6a71bd125a887ba0f6f7`; PR #142 then advanced main with the Playwright `--no-reload` fix to `569c633cb297771717864703635eaefa6245d732`.
 
 ## Active M14 critical chain
 
@@ -36,4 +35,4 @@
 
 ## Next Action
 
-Complete fresh exact-head CI and review for PR #140; merge only after all required checks pass on current main. For M14, continue waiting for written SSL.com/DigiCert responses and collect only non-secret target facts required by the recovery evidence plan. Do not deploy, restore, publish, sign, or run Runner tasks without required separate authority.
+PR #140 is complete. Continue Issue #62 only when written SSL.com/DigiCert replies or non-secret real-target facts are available; do not enter production or Runner lanes without separate authority. Keep Issue #70 open until evidence proves a root cause; Apple remains deferred under Issue #123.
