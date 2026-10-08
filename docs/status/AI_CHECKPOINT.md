@@ -14,7 +14,15 @@ When this file conflicts with observed repository state, use the authority order
 
 Never treat an embedded SHA below as live truth after the repository has moved. Rehydrate the current branch/PR/main before every material write sequence.
 
-## Current checkpoint — 2026-08-31
+## Current continuation semantics — 2026-10-08
+
+- M14 remains the accepted release-trust scope and is partially complete/verification-gated, not awaiting a fresh product-scope decision.
+- Historical Issue #50 records the owner approval that promoted M14. It is closed authorization provenance, **not** a live gate that requires the owner to approve M14 again.
+- Open Issue #62 tracks the remaining authorized external release-control/admin/target evidence. Provider-based Windows signing is deferred; Apple/macOS trust is deferred under Issue #123.
+- Live PR, branch, check and protected-main identities are resolved from GitHub at runtime. Do not ask the owner to reconfirm scope because a historical branch/SHA below is stale.
+- When an M14 lane is externally blocked, continue the repository's mandatory safe fallback work scan automatically.
+
+## Historical M14 promotion checkpoint — 2026-08-31
 
 - **Repository:** `Vertex-Systems-Network/workforce-intelligence`
 - **Observed protected main at M14 promotion:** `7f46f9542bbab6fa210a5c9d30acb07d44b91fb4`
