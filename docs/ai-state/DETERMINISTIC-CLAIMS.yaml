@@ -139,6 +139,42 @@
       "subject": "semantic_status_drift_requires_source_sync",
       "value": true,
       "authority": "AGENTS.md#readme-progress-synchronization-contract"
+    },
+    {
+      "id": "CLAIM-024",
+      "subject": "closed_historical_authority_issue_requires_user_prompt",
+      "value": false,
+      "authority": "AGENTS.md#user-prompt-suppression-and-authority-reconciliation"
+    },
+    {
+      "id": "CLAIM-025",
+      "subject": "material_git_drift_requires_conversational_handoff",
+      "value": false,
+      "authority": "AGENTS.md#start--resume-protocol"
+    },
+    {
+      "id": "CLAIM-026",
+      "subject": "url_only_repository_entry_forces_numbered_options",
+      "value": false,
+      "authority": ".ai/NEXT-ACTION-OPTIONS.md#url-only-repository-entry"
+    },
+    {
+      "id": "CLAIM-027",
+      "subject": "committed_state_is_live_pr_transaction_ledger",
+      "value": false,
+      "authority": "AGENTS.md#committed-state-is-a-semantic-checkpoint-not-a-live-transaction-ledger"
+    },
+    {
+      "id": "CLAIM-028",
+      "subject": "post_merge_state_only_reconciliation_required",
+      "value": false,
+      "authority": "AGENTS.md#committed-state-is-a-semantic-checkpoint-not-a-live-transaction-ledger"
+    },
+    {
+      "id": "CLAIM-029",
+      "subject": "routine_terminal_handoff_offers_engineering_choices_by_default",
+      "value": false,
+      "authority": ".ai/NEXT-ACTION-OPTIONS.md#user-facing-handoff"
     }
   ]
 }
