@@ -1,3 +1,11 @@
+## 2026-10-08 — post-merge state recursion guard
+
+- Verified PR #143 merged to protected main at `9e6e95082fd8bc5511dc5502a3e3259203667356` after exact-head Code Quality, Linux CI and Windows Certification passed on `14709d071048725ff6e065b9422d26c514b17326`.
+- Identified a recursive-maintenance risk: updating only `observed_main_sha`/merge pointers after a reconciliation PR would create another merge, immediately stale the pointer again, and make fallback selection loop on state-only PRs.
+- Added a fail-safe recursion guard: pointer-only post-merge drift is reconciled in memory and folded into the next substantive source mutation; it is not standalone fallback work.
+- Semantic README/state drift remains actionable and must still be corrected.
+- M14 remains 70% and WAITING_EXTERNAL as one lane; fallback execution continues independently under existing authority.
+
 ## 2026-10-08 — continuous fallback execution hardening
 
 - Root cause: durable next-action state could still tell the supervisor to wait on M14, allowing a valid external wait to dominate the whole workspace despite continuous Fast-Batch policy.
