@@ -52,4 +52,4 @@
 
 ## Next Action
 
-Issue #62 remains externally waiting and M14 stays at 70%. This is not a repository-wide stop. Reconcile live PRs, Issues and CI first; if none yields safe work, run the mandatory maintenance-discovery sweep defined in AGENTS.md. Convert any concrete safe maintenance finding into tracked Issue/PR work and continue automatically. A no-work handoff is valid only after that bounded fresh sweep is clean. Protected release, production and Runner actions still keep their existing separate authority gates.
+Issue #151 is the next safe maintenance lane: investigate the recurring failed trusted-release workflow run records with no jobs using available GitHub-native evidence. Do not dispatch a trusted-release action as a diagnostic. If required check-suite evidence remains unavailable, preserve that exact limitation and continue another safe maintenance lane. Issue #62 remains open for external production-release/immutable-release/real-target evidence; M14 remains 70%.
