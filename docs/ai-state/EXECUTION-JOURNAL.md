@@ -312,3 +312,12 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - Reconciled Issue #62 with live ruleset #23938765 and matching VERIFIED attestation; Gate A/A2 are verified while the remaining admin/target gates remain Not Verified.
 - Recorded Issue #151 for recurring failed trusted-release run records on main pushes that expose no jobs. Run `37814948442` is a failed `push` event on exact main SHA `0e5c52001aee19786efa31a0c62062184c7bf66e`; it is not one of the required CI checks. The available GitHub connector cannot fetch its check-suite detail or any job log.
 - No trusted-release dispatch, signing, publication, production, real-target, restore, or Runner action was performed.
+
+
+## 2026-10-08 — bounded CI job runtime hardening
+
+- PR #152 merged to protected main as `cce40fe8d0d7e1b1457860bb27a75328d2c5e90f`; its exact-head WorkIntel CI, Code Quality and Windows Certification passed.
+- On resulting main, CodeQL and Pint passed; WorkIntel CI and Windows Certification remained in progress at the last consolidated refresh.
+- Trusted-release run `37819875337` failed on a main push at the merged SHA and again exposed no jobs. This remains tracked by Issue #151; connector evidence still cannot establish a check-suite root cause.
+- The bounded maintenance scan found no explicit timeouts in Linux CI, governance, CodeQL and Pint jobs; Windows Certification already uses 90 minutes. PR #153 adds 90/10/45-minute bounds without changing commands, check names or release workflows.
+- No trusted-release dispatch, signing, production, publication, target, restore or RB-005 action was performed.
