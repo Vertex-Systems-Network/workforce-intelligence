@@ -7,9 +7,9 @@
   "issues": [
     {
       "number": 151,
-      "title": "CI: investigate trusted-release workflow failures with no jobs on main pushes",
+      "title": "CI: investigate trusted-release workflow failures with no jobs on non-tag pushes",
       "state": "open",
-      "action": "investigate-github-native-check-suite-evidence-no-release-dispatch"
+      "action": "investigate-non-tag-push-empty-job-records;check-suite-detail-unavailable;no-release-dispatch"
     },
     {
       "number": 62,
