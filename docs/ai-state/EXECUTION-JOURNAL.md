@@ -321,3 +321,5 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - Trusted-release run `37819875337` failed on a main push at the merged SHA and again exposed no jobs. This remains tracked by Issue #151; connector evidence still cannot establish a check-suite root cause.
 - The bounded maintenance scan found no explicit timeouts in Linux CI, governance, CodeQL and Pint jobs; Windows Certification already uses 90 minutes. PR #153 adds 90/10/45-minute bounds without changing commands, check names or release workflows.
 - No trusted-release dispatch, signing, production, publication, target, restore or RB-005 action was performed.
+
+- Follow-up evidence on PR #153: trusted-release run `37821071557` failed on a non-tag `push` to `ci/bound-workintel-job-timeouts-20261008` at `062158e1dba2f027612313434ef7956bf75ba3f6`; check suite ID `102469795658`; jobs endpoint empty. Issue #151 title/scope now covers non-tag pushes, not only main. Check-suite detail remains unavailable; no release action was dispatched.
