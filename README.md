@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** PR #144 governance fix is under exact-head certification; third-party Windows trust-signing provider work is deferred by owner and does not block safe repository maintenance.
+- **Current Work:** M14 gate-by-gate status is tracked below; provider-based Windows signing and Apple signing are deferred, while external release-policy and real-target evidence remain open.
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** #144
-- **Active Branch:** `governance/no-recursive-state-sync`
-- **Last Completed:** PR #145 merged to protected main at dfb4fc7ec9536a304b7df582027968dc60f3e53a after all six exact-head checks passed on dab1ad7af440334d6ed7a7847665659216fedb69; zero unresolved review threads.
-- **Next Action:** Finish PR #144 exact-head certification and merge only if all required checks pass at the unchanged head. Defer third-party Windows trust-signing provider qualification/integration until future owner authorization; it is not a blocker for safe repository maintenance. Continue the next safe authorized repository lane without buying/configuring signing material or claiming trusted signatures. M14 remains 70% until external evidence gates actually pass; do not deploy, restore, publish or run Runner tasks without separate authority. Issue #70 remains evidence-gated and Apple remains deferred under Issue #123.
+- **Active PR:** none
+- **Active Branch:** `main`
+- **Last Completed:** PR #144 merged to protected main as `33411a06b2585705880181f056d7b42d3bdf7458`; all six required PR-head checks were green on `989ededc74ce6bc72191ca740ae313aae64babde`.
+- **Next Action:** Track each M14 evidence gate in the subtask table below and update its status only when repository or external evidence changes. Keep provider-based Windows signing deferred until future owner authorization; Apple remains deferred under Issue #123. Do not claim trusted signatures/publication or run production, restore, target, or unauthorized Runner work.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
@@ -88,6 +88,24 @@ The table below is the repository-level roadmap view. `Progress` represents acce
 | M12 | Accessibility, Performance & Final Certification | Complete — active-scope closure | `██████████` 100% | 2026-08-21 | 2026-08-22 | Hosted + Windows certification accepted; withdrawn Laragon gate is not represented as passed |
 | M13 | Agent Lifecycle Reliability — Batches 1–6 | Complete | `██████████` 100% | 2026-08-22 | 2026-08-24 | Managed update, deterministic packaging, immutability, transactional publication, browser version authority and runtime-bound deployment accepted |
 | M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `███████░░░` **70%** | 2026-08-31 | **Active** | GitHub release-control and real-target/recovery evidence remain separate gates. Third-party Windows signing and Apple/macOS trust are deferred; no trusted signature or publication is claimed |
+
+### M14 subtask progress
+
+The bars below show closure of each stated subtask against its own acceptance evidence; they are **not averaged** to calculate the roadmap's M14 70%. A source implementation can be complete while real signing, publication, or target evidence is still not verified.
+
+| M14 subtask | Status | Progress | Evidence / remaining work |
+|---|---|---|---|
+| Trusted-release workflow source: protected-main source binding, fail-closed trust jobs, receipts, and publication safeguards | Implemented | `[██████████]` **100%** | Source contract and CI coverage are merged. This does not claim an actual trusted release. |
+| Linux checksum/provenance candidate evidence | Not run | `[░░░░░░░░░░]` **0%** | Run an authorized release-candidate workflow and retain its exact-source digest/provenance receipt. |
+| `agent-v*` tag update/deletion protection and separate creation-authority attestation (Gate A/A2) | Verified | `[██████████]` **100%** | Live ruleset 23938765 and the VERIFIED attestation match; zero bypass actors and update/deletion restrictions are recorded. |
+| `production-release` environment protection and least-privilege policy-read token (Gate B) | Not Verified | `[░░░░░░░░░░]` **0%** | Requires administrator-visible environment protection and secret-scope evidence. |
+| GitHub immutable-release policy and protected read-back (Gate C) | Not Verified | `[░░░░░░░░░░]` **0%** | Connector cannot read the required admin setting; no enablement is assumed. |
+| Windows approved signer material, signer fingerprint, and actual Authenticode/timestamp evidence | Deferred | `[░░░░░░░░░░]` **0%** | Owner deferred third-party provider qualification/integration to future authorization; no trusted Windows signature is claimed. |
+| Apple Developer ID signing and accepted notarization | Deferred | `[░░░░░░░░░░]` **0%** | Parked under Issue #123 pending owner authorization and required subscription/tooling. |
+| Trusted release publication and immutable asset-integrity postcondition | Not run | `[░░░░░░░░░░]` **0%** | Requires the applicable release-policy and signer gates plus separately authorized publication; no release is claimed. |
+| Real-target readiness evidence (revision, health, database, queue, scheduler, storage, download, auth/workspace smoke) | Not Verified | `[░░░░░░░░░░]` **0%** | Requires an approved target and captured target-specific evidence; no target run is claimed. |
+| Isolated/disposable backup-to-restore verification | Not run | `[░░░░░░░░░░]` **0%** | Requires separate recovery/target authority and actual restore evidence. |
+
 
 \* The canonical M0–M12 maturity record stores per-phase completion state but not precise per-phase start/end timestamps. M0–M11 therefore use the repository's initial implementation/certification evidence window instead of inventing unsupported day-level precision. M12, M13 and M14 dates are tied to explicit repository/PR authority and closure records.
 
