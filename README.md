@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 Windows/Linux trust — provider replies pending; PR #139 merged, PR #140 re-certified on current main
+- **Current Work:** M14 Windows/Linux trust — provider replies and non-secret target facts pending; dependency PR #140 merged; stale dependency PRs #129–#131 closed
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
 - **Active PR:** none
 - **Active Branch:** `main`
-- **Last Completed:** Dependency PR #139 merged to protected main at d38034c0ebc05460bf68581e01140801966d714f. M14 evidence remains at 70%.
-- **Next Action:** Complete fresh exact-head CI and review for dependency PR #140; merge only after all required checks pass on current main. For M14, continue waiting for written SSL.com/DigiCert responses and collect only non-secret target facts. Do not deploy, restore, publish, sign, or run Runner tasks without required separate authority.
+- **Last Completed:** Dependency PR #140 merged to protected main at 9fca2c4ee028d2011faf9c232296f5984e8ec7c7 after all six required exact-head checks passed on d87285a0a11e6089dc2c2b5c1162b55a832ceac4. M14 evidence remains at 70%.
+- **Next Action:** Continue Issue #62 only when written SSL.com/DigiCert replies or non-secret real-target facts are available. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority; keep Issue #70 open until root-cause evidence exists, and keep Apple deferred under Issue #123.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
@@ -39,7 +39,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 
 ## Audit snapshot and incomplete tracked work
 
-This continuation index reflects the state observed on **2026-10-08** at protected `main` `d38034c0ebc05460bf68581e01140801966d714f`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
+This continuation index reflects the state observed on **2026-10-08** at protected `main` `9fca2c4ee028d2011faf9c232296f5984e8ec7c7`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
 
 | Priority | Work item | Current state | Completion condition |
 |---|---|---|---|
@@ -47,16 +47,17 @@ This continuation index reflects the state observed on **2026-10-08** at protect
 | P1 | Intermittent seed failure — Issue #70 | Root cause remains unproven. Existing diagnostics preserve failure evidence; Runner RB-005 remains blocked/not authorized. | Capture a future recurrence or prove a deterministic cause, then make a focused fail-closed repair with exact-head certification. |
 | Deferred | Apple release trust — Issue #123 | Deferred pending owner authorization and required Apple subscription/tooling. | Resume only with explicit authorization and required credentials/tooling. |
 | Completed | Dependency PR #139 | React DOM/types 19.3.0 merged to protected main at `d38034c0ebc05460bf68581e01140801966d714f`. | Complete. |
-| Maintenance | Dependency PR #140 | Laravel 13.34.0/Commonmark 2.10.3; rebased head `ea1268f1fa1a26399358d2a6713d173e767c32fc` on `main@d38034c0ebc05460bf68581e01140801966d714f`; fresh exact-head checks pending. Prior CI and Code Quality passed, Windows browser certification lost its local server; retry required. | Fresh MySQL smoke and all required checks pass on exact head; review clean; base current. |
+| Completed | Dependency PR #140 | Laravel Framework 13.34.0 / CommonMark 2.10.3, preserving Pint 1.32.1; merged at `9fca2c4ee028d2011faf9c232296f5984e8ec7c7`. Six exact-head checks passed on `d87285a0a11e6089dc2c2b5c1162b55a832ceac4`; diff was `composer.lock` only. | Complete. |
+| Closed | Dependency PRs #129–#131 | Closed as superseded by merged PR #140, which carries the selected current dependency versions. | Complete. |
 | Completed | Dependency PR #76 | Laravel Pint 1.32.1 merged to protected main before this snapshot. | Complete. |
 | Completed | Dependency PR #137 | Gridstack 13.3.0 and matching drag/drop test merged to protected main at `ce4d13affcf0b0d13a668c19c96db102aae47119`. | Complete. |
 
 ### Continuation order
 
-1. Finish fresh exact-head checks for PR #140; do not merge a stale or failing head.
-2. Rebase and re-certify after each protected-main advance.
-3. Resume M14 external-evidence work when provider responses/target facts arrive; do not enter production or Runner lanes without separate authority.
-4. Keep Issue #70 open until evidence proves a root cause and focused fix.
+1. PR #140 is merged and PRs #129–#131 are closed as superseded.
+2. Resume Issue #62 external-evidence work when provider responses or non-secret target facts arrive; do not enter production or Runner lanes without separate authority.
+3. Keep Issue #70 open until evidence proves a root cause and focused fix; RB-005 remains not-authorized.
+4. Apple release trust remains deferred under Issue #123.
 
 ## Audit exclusions and intentional limitations
 
