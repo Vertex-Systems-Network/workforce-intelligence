@@ -5,15 +5,16 @@ import process from 'node:process'
 const root = path.resolve(import.meta.dirname, '..')
 const configuredBase = process.env.WORKINTEL_E2E_BASE_URL || 'http://127.0.0.1:8777'
 const base = new URL(configuredBase)
+const hostname = base.hostname.replace(/^\[|\]$/g, '')
 const allowedHosts = new Set(['127.0.0.1', 'localhost', '::1'])
 
-if (!allowedHosts.has(base.hostname)) {
-  console.error('[e2e-server-supervisor] Refusing to start a local server for a non-local E2E base URL.')
+if (base.protocol !== 'http:' || !allowedHosts.has(hostname)) {
+  console.error('[e2e-server-supervisor] Refusing to start a local server unless the E2E base URL is local HTTP.')
   process.exit(1)
 }
 
-const host = base.hostname === 'localhost' ? '127.0.0.1' : base.hostname
-const port = Number(base.port || (base.protocol === 'https:' ? 443 : 80))
+const host = hostname === 'localhost' ? '127.0.0.1' : hostname
+const port = Number(base.port || 80)
 const healthURL = new URL('/health/live', base).toString()
 const probeIntervalMs = 2_000
 const probeTimeoutMs = 3_000
@@ -51,7 +52,7 @@ function startServer() {
     serverExit = { code, signal }
     if (!stopping) log(`Laravel server exited (code=${code ?? 'null'}, signal=${signal ?? 'none'}).`)
   })
-  log(`Started Laravel server PID ${server.pid ?? 'unavailable'} at http://${host}:${port}.`)
+  log(`Started Laravel server PID ${server.pid ?? 'unavailable'} at http://${host.includes(':') ? `[${host}]` : host}:${port}.`)
 }
 
 async function isHealthy() {
@@ -74,14 +75,14 @@ async function terminateServer() {
   if (!current) return
 
   const exited = new Promise(resolve => {
-    if (current.exitCode !== null || current.signalCode !== null) {
+    if (current.exitCode !== null || current.signalCode !== null || serverExit) {
       resolve()
     } else {
       current.once('exit', resolve)
     }
   })
 
-  if (current.pid && process.platform === 'win32') {
+  if (current.pid && process.platform === 'win32' && !serverExit) {
     await new Promise(resolve => {
       const killer = spawn('taskkill.exe', ['/pid', String(current.pid), '/t', '/f'], {
         stdio: 'ignore',
@@ -93,12 +94,12 @@ async function terminateServer() {
       })
       killer.once('close', resolve)
     })
-  } else {
+  } else if (!serverExit) {
     current.kill('SIGTERM')
   }
 
   await Promise.race([exited, delay(5_000)])
-  if (current.exitCode === null && current.signalCode === null) current.kill('SIGKILL')
+  if (current.exitCode === null && current.signalCode === null && !serverExit) current.kill('SIGKILL')
   if (server === current) server = null
 }
 
