@@ -95,13 +95,34 @@ Before any voluntary terminal handoff, perform a fresh repository-wide safe-work
 
 Routine repository maintenance in this ladder is covered by the owner's standing maintenance authority in `.ai/schedule/SCHEDULE-PLAN.md`. It does **not** authorize inventing product features, bypassing a protected action, running an unauthorized Runner task, or creating production/provider/release evidence that does not exist.
 
-If any safe fallback item exists, select it automatically and continue. Do not ask the user which fallback to choose.
+### Mandatory maintenance-discovery sweep before "no actionable work"
+
+An empty OPEN-PR queue, green CI, and externally blocked milestone are **not by themselves** proof that no safe repository work remains.
+
+Before claiming `no actionable task`, `nothing left to do`, or another terminal no-work state, the supervisor must perform a bounded fresh maintenance-discovery sweep in the same execution window across these evidence-backed lanes:
+
+1. CI/test reliability: inspect recent failures/flakes, seed/migration instability and unresolved reliability Issues;
+2. dependency/supply-chain/security: inspect manifests, lockfiles, repository-native audit outputs and dependency/security evidence;
+3. source quality and test gaps: inspect high-risk/recent code for missing regression coverage, broken invariants, stale compatibility logic, or deterministic doctor/audit gaps;
+4. documentation/governance drift: inspect active architecture/runbook/state contracts for contradictions that can alter execution, release truth or operator safety;
+5. accessibility/performance/browser/runtime certification: inspect existing audits/tests for uncovered supported paths, recurring warnings or deterministic certification gaps;
+6. blocker-adjacent non-destructive diagnostics: advance an existing blocked Issue with safe evidence collection, reproduction harnesses, failure isolation or tests that do not require the blocked external authority.
+
+For each lane:
+- use existing repository evidence and current code; do not invent product scope;
+- if a concrete defect, risk, test gap, maintenance requirement or stale contract is found, create or update the appropriate Issue/branch/PR under standing maintenance authority and continue execution automatically;
+- do not create no-op/status-only commits or speculative chores with no evidence;
+- do not repeat an unchanged clean discovery lane in a tight loop during the same execution window.
+
+A voluntary terminal handoff is allowed only after both the normal fallback scan **and** this maintenance-discovery sweep find no concrete safe mutation/evidence-preparation task. The terminal report must state that the discovery sweep was actually performed; merely listing OPEN Issues/PRs and current CI is insufficient.
+
+If any safe fallback or discovered maintenance item exists, select it automatically and continue. Do not ask the user which fallback to choose.
 
 Do not voluntarily stop merely to conserve tokens/context, because a milestone finished, because one lane is waiting, or because a final response could be produced. Compact/checkpoint state as needed and keep executing. A hard host/session termination is an external platform boundary, not a repository stop decision; on the next resume, rehydrate and continue from the durable checkpoint.
 
 Hand control back voluntarily only after the mandatory fallback scan proves one of these terminal conditions:
 
-- no safe authorized work remains because every reachable lane requires user-owned information, secret material, explicit product/scope authority, destructive/provider/production/release/migration authority, or an external decision;
+- no safe authorized work remains **after the mandatory maintenance-discovery sweep**, because every reachable or newly discovered lane requires user-owned information, secret material, explicit product/scope authority, destructive/provider/production/release/migration authority, or an external decision;
 - a material security or authority conflict makes all further automatic work unsafe;
 - the repository's currently authorized work is fully complete and there is no safe maintenance, evidence-preparation, reconciliation, or next milestone lane.
 
