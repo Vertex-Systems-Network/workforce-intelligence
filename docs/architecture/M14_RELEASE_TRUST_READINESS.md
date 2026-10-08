@@ -1,11 +1,12 @@
 # M14 — Production Release Trust & Real-Target Readiness
 
 **Module ID:** `M14-RELEASE-TRUST`  
-**State:** `IMPLEMENTING`  
-**Authority:** GitHub Issue #50  
+**State:** `VERIFYING / PARTIALLY COMPLETE`  
+**Authority provenance:** historical owner approval in closed GitHub Issue #50; this approval remains the accepted M14 scope and must not be requested again merely because the Issue is closed  
+**Current continuation authority:** open Issue #62 for remaining release-control/admin/target evidence, plus this specification and protected `main`  
 **Owner approval:** `OWNER APPROVAL: M14-RELEASE-TRUST APPROVED FOR IMPLEMENTATION`  
-**Starting protected-main SHA:** `7f46f9542bbab6fa210a5c9d30acb07d44b91fb4`  
-**Implementation branch:** `m14/release-trust-readiness`  
+**Historical starting protected-main SHA:** `7f46f9542bbab6fa210a5c9d30acb07d44b91fb4` — provenance only, never live Git truth  
+**Historical implementation branch:** `m14/release-trust-readiness` — merged/superseded execution identity, never a reason to prompt for re-approval  
 **Risk:** HIGH  
 **Review assurance:** AI-ONLY SINGLE-MAINTAINER MODE — owner-authorized by GitHub Issue #96; independent human review is optional unless a higher external requirement mandates it  
 **Real-target evidence required:** YES for `PRODUCTION_VERIFIED` / M14 `DONE`
