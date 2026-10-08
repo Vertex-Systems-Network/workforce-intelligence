@@ -60,5 +60,20 @@
       "caveat": "Open maintenance, security, governance, provider, M14 release-trust, and future-scope work remain separate from active release-scope modular maturity."
     },
     "bar_cells": 10
+  },
+  "fallback_work_policy": {
+    "enabled": true,
+    "scan_before_terminal_handoff": true,
+    "automatic_selection": true,
+    "stop_early_to_conserve_tokens": false,
+    "order": [
+      "accepted_open_pr_repair_review_merge",
+      "accepted_actionable_open_issue",
+      "ci_test_security_review_audit_state_branch_repair",
+      "authorized_dependency_supply_chain_maintenance",
+      "docs_compact_state_readme_coordination_lifecycle_reconciliation",
+      "non_destructive_evidence_diagnostics_for_existing_blocker"
+    ],
+    "may_invent_product_scope": false
   }
 }
