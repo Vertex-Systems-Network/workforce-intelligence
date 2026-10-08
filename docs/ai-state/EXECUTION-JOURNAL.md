@@ -303,3 +303,12 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - Provider qualification/integration is recorded as deferred until future owner authorization. Do not purchase or configure signing material or claim trusted signatures. This does not block unrelated safe repository maintenance.
 - M14 remains 70%; deferred signing is not represented as complete. Production, restore, publication and Runner authority remain separate.
 - PR #144's first current-main certification test on head `4701c1d42502a2847f377a2304c440fbb1a49c60` failed because README wrapped SHAs in backticks while the progress-state contract requires exact text. Removed those backticks on head `3ad2962fe8d88bd9e170e86a896ed9d1bec21221`; the next exact-head checks are not yet visible.
+
+
+## 2026-10-08 — README progress governance and no-job workflow evidence
+
+- PR #150 merged to protected main at `0e5c52001aee19786efa31a0c62062184c7bf66e`; exact PR head `d7237a76fb3ee4d1be1528f9aa3f3b51146dba4e` passed Code Quality, WorkIntel CI and Windows Certification.
+- Post-merge Code Quality, WorkIntel CI and Windows Certification passed on `0e5c52001aee19786efa31a0c62062184c7bf66e`.
+- Reconciled Issue #62 with live ruleset #23938765 and matching VERIFIED attestation; Gate A/A2 are verified while the remaining admin/target gates remain Not Verified.
+- Recorded Issue #151 for recurring failed trusted-release run records on main pushes that expose no jobs. Run `37814948442` is a failed `push` event on exact main SHA `0e5c52001aee19786efa31a0c62062184c7bf66e`; it is not one of the required CI checks. The available GitHub connector cannot fetch its check-suite detail or any job log.
+- No trusted-release dispatch, signing, publication, production, real-target, restore, or Runner action was performed.
