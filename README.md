@@ -39,11 +39,11 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 
 ## Audit snapshot and incomplete tracked work
 
-This continuation index reflects the state observed on **2026-10-08** at protected `main` `9e6e95082fd8bc5511dc5502a3e3259203667356`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
+This continuation index reflects the state observed on **2026-10-08** at protected `main` `dfb4fc7ec9536a304b7df582027968dc60f3e53a`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
 
 | Priority | Work item | Current state | Completion condition |
 |---|---|---|---|
-| P0 | M14 external release configuration — Issue #62 | No SSL.com/DigiCert reply was found after 2026-09-27; provider qualification and non-secret real-target facts remain pending. This does not authorize production, publication, signing, restore, or Runner execution. | Record written provider/admin and real-target evidence under Issue #62 while preserving separate production and Runner authority boundaries. |
+| P0 | M14 external release configuration — Issue #62 | Owner deferred third-party Windows trusted-signing provider qualification/integration until future authorization. GitHub release-control and non-secret real-target evidence remain separate external gates; no trusted signature is claimed. | Record authorized administrator/target evidence under Issue #62 while preserving separate signing, publication, production, restore, and Runner authority boundaries. |
 | P1 | Intermittent seed failure — Issue #70 | Root cause remains unproven. Existing diagnostics preserve failure evidence; Runner RB-005 remains blocked/not authorized. | Capture a future recurrence or prove a deterministic cause, then make a focused fail-closed repair with exact-head certification. |
 | Deferred | Apple release trust — Issue #123 | Deferred pending owner authorization and required Apple subscription/tooling. | Resume only with explicit authorization and required credentials/tooling. |
 | Completed | Dependency PR #139 | React DOM/types 19.3.0 merged to protected main at `d38034c0ebc05460bf68581e01140801966d714f`. | Complete. |
@@ -87,7 +87,7 @@ The table below is the repository-level roadmap view. `Progress` represents acce
 | M11 | Role UX + Help + Onboarding | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Localized guidance/onboarding/RTL contracts complete |
 | M12 | Accessibility, Performance & Final Certification | Complete — active-scope closure | `██████████` 100% | 2026-08-21 | 2026-08-22 | Hosted + Windows certification accepted; withdrawn Laragon gate is not represented as passed |
 | M13 | Agent Lifecycle Reliability — Batches 1–6 | Complete | `██████████` 100% | 2026-08-22 | 2026-08-24 | Managed update, deterministic packaging, immutability, transactional publication, browser version authority and runtime-bound deployment accepted |
-| M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `███████░░░` **70%** | 2026-08-31 | **Active** | Active scope: Windows/Linux trust, publication and real-target/recovery. Apple/macOS trust is deferred to future Issue #123 and is not claimed complete |
+| M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `███████░░░` **70%** | 2026-08-31 | **Active** | GitHub release-control and real-target/recovery evidence remain separate gates. Third-party Windows signing and Apple/macOS trust are deferred; no trusted signature or publication is claimed |
 
 \* The canonical M0–M12 maturity record stores per-phase completion state but not precise per-phase start/end timestamps. M0–M11 therefore use the repository's initial implementation/certification evidence window instead of inventing unsupported day-level precision. M12, M13 and M14 dates are tied to explicit repository/PR authority and closure records.
 
