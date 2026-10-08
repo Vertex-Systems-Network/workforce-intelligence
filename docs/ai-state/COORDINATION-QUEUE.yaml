@@ -32,6 +32,24 @@
   ],
   "pull_requests": [
     {
+      "number": 153,
+      "title": "ci: bound required GitHub Actions job runtimes",
+      "state": "open",
+      "draft": false,
+      "head_ref": "ci/bound-workintel-job-timeouts-20261008",
+      "base_sha": "cce40fe8d0d7e1b1457860bb27a75328d2c5e90f",
+      "action": "explicit-workintel-ci-and-code-quality-job-timeouts;exact-head-checks-pending"
+    },
+    {
+      "number": 152,
+      "title": "docs: reconcile issue 151 continuation state",
+      "state": "merged",
+      "draft": false,
+      "head_sha": "f0e982ef8ebd1aec43455b385b833ecf287cc831",
+      "base_sha": "0e5c52001aee19786efa31a0c62062184c7bf66e",
+      "action": "merged-as-cce40fe8d0d7e1b1457860bb27a75328d2c5e90f;post-merge-codeql-pint-pass;ci-and-windows-running"
+    },
+    {
       "number": 150,
       "title": "governance: align semantic README progress contract",
       "state": "merged",
