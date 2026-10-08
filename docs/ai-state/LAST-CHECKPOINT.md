@@ -1,7 +1,7 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `9fca2c4ee028d2011faf9c232296f5984e8ec7c7`  
+**Observed protected main:** `9e6e95082fd8bc5511dc5502a3e3259203667356`  
 **Active Issue:** #62  
 **Deferred Future Issue:** #123 — Apple signing, notarization and macOS release trust  
 **Active PR:** none for M14 source implementation  
@@ -11,6 +11,7 @@
 
 ## Completed
 
+- PR #143 merged to protected main at `9e6e95082fd8bc5511dc5502a3e3259203667356` after exact-head Code Quality, Linux CI and Windows Certification passed; continuous no-idle fallback execution is integrated.
 - Dependency PR #76 merged to protected main at `2e623b4e22111a88a42fd749dbe24f5de6fe0a9f`.
 - Dependency PR #137 merged at `ce4d13affcf0b0d13a668c19c96db102aae47119`; Gridstack 13.3.0 and its matching regression test are integrated.
 - M14 remains 70%; dependency maintenance does not advance M14 evidence progress.
@@ -35,4 +36,4 @@
 
 ## Next Action
 
-Keep Issue #62 M14 lane WAITING_EXTERNAL until written SSL.com/DigiCert replies or non-secret real-target facts arrive. While M14 waits, run the mandatory fallback scan and automatically continue the first safe authorized maintenance/development lane. Routine fallback selection must not require owner confirmation and must not stop early for token/context conservation. Preserve separate authority for production, restore, signing, publication, migrations, provider credentials and Runner execution. Issue #70 remains evidence-gated; Apple remains deferred under Issue #123.
+Keep Issue #62 M14 lane WAITING_EXTERNAL until written SSL.com/DigiCert replies or non-secret real-target facts arrive. While M14 waits, run the mandatory fallback scan and automatically continue the first safe authorized lane. Pointer-only post-merge state drift is a resume-anchor difference, not standalone work, and must not spawn a recursive state-only PR. Routine fallback selection must not require owner confirmation or voluntary token/context stopping. Preserve separate authority for production, restore, signing, publication, migrations, provider credentials and Runner execution. Issue #70 remains evidence-gated; Apple remains deferred under Issue #123.
