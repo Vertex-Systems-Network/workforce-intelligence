@@ -6,7 +6,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 Windows/Linux trust — provider replies pending; PR #139 merged; Laravel dependency PR #140 is on current main for fresh certification
+- **Current Work:** M14 Windows/Linux trust — provider replies pending; PR #139 merged, PR #140 re-certified on current main
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
