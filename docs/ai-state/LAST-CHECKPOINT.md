@@ -7,9 +7,13 @@
 **Active PR:** none
 **Active branch:** `main`
 **Milestone:** M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate
-**Status:** PR #146 merged after all three exact-head checks passed; M14 remains 70% and is waiting on external admin/target evidence; provider-based Windows and Apple signing remain deferred.
+**Status:** Required CI jobs have bounded runtimes and the source includes locked Composer advisory coverage; M14 remains 70% waiting on external admin/target evidence, with Windows provider-based and Apple signing deferred.
 
 ## Verified
+
+- PR #153 merged as `307d97e7b81da92eb148bcd8c42f9aff8ce9a309` after all required checks passed on exact head `d2ddaf60a510fb36c8bc949329ded27f5bebe1f4`; resulting-main Linux CI, Windows Certification, CodeQL, Pint and governance passed.
+- Issue #151's non-tag push failure has a GitHub Actions check suite with zero check runs; its run exposes zero jobs and artifacts, while logs return HTTP 404. No failure reason is available.
+- Issue #154 tracks the missing locked Composer advisory gate in required Linux CI. The source adds `composer audit --locked --abandoned=report`; certify the new branch head before merge.
 
 - PR #146 merged to protected main as 09e9dac0d09b5ac8521006721001eca9611f5c8a after WorkIntel CI, Code Quality and Windows Certification passed on exact head c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b; zero submitted reviews and zero unresolved review threads.
 
@@ -52,7 +56,7 @@
 
 ## Next Action
 
-This is not a repository-wide stop. A bounded maintenance scan found that Linux CI, governance, CodeQL and Pint jobs lacked explicit runtime limits, while Windows Certification already has a 90-minute cap. PR #153 adds 90 minutes for full Linux CI, 10 minutes for governance, and 45 minutes for CodeQL/Pint. After exact-head and resulting-main checks, resume Issue #151's failed trusted-release/no-jobs investigation using GitHub-native evidence. Do not dispatch trusted-release actions.
+This is not a repository-wide stop. Maintain locked dependency advisory coverage and investigate Issue #151's zero-job trusted-release records using GitHub-native evidence. Do not dispatch trusted-release actions.
 
 Before any future no-work handoff, reconcile live GitHub PRs, Issues and CI and run the mandatory maintenance-discovery sweep. A no-work handoff is valid only after that bounded fresh sweep is clean.
 

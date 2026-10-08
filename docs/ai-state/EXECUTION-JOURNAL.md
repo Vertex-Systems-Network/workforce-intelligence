@@ -323,3 +323,12 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - No trusted-release dispatch, signing, production, publication, target, restore or RB-005 action was performed.
 
 - Follow-up evidence on PR #153: trusted-release run `37821071557` failed on a non-tag `push` to `ci/bound-workintel-job-timeouts-20261008` at `062158e1dba2f027612313434ef7956bf75ba3f6`; check suite ID `102469795658`; jobs endpoint empty. Issue #151 title/scope now covers non-tag pushes, not only main. Check-suite detail remains unavailable; no release action was dispatched.
+
+## 2026-10-08 — locked Composer advisory gate
+
+- PR #153 merged to protected main as `307d97e7b81da92eb148bcd8c42f9aff8ce9a309` after all exact-head required checks passed; resulting-main Linux CI, Windows Certification, CodeQL, Pint and governance passed.
+- Issue #151 evidence advanced: failed non-tag run `37821071557` has check suite `102469795658` with zero check runs. Its jobs and artifacts endpoints return zero; logs endpoint returns HTTP 404. Root cause remains unproven.
+- Maintenance discovery found required Linux CI audits npm's locked graph but lacks a Composer lockfile advisory gate. Issue #154 tracks the source change. This branch adds `composer audit --locked --abandoned=report` after Composer validation/platform checks; abandoned packages remain visible while advisory failures fail CI.
+- No signing, publication, production, real-target, restore or unauthorized Runner action was performed.
+
+- PR #155 exact-head CI confirmed the new Composer audit step succeeds, then failed `npm test` because a control-plane regression test requires the checkpoint to preserve the `This is not a repository-wide stop` maintenance-discovery sentence. The checkpoint restores that sentence on the branch; rerun exact-head certification.
