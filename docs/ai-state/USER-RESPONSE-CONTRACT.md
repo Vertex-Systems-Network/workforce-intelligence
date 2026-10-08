@@ -37,7 +37,9 @@ Continuous Fast-Batch is the default repository-development interaction mode.
 - When external CI remains pending after the allowed consolidated observation, report/record the exact pending runs without tight-polling, then continue other safe work. Do not stop the whole execution window solely because one lane is waiting.
 - During a long-running execution window, surface only material security findings, genuinely required user action, or meaningful state transitions; otherwise continue until the execution budget is exhausted or no safe authorized work remains.
 - Group manual configuration into one checklist unless the user explicitly asks for one-by-one instructions.
-- Show numbered next-action choices only at a terminal execution-window handoff when no safe authorized work can continue automatically, not after every completed/blocked/waiting internal milestone.
+- Before any terminal execution-window handoff, run the mandatory fallback work scan from `AGENTS.md`; if a safe PR/Issue/repair/maintenance/reconciliation/evidence-preparation lane exists, select it automatically and continue.
+- Show numbered next-action choices only when that fallback scan proves no safe authorized work can continue automatically, not after every completed/blocked/waiting internal milestone.
+- Do not voluntarily end a development response merely to conserve tokens/context; checkpoint compact state and continue until a genuine terminal repository condition or a hard host boundary is reached.
 
 Continuous Fast-Batch changes cadence and autonomy only. It does not weaken authorization, security, review, exact-head certification, merge, deployment, migration, secrets, provider, or release-publication requirements.
 
