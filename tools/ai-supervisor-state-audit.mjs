@@ -19,6 +19,9 @@ if(s.timeout_control?.chain_safe_milestones_without_user_reply!==true)fail('safe
 if(s.timeout_control?.technical_blocker_confirmation_required!==false)fail('technical blocker confirmation must default false')
 if(s.timeout_control?.waiting_external_lane_stops_execution_window!==false)fail('waiting external lane must not stop execution window')
 if(s.timeout_control?.readme_progress_sync_each_milestone!==true)fail('README progress sync must remain enabled for each milestone')
+if(s.timeout_control?.authority_drift_requires_user_confirmation!==false)fail('authority drift must not require user confirmation')
+if(s.timeout_control?.rehydrate_material_drift_in_same_window!==true)fail('material drift must rehydrate in the same execution window')
+if(s.timeout_control?.terminal_engineering_choice_prompt_default!==false)fail('terminal engineering choice prompts must default false')
 const fw=s.fallback_work_policy
 if(!fw||fw.enabled!==true||fw.scan_before_terminal_handoff!==true||fw.automatic_selection!==true)fail('fallback work policy must stay enabled and automatic')
 if(fw.stop_early_to_conserve_tokens!==false)fail('fallback policy must forbid voluntary token-conservation stop')
@@ -30,6 +33,14 @@ if(sp.recursive_post_merge_state_only_pr_forbidden!==true)fail('recursive post-m
 if(sp.pointer_only_drift_reconciled_in_memory!==true)fail('pointer-only drift must reconcile in memory')
 if(sp.semantic_status_drift_requires_source_sync!==true)fail('semantic status drift must require source sync')
 if(sp.merge_evidence_may_live_on_pr_issue_until_next_substantive_mutation!==true)fail('merge evidence deferral contract missing')
+if(sp.committed_state_is_semantic_checkpoint!==true)fail('committed state must be a semantic checkpoint')
+if(sp.live_transaction_status_read_from_github!==true)fail('live transaction status must come from GitHub')
+if(sp.committed_active_pr_is_live_authority!==false)fail('committed active_pr must not be live authority')
+if(sp.committed_active_branch_is_live_authority!==false)fail('committed active_branch must not be live authority')
+if(sp.readme_includes_volatile_transaction_fields!==false)fail('README must exclude volatile transaction fields')
+if(sp.post_merge_state_only_reconciliation_required!==false)fail('post-merge state-only reconciliation must not be required')
+if(sp.closed_authority_issue_requires_user_prompt!==false)fail('closed authority issue must not require user prompt')
+if(sp.last_completed_transaction_evidence_may_live_on_github!==true)fail('transaction completion evidence may live on GitHub')
 const fallbackOrder=['accepted_open_pr_repair_review_merge','accepted_actionable_open_issue','ci_test_security_review_audit_state_branch_repair','authorized_dependency_supply_chain_maintenance','docs_compact_state_readme_coordination_lifecycle_reconciliation','non_destructive_evidence_diagnostics_for_existing_blocker']
 if(JSON.stringify(fw.order)!==JSON.stringify(fallbackOrder))fail('fallback work order drifted')
 const rs=s.response_status
@@ -54,12 +65,11 @@ const readmeExpected=[
   '**Module Progress:** ['+progressBar(rs.module_progress.percent)+'] **'+rs.module_progress.percent+'%**',
   '**Overall Progress:** ['+progressBar(rs.overall_progress.percent)+'] **'+rs.overall_progress.percent+'%** — '+rs.overall_progress.scope,
   '**Active Issue:** '+(s.active_issue===null?'none':'#'+s.active_issue),
-  '**Active PR:** '+(s.active_pr===null?'none':'#'+s.active_pr),
-  '**Active Branch:** `'+s.active_branch+'`',
-  '**Last Completed:** '+s.last_completed_milestone,
   '**Next Action:** '+s.exact_next_safe_action,
 ]
 for(const marker of readmeExpected)if(!readme.includes(marker))fail('README progress block stale/missing: '+marker)
+const progressBlock=readme.slice(readme.indexOf('<!-- AI-PROGRESS:START -->'),readme.indexOf('<!-- AI-PROGRESS:END -->'))
+for(const volatile of ['**Active PR:**','**Active Branch:**','**Last Completed:**'])if(progressBlock.includes(volatile))fail('README progress block contains volatile transaction field '+volatile)
 
 if(q.non_authoritative_resume_index!==true)fail('coordination queue must be non-authoritative')
 if(!Array.isArray(q.issues)||!Array.isArray(q.pull_requests))fail('coordination queue arrays missing')
@@ -68,5 +78,5 @@ const runnerIds=new Set((r.entries||[]).map(x=>x.id))
 for(const k of ['pending_runner_ids','blocked_runner_ids'])for(const id of s[k])if(!runnerIds.has(id))fail(k+' references missing '+id)
 for(const id of s.blocked_runner_ids){const e=r.entries.find(x=>x.id===id);if(e?.definition_status!=='blocked')fail(id+' is not blocked in registry')}
 for(const m of ['## Verified','## Not Verified','## Known Risk','## Next Action'])if(!cp.includes(m))fail('LAST-CHECKPOINT missing '+m)
-for(const m of ['docs/ai-state/CURRENT-STATE.yaml','Runner registration NEVER grants execution authority','at most one consolidated CI/status refresh','OPEN GitHub Issues first','Message delivery timed out','Repo:','Current Work:','Current Module:','Module Progress:','Overall Progress:','README progress synchronization contract','every completed milestone','Fast-Batch default','Continuous autonomous execution window','Milestone completion is a checkpoint','Do **not** ask the user to diagnose or confirm a technical repair','A single blocked lane','Mandatory fallback work scan','Do not voluntarily stop merely to conserve tokens/context','Post-merge recursion guard','expected post-merge pointer drift'])if(!a.includes(m))fail('AGENTS missing '+m)
+for(const m of ['docs/ai-state/CURRENT-STATE.yaml','Runner registration NEVER grants execution authority','at most one consolidated CI/status refresh','OPEN GitHub Issues first','Message delivery timed out','Repo:','Current Work:','Current Module:','Module Progress:','Overall Progress:','README progress synchronization contract','every completed milestone','Fast-Batch default','Continuous autonomous execution window','Milestone completion is a checkpoint','Do **not** ask the user to diagnose or confirm a technical repair','A single blocked lane','Mandatory fallback work scan','Do not voluntarily stop merely to conserve tokens/context','Post-merge recursion guard','expected post-merge pointer drift','User-prompt suppression and authority reconciliation','Committed state is a semantic checkpoint, not a live transaction ledger','reconcile protected `main`, OPEN Issues, OPEN PRs','do not hand control back merely because repository state moved'])if(!a.includes(m))fail('AGENTS missing '+m)
 console.log('AI supervisor compact state valid.')
