@@ -6,10 +6,16 @@
   "reconciled_at": "2026-10-08",
   "issues": [
     {
+      "number": 154,
+      "title": "CI: audit locked Composer dependency graph",
+      "state": "open",
+      "action": "add-locked-composer-advisory-gate-to-required-ci;abandoned-report;exact-head-certification"
+    },
+    {
       "number": 151,
       "title": "CI: investigate trusted-release workflow failures with no jobs on non-tag pushes",
       "state": "open",
-      "action": "investigate-non-tag-push-empty-job-records;check-suite-detail-unavailable;no-release-dispatch"
+      "action": "failed-zero-run-suite-confirmed;no-jobs-artifacts-logs;root-cause-unproven;no-release-dispatch"
     },
     {
       "number": 62,
@@ -34,11 +40,11 @@
     {
       "number": 153,
       "title": "ci: bound required GitHub Actions job runtimes",
-      "state": "open",
+      "state": "merged",
       "draft": false,
       "head_ref": "ci/bound-workintel-job-timeouts-20261008",
       "base_sha": "cce40fe8d0d7e1b1457860bb27a75328d2c5e90f",
-      "action": "explicit-workintel-ci-and-code-quality-job-timeouts;exact-head-checks-pending"
+      "action": "merged-as-307d97e7b81da92eb148bcd8c42f9aff8ce9a309;exact-head-and-resulting-main-required-checks-pass"
     },
     {
       "number": 152,
@@ -47,7 +53,7 @@
       "draft": false,
       "head_sha": "f0e982ef8ebd1aec43455b385b833ecf287cc831",
       "base_sha": "0e5c52001aee19786efa31a0c62062184c7bf66e",
-      "action": "merged-as-cce40fe8d0d7e1b1457860bb27a75328d2c5e90f;post-merge-codeql-pint-pass;ci-and-windows-running"
+      "action": "merged-as-cce40fe8d0d7e1b1457860bb27a75328d2c5e90f;resulting-main-required-checks-pass"
     },
     {
       "number": 150,

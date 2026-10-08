@@ -6,13 +6,13 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 remains waiting on external release/target evidence; explicit time bounds for CI and Code Quality jobs are being added while Issue #151's empty-job workflow root cause remains unavailable through GitHub evidence.
+- **Current Work:** M14 remains waiting on external release/target evidence; CI maintains locked npm and Composer dependency audits while Issue #151's zero-job workflow failure remains evidence-limited.
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Last Completed:** Continuous no-idle execution now requires active maintenance discovery before any no-actionable-work handoff; stale authority/review prompt suppression and merge-stable semantic state remain integrated.
-- **Next Action:** Finish exact-head and resulting-main verification for the bounded CI job runtimes, then resume Issue #151 with GitHub-native evidence; do not dispatch trusted-release actions. M14 remains 70% and WAITING_EXTERNAL for production-release/immutable-release/real-target evidence.
+- **Last Completed:** Explicit CI job time bounds passed exact-head and resulting-main certification; continuous maintenance discovery and merge-stable semantic state remain integrated.
+- **Next Action:** Maintain locked dependency advisory coverage and investigate Issue #151's zero-job trusted-release records with GitHub-native evidence; do not dispatch trusted-release actions. M14 remains 70% and WAITING_EXTERNAL for production-release/immutable-release/real-target evidence.
 
 > Live PR number, working branch, check run IDs, and merge SHA are intentionally read from GitHub at runtime rather than committed here. Apple/macOS release trust remains deferred under Issue #123.
 <!-- AI-PROGRESS:END -->
@@ -325,6 +325,8 @@ php tools\run-unit-smoke.php
 php tools\audit-seeders.php
 php tools\migration-recovery-smoke.php
 ```
+
+Required Linux CI audits the committed Composer dependency graph with `composer audit --locked --abandoned=report` and the locked frontend graph with `npm audit --audit-level=high`.
 
 All named first-party PHP classes/functions/methods and named JS/TS classes/interfaces/functions/components are required to have PHPDoc/JSDoc documentation. The audit commands enforce that contract.
 

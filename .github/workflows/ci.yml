@@ -44,6 +44,8 @@ jobs:
       - run: php tools/runtime-closure-smoke.php
       - run: composer validate --no-check-publish
       - run: composer check-platform-reqs
+      - name: Audit locked Composer dependency graph
+        run: composer audit --locked --abandoned=report
       - name: Verify deterministic release packaging
         run: python3 tools/release-reproducibility-audit.py
       - name: Verify published release immutability
