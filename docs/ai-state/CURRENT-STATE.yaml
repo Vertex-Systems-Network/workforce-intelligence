@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "d38034c0ebc05460bf68581e01140801966d714f",
+  "observed_main_sha": "9fca2c4ee028d2011faf9c232296f5984e8ec7c7",
   "active_issue": 62,
   "active_pr": null,
   "active_branch": "main",
   "current_milestone": "M14 Windows/Linux release trust — real-target/recovery evidence prepared",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "Dependency PR #139 merged to protected main at d38034c0ebc05460bf68581e01140801966d714f. M14 evidence remains at 70%.",
-  "exact_next_safe_action": "Complete fresh exact-head CI and review for dependency PR #140; merge only after all required checks pass on current main. For M14, continue waiting for written SSL.com/DigiCert responses and collect only non-secret target facts. Do not deploy, restore, publish, sign, or run Runner tasks without required separate authority.",
+  "last_completed_milestone": "Dependency PR #140 (Laravel Framework 13.34.0 / League CommonMark 2.10.3, preserving Pint 1.32.1) merged to protected main at 9fca2c4ee028d2011faf9c232296f5984e8ec7c7 after all six exact-head checks passed on d87285a0a11e6089dc2c2b5c1162b55a832ceac4. PRs #129–#131 closed as superseded. M14 evidence remains at 70%.",
+  "exact_next_safe_action": "Continue Issue #62 only when written SSL.com/DigiCert replies or non-secret real-target facts are available; otherwise keep M14 WAITING_EXTERNAL. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority. Keep Issue #70 open until recurrence/root-cause evidence supports a focused fix; Apple remains deferred under Issue #123.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -47,7 +47,7 @@
   "last_reconciled_at": "2026-10-08",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 Windows/Linux trust — provider replies pending; PR #139 merged, PR #140 re-certified on current main",
+    "current_work": "M14 Windows/Linux trust — provider replies and non-secret target facts pending; dependency PR #140 merged; stale dependency PRs #129–#131 closed",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
