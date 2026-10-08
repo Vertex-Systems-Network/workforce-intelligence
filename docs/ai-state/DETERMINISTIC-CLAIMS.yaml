@@ -175,6 +175,12 @@
       "subject": "routine_terminal_handoff_offers_engineering_choices_by_default",
       "value": false,
       "authority": ".ai/NEXT-ACTION-OPTIONS.md#user-facing-handoff"
+    },
+    {
+      "id": "CLAIM-030",
+      "subject": "historical_m14_second_human_review_is_live_gate",
+      "value": false,
+      "authority": "docs/status/AI_CHECKPOINT.md#current-continuation-semantics--2026-10-08"
     }
   ]
 }

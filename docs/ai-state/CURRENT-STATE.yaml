@@ -8,7 +8,7 @@
   "active_branch": "main",
   "current_milestone": "M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "Latest substantive source checkpoint: M14 release-trust progress reporting, continuous no-idle execution, CI server supervision, and anti-recursive state governance are integrated. Exact PR/check/merge transaction evidence lives on GitHub PR/Issue surfaces and is resolved live at runtime.",
+  "last_completed_milestone": "Continuous no-idle execution, stale-authority prompt suppression, merge-stable semantic state, CI server supervision, and superseded historical review-gate reconciliation are integrated. Exact PR/check/merge transaction evidence lives on GitHub PR/Issue surfaces and is resolved live at runtime.",
   "exact_next_safe_action": "On every resume, reconcile live GitHub OPEN PRs and Issues first and automatically repair/review/merge the highest-priority safe authorized lane. If M14 Issue #62 remains externally blocked, continue the deterministic fallback ladder without asking the owner to choose routine engineering work. Ask only when all safe lanes are exhausted and a genuinely user-owned fact, new product/legal-commercial decision, or separately protected authority is required.",
   "pending_runner_ids": [
     "RB-001",
@@ -50,7 +50,7 @@
   "last_reconciled_at": "2026-10-08",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 release-trust evidence remains partially external; repository development continues through automatic live-PR/Issue reconciliation, CI repair, maintenance, and fallback work without routine owner prompts.",
+    "current_work": "M14 release-trust evidence remains partially external; autonomous repository execution is hardened against stale authority, stale review gates, routine confirmation prompts, and post-merge state loops.",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,

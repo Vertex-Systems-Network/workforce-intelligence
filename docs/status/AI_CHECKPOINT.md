@@ -26,18 +26,18 @@ Never treat an embedded SHA below as live truth after the repository has moved. 
 
 - **Repository:** `Vertex-Systems-Network/workforce-intelligence`
 - **Observed protected main at M14 promotion:** `7f46f9542bbab6fa210a5c9d30acb07d44b91fb4`
-- **Product authority state:** `IMPLEMENTING`
-- **Current product authority issue:** `#50 NEXT-AUTH — Define post-M13 WorkIntel product authority`
+- **Historical product authority state at promotion:** `IMPLEMENTING`
+- **Historical promotion authority issue:** `#50 NEXT-AUTH — Define post-M13 WorkIntel product authority` (closed; provenance only)
 - **Authorized work package:** `M14-RELEASE-TRUST` — Production Release Trust & Real-Target Readiness.
 - **Owner approval:** `OWNER APPROVAL: M14-RELEASE-TRUST APPROVED FOR IMPLEMENTATION`, persisted to Issue #50 on 2026-08-31.
 - **Canonical M14 specification:** `docs/architecture/M14_RELEASE_TRUST_READINESS.md`.
-- **Implementation branch:** `m14/release-trust-readiness`, created from exact protected-main SHA `7f46f9542bbab6fa210a5c9d30acb07d44b91fb4` after the required impact/security/change-budget self-audit.
+- **Historical implementation branch:** `m14/release-trust-readiness`, created from exact protected-main SHA `7f46f9542bbab6fa210a5c9d30acb07d44b91fb4` after the required impact/security/change-budget self-audit; it is not a live continuation branch.
 - **Last accepted completed product milestone:** M13.
 - **M14 scope boundary:** release trust/signing/notarization/provenance plus real-target evidence contract only; no new tenant feature, application-role change, database migration, tracking semantic change, payroll/timekeeping change, or M13 canonical ZIP rewrite.
-- **M14 risk:** HIGH. Independent review is required. Real-target evidence is required before `PRODUCTION_VERIFIED` / M14 `DONE`.
-- **Current implementation direction:** preserve the existing deterministic unsigned PR build lane; add a separate trusted release workflow with no `pull_request` trigger, exact-source binding, fail-closed organization signing/notary credentials, machine-readable final-digest receipts, immutable publication and truthful external-evidence states.
+- **M14 risk at promotion:** HIGH. The historical second-human review requirement was later superseded by owner-authorized AI-only single-maintainer review governance in Issue #96. Real-target evidence remains required before `PRODUCTION_VERIFIED` / M14 `DONE`.
+- **Historical implementation direction:** preserve the existing deterministic unsigned PR build lane; add a separate trusted release workflow with no `pull_request` trigger, exact-source binding, fail-closed organization signing/notary credentials, machine-readable final-digest receipts, immutable publication and truthful external-evidence states.
 - **Not verified at this checkpoint:** actual organization signing identities/secrets, Windows signed/timestamped release evidence, Apple Developer ID/notary evidence, trusted GitHub release execution, production/release-candidate target, and restore-tested target evidence.
-- **Exact next product-safe action:** complete the approved M14 source implementation on the dedicated branch, open a PR, certify the exact final PR head, obtain independent review, merge only the certified head, and keep unavailable external release/real-target evidence explicitly `Not Verified` rather than declaring M14 `DONE`.
+- **Historical next action at promotion:** complete the approved M14 source implementation and certify its exact head. The later Issue #96 governance supersedes the old second-human review gate; current continuation must use live GitHub state, current M14 specification, Issue #62, and AI-only review rules rather than requesting independent review or owner re-approval.
 
 ## Required session checkpoint fields
 
