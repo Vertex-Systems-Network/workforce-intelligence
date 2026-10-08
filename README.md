@@ -13,8 +13,8 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Active Issue:** #62
 - **Active PR:** none
 - **Active Branch:** `main`
-- **Last Completed:** Dependency PR #140 merged to protected main at 9fca2c4ee028d2011faf9c232296f5984e8ec7c7 after all six required exact-head checks passed on d87285a0a11e6089dc2c2b5c1162b55a832ceac4. M14 evidence remains at 70%.
-- **Next Action:** Continue Issue #62 only when written SSL.com/DigiCert replies or non-secret real-target facts are available. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority; keep Issue #70 open until root-cause evidence exists, and keep Apple deferred under Issue #123.
+- **Last Completed:** Dependency PR #140 (Laravel Framework 13.34.0 / League CommonMark 2.10.3, preserving Pint 1.32.1) merged to protected main at 9fca2c4ee028d2011faf9c232296f5984e8ec7c7 after all six exact-head checks passed on d87285a0a11e6089dc2c2b5c1162b55a832ceac4. PRs #129–#131 closed as superseded. M14 evidence remains at 70%.
+- **Next Action:** Continue Issue #62 only when written SSL.com/DigiCert replies or non-secret real-target facts are available; otherwise keep M14 WAITING_EXTERNAL. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority. Keep Issue #70 open until recurrence/root-cause evidence supports a focused fix; Apple remains deferred under Issue #123.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
