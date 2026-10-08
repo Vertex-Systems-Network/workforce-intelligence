@@ -6,17 +6,14 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** PR #146 M14 README subtask table merged to protected main as 09e9dac0d09b5ac8521006721001eca9611f5c8a; all three required exact-head checks passed on c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b. Issue #62's remaining admin/target evidence is waiting on external evidence; Windows provider signing and Apple signing remain deferred.
+- **Current Work:** M14 release-trust evidence remains partially external; repository development continues through automatic live-PR/Issue reconciliation, CI repair, maintenance, and fallback work without routine owner prompts.
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** none
-- **Active Branch:** `main`
-- **Last Completed:** PR #146 merged to protected main as 09e9dac0d09b5ac8521006721001eca9611f5c8a after WorkIntel CI, Code Quality and Windows Certification passed on exact head c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b; zero submitted reviews and zero unresolved review threads.
-- **Next Action:** Issue #62's remaining production-release, immutable-release and real-target evidence requires administrator/target evidence unavailable through this connector. Continue only when new authorized non-secret evidence is available; signing, publication, production, restore and Runner execution remain blocked or deferred. Keep M14 at 70% until the applicable evidence gates pass.
+- **Next Action:** On every resume, reconcile live GitHub OPEN PRs and Issues first and automatically repair/review/merge the highest-priority safe authorized lane. If M14 Issue #62 remains externally blocked, continue the deterministic fallback ladder without asking the owner to choose routine engineering work. Ask only when all safe lanes are exhausted and a genuinely user-owned fact, new product/legal-commercial decision, or separately protected authority is required.
 
-> Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
+> Live PR number, working branch, check run IDs, and merge SHA are intentionally read from GitHub at runtime rather than committed here. Apple/macOS release trust remains deferred under Issue #123.
 <!-- AI-PROGRESS:END -->
 
 
