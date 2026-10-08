@@ -1,3 +1,11 @@
+## 2026-10-08 — continuous fallback execution hardening
+
+- Root cause: durable next-action state could still tell the supervisor to wait on M14, allowing a valid external wait to dominate the whole workspace despite continuous Fast-Batch policy.
+- Added mandatory deterministic fallback scan before voluntary handoff and automatic selection of safe PR/Issue/repair/dependency/docs-state/evidence-preparation work.
+- Removed budget-based early-stop cues from AI execution, response and next-action contracts.
+- Updated compact state, README progress mirror and checkpoint so M14 remains WAITING_EXTERNAL only as one lane; it no longer implies repository-wide idle.
+- Preserved exact-head, security, product-scope, production/provider/release/migration and Runner authorization boundaries.
+
 # AI Engineering Supervisor Execution Journal
 
 Rolling journal; keep under 32 KiB and archive older entries when necessary.
