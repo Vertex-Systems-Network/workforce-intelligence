@@ -24,6 +24,19 @@ test('compact AI supervisor state is machine-readable, bounded and resume-safe',
   assert.equal(state.timeout_control.technical_blocker_confirmation_required,false)
   assert.equal(state.timeout_control.waiting_external_lane_stops_execution_window,false)
   assert.equal(state.timeout_control.readme_progress_sync_each_milestone,true)
+  assert.equal(state.fallback_work_policy.enabled,true)
+  assert.equal(state.fallback_work_policy.scan_before_terminal_handoff,true)
+  assert.equal(state.fallback_work_policy.automatic_selection,true)
+  assert.equal(state.fallback_work_policy.stop_early_to_conserve_tokens,false)
+  assert.equal(state.fallback_work_policy.may_invent_product_scope,false)
+  assert.deepEqual(state.fallback_work_policy.order,[
+    'accepted_open_pr_repair_review_merge',
+    'accepted_actionable_open_issue',
+    'ci_test_security_review_audit_state_branch_repair',
+    'authorized_dependency_supply_chain_maintenance',
+    'docs_compact_state_readme_coordination_lifecycle_reconciliation',
+    'non_destructive_evidence_diagnostics_for_existing_blocker',
+  ])
 
   assert.ok(fs.statSync('docs/ai-state/CURRENT-STATE.yaml').size<=12*1024)
   assert.ok(fs.statSync('docs/ai-state/LAST-CHECKPOINT.md').size<=16*1024)
@@ -118,6 +131,11 @@ test('Continuous Fast-Batch chains safe milestones without routine user confirma
   assert.ok(fastBatch.includes('Never tight-poll'))
   assert.ok(responseContract.includes('Continuous Fast-Batch is the default'))
   assert.ok(responseContract.includes('immediate selection of the next safe authorized milestone'))
+  assert.ok(responseContract.includes('mandatory fallback work scan'))
+  assert.ok(responseContract.includes('Do not voluntarily end a development response merely to conserve tokens/context'))
+  assert.equal(responseContract.includes('execution budget is exhausted'),false)
+  assert.equal(options.includes('host/session execution budget remains'),false)
+  assert.equal(fastBatch.includes('host/session execution budget is exhausted'),false)
   assert.ok(options.includes('terminal execution-window handoff'))
   assert.ok(options.includes('continue automatically'))
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-010')?.value,true)
@@ -127,4 +145,12 @@ test('Continuous Fast-Batch chains safe milestones without routine user confirma
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-014')?.value,false)
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-015')?.value,false)
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-016')?.value,true)
+  assert.equal(claims.claims.find(x=>x.id==='CLAIM-017')?.value,true)
+  assert.equal(claims.claims.find(x=>x.id==='CLAIM-018')?.value,true)
+  assert.equal(claims.claims.find(x=>x.id==='CLAIM-019')?.value,false)
+  assert.equal(claims.claims.find(x=>x.id==='CLAIM-020')?.value,true)
+  assert.ok(agents.includes('Mandatory fallback work scan'))
+  assert.ok(agents.includes('Do not voluntarily stop merely to conserve tokens/context'))
+  assert.ok(fastBatch.includes('mandatory fallback scan'))
+  assert.ok(options.includes('mandatory fallback work scan'))
 })

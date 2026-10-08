@@ -14,7 +14,7 @@ Typical continuous sequence:
 
 `reconcile -> implement -> source checks -> PR -> exact-head observation -> merge if already authorized and terminal green -> resulting-main verification -> durable-state/README progress sync -> select next safe milestone -> repeat`
 
-Continue chaining safe authorized milestones until the host/session execution budget is exhausted or no safe authorized work remains.
+Continue chaining safe authorized milestones while execution capacity is available. Do not pre-compute, target, or voluntarily stop for a token/session budget; only a real host interruption may cut the run short, and durable state must make the next resume automatic.
 
 ## Do not stop for routine substeps or technical failures
 
@@ -45,7 +45,22 @@ When a provider, credential, approval, CI run, external fact or other dependency
 3. preserve exact-head/source identity;
 4. continue the next independent safe authorized task.
 
-Hand control back only when every reachable lane is blocked by an authority/user/external dependency, when all authorized work is complete, when a material security/authority conflict makes further work unsafe, or when the host/session execution budget is exhausted.
+Before any voluntary handoff, run the mandatory fallback scan:
+
+1. accepted OPEN PR repair/review/merge;
+2. accepted actionable OPEN Issue;
+3. CI/test/security/review/audit/state/branch repair;
+4. authorized dependency and supply-chain maintenance;
+5. docs/compact-state/README/coordination/PR-Issue lifecycle reconciliation;
+6. non-destructive evidence or diagnostic preparation for an existing authorized blocker.
+
+The owner standing maintenance authority recorded in `.ai/schedule/SCHEDULE-PLAN.md` covers routine repository maintenance in this ladder. It never creates product scope or protected production/provider/release/migration authority.
+
+If a safe fallback exists, choose it automatically. Do not ask the user to choose a fallback and do not end the execution window.
+
+Do not voluntarily stop to conserve tokens/context. Persist a compact checkpoint and continue. A host/session hard termination can interrupt execution, but it is not a repository decision; resume from durable state on the next turn.
+
+Hand control back voluntarily only when the fallback scan proves every reachable lane needs unavailable user/external/protected authority, a material security/authority conflict makes further work unsafe, or all authorized product and maintenance work is complete.
 
 ## CI and remote-call budget
 

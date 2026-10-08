@@ -41,6 +41,12 @@ Do not repeatedly poll unchanged CI/runner state. Use available execution time f
 
 Do not use no-op/status-only commits as progress. Do not fabricate runtime, security, release or external evidence.
 
+### Deterministic fallback priority
+
+Before a run can become idle or return control while execution capacity remains, scan in this order: accepted open PRs; accepted actionable Issues; CI/test/security/review/audit repairs; authorized dependency maintenance; docs/state/README/coordination and stale lifecycle reconciliation; then non-destructive evidence preparation for an existing blocker. Select the first safe non-conflicting lane automatically.
+
+Do not stop early merely to conserve tokens/context. Compact durable state and continue. A host hard limit may interrupt the run, but the next run must resume from the durable checkpoint without requiring a new technical decision from the owner.
+
 ## Single-writer and concurrency safety
 Use the repository's durable single-writer/lease/checkpoint semantics. Before each mutation, revalidate live state and ownership of the mutation surface.
 

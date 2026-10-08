@@ -97,6 +97,30 @@
       "subject": "readme_progress_sync_during_continuous_execution",
       "value": true,
       "authority": "AGENTS.md#readme-progress-synchronization-contract"
+    },
+    {
+      "id": "CLAIM-017",
+      "subject": "mandatory_fallback_scan_before_terminal_handoff",
+      "value": true,
+      "authority": "AGENTS.md#mandatory-fallback-work-scan--no-idle"
+    },
+    {
+      "id": "CLAIM-018",
+      "subject": "routine_repository_maintenance_covered_by_owner_standing_authority",
+      "value": true,
+      "authority": ".ai/schedule/SCHEDULE-PLAN.md#owner-standing-consent-and-execution-authority"
+    },
+    {
+      "id": "CLAIM-019",
+      "subject": "voluntary_stop_to_conserve_tokens_or_context",
+      "value": false,
+      "authority": "AGENTS.md#mandatory-fallback-work-scan--no-idle"
+    },
+    {
+      "id": "CLAIM-020",
+      "subject": "safe_fallback_is_selected_automatically_without_user_choice",
+      "value": true,
+      "authority": "docs/ai-state/FAST-BATCH-EXECUTION.md#external-waits-and-blocked-lanes"
     }
   ]
 }
