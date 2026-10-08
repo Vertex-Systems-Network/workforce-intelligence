@@ -49,7 +49,7 @@ This continuation index reflects the state observed on **2026-10-08** at protect
 | Completed | Dependency PR #139 | React DOM/types 19.3.0 merged to protected main at `d38034c0ebc05460bf68581e01140801966d714f`. | Complete. |
 | Maintenance | Dependency PR #140 | Laravel 13.34.0/Commonmark 2.10.3; rebased head `ea1268f1fa1a26399358d2a6713d173e767c32fc` on `main@d38034c0ebc05460bf68581e01140801966d714f`; fresh exact-head checks pending. Prior CI and Code Quality passed, Windows browser certification lost its local server; retry required. | Fresh MySQL smoke and all required checks pass on exact head; review clean; base current. |
 | Completed | Dependency PR #76 | Laravel Pint 1.32.1 merged to protected main before this snapshot. | Complete. |
-| Completed | Dependency PR #137 | Gridstack 13.3.0 and matching drag/drop test merged to protected main at `d38034c0ebc05460bf68581e01140801966d714f`. | Complete. |
+| Completed | Dependency PR #137 | Gridstack 13.3.0 and matching drag/drop test merged to protected main at `ce4d13affcf0b0d13a668c19c96db102aae47119`. | Complete. |
 
 ### Continuation order
 
