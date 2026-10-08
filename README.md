@@ -11,6 +11,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
+- **Last Completed:** Continuous no-idle execution now requires active maintenance discovery before any no-actionable-work handoff; stale authority/review prompt suppression and merge-stable semantic state remain integrated.
 - **Next Action:** On every resume, reconcile live GitHub work first. If no surfaced safe task exists, run the bounded maintenance-discovery sweep across reliability, dependency/security, source/test gaps, semantic drift, certification gaps, and blocker diagnostics; automatically turn concrete findings into maintenance Issue/PR work and continue without asking the owner to choose routine engineering work.
 
 > Live PR number, working branch, check run IDs, and merge SHA are intentionally read from GitHub at runtime rather than committed here. Apple/macOS release trust remains deferred under Issue #123.

@@ -431,10 +431,10 @@ The compact block must show:
 - module progress bar + exact percentage;
 - overall progress bar + exact percentage/scope;
 - active Issue;
-- active PR;
-- active branch;
-- last completed milestone;
+- last completed semantic milestone;
 - exact next safe action.
+
+Live PR and branch identities are resolved from GitHub at runtime and remain outside this committed semantic progress block.
 
 Rules:
 
