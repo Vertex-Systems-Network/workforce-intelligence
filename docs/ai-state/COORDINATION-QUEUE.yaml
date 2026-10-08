@@ -26,6 +26,15 @@
   ],
   "pull_requests": [
     {
+      "number": 138,
+      "title": "docs: reconcile README and AI state after dependency merge",
+      "state": "open",
+      "draft": false,
+      "base_sha": "2e623b4e22111a88a42fd749dbe24f5de6fe0a9f",
+      "head_ref": "docs/ai-state-current-main-2026-10-08",
+      "action": "verifying-exact-head-ci"
+    },
+    {
       "number": 137,
       "title": "chore(deps): bump gridstack from 13.2.0 to 13.3.0",
       "state": "open",
