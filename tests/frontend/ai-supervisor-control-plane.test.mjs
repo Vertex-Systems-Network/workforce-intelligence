@@ -13,7 +13,7 @@ test('compact AI supervisor state is machine-readable, bounded and resume-safe',
 
   assert.equal(state.compact_state_path,'docs/ai-state')
   assert.match(state.observed_main_sha,/^[0-9a-f]{40}$/i)
-  for(const key of ['active_issue','active_pr','active_branch','current_milestone','milestone_status','last_completed_milestone','exact_next_safe_action','pending_runner_ids','blocked_runner_ids','current_blockers','timeout_control','response_status']) assert.ok(Object.hasOwn(state,key),`CURRENT-STATE missing ${key}`)
+  for(const key of ['active_issue','active_pr','active_branch','current_milestone','milestone_status','last_completed_milestone','exact_next_safe_action','pending_runner_ids','blocked_runner_ids','current_blockers','timeout_control','fallback_work_policy','maintenance_discovery_policy','response_status']) assert.ok(Object.hasOwn(state,key),`CURRENT-STATE missing ${key}`)
   assert.equal(state.timeout_control.max_consolidated_status_refreshes_per_milestone,1)
   assert.equal(state.timeout_control.tight_polling_allowed,false)
   assert.equal(state.timeout_control.rerun_on_message_delivery_timeout,false)
@@ -33,6 +33,23 @@ test('compact AI supervisor state is machine-readable, bounded and resume-safe',
   assert.equal(state.fallback_work_policy.stop_early_to_conserve_tokens,false)
   assert.equal(state.fallback_work_policy.may_invent_product_scope,false)
   assert.equal(state.fallback_work_policy.state_pointer_only_drift_is_actionable,false)
+  assert.equal(state.fallback_work_policy.empty_queue_green_ci_is_terminal_proof,false)
+  assert.equal(state.fallback_work_policy.maintenance_discovery_required_before_terminal,true)
+  assert.equal(state.maintenance_discovery_policy.enabled,true)
+  assert.equal(state.maintenance_discovery_policy.required_before_no_actionable_work_claim,true)
+  assert.equal(state.maintenance_discovery_policy.one_bounded_fresh_pass_per_execution_window,true)
+  assert.equal(state.maintenance_discovery_policy.no_tight_repeat_of_clean_lane,true)
+  assert.equal(state.maintenance_discovery_policy.finding_becomes_actionable_maintenance_lane,true)
+  assert.equal(state.maintenance_discovery_policy.may_create_tracking_issue_for_concrete_finding,true)
+  assert.equal(state.maintenance_discovery_policy.no_noop_or_status_only_commits,true)
+  assert.deepEqual(state.maintenance_discovery_policy.lanes,[
+    'ci_test_reliability',
+    'dependency_supply_chain_security',
+    'source_quality_regression_test_gaps',
+    'semantic_docs_governance_drift',
+    'accessibility_performance_browser_runtime',
+    'blocked_issue_non_destructive_diagnostics',
+  ])
   assert.equal(state.state_sync_policy.observed_main_sha_is_resume_anchor_not_live_authority,true)
   assert.equal(state.state_sync_policy.recursive_post_merge_state_only_pr_forbidden,true)
   assert.equal(state.state_sync_policy.pointer_only_drift_reconciled_in_memory,true)
@@ -53,6 +70,7 @@ test('compact AI supervisor state is machine-readable, bounded and resume-safe',
     'authorized_dependency_supply_chain_maintenance',
     'docs_compact_state_readme_coordination_lifecycle_reconciliation',
     'non_destructive_evidence_diagnostics_for_existing_blocker',
+    'maintenance_discovery_sweep',
   ])
 
   assert.ok(fs.statSync('docs/ai-state/CURRENT-STATE.yaml').size<=12*1024)
@@ -199,6 +217,9 @@ test('Continuous Fast-Batch chains safe milestones without routine user confirma
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-028')?.value,false)
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-029')?.value,false)
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-030')?.value,false)
+  assert.equal(claims.claims.find(x=>x.id==='CLAIM-031')?.value,false)
+  assert.equal(claims.claims.find(x=>x.id==='CLAIM-032')?.value,true)
+  assert.equal(claims.claims.find(x=>x.id==='CLAIM-033')?.value,false)
   assert.ok(agents.includes('User-prompt suppression and authority reconciliation'))
   assert.ok(agents.includes('Committed state is a semantic checkpoint, not a live transaction ledger'))
   assert.ok(agents.includes('do not hand control back merely because repository state moved'))
@@ -210,4 +231,27 @@ test('Continuous Fast-Batch chains safe milestones without routine user confirma
   assert.ok(agents.includes('Do not voluntarily stop merely to conserve tokens/context'))
   assert.ok(fastBatch.includes('mandatory fallback scan'))
   assert.ok(options.includes('mandatory fallback work scan'))
+})
+
+
+test('empty surfaced queue triggers maintenance discovery instead of status-only stop', () => {
+  const agents=read('AGENTS.md')
+  const fast=read('docs/ai-state/FAST-BATCH-EXECUTION.md')
+  const response=read('docs/ai-state/USER-RESPONSE-CONTRACT.md')
+  const options=read('.ai/NEXT-ACTION-OPTIONS.md')
+  const checkpoint=read('docs/ai-state/LAST-CHECKPOINT.md')
+  const state=parse('docs/ai-state/CURRENT-STATE.yaml')
+
+  assert.ok(agents.includes('Mandatory maintenance-discovery sweep before "no actionable work"'))
+  assert.ok(agents.includes('merely listing OPEN Issues/PRs and current CI is insufficient'))
+  assert.ok(fast.includes('Maintenance discovery when surfaced queues are empty'))
+  assert.ok(fast.includes('no open PR + green CI + externally blocked active milestone'))
+  assert.ok(response.includes('maintenance-discovery sweep'))
+  assert.ok(options.includes('bounded maintenance-discovery sweep'))
+  assert.ok(checkpoint.includes('This is not a repository-wide stop'))
+  assert.ok(checkpoint.includes('mandatory maintenance-discovery sweep'))
+  assert.equal(checkpoint.includes('Continue only when new authorized non-secret evidence is available'),false)
+  assert.equal(state.fallback_work_policy.empty_queue_green_ci_is_terminal_proof,false)
+  assert.equal(state.fallback_work_policy.maintenance_discovery_required_before_terminal,true)
+  assert.equal(state.maintenance_discovery_policy.required_before_no_actionable_work_claim,true)
 })
