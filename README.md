@@ -6,17 +6,14 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** PR #146 README M14 subtask table is open; exact-head CI and Windows Certification exposed a failing README/compact-state synchronization contract, and the docs/state repair is in progress.
+- **Current Work:** M14 release-trust evidence remains partially external; repository development continues through automatic live-PR/Issue reconciliation, CI repair, maintenance, and fallback work without routine owner prompts.
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** #146
-- **Active Branch:** `docs/m14-readme-subtask-progress-20261008`
-- **Last Completed:** PR #144 merged to protected main as 33411a06b2585705880181f056d7b42d3bdf7458 after all six required PR-head checks passed on 989ededc74ce6bc72191ca740ae313aae64babde.
-- **Next Action:** Synchronize the README AI progress block with compact state in PR #146, then require exact-head CI, Code Quality and Windows Certification to pass before merge. Keep M14 at 70%; external release-policy, signing, publication, real-target and restore evidence remain unverified, deferred or not run.
+- **Next Action:** On every resume, reconcile live GitHub OPEN PRs and Issues first and automatically repair/review/merge the highest-priority safe authorized lane. If M14 Issue #62 remains externally blocked, continue the deterministic fallback ladder without asking the owner to choose routine engineering work. Ask only when all safe lanes are exhausted and a genuinely user-owned fact, new product/legal-commercial decision, or separately protected authority is required.
 
-> Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
+> Live PR number, working branch, check run IDs, and merge SHA are intentionally read from GitHub at runtime rather than committed here. Apple/macOS release trust remains deferred under Issue #123.
 <!-- AI-PROGRESS:END -->
 
 
@@ -39,7 +36,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 
 ## Audit snapshot and incomplete tracked work
 
-This continuation index reflects the state observed on **2026-10-08** at protected `main` `dfb4fc7ec9536a304b7df582027968dc60f3e53a`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
+This continuation index reflects the repository's 2026-10-08 semantic state. Live protected-`main`, PR, branch and check identities are resolved from GitHub at runtime rather than embedded here as continuation gates. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
 
 | Priority | Work item | Current state | Completion condition |
 |---|---|---|---|

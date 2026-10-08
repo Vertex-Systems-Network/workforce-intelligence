@@ -14,7 +14,7 @@ Repository-native authority outranks chat memory, generated plans, Linear commen
 
 A lower layer cannot broaden a higher layer. One repository cannot authorize changes in another repository.
 
-At the current post-M13 checkpoint, no repository-native M14 product implementation authority exists. GitHub Issue #50 is the current planning/product-authority gate only; it authorizes no product implementation until a concrete owner-approved scope names the acceptance evidence and exact starting Git state. Do not invent M14 features, migrations, APIs, UI, release changes or product scope until that authority exists.
+Historical GitHub Issue #50 is closed and must **not** be treated as a live approval gate or a reason to prompt the owner. Resolve current authority from protected `main`, currently accepted OPEN Issues/PRs, and current repository architecture/status contracts. The active M14 release-trust/configuration lane is tracked by Issue #62; it does not authorize unrelated new product features. New product scope outside currently accepted repository-native authority still requires an explicit owner-approved scope, but stale or closed authority records must be reconciled automatically rather than surfaced as a user-confirmation request.
 
 ## Compact durable state and source of truth
 
@@ -57,6 +57,30 @@ Technical blockers and ordinary engineering failures are owned by the AI supervi
 Never weaken tests, security, review, tenant isolation, release trust, destructive-action boundaries, migration safeguards or authorization just to keep moving.
 
 A single blocked lane, pending CI run, provider wait, unavailable credential, external approval, or deferred task must **not** stop the whole execution window when another safe authorized task exists. Mark the lane `WAITING_EXTERNAL` or `BLOCKED`, preserve evidence, and continue elsewhere.
+
+### User-prompt suppression and authority reconciliation
+
+For ordinary repository development, maintenance, CI repair, review resolution, dependency maintenance, state reconciliation, and next-safe-task selection, the default interaction is **execute, not ask**.
+
+Before requesting any user decision:
+1. reconcile protected `main`, OPEN Issues, OPEN PRs, current reviews/checks, compact state, and the standing maintenance authority;
+2. discard closed/superseded authority records as live gates;
+3. automatically choose the highest-priority safe authorized lane;
+4. if the current lane needs unavailable external/user/protected authority, mark only that lane blocked and run the fallback scan;
+5. request user input only when **all** safe authorized lanes are exhausted and the missing item is genuinely user-owned or cannot legally/safely be inferred (for example a secret, legal/commercial decision, new product scope, or separately protected destructive/provider/production/release/migration authority).
+
+Do not ask the owner to choose between multiple safe engineering tasks. Do not turn repository drift, a closed historical Issue, CI failure, stale state, branch movement, merge completion, or an external wait into a confirmation prompt.
+
+### Committed state is a semantic checkpoint, not a live transaction ledger
+
+Committed `docs/ai-state/CURRENT-STATE.yaml` and the README progress block must remain valid across a PR merge without requiring an immediate follow-up state-only PR.
+
+- Live PR number, working branch, check run IDs, merge SHA, and exact post-merge pointer state come from GitHub at runtime and belong on PR/Issue evidence surfaces.
+- `active_pr`, `active_branch`, `observed_main_sha`, and merge metadata in committed compact state are resume hints only, never authority for deciding whether to prompt or stop.
+- Committed state should use stable semantic work/module/blocker/continuation text that remains truthful before and after the current PR merges.
+- Do not create a new PR solely to change a just-merged PR number, branch name, merge SHA, check-run identity, or `Last Completed` transaction sentence.
+- README's compact AI progress block must exclude volatile PR/branch/merge transaction fields. It mirrors stable semantic progress; live transaction facts are read from GitHub when reporting status.
+- A follow-up source mutation is justified only by a substantive code/governance/documentation change or real semantic status change, not by the fact that the previous PR merged.
 
 ### Mandatory fallback work scan — no idle
 
@@ -126,7 +150,7 @@ Before every material read-write sequence:
 3. re-read this contract and the exact issue/specification that grants authority;
 4. compare working state with current protected `main`;
 5. inspect required checks, review state, unresolved conversations, and authorization boundaries when a PR exists;
-6. stop and rehydrate if main/head/scope/governance/authorization moved materially;
+6. if main/head/scope/governance/authorization moved materially, rehydrate immediately inside the same execution window, recompute the safe lane, and continue automatically; do not hand control back merely because repository state moved;
 7. never treat a previously green SHA as evidence for a newer head.
 
 ## Product and architecture

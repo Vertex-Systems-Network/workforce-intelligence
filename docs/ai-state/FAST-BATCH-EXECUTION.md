@@ -60,7 +60,7 @@ If a safe fallback exists, choose it automatically. Do not ask the user to choos
 
 Do not voluntarily stop to conserve tokens/context. Persist a compact checkpoint and continue. A host/session hard termination can interrupt execution, but it is not a repository decision; resume from durable state on the next turn.
 
-Hand control back voluntarily only when the fallback scan proves every reachable lane needs unavailable user/external/protected authority, a material security/authority conflict makes further work unsafe, or all authorized product and maintenance work is complete.
+Hand control back voluntarily only when the fallback scan proves every reachable lane needs unavailable user/external/protected authority, a material security/authority conflict makes further work unsafe, or all authorized product and maintenance work is complete. At that point, do not offer engineering choices by default: report the blocker/status. Ask one minimal concrete question only if a user-owned fact or authority is actually required to proceed.
 
 ## CI and remote-call budget
 
@@ -70,13 +70,13 @@ Never tight-poll. One consolidated refresh per milestone/lane is the default bud
 
 Routine technical work never requires user confirmation. The supervisor must not ask the user to confirm an error repair, retry, test fix, refactor, PR metadata update, safe merge that is already authorized, or next safe milestone selection.
 
-User input remains required only for information or authority the repository cannot legitimately infer or self-create, such as user-owned secrets, explicit product/scope decisions, legal/commercial decisions, or separately protected destructive/provider/production/release/migration actions. Even then, block that lane and continue another safe lane when possible.
+User input remains required only for information or authority the repository cannot legitimately infer or self-create, such as user-owned secrets, explicit new product/scope decisions, legal/commercial decisions, or separately protected destructive/provider/production/release/migration actions. Before asking, perform a fresh live-authority reconciliation and the mandatory fallback scan. A stale/closed Issue, moved branch/head, failed CI, merge completion, state drift, or ordinary technical choice is never sufficient reason to ask. If another safe lane exists, continue it instead.
 
 ## README progress synchronization
 
 At every completed milestone and meaningful durable progress checkpoint, synchronize `docs/ai-state/CURRENT-STATE.yaml` and the root `README.md` **AI Development Progress** block before chaining onward, when source mutation is safe.
 
-Do not invent percentages. Preserve the exact-head rule: while a candidate head is under certification, do not mutate it solely for status; record live remote status on the PR/Issue evidence surface. After merge, expected pointer-only drift (`observed_main_sha`, active PR identity, merge metadata) must not spawn a recursive state-only PR; fold it into the next substantive safe source mutation. Semantic status drift still requires correction.
+Do not invent percentages. Preserve the exact-head rule: while a candidate head is under certification, do not mutate it solely for status; record live remote status on the PR/Issue evidence surface. Committed compact state and README are semantic checkpoints, not live transaction ledgers: PR number, working branch, check IDs, merge SHA and pointer-only post-merge drift are resolved from GitHub at runtime and must not spawn a recursive state-only PR. README must omit those volatile transaction fields. Semantic product/module/progress/blocker drift still requires correction.
 
 ## User updates
 
