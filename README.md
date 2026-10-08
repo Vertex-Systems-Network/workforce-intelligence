@@ -12,7 +12,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
 - **Active PR:** none
-- **Active Branch:** `null`
+- **Active Branch:** `main`
 - **Last Completed:** PR #146 merged to protected main as 09e9dac0d09b5ac8521006721001eca9611f5c8a after WorkIntel CI, Code Quality and Windows Certification passed on exact head c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b; zero submitted reviews and zero unresolved review threads.
 - **Next Action:** Issue #62's remaining production-release, immutable-release and real-target evidence requires administrator/target evidence unavailable through this connector. Continue only when new authorized non-secret evidence is available; signing, publication, production, restore and Runner execution remain blocked or deferred. Keep M14 at 70% until the applicable evidence gates pass.
 

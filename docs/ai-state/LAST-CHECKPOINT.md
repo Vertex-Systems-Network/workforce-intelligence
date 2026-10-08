@@ -5,7 +5,7 @@
 **Active Issue:** #62  
 **Deferred Future Issue:** #123 — Apple signing, notarization and macOS release trust  
 **Active PR:** none
-**Active branch:** none
+**Active branch:** `main`
 **Milestone:** M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate
 **Status:** PR #146 merged after all three exact-head checks passed; M14 remains 70% and is waiting on external admin/target evidence; provider-based Windows and Apple signing remain deferred.
 

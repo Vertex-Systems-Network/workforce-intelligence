@@ -5,7 +5,7 @@
   "observed_main_sha": "09e9dac0d09b5ac8521006721001eca9611f5c8a",
   "active_issue": 62,
   "active_pr": null,
-  "active_branch": null,
+  "active_branch": "main",
   "current_milestone": "M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate",
   "milestone_status": "WAITING_EXTERNAL",
   "last_completed_milestone": "PR #146 merged to protected main as 09e9dac0d09b5ac8521006721001eca9611f5c8a after WorkIntel CI, Code Quality and Windows Certification passed on exact head c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b; zero submitted reviews and zero unresolved review threads.",
