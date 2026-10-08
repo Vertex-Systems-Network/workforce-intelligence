@@ -29,6 +29,12 @@ test('compact AI supervisor state is machine-readable, bounded and resume-safe',
   assert.equal(state.fallback_work_policy.automatic_selection,true)
   assert.equal(state.fallback_work_policy.stop_early_to_conserve_tokens,false)
   assert.equal(state.fallback_work_policy.may_invent_product_scope,false)
+  assert.equal(state.fallback_work_policy.state_pointer_only_drift_is_actionable,false)
+  assert.equal(state.state_sync_policy.observed_main_sha_is_resume_anchor_not_live_authority,true)
+  assert.equal(state.state_sync_policy.recursive_post_merge_state_only_pr_forbidden,true)
+  assert.equal(state.state_sync_policy.pointer_only_drift_reconciled_in_memory,true)
+  assert.equal(state.state_sync_policy.semantic_status_drift_requires_source_sync,true)
+  assert.equal(state.state_sync_policy.merge_evidence_may_live_on_pr_issue_until_next_substantive_mutation,true)
   assert.deepEqual(state.fallback_work_policy.order,[
     'accepted_open_pr_repair_review_merge',
     'accepted_actionable_open_issue',
@@ -149,6 +155,12 @@ test('Continuous Fast-Batch chains safe milestones without routine user confirma
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-018')?.value,true)
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-019')?.value,false)
   assert.equal(claims.claims.find(x=>x.id==='CLAIM-020')?.value,true)
+  assert.equal(claims.claims.find(x=>x.id==='CLAIM-021')?.value,false)
+  assert.equal(claims.claims.find(x=>x.id==='CLAIM-022')?.value,false)
+  assert.equal(claims.claims.find(x=>x.id==='CLAIM-023')?.value,true)
+  assert.ok(agents.includes('Post-merge recursion guard'))
+  assert.ok(agents.includes('expected post-merge pointer drift'))
+  assert.ok(fastBatch.includes('must not spawn a recursive state-only PR'))
   assert.ok(agents.includes('Mandatory fallback work scan'))
   assert.ok(agents.includes('Do not voluntarily stop merely to conserve tokens/context'))
   assert.ok(fastBatch.includes('mandatory fallback scan'))
