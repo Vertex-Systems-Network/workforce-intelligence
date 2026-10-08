@@ -56,7 +56,7 @@
 
 ## Next Action
 
-Maintain locked dependency advisory coverage and investigate Issue #151's zero-job trusted-release records using GitHub-native evidence. Do not dispatch trusted-release actions.
+This is not a repository-wide stop. Maintain locked dependency advisory coverage and investigate Issue #151's zero-job trusted-release records using GitHub-native evidence. Do not dispatch trusted-release actions.
 
 Before any future no-work handoff, reconcile live GitHub PRs, Issues and CI and run the mandatory maintenance-discovery sweep. A no-work handoff is valid only after that bounded fresh sweep is clean.
 

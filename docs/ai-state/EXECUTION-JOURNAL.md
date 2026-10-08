@@ -330,3 +330,5 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - Issue #151 evidence advanced: failed non-tag run `37821071557` has check suite `102469795658` with zero check runs. Its jobs and artifacts endpoints return zero; logs endpoint returns HTTP 404. Root cause remains unproven.
 - Maintenance discovery found required Linux CI audits npm's locked graph but lacks a Composer lockfile advisory gate. Issue #154 tracks the source change. This branch adds `composer audit --locked --abandoned=report` after Composer validation/platform checks; abandoned packages remain visible while advisory failures fail CI.
 - No signing, publication, production, real-target, restore or unauthorized Runner action was performed.
+
+- PR #155 exact-head CI confirmed the new Composer audit step succeeds, then failed `npm test` because a control-plane regression test requires the checkpoint to preserve the `This is not a repository-wide stop` maintenance-discovery sentence. The checkpoint restores that sentence on the branch; rerun exact-head certification.
