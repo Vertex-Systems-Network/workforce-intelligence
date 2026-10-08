@@ -35,4 +35,4 @@
 
 ## Next Action
 
-PR #140 is complete. Continue Issue #62 only when written SSL.com/DigiCert replies or non-secret real-target facts are available; do not enter production or Runner lanes without separate authority. Keep Issue #70 open until evidence proves a root cause; Apple remains deferred under Issue #123.
+Keep Issue #62 M14 lane WAITING_EXTERNAL until written SSL.com/DigiCert replies or non-secret real-target facts arrive. While M14 waits, run the mandatory fallback scan and automatically continue the first safe authorized maintenance/development lane. Routine fallback selection must not require owner confirmation and must not stop early for token/context conservation. Preserve separate authority for production, restore, signing, publication, migrations, provider credentials and Runner execution. Issue #70 remains evidence-gated; Apple remains deferred under Issue #123.
