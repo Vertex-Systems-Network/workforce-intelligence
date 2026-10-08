@@ -36,7 +36,7 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 
 ## Audit snapshot and incomplete tracked work
 
-This continuation index reflects the state observed on **2026-10-08** at protected `main` `dfb4fc7ec9536a304b7df582027968dc60f3e53a`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
+This continuation index reflects the repository's 2026-10-08 semantic state. Live protected-`main`, PR, branch and check identities are resolved from GitHub at runtime rather than embedded here as continuation gates. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
 
 | Priority | Work item | Current state | Completion condition |
 |---|---|---|---|
