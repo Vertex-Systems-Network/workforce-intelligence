@@ -2,9 +2,15 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "09e9dac0d09b5ac8521006721001eca9611f5c8a",
+  "observed_main_sha": "0e5c52001aee19786efa31a0c62062184c7bf66e",
   "reconciled_at": "2026-10-08",
   "issues": [
+    {
+      "number": 151,
+      "title": "CI: investigate trusted-release workflow failures with no jobs on main pushes",
+      "state": "open",
+      "action": "investigate-github-native-check-suite-evidence-no-release-dispatch"
+    },
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
@@ -25,6 +31,15 @@
     }
   ],
   "pull_requests": [
+    {
+      "number": 150,
+      "title": "governance: align semantic README progress contract",
+      "state": "merged",
+      "draft": false,
+      "head_sha": "d7237a76fb3ee4d1be1528f9aa3f3b51146dba4e",
+      "base_sha": "0e5c52001aee19786efa31a0c62062184c7bf66e",
+      "action": "all-required-exact-head-checks-green;merged-as-0e5c52001aee19786efa31a0c62062184c7bf66e;resulting-main-ci-windows-code-quality-pass"
+    },
     {
       "number": 146,
       "title": "docs(m14): track release-trust subtasks in README",
