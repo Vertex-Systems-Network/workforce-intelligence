@@ -1,15 +1,17 @@
 # Last AI Engineering Supervisor Checkpoint
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
-**Observed protected main:** `33411a06b2585705880181f056d7b42d3bdf7458`
+**Observed protected main:** 09e9dac0d09b5ac8521006721001eca9611f5c8a
 **Active Issue:** #62  
 **Deferred Future Issue:** #123 — Apple signing, notarization and macOS release trust  
-**Active PR:** #146 — M14 README subtask progress
-**Active branch:** `docs/m14-readme-subtask-progress-20261008`
+**Active PR:** none
+**Active branch:** none
 **Milestone:** M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate
-**Status:** PR #146 is being repaired after exact-head checks found README/compact-state drift; provider-based Windows signing is deferred; M14 remains 70%.
+**Status:** PR #146 merged after all three exact-head checks passed; M14 remains 70% and is waiting on external admin/target evidence; provider-based Windows and Apple signing remain deferred.
 
 ## Completed
+
+- PR #146 merged to protected main as 09e9dac0d09b5ac8521006721001eca9611f5c8a after WorkIntel CI, Code Quality and Windows Certification passed on exact head c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b; zero submitted reviews and zero unresolved review threads.
 
 - Owner decision on 2026-10-08: defer third-party Windows trust-signing provider qualification/integration to future scope. Do not purchase/configure signing material or claim trusted signatures; this does not block safe repository maintenance.
 - PR #145 merged to protected main at `dfb4fc7ec9536a304b7df582027968dc60f3e53a` after all six exact-head checks passed on `dab1ad7af440334d6ed7a7847665659216fedb69`; it adds bounded supervision/recovery for the Laravel E2E server. Zero unresolved review threads.
@@ -38,4 +40,4 @@
 
 ## Next Action
 
-Synchronize the README AI progress block with compact state in PR #146, then require exact-head CI, Code Quality and Windows Certification to pass before merge. Keep M14 at 70%; external release-policy, signing, publication, real-target and restore evidence remain unverified, deferred or not run. Do not deploy, restore, publish, sign or run Runner tasks without separate authority.
+Issue #62's remaining production-release, immutable-release and real-target evidence requires administrator/target evidence unavailable through this connector. Continue only when new authorized non-secret evidence is available; signing, publication, production, restore and Runner execution remain blocked or deferred. Keep M14 at 70% until the applicable evidence gates pass.

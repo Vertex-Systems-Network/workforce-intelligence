@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "33411a06b2585705880181f056d7b42d3bdf7458",
+  "observed_main_sha": "09e9dac0d09b5ac8521006721001eca9611f5c8a",
   "active_issue": 62,
-  "active_pr": 146,
-  "active_branch": "docs/m14-readme-subtask-progress-20261008",
+  "active_pr": null,
+  "active_branch": null,
   "current_milestone": "M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate",
-  "milestone_status": "VERIFYING",
-  "last_completed_milestone": "PR #144 merged to protected main as 33411a06b2585705880181f056d7b42d3bdf7458 after all six required PR-head checks passed on 989ededc74ce6bc72191ca740ae313aae64babde.",
-  "exact_next_safe_action": "Synchronize the README AI progress block with compact state in PR #146, then require exact-head CI, Code Quality and Windows Certification to pass before merge. Keep M14 at 70%; external release-policy, signing, publication, real-target and restore evidence remain unverified, deferred or not run.",
+  "milestone_status": "WAITING_EXTERNAL",
+  "last_completed_milestone": "PR #146 merged to protected main as 09e9dac0d09b5ac8521006721001eca9611f5c8a after WorkIntel CI, Code Quality and Windows Certification passed on exact head c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b; zero submitted reviews and zero unresolved review threads.",
+  "exact_next_safe_action": "Issue #62's remaining production-release, immutable-release and real-target evidence requires administrator/target evidence unavailable through this connector. Continue only when new authorized non-secret evidence is available; signing, publication, production, restore and Runner execution remain blocked or deferred. Keep M14 at 70% until the applicable evidence gates pass.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -29,7 +29,7 @@
     "Live GitHub readback on 2026-10-08 confirms active main branch ruleset 21176050 with zero bypass actors and active `agent-v-release-tags` ruleset 23938765 for `refs/tags/agent-v*` with zero bypass actors plus update/deletion restrictions; the VERIFIED attestation matches updated_at `2026-09-24T17:49:27.650+05:00`. `production-release` environment protection, token placement/least privilege, and immutable-releases setting remain Not Verified because the connector cannot read those admin endpoints.",
     "Issue #70 remains open; RB-005 remains not-authorized/blocked.",
     "Apple/macOS signing and notarization are intentionally deferred to future Issue #123 and are not an active M14 execution blocker; do not claim Apple completion.",
-    "PR #146 exact-head Code Quality passed, but WorkIntel CI and Windows Certification failed because README AI progress fields did not match docs/ai-state/CURRENT-STATE.yaml. Repair the synchronized source files before another exact-head certification."
+    "PR #146 merged as 09e9dac0d09b5ac8521006721001eca9611f5c8a after all three required exact-head checks passed on c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b; no submitted reviews or unresolved review threads."
   ],
   "timeout_control": {
     "max_consolidated_status_refreshes_per_milestone": 1,
@@ -48,11 +48,11 @@
   "last_reconciled_at": "2026-10-08",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "PR #146 README M14 subtask table is open; exact-head CI and Windows Certification exposed a failing README/compact-state synchronization contract, and the docs/state repair is in progress.",
+    "current_work": "PR #146 M14 README subtask table merged to protected main as 09e9dac0d09b5ac8521006721001eca9611f5c8a; all three required exact-head checks passed on c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b. Issue #62's remaining admin/target evidence is waiting on external evidence; Windows provider signing and Apple signing remain deferred.",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Provider-based trusted signing is deferred by owner; Gate A/A2 is verified, while release-policy, trusted-artifact and real-target evidence remain open. M14 remains 70% until its authorized external evidence gates pass."
+      "basis": "Provider-based trusted signing is deferred by owner; Gate A/A2 is verified, while production-release/immutable-release policy, trusted-artifact and real-target evidence remain open. M14 remains 70% until its authorized external evidence gates pass."
     },
     "overall_progress": {
       "percent": 100,
