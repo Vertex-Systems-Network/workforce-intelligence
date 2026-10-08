@@ -7,7 +7,7 @@ This repository adopts the Vertex Systems Network interactive AI-development han
 This repository overrides interactive-choice handoffs in favor of autonomous continuation.
 
 - Do **not** present numbered 1/2/3 engineering choices during ordinary development, after milestone completion, after CI failure, after a merge, during external waits, or because compact state moved.
-- Run the mandatory fallback scan and select the highest-priority safe authorized action automatically.
+- Run the mandatory fallback work scan and select the highest-priority safe authorized action automatically.
 - At a genuine terminal condition, report the exact blocker/status without asking the owner to choose between engineering tasks.
 - Ask a single minimal concrete question only when a user-owned fact, secret, legal/commercial decision, explicit new product scope, or separately protected destructive/provider/production/release/migration authority is actually required and no independent safe lane remains.
 - If the user explicitly asks for options, up to 3 current safe choices may be shown; otherwise autonomous execution is the default.
