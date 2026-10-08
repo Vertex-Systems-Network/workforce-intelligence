@@ -18,7 +18,7 @@ Use a 10-cell bar. The displayed numeric percentage remains exact; the visual fi
 
 ## Progress sources
 
-The machine-readable baseline is `docs/ai-state/CURRENT-STATE.yaml.response_status`.
+The machine-readable semantic baseline is `docs/ai-state/CURRENT-STATE.yaml.response_status`. Live PR/branch/check/merge transaction facts must be read from GitHub at response time and must not force a source commit merely to keep the display current.
 
 - **Module Progress** is evidence-based progress against the explicit acceptance boundary of the active module/milestone.
 - **Overall Progress** must come from an authoritative repository progress document, not chat inference.
@@ -38,7 +38,8 @@ Continuous Fast-Batch is the default repository-development interaction mode.
 - During a long-running execution window, surface only material security findings, genuinely required user action, or meaningful state transitions; otherwise keep selecting and executing safe work. Do not estimate or use a token/session budget as a voluntary stopping condition.
 - Group manual configuration into one checklist unless the user explicitly asks for one-by-one instructions.
 - Before any terminal execution-window handoff, run the mandatory fallback work scan from `AGENTS.md`; if a safe PR/Issue/repair/maintenance/reconciliation/evidence-preparation lane exists, select it automatically and continue.
-- Show numbered next-action choices only when that fallback scan proves no safe authorized work can continue automatically, not after every completed/blocked/waiting internal milestone.
+- Do not show numbered next-action choices by default. If the fallback scan proves no safe authorized work can continue automatically, report the terminal blocker/status without asking the owner to choose engineering work. Ask one minimal concrete question only when a genuinely user-owned fact/secret/legal-commercial/new-scope/protected authority is required.
+- Closed/superseded Issues, stale compact-state pointers, branch/head movement, merge completion, failed CI, and ordinary technical choices must never become user-confirmation prompts; reconcile or repair them automatically.
 - Do not voluntarily end a development response merely to conserve tokens/context; checkpoint compact state and continue until a genuine terminal repository condition or a hard host boundary is reached.
 
 Continuous Fast-Batch changes cadence and autonomy only. It does not weaken authorization, security, review, exact-head certification, merge, deployment, migration, secrets, provider, or release-publication requirements.
