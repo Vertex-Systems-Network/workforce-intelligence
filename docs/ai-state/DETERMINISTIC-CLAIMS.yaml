@@ -121,6 +121,24 @@
       "subject": "safe_fallback_is_selected_automatically_without_user_choice",
       "value": true,
       "authority": "docs/ai-state/FAST-BATCH-EXECUTION.md#external-waits-and-blocked-lanes"
+    },
+    {
+      "id": "CLAIM-021",
+      "subject": "recursive_post_merge_state_only_pr_allowed",
+      "value": false,
+      "authority": "AGENTS.md#readme-progress-synchronization-contract"
+    },
+    {
+      "id": "CLAIM-022",
+      "subject": "observed_main_sha_pointer_drift_is_standalone_fallback_work",
+      "value": false,
+      "authority": "AGENTS.md#mandatory-fallback-work-scan--no-idle"
+    },
+    {
+      "id": "CLAIM-023",
+      "subject": "semantic_status_drift_requires_source_sync",
+      "value": true,
+      "authority": "AGENTS.md#readme-progress-synchronization-contract"
     }
   ]
 }

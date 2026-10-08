@@ -6,15 +6,15 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 Windows/Linux trust — provider replies and non-secret target facts pending; dependency PR #140 merged; stale dependency PRs #129–#131 closed
+- **Current Work:** PR #144 governance fix is under exact-head certification; third-party Windows trust-signing provider work is deferred by owner and does not block safe repository maintenance.
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
-- **Active PR:** none
-- **Active Branch:** `main`
-- **Last Completed:** Dependency PR #140 (Laravel Framework 13.34.0 / League CommonMark 2.10.3, preserving Pint 1.32.1) merged to protected main at 9fca2c4ee028d2011faf9c232296f5984e8ec7c7 after all six exact-head checks passed on d87285a0a11e6089dc2c2b5c1162b55a832ceac4. PRs #129–#131 closed as superseded. M14 evidence remains at 70%.
-- **Next Action:** Keep Issue #62 M14 lane WAITING_EXTERNAL until written SSL.com/DigiCert replies or non-secret real-target facts arrive. While it waits, run the mandatory fallback work scan and automatically continue the first safe authorized PR, Issue, CI/test/security/review/audit repair, dependency-maintenance, docs/state/lifecycle reconciliation, or non-destructive blocker-evidence lane. Do not ask the owner to choose routine fallback work and do not voluntarily stop for token/context conservation. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority; Issue #70 remains evidence-gated and Apple remains deferred under Issue #123.
+- **Active PR:** #144
+- **Active Branch:** `governance/no-recursive-state-sync`
+- **Last Completed:** PR #145 merged to protected main at dfb4fc7ec9536a304b7df582027968dc60f3e53a after all six exact-head checks passed on dab1ad7af440334d6ed7a7847665659216fedb69; zero unresolved review threads.
+- **Next Action:** Finish PR #144 exact-head certification and merge only if all required checks pass at the unchanged head. Defer third-party Windows trust-signing provider qualification/integration until future owner authorization; it is not a blocker for safe repository maintenance. Continue the next safe authorized repository lane without buying/configuring signing material or claiming trusted signatures. M14 remains 70% until external evidence gates actually pass; do not deploy, restore, publish or run Runner tasks without separate authority. Issue #70 remains evidence-gated and Apple remains deferred under Issue #123.
 
 > Apple/macOS release trust is deferred to future Issue #123 and is not represented as complete. Overall progress is scoped to active release-scope modular maturity.
 <!-- AI-PROGRESS:END -->
@@ -39,23 +39,24 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 
 ## Audit snapshot and incomplete tracked work
 
-This continuation index reflects the state observed on **2026-10-08** at protected `main` `9fca2c4ee028d2011faf9c232296f5984e8ec7c7`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
+This continuation index reflects the state observed on **2026-10-08** at protected `main` `dfb4fc7ec9536a304b7df582027968dc60f3e53a`. GitHub Issues, PRs, `AGENTS.md`, and exact-head checks remain authoritative.
 
 | Priority | Work item | Current state | Completion condition |
 |---|---|---|---|
-| P0 | M14 external release configuration — Issue #62 | No SSL.com/DigiCert reply was found after 2026-09-27; provider qualification and non-secret real-target facts remain pending. This does not authorize production, publication, signing, restore, or Runner execution. | Record written provider/admin and real-target evidence under Issue #62 while preserving separate production and Runner authority boundaries. |
+| P0 | M14 external release configuration — Issue #62 | Owner deferred third-party Windows trusted-signing provider qualification/integration until future authorization. GitHub `agent-v*` tag ruleset and its VERIFIED attestation are confirmed; `production-release`/immutable-release and real-target evidence remain unverified. No trusted signature is claimed. | Record remaining authorized administrator/target evidence under Issue #62 while preserving separate signing, publication, production, restore, and Runner authority boundaries. |
 | P1 | Intermittent seed failure — Issue #70 | Root cause remains unproven. Existing diagnostics preserve failure evidence; Runner RB-005 remains blocked/not authorized. | Capture a future recurrence or prove a deterministic cause, then make a focused fail-closed repair with exact-head certification. |
 | Deferred | Apple release trust — Issue #123 | Deferred pending owner authorization and required Apple subscription/tooling. | Resume only with explicit authorization and required credentials/tooling. |
 | Completed | Dependency PR #139 | React DOM/types 19.3.0 merged to protected main at `d38034c0ebc05460bf68581e01140801966d714f`. | Complete. |
 | Completed | Dependency PR #140 | Laravel Framework 13.34.0 / CommonMark 2.10.3, preserving Pint 1.32.1; merged at `9fca2c4ee028d2011faf9c232296f5984e8ec7c7`. Six exact-head checks passed on `d87285a0a11e6089dc2c2b5c1162b55a832ceac4`; diff was `composer.lock` only. | Complete. |
+| Completed | Governance PR #143 | Continuous no-idle fallback execution merged at `9e6e95082fd8bc5511dc5502a3e3259203667356`; exact-head Code Quality, Linux CI, and Windows Certification passed on `14709d071048725ff6e065b9422d26c514b17326`. | Complete. |
 | Closed | Dependency PRs #129–#131 | Closed as superseded by merged PR #140, which carries the selected current dependency versions. | Complete. |
 | Completed | Dependency PR #76 | Laravel Pint 1.32.1 merged to protected main before this snapshot. | Complete. |
 | Completed | Dependency PR #137 | Gridstack 13.3.0 and matching drag/drop test merged to protected main at `ce4d13affcf0b0d13a668c19c96db102aae47119`. | Complete. |
 
 ### Continuation order
 
-1. PR #140 is merged and PRs #129–#131 are closed as superseded.
-2. Resume Issue #62 external-evidence work when provider responses or non-secret target facts arrive; do not enter production or Runner lanes without separate authority.
+1. Continuous fallback governance from PR #143 is merged; pointer-only post-merge state drift must not create recursive sync PRs.
+2. While Issue #62 is externally waiting, run the mandatory fallback scan and automatically continue safe authorized maintenance/development work.
 3. Keep Issue #70 open until evidence proves a root cause and focused fix; RB-005 remains not-authorized.
 4. Apple release trust remains deferred under Issue #123.
 
@@ -86,7 +87,7 @@ The table below is the repository-level roadmap view. `Progress` represents acce
 | M11 | Role UX + Help + Onboarding | Complete | `██████████` 100% | 2026-08-20* | 2026-08-21* | Localized guidance/onboarding/RTL contracts complete |
 | M12 | Accessibility, Performance & Final Certification | Complete — active-scope closure | `██████████` 100% | 2026-08-21 | 2026-08-22 | Hosted + Windows certification accepted; withdrawn Laragon gate is not represented as passed |
 | M13 | Agent Lifecycle Reliability — Batches 1–6 | Complete | `██████████` 100% | 2026-08-22 | 2026-08-24 | Managed update, deterministic packaging, immutability, transactional publication, browser version authority and runtime-bound deployment accepted |
-| M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `███████░░░` **70%** | 2026-08-31 | **Active** | Active scope: Windows/Linux trust, publication and real-target/recovery. Apple/macOS trust is deferred to future Issue #123 and is not claimed complete |
+| M14 | Production Release Trust & Real-Target Readiness | **VERIFYING / PARTIALLY COMPLETE** | `███████░░░` **70%** | 2026-08-31 | **Active** | GitHub release-control and real-target/recovery evidence remain separate gates. Third-party Windows signing and Apple/macOS trust are deferred; no trusted signature or publication is claimed |
 
 \* The canonical M0–M12 maturity record stores per-phase completion state but not precise per-phase start/end timestamps. M0–M11 therefore use the repository's initial implementation/certification evidence window instead of inventing unsupported day-level precision. M12, M13 and M14 dates are tied to explicit repository/PR authority and closure records.
 

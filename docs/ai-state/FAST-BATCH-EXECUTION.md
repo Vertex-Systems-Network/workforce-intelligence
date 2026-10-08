@@ -51,7 +51,7 @@ Before any voluntary handoff, run the mandatory fallback scan:
 2. accepted actionable OPEN Issue;
 3. CI/test/security/review/audit/state/branch repair;
 4. authorized dependency and supply-chain maintenance;
-5. docs/compact-state/README/coordination/PR-Issue lifecycle reconciliation;
+5. semantic docs/compact-state/README/coordination/PR-Issue lifecycle reconciliation; pointer-only post-merge drift is not standalone work;
 6. non-destructive evidence or diagnostic preparation for an existing authorized blocker.
 
 The owner standing maintenance authority recorded in `.ai/schedule/SCHEDULE-PLAN.md` covers routine repository maintenance in this ladder. It never creates product scope or protected production/provider/release/migration authority.
@@ -76,7 +76,7 @@ User input remains required only for information or authority the repository can
 
 At every completed milestone and meaningful durable progress checkpoint, synchronize `docs/ai-state/CURRENT-STATE.yaml` and the root `README.md` **AI Development Progress** block before chaining onward, when source mutation is safe.
 
-Do not invent percentages. Preserve the exact-head rule: while a candidate head is under certification, do not mutate it solely for status; record live remote status on the PR/Issue evidence surface and synchronize README at the next safe source-changing checkpoint.
+Do not invent percentages. Preserve the exact-head rule: while a candidate head is under certification, do not mutate it solely for status; record live remote status on the PR/Issue evidence surface. After merge, expected pointer-only drift (`observed_main_sha`, active PR identity, merge metadata) must not spawn a recursive state-only PR; fold it into the next substantive safe source mutation. Semantic status drift still requires correction.
 
 ## User updates
 

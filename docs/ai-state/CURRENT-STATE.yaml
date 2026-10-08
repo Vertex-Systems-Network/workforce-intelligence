@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "9fca2c4ee028d2011faf9c232296f5984e8ec7c7",
+  "observed_main_sha": "dfb4fc7ec9536a304b7df582027968dc60f3e53a",
   "active_issue": 62,
-  "active_pr": null,
-  "active_branch": "main",
-  "current_milestone": "M14 Windows/Linux release trust — real-target/recovery evidence prepared",
+  "active_pr": 144,
+  "active_branch": "governance/no-recursive-state-sync",
+  "current_milestone": "M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "Dependency PR #140 (Laravel Framework 13.34.0 / League CommonMark 2.10.3, preserving Pint 1.32.1) merged to protected main at 9fca2c4ee028d2011faf9c232296f5984e8ec7c7 after all six exact-head checks passed on d87285a0a11e6089dc2c2b5c1162b55a832ceac4. PRs #129–#131 closed as superseded. M14 evidence remains at 70%.",
-  "exact_next_safe_action": "Keep Issue #62 M14 lane WAITING_EXTERNAL until written SSL.com/DigiCert replies or non-secret real-target facts arrive. While it waits, run the mandatory fallback work scan and automatically continue the first safe authorized PR, Issue, CI/test/security/review/audit repair, dependency-maintenance, docs/state/lifecycle reconciliation, or non-destructive blocker-evidence lane. Do not ask the owner to choose routine fallback work and do not voluntarily stop for token/context conservation. Do not deploy, restore, publish, sign, or run Runner tasks without separate authority; Issue #70 remains evidence-gated and Apple remains deferred under Issue #123.",
+  "last_completed_milestone": "PR #145 merged to protected main at dfb4fc7ec9536a304b7df582027968dc60f3e53a after all six exact-head checks passed on dab1ad7af440334d6ed7a7847665659216fedb69; zero unresolved review threads.",
+  "exact_next_safe_action": "Finish PR #144 exact-head certification and merge only if all required checks pass at the unchanged head. Defer third-party Windows trust-signing provider qualification/integration until future owner authorization; it is not a blocker for safe repository maintenance. Continue the next safe authorized repository lane without buying/configuring signing material or claiming trusted signatures. M14 remains 70% until external evidence gates actually pass; do not deploy, restore, publish or run Runner tasks without separate authority. Issue #70 remains evidence-gated and Apple remains deferred under Issue #123.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -23,10 +23,10 @@
     "RB-005"
   ],
   "current_blockers": [
-    "Written confirmation from SSL.com and/or DigiCert is pending after qualification inquiries were sent on 2026-09-26; Pakistan legal-entity eligibility, exact public Code Signing product eligibility, GitHub-hosted CI support, HSM custody, headless authentication, RFC3161 timestamping, signer fingerprint verification, audit logging, credential rotation/revocation, pricing and onboarding remain unconfirmed.",
-    "No Windows public-trust provider has been selected; provider-specific remote-HSM signing integration and readiness evidence cannot be finalized yet.",
+    "Third-party Windows trust-signing provider qualification/integration is deferred by owner on 2026-10-08 until future authorization; provider replies are not a blocker for current safe repository maintenance.",
+    "No Windows public-trust provider has been selected; do not build provider-specific signing integration, configure signing secrets, or claim trusted signatures while this lane is deferred.",
     "Public-trust Windows private signing keys must not be treated as portable GitHub PFX secrets; existing PFX secrets remain unset for the public-trust path.",
-    "Administrator-bypass posture, main=branch policy type, agent-v*=tag policy type, and release-policy-token least privilege remain administrator-attested where GitHub read APIs do not prove them directly.",
+    "Live GitHub readback on 2026-10-08 confirms active main branch ruleset 21176050 with zero bypass actors and active `agent-v-release-tags` ruleset 23938765 for `refs/tags/agent-v*` with zero bypass actors plus update/deletion restrictions; the VERIFIED attestation matches updated_at `2026-09-24T17:49:27.650+05:00`. `production-release` environment protection, token placement/least privilege, and immutable-releases setting remain Not Verified because the connector cannot read those admin endpoints.",
     "Issue #70 remains open; RB-005 remains not-authorized/blocked.",
     "Apple/macOS signing and notarization are intentionally deferred to future Issue #123 and are not an active M14 execution blocker; do not claim Apple completion."
   ],
@@ -47,11 +47,11 @@
   "last_reconciled_at": "2026-10-08",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 Windows/Linux trust — provider replies and non-secret target facts pending; dependency PR #140 merged; stale dependency PRs #129–#131 closed",
+    "current_work": "PR #144 governance fix is under exact-head certification; third-party Windows trust-signing provider work is deferred by owner and does not block safe repository maintenance.",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
-      "basis": "Apple/macOS remains deferred to Issue #123. Windows/Linux real-target and recovery evidence is now source-prepared, but no live target, restore, signing, publication, or provider qualification evidence has executed; M14 remains 70%."
+      "basis": "Third-party provider-based trusted signing is deferred by owner for future scope. No provider, signing, publication or real-target evidence is claimed; M14 remains 70% until its authorized evidence gates pass."
     },
     "overall_progress": {
       "percent": 100,
@@ -74,6 +74,14 @@
       "docs_compact_state_readme_coordination_lifecycle_reconciliation",
       "non_destructive_evidence_diagnostics_for_existing_blocker"
     ],
-    "may_invent_product_scope": false
+    "may_invent_product_scope": false,
+    "state_pointer_only_drift_is_actionable": false
+  },
+  "state_sync_policy": {
+    "observed_main_sha_is_resume_anchor_not_live_authority": true,
+    "recursive_post_merge_state_only_pr_forbidden": true,
+    "pointer_only_drift_reconciled_in_memory": true,
+    "semantic_status_drift_requires_source_sync": true,
+    "merge_evidence_may_live_on_pr_issue_until_next_substantive_mutation": true
   }
 }

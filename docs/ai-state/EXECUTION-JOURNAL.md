@@ -1,3 +1,11 @@
+## 2026-10-08 — post-merge state recursion guard
+
+- Verified PR #143 merged to protected main at `9e6e95082fd8bc5511dc5502a3e3259203667356` after exact-head Code Quality, Linux CI and Windows Certification passed on `14709d071048725ff6e065b9422d26c514b17326`.
+- Identified a recursive-maintenance risk: updating only `observed_main_sha`/merge pointers after a reconciliation PR would create another merge, immediately stale the pointer again, and make fallback selection loop on state-only PRs.
+- Added a fail-safe recursion guard: pointer-only post-merge drift is reconciled in memory and folded into the next substantive source mutation; it is not standalone fallback work.
+- Semantic README/state drift remains actionable and must still be corrected.
+- M14 remains 70% and WAITING_EXTERNAL as one lane; fallback execution continues independently under existing authority.
+
 ## 2026-10-08 — continuous fallback execution hardening
 
 - Root cause: durable next-action state could still tell the supervisor to wait on M14, allowing a valid external wait to dominate the whole workspace despite continuous Fast-Batch policy.
@@ -279,3 +287,19 @@ Older detail through 2026-09-22 is archived at `docs/ai-state/archive/EXECUTION-
 - Closed PRs #129, #130, and #131 as superseded by #140; each received a rationale comment.
 - M14 remains `WAITING_EXTERNAL` at 70%; dependency maintenance does not advance release-trust evidence. Issue #62 provider/target facts remain pending, Issue #70 root cause remains unproven and RB-005 unauthorized, and Apple remains deferred under Issue #123.
 - No product source, production deployment, migration, restore, signing, publication, provider purchase, or Runner task changed or ran.
+
+
+## 2026-10-08 — PR #145 merge and PR #144 current-main certification
+
+- Verified PR #145 exact head `dab1ad7af440334d6ed7a7847665659216fedb69`: `governance`, `CodeQL`, `windows-certification`, Laravel Pint changed-PHP quality, CodeQL JS/TS quality and `test` all passed; zero unresolved review threads.
+- Merged PR #145 to protected main at `dfb4fc7ec9536a304b7df582027968dc60f3e53a`. The change adds bounded recovery supervision for the Laravel E2E server after PR #144's Windows certification hit connection refusals during browser accessibility coverage.
+- PR #144 was behind after the merge. Its existing changes touched 11 files, while main's only commit beyond its base changed `tools/e2e-server-supervisor.mjs` and `tools/playwright.config.mjs`; those paths do not overlap. The PR branch was rebased onto the exact current main while preserving its accepted governance changes.
+- PR #144 exact-head checks must pass before merge. M14 remains 70% WAITING_EXTERNAL; no production deployment, migration, restore, signing, publication, provider purchase or Runner task occurred.
+
+
+## 2026-10-08 — owner defers third-party Windows trust signing
+
+- Owner directed that trusted digital signing via SSL.com/DigiCert or another third-party provider is not required in the current scope and may be added in the future.
+- Provider qualification/integration is recorded as deferred until future owner authorization. Do not purchase or configure signing material or claim trusted signatures. This does not block unrelated safe repository maintenance.
+- M14 remains 70%; deferred signing is not represented as complete. Production, restore, publication and Runner authority remain separate.
+- PR #144's first current-main certification test on head `4701c1d42502a2847f377a2304c440fbb1a49c60` failed because README wrapped SHAs in backticks while the progress-state contract requires exact text. Removed those backticks on head `3ad2962fe8d88bd9e170e86a896ed9d1bec21221`; the next exact-head checks are not yet visible.

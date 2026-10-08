@@ -2,14 +2,14 @@
   "schema_version": 1,
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "9fca2c4ee028d2011faf9c232296f5984e8ec7c7",
+  "observed_main_sha": "dfb4fc7ec9536a304b7df582027968dc60f3e53a",
   "reconciled_at": "2026-10-08",
   "issues": [
     {
       "number": 62,
       "title": "M14 external release configuration — immutable tags and production-release gate",
       "state": "open",
-      "action": "await-provider-replies-and-nonsecret-target-facts-no-production-or-runner-authority"
+      "action": "owner-deferred-provider-signing;gate-a-a2-verified;remaining-admin-target-evidence-open"
     },
     {
       "number": 70,
@@ -25,6 +25,36 @@
     }
   ],
   "pull_requests": [
+    {
+      "number": 144,
+      "title": "governance: prevent recursive state-only reconciliation loops",
+      "state": "open",
+      "draft": false,
+      "head_ref": "governance/no-recursive-state-sync",
+      "action": "owner-defers-provider-signing; exact-head-certification-pending"
+    },
+    {
+      "number": 145,
+      "title": "ci: supervise Laravel server during Windows browser certification",
+      "state": "merged",
+      "draft": false,
+      "head_sha": "dab1ad7af440334d6ed7a7847665659216fedb69",
+      "base_sha": "9e6e95082fd8bc5511dc5502a3e3259203667356",
+      "head_ref": "ci/windows-e2e-server-supervisor-2026-10-08",
+      "action": "completed-all-six-exact-head-checks-green",
+      "resulting_main_sha": "dfb4fc7ec9536a304b7df582027968dc60f3e53a"
+    },
+    {
+      "number": 143,
+      "title": "governance: enforce no-idle fallback execution and reconcile state",
+      "state": "merged",
+      "draft": false,
+      "head_sha": "14709d071048725ff6e065b9422d26c514b17326",
+      "base_sha": "9fca2c4ee028d2011faf9c232296f5984e8ec7c7",
+      "head_ref": "docs/post-pr140-state-sync-20261008",
+      "action": "completed-no-idle-fallback-governance",
+      "resulting_main_sha": "9e6e95082fd8bc5511dc5502a3e3259203667356"
+    },
     {
       "number": 129,
       "title": "chore(deps): bump laravel/framework from 13.29.0 to 13.33.0",

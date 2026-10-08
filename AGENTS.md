@@ -66,7 +66,7 @@ Before any voluntary terminal handoff, perform a fresh repository-wide safe-work
 2. continue an accepted actionable OPEN Issue that is not blocked by the same external dependency;
 3. repair current CI, test, security, review, audit, state-sync or branch-drift failures;
 4. perform already-authorized dependency/supply-chain maintenance surfaced by repository evidence or an existing dependency PR;
-5. reconcile documentation, compact state, coordination queue, README progress, stale PR/Issue lifecycle, and governance drift;
+5. reconcile **semantic** documentation/compact-state/coordination/README/lifecycle/governance drift; expected post-merge pointer drift such as an older `observed_main_sha` is not standalone work;
 6. prepare non-destructive evidence, diagnostics, tests or analysis that directly advances an existing authorized blocker without fabricating external evidence.
 
 Routine repository maintenance in this ladder is covered by the owner's standing maintenance authority in `.ai/schedule/SCHEDULE-PLAN.md`. It does **not** authorize inventing product features, bypassing a protected action, running an unauthorized Runner task, or creating production/provider/release evidence that does not exist.
@@ -398,8 +398,10 @@ Rules:
 - Large README lifecycle dashboards still change only when public lifecycle truth changes. The compact AI progress block is the exception and is updated on every completed milestone or meaningful durable progress checkpoint.
 - Before chaining to the next milestone, update compact state and README progress together in the same source commit when source mutation is safe.
 - Continuous execution must keep the README progress block moving with repository truth; it must not wait for another user prompt merely to publish progress.
-- During exact-head certification, do not mutate the candidate source merely to refresh README with pending/terminal CI. Keep README frozen at the certified source baseline, use PR/Issue evidence for live remote status, then synchronize README in the next safe source-changing milestone (for example post-merge reconciliation).
-- A missing/stale README progress block is a governance defect and must fail the AI supervisor state audit.
+- During exact-head certification, do not mutate the candidate source merely to refresh README with pending/terminal CI. Keep README frozen at the certified source baseline and use PR/Issue evidence for live remote status.
+- **Post-merge recursion guard:** do not create a branch/commit/PR whose only purpose is to rewrite `observed_main_sha`, `active_pr`, merge metadata, or equivalent pointer fields after the previous reconciliation PR merged. GitHub live state is authoritative; expected pointer drift is reconciled in memory and folded into the next substantive safe source mutation.
+- Semantic progress drift is different: wrong current work, wrong module/progress, wrong blocker/action, or materially stale public status must still be corrected at the next safe substantive source change.
+- A missing/stale README progress block relative to the same source state is a governance defect and must fail the AI supervisor state audit.
 
 ## User-facing development/status response contract
 
