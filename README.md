@@ -6,13 +6,13 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** Autonomous execution now treats empty PR queues, green CI, and externally blocked M14 as inputs to maintenance discovery rather than proof that development should stop.
+- **Current Work:** M14 remains waiting on external release/target evidence; the next safe maintenance task is Issue #151, investigating failed trusted-release workflow records that contain no jobs.
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
 - **Last Completed:** Continuous no-idle execution now requires active maintenance discovery before any no-actionable-work handoff; stale authority/review prompt suppression and merge-stable semantic state remain integrated.
-- **Next Action:** On every resume, reconcile live GitHub work first. If no surfaced safe task exists, run the bounded maintenance-discovery sweep across reliability, dependency/security, source/test gaps, semantic drift, certification gaps, and blocker diagnostics; automatically turn concrete findings into maintenance Issue/PR work and continue without asking the owner to choose routine engineering work.
+- **Next Action:** Investigate Issue #151's recurring failed trusted-release run records with no jobs using available GitHub-native evidence; do not dispatch trusted-release actions. If the connector still cannot expose the check suite/root cause, retain the issue as blocked on that evidence and continue the next safe maintenance discovery lane. M14 remains 70% and WAITING_EXTERNAL for production-release/immutable-release/real-target evidence.
 
 > Live PR number, working branch, check run IDs, and merge SHA are intentionally read from GitHub at runtime rather than committed here. Apple/macOS release trust remains deferred under Issue #123.
 <!-- AI-PROGRESS:END -->

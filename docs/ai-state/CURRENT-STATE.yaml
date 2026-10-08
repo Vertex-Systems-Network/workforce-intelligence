@@ -2,14 +2,14 @@
   "schema_version": 1,
   "compact_state_path": "docs/ai-state",
   "repository": "Vertex-Systems-Network/workforce-intelligence",
-  "observed_main_sha": "09e9dac0d09b5ac8521006721001eca9611f5c8a",
+  "observed_main_sha": "0e5c52001aee19786efa31a0c62062184c7bf66e",
   "active_issue": 62,
   "active_pr": null,
   "active_branch": "main",
   "current_milestone": "M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate",
   "milestone_status": "WAITING_EXTERNAL",
   "last_completed_milestone": "Continuous no-idle execution now requires active maintenance discovery before any no-actionable-work handoff; stale authority/review prompt suppression and merge-stable semantic state remain integrated.",
-  "exact_next_safe_action": "On every resume, reconcile live GitHub work first. If no surfaced safe task exists, run the bounded maintenance-discovery sweep across reliability, dependency/security, source/test gaps, semantic drift, certification gaps, and blocker diagnostics; automatically turn concrete findings into maintenance Issue/PR work and continue without asking the owner to choose routine engineering work.",
+  "exact_next_safe_action": "Investigate Issue #151's recurring failed trusted-release run records with no jobs using available GitHub-native evidence; do not dispatch trusted-release actions. If the connector still cannot expose the check suite/root cause, retain the issue as blocked on that evidence and continue the next safe maintenance discovery lane. M14 remains 70% and WAITING_EXTERNAL for production-release/immutable-release/real-target evidence.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -50,7 +50,7 @@
   "last_reconciled_at": "2026-10-08",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "Autonomous execution now treats empty PR queues, green CI, and externally blocked M14 as inputs to maintenance discovery rather than proof that development should stop.",
+    "current_work": "M14 remains waiting on external release/target evidence; the next safe maintenance task is Issue #151, investigating failed trusted-release workflow records that contain no jobs.",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
