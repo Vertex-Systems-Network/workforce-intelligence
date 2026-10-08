@@ -144,9 +144,10 @@ test('README AI progress block stays synchronized with compact state', () => {
   assert.ok(readme.includes('**Module Progress:** ['+bar(rs.module_progress.percent)+'] **'+rs.module_progress.percent+'%**'))
   assert.ok(readme.includes('**Overall Progress:** ['+bar(rs.overall_progress.percent)+'] **'+rs.overall_progress.percent+'%** — '+rs.overall_progress.scope))
   assert.ok(readme.includes('**Active Issue:** '+(state.active_issue===null?'none':'#'+state.active_issue)))
+  assert.ok(readme.includes('**Last Completed:** '+state.last_completed_milestone))
   assert.ok(readme.includes('**Next Action:** '+state.exact_next_safe_action))
   const block=readme.slice(readme.indexOf('<!-- AI-PROGRESS:START -->'),readme.indexOf('<!-- AI-PROGRESS:END -->'))
-  for(const volatile of ['**Active PR:**','**Active Branch:**','**Last Completed:**']) assert.equal(block.includes(volatile),false)
+  for(const volatile of ['**Active PR:**','**Active Branch:**']) assert.equal(block.includes(volatile),false)
 })
 
 test('historical M14 authority remains provenance and never a repeat-approval prompt', () => {
