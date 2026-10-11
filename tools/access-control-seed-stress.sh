@@ -33,7 +33,10 @@ done
 
 umask 077
 mkdir -p "$log_dir" "$db_dir"
-export DB_CONNECTION DB_DATABASE APP_ENV
+# Prevent .env/.env.testing URL keys from overriding our explicit isolated SQLite target.
+DB_URL=''
+DATABASE_URL=''
+export DB_CONNECTION DB_DATABASE APP_ENV DB_URL DATABASE_URL
 
 echo "Running ${cycles} fresh SQLite seed cycles against ${db_path}."
 
