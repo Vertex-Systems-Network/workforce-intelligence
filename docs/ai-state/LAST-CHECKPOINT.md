@@ -15,6 +15,8 @@
 
 **2026-10-11 merge checkpoint:** PR #156 merged on protected main as `b7e086616eaca2963064e9d470ef42686f163485` after exact-head Linux test/governance, Windows Certification, CodeQL, JS quality and Pint all passed on `40526990aee99f363382a66a00a6ed27219012a1`. The resulting-main workflows started; their terminal certification is not yet verified. PR #158 is retargeted to `main` for Issue #157, whose exact-head checks are pending. Issue #151 remains open until resulting-main and non-tag push evidence supports closure. No trusted release, signer, production or Runner dispatch occurred.
 
+**2026-10-11 compact-journal and active-trust-scope checkpoint:** PR #158's YAML guard passed six exact-head checks and merged into protected main as `884c55d5fc1376ded5ecfa54ce10eefa1ffed2bd`; resulting-main certification remains a separate unverified gate at this source checkpoint. The 32,568-byte journal was archived losslessly by date to preserve its 32 KiB bound. M14 authority text now explicitly distinguishes owner-deferred Windows public-trust signing and Apple future scope from mandatory release trust gates. No signing, production, publication or unauthorized Runner execution took place.
+
 ## Verified
 
 - PR #153 merged as `307d97e7b81da92eb148bcd8c42f9aff8ce9a309` after all required checks passed on exact head `d2ddaf60a510fb36c8bc949329ded27f5bebe1f4`; resulting-main Linux CI, Windows Certification, CodeQL, Pint and governance passed.
@@ -62,7 +64,7 @@
 
 ## Next Action
 
-This is not a repository-wide stop. Maintain locked dependency advisory coverage and investigate Issue #151's zero-job trusted-release records using GitHub-native evidence. Do not dispatch trusted-release actions.
+This is not a repository-wide stop. Issue #151 is resolved; verify the merged YAML parser's resulting-main checks, archive the bounded journal and continue safe independent maintenance without release dispatch.
 
 Before any future no-work handoff, reconcile live GitHub PRs, Issues and CI and run the mandatory maintenance-discovery sweep. A no-work handoff is valid only after that bounded fresh sweep is clean.
 

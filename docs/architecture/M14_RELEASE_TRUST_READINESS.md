@@ -11,6 +11,17 @@
 **Review assurance:** AI-ONLY SINGLE-MAINTAINER MODE — owner-authorized by GitHub Issue #96; independent human review is optional unless a higher external requirement mandates it  
 **Real-target evidence required:** YES for `PRODUCTION_VERIFIED` / M14 `DONE`
 
+## Owner-approved active-scope boundary — 2026-10-11
+
+The M14 signed-distribution architecture remains the long-term acceptance contract. Source maintenance is not authority to perform privileged trust operations.
+
+- Windows third-party public-trust signing-provider integration was deferred by the owner on 2026-10-08. No vendor purchase, signing-material configuration or public-signature claim is authorized.
+- Apple Developer ID and notarization are deferred under Issue #123 until future subscription/tooling and owner authorization. This does not block independent Windows/Linux source maintenance.
+- Issue #62 owns external `production-release` protection, immutable releases and real-target evidence. Gate A/A2 is verified; the environment and immutable-release settings remain Not Verified.
+- Trusted publication must still fail closed when required external trust checks are absent. Neither provider deferral nor green CI proves trusted distribution or production readiness. M14 remains 70% / WAITING_EXTERNAL.
+
+This clarification preserves all final M14 acceptance and release-security requirements below.
+
 ## Objective
 
 Turn WorkIntel's already deterministic M13 desktop-agent build into a verifiable enterprise distribution path without changing product behavior. The trusted release path must preserve source provenance, isolate signing authority from pull requests, fail closed when required platform trust operations cannot be completed, and keep hosted-CI evidence distinct from real-target production verification.
