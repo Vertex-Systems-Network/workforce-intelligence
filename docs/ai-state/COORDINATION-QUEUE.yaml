@@ -9,7 +9,7 @@
       "number": 157,
       "title": "CI: validate all GitHub Actions workflow YAML before expensive certification",
       "state": "open",
-      "action": "PR158-targets-main;yaml-parser-and-heredoc-regression-implemented;exact-head-checks-required"
+      "action": "implemented-by-merged-PR158;six-exact-head-checks-pass;resulting-main-evidence-pending"
     },
     {
       "number": 154,
@@ -20,8 +20,8 @@
     {
       "number": 151,
       "title": "CI: investigate trusted-release workflow failures with no jobs on non-tag pushes",
-      "state": "open",
-      "action": "yaml-heredoc-repair-merged-PR156;resulting-main-certification-in-progress;postmerge-non-tag-push-zero-job-check-pending"
+      "state": "closed",
+      "action": "closed-after-PR156-parser-source-repair-and-observed-postfix-main-non-tag-push"
     },
     {
       "number": 62,
@@ -53,9 +53,9 @@
     {
       "number": 158,
       "title": "ci: validate GitHub Actions YAML with Ruby Psych before certification",
-      "state": "open",
+      "state": "merged",
       "draft": false,
-      "action": "exact-head-ci-verification-pending;release-authority-unchanged"
+      "action": "merged-after-all-six-required-exact-head-checks;resulting-main-verification-pending"
     },
     {
       "number": 153,
