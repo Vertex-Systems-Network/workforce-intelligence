@@ -13,6 +13,8 @@
 
 **2026-10-11 maintenance discovery:** Issue #157 tracks the missing repository-wide GitHub Actions YAML parser gate. A dependency-free Ruby/Psych script, malformed-heredoc fixture and Linux CI integration are prepared on a separate branch based on PR #156, avoiding mutation of its certified head. Local Ruby syntax and fail-closed valid/invalid fixture checks passed; GitHub exact-head CI for the dependent work is NOT VERIFIED. The GitHub Ubuntu 24.04 runner image lists Ruby 3.2.3.
 
+**2026-10-11 merge checkpoint:** PR #156 merged on protected main as `b7e086616eaca2963064e9d470ef42686f163485` after exact-head Linux test/governance, Windows Certification, CodeQL, JS quality and Pint all passed on `40526990aee99f363382a66a00a6ed27219012a1`. The resulting-main workflows started; their terminal certification is not yet verified. PR #158 is retargeted to `main` for Issue #157, whose exact-head checks are pending. Issue #151 remains open until resulting-main and non-tag push evidence supports closure. No trusted release, signer, production or Runner dispatch occurred.
+
 ## Verified
 
 - PR #153 merged as `307d97e7b81da92eb148bcd8c42f9aff8ce9a309` after all required checks passed on exact head `d2ddaf60a510fb36c8bc949329ded27f5bebe1f4`; resulting-main Linux CI, Windows Certification, CodeQL, Pint and governance passed.
