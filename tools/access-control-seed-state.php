@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Throwable;
-
 $dbPath = getenv('DB_DATABASE') ?: 'database/database.sqlite';
 // A Windows drive-qualified path is absolute even though it does not start with a separator.
 $isWindowsAbsolute = strlen($dbPath) >= 3
