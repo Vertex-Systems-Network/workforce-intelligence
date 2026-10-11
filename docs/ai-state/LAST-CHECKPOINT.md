@@ -9,6 +9,8 @@
 **Milestone:** M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate
 **Status:** Required CI jobs have bounded runtimes and the source includes locked Composer advisory coverage; M14 remains 70% waiting on external admin/target evidence, with Windows provider-based and Apple signing deferred.
 
+**2026-10-11 source checkpoint:** Issue #151 review identified a YAML block-indentation defect: the inline Node verifier inside the trusted-release publication `run: |` block was outdented to column zero. A constrained source repair and Node heredoc regression test are proposed; exact-head CI and GitHub-native non-tag push behavior remain NOT VERIFIED. No signing, publication or production dispatch has been executed.
+
 ## Verified
 
 - PR #153 merged as `307d97e7b81da92eb148bcd8c42f9aff8ce9a309` after all required checks passed on exact head `d2ddaf60a510fb36c8bc949329ded27f5bebe1f4`; resulting-main Linux CI, Windows Certification, CodeQL, Pint and governance passed.
