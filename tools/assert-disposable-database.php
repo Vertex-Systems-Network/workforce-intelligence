@@ -16,6 +16,35 @@ $read = static function (string $key) use ($raw): string {
     if (! preg_match('/^'.preg_quote($key, '/').'=(.*)$/m', $raw, $match)) return '';
     return trim(trim($match[1]), "\"'");
 };
+// The later Artisan command sees inherited process variables before dotenv values.
+// A file-only approval is unsafe when another layer changes its actual database target.
+// Reject all ambiguous target identity before any destructive command is reached.
+foreach (['APP_ENV', 'DB_CONNECTION', 'DB_DATABASE', 'DB_HOST', 'DB_PORT', 'DB_USERNAME'] as $key) {
+    $inherited = getenv($key);
+    if ($inherited === false || trim((string) $inherited) === '') {
+        continue;
+    }
+    if (trim((string) $inherited) !== $read($key)) {
+        fwrite(STDERR, "REFUSED: process environment overrides the approved .env database target selector {$key}.".PHP_EOL);
+        exit(1);
+    }
+}
+foreach (['DB_URL', 'DATABASE_URL'] as $key) {
+    $inherited = getenv($key);
+    if ($read($key) !== '' || ($inherited !== false && trim((string) $inherited) !== '')) {
+        fwrite(STDERR, "REFUSED: database URL override {$key} makes the clean-install reset target ambiguous.".PHP_EOL);
+        exit(1);
+    }
+}
+if (is_file($root.'/bootstrap/cache/config.php')) {
+    fwrite(STDERR, "REFUSED: cached Laravel configuration may override the approved disposable database target.".PHP_EOL);
+    exit(1);
+}
+if ($read('APP_ENV') === '') {
+    fwrite(STDERR, "REFUSED: APP_ENV must be explicitly configured for destructive verification.".PHP_EOL);
+    exit(1);
+}
+
 $appEnv = strtolower($read('APP_ENV'));
 $dbConnection = strtolower($read('DB_CONNECTION'));
 $dbDatabase = $read('DB_DATABASE');
