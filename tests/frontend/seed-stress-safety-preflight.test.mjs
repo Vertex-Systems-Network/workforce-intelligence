@@ -76,3 +76,37 @@ test('unsafe database targets are rejected without touching an existing sentinel
     fs.rmSync(temp, {recursive: true, force: true})
   }
 })
+
+
+test('pre-existing isolated scratch database is never overwritten, even with otherwise valid opt-in', { skip: process.platform === 'win32' }, () => {
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'workintel-seed-existing-'))
+  try {
+    const toolsDir = path.join(temp, 'tools')
+    const dbDir = path.join(temp, 'storage', 'framework', 'testing')
+    fs.mkdirSync(toolsDir, {recursive: true})
+    fs.mkdirSync(dbDir, {recursive: true})
+    fs.copyFileSync('tools/access-control-seed-stress.sh', path.join(toolsDir, 'access-control-seed-stress.sh'))
+    fs.writeFileSync(path.join(temp, 'artisan'), 'placeholder; this must never execute')
+    fs.writeFileSync(path.join(toolsDir, 'access-control-seed-state.php'), 'placeholder; this must never execute')
+    const db = path.join(dbDir, 'seed-stress.sqlite')
+    const contents = 'PRESERVE_EXISTING_SCRATCH_DB\\n'
+    fs.writeFileSync(db, contents)
+    const env = {
+      ...process.env,
+      APP_ENV: 'testing',
+      DB_CONNECTION: 'sqlite',
+      DB_DATABASE: 'storage/framework/testing/seed-stress.sqlite',
+      DB_URL: '',
+      DATABASE_URL: '',
+      WORKINTEL_SEED_STRESS_ALLOW_DESTRUCTIVE: '1',
+      WORKINTEL_SEED_STRESS_CYCLES: '12',
+    }
+    const run = spawnSync('bash', ['tools/access-control-seed-stress.sh'], { cwd: temp, env, encoding: 'utf8', timeout: 5000 })
+    assert.equal(run.status, 2, run.stderr || String(run.error))
+    assert.match(run.stderr, /dedicated scratch database already exists; refusing overwrite/)
+    assert.equal(fs.readFileSync(db, 'utf8'), contents)
+    assert.equal(fs.existsSync(path.join(temp, 'storage', 'logs', 'seed-stress')), false, 'denial must precede log creation')
+  } finally {
+    fs.rmSync(temp, {recursive: true, force: true})
+  }
+})
