@@ -7,6 +7,21 @@
 **M14 progress:** 70%  
 **Scope note:** the remaining 30% is a coarse module-progress remainder, not a repository-authoritative set of equal sub-percent weights. This audit does not invent per-gate percentages.
 
+## Current owner authority override — 2026-10-11
+
+**This is a historical critical-path audit dated 2026-09-26, not the current execution queue.** Its Windows-provider action language in the historical Executive finding, R1/R2 dependency graph, and "Fastest safe execution order" below is **SUPERSEDED as an active instruction** by the owner's 2026-10-08 decision to defer third-party Windows public-trust signing/provider qualification, purchase, selection and integration.
+
+| Lane | Current authority | What may proceed |
+| --- | --- | --- |
+| Windows third-party public-trust provider, R1/R2/R3-W/R4-W/R5-W | **DEFERRED / NOT CURRENTLY AUTHORIZED** | Keep original fail-closed future requirements as historical acceptance criteria; do not act on provider replies or configure signer material without new authorization |
+| Apple Developer ID/notarization | **DEFERRED**, future Issue #123 | Maintain existing source safety requirements; no subscription, keys or notarization |
+| CI, source-quality, dependencies, diagnostics, continuity and normal certification | **AUTHORIZED routine maintenance** | Continue autonomously on evidence-backed, non-destructive work while externally blocked lanes remain parked |
+| GitHub `production-release` environment, immutable releases and real-target/restore evidence | **NOT VERIFIED**, Issue #62 | Read-only evidence checks where the connector supports them; do not infer readiness or dispatch privileged release operations |
+
+Gate A/A2 tag protection remains verified, while remaining M14 production-trust evidence is Not Verified. **M14 remains 70% WAITING_EXTERNAL**, not DONE or `PRODUCTION_VERIFIED`. Neither owner deferral nor a green CI run relaxes trusted publication's fail-closed security requirements.
+
+The archived R1–R7 sequence below remains useful as a **future conditional dependency map only**. No action in this source document is authorization to buy, qualify/onboard a provider, sign/notarize, publish, deploy, restore production or run RB-005.
+
 ## Executive finding
 
 M14 source trust and control-plane preparation are substantially complete. The remaining path is dominated by external trust material and real execution evidence, not additional product implementation.
