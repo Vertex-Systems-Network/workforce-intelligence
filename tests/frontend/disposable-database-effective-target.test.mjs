@@ -14,6 +14,7 @@ test('destructive clean-install guard rejects process overrides, connection URLs
     "'DB_URL', 'DATABASE_URL'",
     'database URL override',
     "bootstrap/cache/config.php",
+    'environment-specific dotenv file would override the approved .env target',
     'cached Laravel configuration',
   ]) assert.ok(source.includes(marker), 'missing guard: ' + marker)
   const runner = fs.readFileSync('verify-clean-install.cmd', 'utf8')
@@ -87,6 +88,11 @@ test('destructive reset preflight rejects effective target ambiguity without run
     assert.match(urlDotenv.stderr, /database URL override/)
     assert.doesNotMatch(urlDotenv.stderr, /secret@prod/)
     fs.writeFileSync(path.join(root, '.env'), dotenv)
+    fs.writeFileSync(path.join(root, '.env.local'), 'DB_CONNECTION=mysql\\nDB_HOST=prod.example.invalid\\n')
+    const alternate = run(baseline)
+    assert.equal(alternate.status, 1, alternate.stderr)
+    assert.match(alternate.stderr, /environment-specific dotenv file would override/)
+    fs.rmSync(path.join(root, '.env.local'))
     fs.mkdirSync(path.join(root, 'bootstrap', 'cache'), { recursive: true })
     fs.writeFileSync(path.join(root, 'bootstrap', 'cache', 'config.php'), '<?php return [];')
     const cached = run(baseline)
