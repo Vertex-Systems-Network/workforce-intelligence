@@ -8,8 +8,8 @@
   "active_branch": "main",
   "current_milestone": "M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "Trusted-release YAML repair and repository-wide workflow parser passed six exact-head checks each and merged; external release trust remains Not Verified.",
-  "exact_next_safe_action": "Certify the M14 authority clarification and compact-journal archival, verify resulting-main CI, and continue independent safe maintenance without privileged release operations.",
+  "last_completed_milestone": "Required workflow YAML validation and lossless compact-journal archive were integrated after exact-head certification; external trust remains Not Verified.",
+  "exact_next_safe_action": "Reconcile live GitHub issues and CI, select evidence-backed safe maintenance or non-destructive M14 diagnostics, and preserve release, signing and Runner authority boundaries.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -50,7 +50,7 @@
   "last_reconciled_at": "2026-10-11",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 remains WAITING_EXTERNAL; trusted-release YAML repair and required workflow parser are merged, with compact journal history and deferred signer scope preserved.",
+    "current_work": "M14 external release trust remains WAITING_EXTERNAL; routine CI/security and AI-continuity reliability work advances independently of deferred signing.",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,

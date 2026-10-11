@@ -17,6 +17,8 @@
 
 **2026-10-11 compact-journal and active-trust-scope checkpoint:** PR #158's YAML guard passed six exact-head checks and merged into protected main as `884c55d5fc1376ded5ecfa54ce10eefa1ffed2bd`; resulting-main certification remains a separate unverified gate at this source checkpoint. The 32,568-byte journal was archived losslessly by date to preserve its 32 KiB bound. M14 authority text now explicitly distinguishes owner-deferred Windows public-trust signing and Apple future scope from mandatory release trust gates. No signing, production, publication or unauthorized Runner execution took place.
 
+**2026-10-11 merge-stable progress-contract audit:** PR #159 merged as `39859a08e8777c4c0b25d0589766df9d7d5d2ed7` after six exact-head green checks. The committed Next Action still called for verifying that completed merge's certification, revealing a semantic continuity defect. Issue #160 adds fail-closed regression coverage, while preserving M14 70% WAITING_EXTERNAL and keeping transaction evidence on GitHub. No release, provider, production, signing, restore or unauthorized Runner action.
+
 ## Verified
 
 - PR #153 merged as `307d97e7b81da92eb148bcd8c42f9aff8ce9a309` after all required checks passed on exact head `d2ddaf60a510fb36c8bc949329ded27f5bebe1f4`; resulting-main Linux CI, Windows Certification, CodeQL, Pint and governance passed.
