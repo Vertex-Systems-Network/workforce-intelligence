@@ -6,13 +6,13 @@ WorkIntel is a single Laravel 13 + React/TypeScript workforce operations platfor
 ## AI Development Progress
 
 - **Repo:** `Vertex-Systems-Network/workforce-intelligence`
-- **Current Work:** M14 remains waiting on external release/target evidence; CI maintains locked npm and Composer dependency audits while Issue #151's zero-job workflow failure remains evidence-limited.
+- **Current Work:** M14 remains externally waiting; Issue #151 trusted-release workflow has an identified outdented inline Node heredoc defect under fail-closed source repair and exact-head verification.
 - **Current Module:** M14 — Production Release Trust & Real-Target Readiness
 - **Module Progress:** [███████░░░] **70%**
 - **Overall Progress:** [██████████] **100%** — active release-scope modular maturity
 - **Active Issue:** #62
 - **Last Completed:** Explicit CI job time bounds passed exact-head and resulting-main certification; continuous maintenance discovery and merge-stable semantic state remain integrated.
-- **Next Action:** Maintain locked dependency advisory coverage and investigate Issue #151's zero-job trusted-release records with GitHub-native evidence; do not dispatch trusted-release actions. M14 remains 70% and WAITING_EXTERNAL for production-release/immutable-release/real-target evidence.
+- **Next Action:** Certify Issue #151's trusted-release YAML/heredoc repair on exact PR head and verify non-tag push behavior with GitHub-native evidence; do not dispatch signing or release actions. Continue safe maintenance; M14 remains 70% WAITING_EXTERNAL.
 
 > Live PR number, working branch, check run IDs, and merge SHA are intentionally read from GitHub at runtime rather than committed here. Apple/macOS release trust remains deferred under Issue #123.
 <!-- AI-PROGRESS:END -->

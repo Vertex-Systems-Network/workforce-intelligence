@@ -3,19 +3,19 @@
   "non_authoritative_resume_index": true,
   "repository": "Vertex-Systems-Network/workforce-intelligence",
   "observed_main_sha": "0e5c52001aee19786efa31a0c62062184c7bf66e",
-  "reconciled_at": "2026-10-08",
+  "reconciled_at": "2026-10-11",
   "issues": [
     {
       "number": 154,
       "title": "CI: audit locked Composer dependency graph",
-      "state": "open",
-      "action": "add-locked-composer-advisory-gate-to-required-ci;abandoned-report;exact-head-certification"
+      "state": "closed",
+      "action": "completed-by-merged-PR-155;locked-composer-audit-in-required-linux-ci;exact-head-and-resulting-main-checks-green"
     },
     {
       "number": 151,
       "title": "CI: investigate trusted-release workflow failures with no jobs on non-tag pushes",
       "state": "open",
-      "action": "failed-zero-run-suite-confirmed;no-jobs-artifacts-logs;root-cause-unproven;no-release-dispatch"
+      "action": "yaml-heredoc-indentation-defect-identified;PR-fail-closed-source-repair-under-exact-head-verification;no-release-dispatch"
     },
     {
       "number": 62,
