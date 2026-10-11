@@ -9,7 +9,7 @@ const source = fs.readFileSync('tools/assert-disposable-database.php', 'utf8')
 
 test('destructive clean-install guard rejects process overrides, connection URLs and cached target config', () => {
   for (const marker of [
-    "'APP_ENV', 'DB_CONNECTION', 'DB_DATABASE', 'DB_HOST', 'DB_PORT', 'DB_USERNAME'",
+    "'APP_ENV', 'DB_CONNECTION', 'DB_DATABASE', 'DB_HOST', 'DB_PORT', 'DB_USERNAME', 'DB_PASSWORD', 'DB_SOCKET'",
     'process environment overrides the approved .env database target selector',
     "'DB_URL', 'DATABASE_URL'",
     'database URL override',
@@ -29,6 +29,8 @@ test('destructive reset preflight rejects effective target ambiguity without run
     'DB_HOST=127.0.0.1',
     'DB_PORT=3306',
     'DB_USERNAME=demo',
+    'DB_PASSWORD=',
+    'DB_SOCKET=',
     'DB_URL=',
     'DATABASE_URL=',
     '',
@@ -46,6 +48,8 @@ test('destructive reset preflight rejects effective target ambiguity without run
       DB_HOST: '127.0.0.1',
       DB_PORT: '3306',
       DB_USERNAME: 'demo',
+      DB_PASSWORD: '',
+      DB_SOCKET: '',
       DB_URL: '',
       DATABASE_URL: '',
       WORKINTEL_ALLOW_DESTRUCTIVE_RESET: '',
@@ -64,6 +68,9 @@ test('destructive reset preflight rejects effective target ambiguity without run
       { label: 'database host', env: { ...baseline, DB_HOST: 'prod.example.invalid' } },
       { label: 'database port', env: { ...baseline, DB_PORT: '4406' } },
       { label: 'database user', env: { ...baseline, DB_USERNAME: 'prod-operator' } },
+      { label: 'database password', env: { ...baseline, DB_PASSWORD: 'secret_prod_password' } },
+      { label: 'database socket', env: { ...baseline, DB_SOCKET: '/tmp/production.sock' } },
+      { label: 'empty env override', env: { ...baseline, DB_CONNECTION: '' } },
       { label: 'Laravel URL', env: { ...baseline, DB_URL: 'mysql://secret@prod.example.invalid/workforce' } },
       { label: 'second database URL', env: { ...baseline, DATABASE_URL: 'mysql://secret@prod.example.invalid/workforce' } },
       { label: 'override cannot bypass target guard', env: { ...baseline, DB_CONNECTION: 'mysql', WORKINTEL_ALLOW_DESTRUCTIVE_RESET: '1' } },
@@ -72,7 +79,7 @@ test('destructive reset preflight rejects effective target ambiguity without run
       const result = run(row.env)
       assert.equal(result.status, 1, row.label + ': ' + (result.stderr || String(result.error)))
       assert.match(result.stderr, /REFUSED:/, row.label)
-      assert.doesNotMatch(result.stderr + result.stdout, /secret@prod/, 'must not log URL credentials')
+      assert.doesNotMatch(result.stderr + result.stdout, /secret@prod|secret_prod_password/, 'must not log database credentials')
     }
     fs.writeFileSync(path.join(root, '.env'), dotenv.replace('DB_URL=\n', 'DB_URL=mysql://secret@prod.example.invalid/workforce\n'))
     const urlDotenv = run(baseline)

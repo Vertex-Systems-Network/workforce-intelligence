@@ -19,9 +19,9 @@ $read = static function (string $key) use ($raw): string {
 // The later Artisan command sees inherited process variables before dotenv values.
 // A file-only approval is unsafe when another layer changes its actual database target.
 // Reject all ambiguous target identity before any destructive command is reached.
-foreach (['APP_ENV', 'DB_CONNECTION', 'DB_DATABASE', 'DB_HOST', 'DB_PORT', 'DB_USERNAME'] as $key) {
+foreach (['APP_ENV', 'DB_CONNECTION', 'DB_DATABASE', 'DB_HOST', 'DB_PORT', 'DB_USERNAME', 'DB_PASSWORD', 'DB_SOCKET'] as $key) {
     $inherited = getenv($key);
-    if ($inherited === false || trim((string) $inherited) === '') {
+    if ($inherited === false) {
         continue;
     }
     if (trim((string) $inherited) !== $read($key)) {
