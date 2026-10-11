@@ -9,7 +9,7 @@
   "current_milestone": "M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate",
   "milestone_status": "WAITING_EXTERNAL",
   "last_completed_milestone": "Explicit CI job time bounds passed exact-head and resulting-main certification; continuous maintenance discovery and merge-stable semantic state remain integrated.",
-  "exact_next_safe_action": "Maintain locked dependency advisory coverage and investigate Issue #151's zero-job trusted-release records with GitHub-native evidence; do not dispatch trusted-release actions. M14 remains 70% and WAITING_EXTERNAL for production-release/immutable-release/real-target evidence.",
+  "exact_next_safe_action": "Certify Issue #151's trusted-release YAML/heredoc repair on exact PR head and verify non-tag push behavior with GitHub-native evidence; do not dispatch signing or release actions. Continue safe maintenance; M14 remains 70% WAITING_EXTERNAL.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -47,10 +47,10 @@
     "rehydrate_material_drift_in_same_window": true,
     "terminal_engineering_choice_prompt_default": false
   },
-  "last_reconciled_at": "2026-10-08",
+  "last_reconciled_at": "2026-10-11",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 remains waiting on external release/target evidence; CI maintains locked npm and Composer dependency audits while Issue #151's zero-job workflow failure remains evidence-limited.",
+    "current_work": "M14 remains externally waiting; Issue #151 trusted-release workflow has an identified outdented inline Node heredoc defect under fail-closed source repair and exact-head verification.",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
