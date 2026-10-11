@@ -11,7 +11,7 @@
 
 **2026-10-11 source checkpoint:** Issue #151 review identified a YAML block-indentation defect: the inline Node verifier inside the trusted-release publication `run: |` block was outdented to column zero. A constrained source repair and Node heredoc regression test are proposed; exact-head CI and GitHub-native non-tag push behavior remain NOT VERIFIED. No signing, publication or production dispatch has been executed.
 
-## Verified
+**2026-10-11 maintenance discovery:** Issue #157 tracks the missing repository-wide GitHub Actions YAML parser gate. A dependency-free Ruby/Psych script, malformed-heredoc fixture and Linux CI integration are prepared on a separate branch based on PR #156, avoiding mutation of its certified head. Local Ruby syntax and fail-closed valid/invalid fixture checks passed; GitHub exact-head CI for the dependent work is NOT VERIFIED. The GitHub Ubuntu 24.04 runner image lists Ruby 3.2.3.\n\n## Verified
 
 - PR #153 merged as `307d97e7b81da92eb148bcd8c42f9aff8ce9a309` after all required checks passed on exact head `d2ddaf60a510fb36c8bc949329ded27f5bebe1f4`; resulting-main Linux CI, Windows Certification, CodeQL, Pint and governance passed.
 - Issue #151's non-tag push failure has a GitHub Actions check suite with zero check runs; its run exposes zero jobs and artifacts, while logs return HTTP 404. No failure reason is available.
