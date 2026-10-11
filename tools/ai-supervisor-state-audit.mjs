@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import { assertDurableProgressStatus } from './ai-supervisor-durable-status.mjs'
 const fail=m=>{throw new Error('[ai-supervisor-state-audit] '+m)}
 const p={state:'docs/ai-state/CURRENT-STATE.yaml',checkpoint:'docs/ai-state/LAST-CHECKPOINT.md',journal:'docs/ai-state/EXECUTION-JOURNAL.md',queue:'docs/ai-state/COORDINATION-QUEUE.yaml',claims:'docs/ai-state/DETERMINISTIC-CLAIMS.yaml',runner:'benchmarks/runner/registry.json',agents:'AGENTS.md',fast:'docs/ai-state/FAST-BATCH-EXECUTION.md',response:'docs/ai-state/USER-RESPONSE-CONTRACT.md',options:'.ai/NEXT-ACTION-OPTIONS.md',statusCheckpoint:'docs/status/AI_CHECKPOINT.md',m14:'docs/architecture/M14_RELEASE_TRUST_READINESS.md'}
 for(const x of Object.values(p))if(!fs.existsSync(x))fail('missing '+x)
@@ -59,6 +60,8 @@ for(const k of ['repository_name','current_work','current_module','module_progre
 if(rs.repository_name!=='Vertex-Systems-Network/workforce-intelligence')fail('response_status repository_name mismatch')
 if(typeof rs.current_work!=='string'||!rs.current_work.trim())fail('response_status current_work required')
 if(typeof rs.current_module!=='string'||!rs.current_module.trim())fail('response_status current_module required')
+// Committed AI/README status is a merge-stable semantic checkpoint, not a PR check ticker.
+assertDurableProgressStatus({current_work: rs.current_work, last_completed_milestone: s.last_completed_milestone, exact_next_safe_action: s.exact_next_safe_action})
 if(!Number.isInteger(rs.bar_cells)||rs.bar_cells!==10)fail('response_status bar_cells must be 10')
 for(const [name,p] of [['module_progress',rs.module_progress],['overall_progress',rs.overall_progress]]){
  if(!p||typeof p!=='object')fail('response_status '+name+' must be an object')
