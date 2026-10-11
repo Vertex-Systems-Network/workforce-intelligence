@@ -6,6 +6,12 @@
   "reconciled_at": "2026-10-11",
   "issues": [
     {
+      "number": 157,
+      "title": "CI: validate all GitHub Actions workflow YAML before expensive certification",
+      "state": "open",
+      "action": "ruby-psych-parse-guard-and-heredoc-fixture-in-dependent-branch;merge-after-issue-151"
+    },
+    {
       "number": 154,
       "title": "CI: audit locked Composer dependency graph",
       "state": "closed",
