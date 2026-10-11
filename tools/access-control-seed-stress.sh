@@ -10,7 +10,8 @@ fail_preflight() {
 
 cycles="${WORKINTEL_SEED_STRESS_CYCLES:-12}"
 log_dir="storage/logs/seed-stress"
-safe_db="$log_dir/seed-stress.sqlite"
+db_dir="storage/framework/testing"
+safe_db="$db_dir/seed-stress.sqlite"
 db_path="${DB_DATABASE:-}"
 
 # Reject before creating a directory, opening a file or invoking php/artisan.
@@ -25,13 +26,13 @@ db_path="${DB_DATABASE:-}"
 (( ${#cycles} <= 2 )) || fail_preflight "cycle count cannot exceed 12"
 (( 10#$cycles <= 12 )) || fail_preflight "cycle count cannot exceed 12"
 
-for component in storage storage/logs "$log_dir" "$safe_db"; do
+for component in storage storage/logs storage/framework "$log_dir" "$db_dir" "$safe_db"; do
   [[ ! -L "$component" ]] || fail_preflight "symlinked diagnostic path component is forbidden: $component"
 done
 [[ ! -e "$safe_db" ]] || fail_preflight "dedicated scratch database already exists; refusing overwrite"
 
 umask 077
-mkdir -p "$log_dir"
+mkdir -p "$log_dir" "$db_dir"
 export DB_CONNECTION DB_DATABASE APP_ENV
 
 echo "Running ${cycles} fresh SQLite seed cycles against ${db_path}."

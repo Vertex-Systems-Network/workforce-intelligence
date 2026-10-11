@@ -22,7 +22,7 @@ jobs:
         env:
           APP_ENV: testing
           DB_CONNECTION: sqlite
-          DB_DATABASE: storage/logs/seed-stress/seed-stress.sqlite
+          DB_DATABASE: storage/framework/testing/seed-stress.sqlite
           DB_URL: ''
           WORKINTEL_SEED_STRESS_ALLOW_DESTRUCTIVE: '1'
           WORKINTEL_SEED_STRESS_CYCLES: 12

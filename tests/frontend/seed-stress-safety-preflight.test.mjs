@@ -11,12 +11,15 @@ const workflow = read('.github/workflows/seed-stress.yml')
 
 test('RB-005 remains manual only, while source preflight pins a disposable SQLite/testing target', () => {
   assert.ok(workflow.includes('workflow_dispatch:'))
+  assert.ok(workflow.includes('path: storage/logs/seed-stress'))
+  assert.equal(workflow.includes('path: storage/framework/testing'), false, 'never upload the scratch database with failure logs')
+  assert.ok(stress.includes('db_dir="storage/framework/testing"'), 'database must be stored separately from uploaded logs')
   assert.equal(workflow.includes('pull_request:'), false)
   assert.equal(workflow.includes('push:'), false)
   for (const marker of [
     'APP_ENV: testing',
     'DB_CONNECTION: sqlite',
-    'DB_DATABASE: storage/logs/seed-stress/seed-stress.sqlite',
+    'DB_DATABASE: storage/framework/testing/seed-stress.sqlite',
     "WORKINTEL_SEED_STRESS_ALLOW_DESTRUCTIVE: '1'",
     'WORKINTEL_SEED_STRESS_CYCLES: 12',
   ]) assert.ok(workflow.includes(marker), 'missing manual workflow isolation: ' + marker)
@@ -57,11 +60,11 @@ test('unsafe database targets are rejected without touching an existing sentinel
     }
     const unsafe = [
       baseEnv,
-      {...baseEnv, DB_DATABASE: 'storage/logs/seed-stress/seed-stress.sqlite', DB_CONNECTION: 'mysql'},
-      {...baseEnv, DB_DATABASE: 'storage/logs/seed-stress/seed-stress.sqlite', APP_ENV: 'production'},
-      {...baseEnv, DB_DATABASE: 'storage/logs/seed-stress/seed-stress.sqlite', DB_URL: 'mysql://example.invalid/test'},
-      {...baseEnv, DB_DATABASE: 'storage/logs/seed-stress/seed-stress.sqlite', WORKINTEL_SEED_STRESS_ALLOW_DESTRUCTIVE: '0'},
-      {...baseEnv, DB_DATABASE: 'storage/logs/seed-stress/seed-stress.sqlite', WORKINTEL_SEED_STRESS_CYCLES: '500'},
+      {...baseEnv, DB_DATABASE: 'storage/framework/testing/seed-stress.sqlite', DB_CONNECTION: 'mysql'},
+      {...baseEnv, DB_DATABASE: 'storage/framework/testing/seed-stress.sqlite', APP_ENV: 'production'},
+      {...baseEnv, DB_DATABASE: 'storage/framework/testing/seed-stress.sqlite', DB_URL: 'mysql://example.invalid/test'},
+      {...baseEnv, DB_DATABASE: 'storage/framework/testing/seed-stress.sqlite', WORKINTEL_SEED_STRESS_ALLOW_DESTRUCTIVE: '0'},
+      {...baseEnv, DB_DATABASE: 'storage/framework/testing/seed-stress.sqlite', WORKINTEL_SEED_STRESS_CYCLES: '500'},
     ]
     for (const env of unsafe) {
       const run = spawnSync('bash', ['tools/access-control-seed-stress.sh'], { cwd: process.cwd(), env, encoding: 'utf8', timeout: 5000 })
