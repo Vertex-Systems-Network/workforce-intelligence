@@ -78,4 +78,14 @@ jobs:
 
           printf 'Pint validating %s changed PHP file(s):\n' "${#php_files[@]}"
           printf ' - %s\n' "${php_files[@]}"
-          vendor/bin/pint --test "${php_files[@]}"
+          if vendor/bin/pint --test "${php_files[@]}"; then
+            exit 0
+          fi
+
+          # Keep the quality gate failing, but show the formatter's exact expected delta.
+          # This checkout is ephemeral and changes never reach protected main from CI.
+          echo '::group::Pint suggested formatting diff (diagnostics only)'
+          vendor/bin/pint "${php_files[@]}" >/dev/null
+          git --no-pager diff -- "${php_files[@]}"
+          echo '::endgroup::'
+          exit 1
