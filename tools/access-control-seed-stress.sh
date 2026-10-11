@@ -1,10 +1,38 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Issue #70 / RB-005: source safety is independent of Runner execution authority.
+# This script is destructive ONLY to its dedicated, initially absent scratch SQLite file.
+fail_preflight() {
+  printf '[seed-stress] Refused unsafe diagnostic target: %s\n' "$1" >&2
+  exit 2
+}
+
 cycles="${WORKINTEL_SEED_STRESS_CYCLES:-12}"
-db_path="${DB_DATABASE:-database/database.sqlite}"
 log_dir="storage/logs/seed-stress"
-mkdir -p "$log_dir" "$(dirname "$db_path")"
+safe_db="$log_dir/seed-stress.sqlite"
+db_path="${DB_DATABASE:-}"
+
+# Reject before creating a directory, opening a file or invoking php/artisan.
+[[ "${WORKINTEL_SEED_STRESS_ALLOW_DESTRUCTIVE:-}" == "1" ]] || fail_preflight "explicit local opt-in is required"
+[[ "${APP_ENV:-}" == "testing" ]] || fail_preflight "APP_ENV must equal testing"
+[[ "${DB_CONNECTION:-}" == "sqlite" ]] || fail_preflight "DB_CONNECTION must equal sqlite"
+[[ -z "${DB_URL:-}" && -z "${DATABASE_URL:-}" ]] || fail_preflight "database URL overrides are forbidden"
+[[ "$db_path" == "$safe_db" ]] || fail_preflight "DB_DATABASE must be the dedicated scratch path $safe_db"
+[[ -f artisan && -f tools/access-control-seed-state.php ]] || fail_preflight "run only from the WorkIntel repository root"
+[[ ! -f bootstrap/cache/config.php ]] || fail_preflight "cached Laravel configuration can override the isolated test database"
+[[ "$cycles" =~ ^[1-9][0-9]*$ ]] || fail_preflight "cycle count must be a positive decimal integer"
+(( ${#cycles} <= 2 )) || fail_preflight "cycle count cannot exceed 12"
+(( 10#$cycles <= 12 )) || fail_preflight "cycle count cannot exceed 12"
+
+for component in storage storage/logs "$log_dir" "$safe_db"; do
+  [[ ! -L "$component" ]] || fail_preflight "symlinked diagnostic path component is forbidden: $component"
+done
+[[ ! -e "$safe_db" ]] || fail_preflight "dedicated scratch database already exists; refusing overwrite"
+
+umask 077
+mkdir -p "$log_dir"
+export DB_CONNECTION DB_DATABASE APP_ENV
 
 echo "Running ${cycles} fresh SQLite seed cycles against ${db_path}."
 
