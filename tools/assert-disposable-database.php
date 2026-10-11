@@ -16,6 +16,7 @@ $read = static function (string $key) use ($raw): string {
     if (! preg_match('/^'.preg_quote($key, '/').'=(.*)$/m', $raw, $match)) {
         return '';
     }
+
     return trim(trim($match[1]), "\"'");
 };
 // The later Artisan command sees inherited process variables before dotenv values.
