@@ -11,11 +11,15 @@
 
 **2026-10-11 source checkpoint:** Issue #151 review identified a YAML block-indentation defect: the inline Node verifier inside the trusted-release publication `run: |` block was outdented to column zero. A constrained source repair and Node heredoc regression test are proposed; exact-head CI and GitHub-native non-tag push behavior remain NOT VERIFIED. No signing, publication or production dispatch has been executed.
 
+**2026-10-11 maintenance discovery:** Issue #157 tracks the missing repository-wide GitHub Actions YAML parser gate. A dependency-free Ruby/Psych script, malformed-heredoc fixture and Linux CI integration are prepared on a separate branch based on PR #156, avoiding mutation of its certified head. Local Ruby syntax and fail-closed valid/invalid fixture checks passed; GitHub exact-head CI for the dependent work is NOT VERIFIED. The GitHub Ubuntu 24.04 runner image lists Ruby 3.2.3.
+
+**2026-10-11 merge checkpoint:** PR #156 merged on protected main as `b7e086616eaca2963064e9d470ef42686f163485` after exact-head Linux test/governance, Windows Certification, CodeQL, JS quality and Pint all passed on `40526990aee99f363382a66a00a6ed27219012a1`. The resulting-main workflows started; their terminal certification is not yet verified. PR #158 is retargeted to `main` for Issue #157, whose exact-head checks are pending. Issue #151 remains open until resulting-main and non-tag push evidence supports closure. No trusted release, signer, production or Runner dispatch occurred.
+
 ## Verified
 
 - PR #153 merged as `307d97e7b81da92eb148bcd8c42f9aff8ce9a309` after all required checks passed on exact head `d2ddaf60a510fb36c8bc949329ded27f5bebe1f4`; resulting-main Linux CI, Windows Certification, CodeQL, Pint and governance passed.
 - Issue #151's non-tag push failure has a GitHub Actions check suite with zero check runs; its run exposes zero jobs and artifacts, while logs return HTTP 404. No failure reason is available.
-- Issue #154 tracks the missing locked Composer advisory gate in required Linux CI. The source adds `composer audit --locked --abandoned=report`; certify the new branch head before merge.
+- Issue #154 was closed after merged PR #155 integrated `composer audit --locked --abandoned=report` in required Linux CI with exact-head and resulting-main checks.
 
 - PR #146 merged to protected main as 09e9dac0d09b5ac8521006721001eca9611f5c8a after WorkIntel CI, Code Quality and Windows Certification passed on exact head c2ad9c6cd4a309e9daefc3717bfaf26a98b2cb8b; zero submitted reviews and zero unresolved review threads.
 

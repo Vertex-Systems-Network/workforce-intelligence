@@ -6,6 +6,12 @@
   "reconciled_at": "2026-10-11",
   "issues": [
     {
+      "number": 157,
+      "title": "CI: validate all GitHub Actions workflow YAML before expensive certification",
+      "state": "open",
+      "action": "PR158-targets-main;yaml-parser-and-heredoc-regression-implemented;exact-head-checks-required"
+    },
+    {
       "number": 154,
       "title": "CI: audit locked Composer dependency graph",
       "state": "closed",
@@ -15,7 +21,7 @@
       "number": 151,
       "title": "CI: investigate trusted-release workflow failures with no jobs on non-tag pushes",
       "state": "open",
-      "action": "yaml-heredoc-indentation-defect-identified;PR-fail-closed-source-repair-under-exact-head-verification;no-release-dispatch"
+      "action": "yaml-heredoc-repair-merged-PR156;resulting-main-certification-in-progress;postmerge-non-tag-push-zero-job-check-pending"
     },
     {
       "number": 62,
@@ -37,6 +43,20 @@
     }
   ],
   "pull_requests": [
+    {
+      "number": 156,
+      "title": "fix(ci): restore trusted release workflow YAML heredoc indentation",
+      "state": "merged",
+      "draft": false,
+      "action": "six-required-exact-head-checks-pass;resulting-main-certification-pending"
+    },
+    {
+      "number": 158,
+      "title": "ci: validate GitHub Actions YAML with Ruby Psych before certification",
+      "state": "open",
+      "draft": false,
+      "action": "exact-head-ci-verification-pending;release-authority-unchanged"
+    },
     {
       "number": 153,
       "title": "ci: bound required GitHub Actions job runtimes",

@@ -8,8 +8,8 @@
   "active_branch": "main",
   "current_milestone": "M14 Windows/Linux release trust — provider-based signing deferred; real-target evidence remains separate",
   "milestone_status": "WAITING_EXTERNAL",
-  "last_completed_milestone": "Explicit CI job time bounds passed exact-head and resulting-main certification; continuous maintenance discovery and merge-stable semantic state remain integrated.",
-  "exact_next_safe_action": "Certify Issue #151's trusted-release YAML/heredoc repair on exact PR head and verify non-tag push behavior with GitHub-native evidence; do not dispatch signing or release actions. Continue safe maintenance; M14 remains 70% WAITING_EXTERNAL.",
+  "last_completed_milestone": "Issue #151's trusted-release YAML source repair passed six exact-head checks and merged; M14 external evidence is still separate.",
+  "exact_next_safe_action": "Certify and safely merge Issue #157 workflow YAML guard on PR #158, then verify resulting-main CI and close Issues #151/#157 only with GitHub-native evidence. Do not dispatch signing or release actions; M14 remains 70% WAITING_EXTERNAL.",
   "pending_runner_ids": [
     "RB-001",
     "RB-002",
@@ -50,7 +50,7 @@
   "last_reconciled_at": "2026-10-11",
   "response_status": {
     "repository_name": "Vertex-Systems-Network/workforce-intelligence",
-    "current_work": "M14 remains externally waiting; Issue #151 trusted-release workflow has an identified outdented inline Node heredoc defect under fail-closed source repair and exact-head verification.",
+    "current_work": "M14 release-trust external evidence remains waiting; Issue #151 YAML defect repair is merged to protected main, and Issue #157 early workflow syntax guard is under exact-head CI verification.",
     "current_module": "M14 — Production Release Trust & Real-Target Readiness",
     "module_progress": {
       "percent": 70,
