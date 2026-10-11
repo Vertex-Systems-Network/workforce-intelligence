@@ -39,6 +39,20 @@ foreach (['DB_URL', 'DATABASE_URL'] as $key) {
         exit(1);
     }
 }
+// Laravel may load .env.<APP_ENV> in preference to .env when APP_ENV is inherited.
+// Never approve the default dotenv while Artisan would select a different file.
+$inheritedEnvironment = getenv('APP_ENV');
+if ($inheritedEnvironment !== false && $inheritedEnvironment !== '') {
+    if (! preg_match('/\\A[a-zA-Z0-9_-]+\\z/', $inheritedEnvironment)) {
+        fwrite(STDERR, 'REFUSED: invalid inherited APP_ENV for destructive verification.'.PHP_EOL);
+        exit(1);
+    }
+
+    if (is_file($root.'/.env.'.$inheritedEnvironment)) {
+        fwrite(STDERR, 'REFUSED: environment-specific dotenv file would override the approved .env target.'.PHP_EOL);
+        exit(1);
+    }
+}
 if (is_file($root.'/bootstrap/cache/config.php')) {
     fwrite(STDERR, 'REFUSED: cached Laravel configuration may override the approved disposable database target.'.PHP_EOL);
     exit(1);
