@@ -20,8 +20,11 @@ jobs:
       - run: cp .env.example .env && php artisan key:generate
       - name: Reproduce AccessControl SQLite seed flake
         env:
+          APP_ENV: testing
           DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
+          DB_DATABASE: storage/framework/testing/seed-stress.sqlite
+          DB_URL: ''
+          WORKINTEL_SEED_STRESS_ALLOW_DESTRUCTIVE: '1'
           WORKINTEL_SEED_STRESS_CYCLES: 12
         run: bash tools/access-control-seed-stress.sh
       - name: Upload seed stress diagnostics
