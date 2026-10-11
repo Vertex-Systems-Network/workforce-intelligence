@@ -49,18 +49,18 @@ test('M14 publication binds remote draft asset bytes to the locally verified tru
 })
 
 test('M14 trusted-release Node heredoc remains inside the YAML run block and parses as JavaScript', () => {
-  const opener = '            node --input-type=commonjs - "$release_json" trusted-release-assets <<\\'NODE\\'\\n'
+  const opener = '            node --input-type=commonjs - "$release_json" trusted-release-assets <<\'NODE\'\n'
   const start = workflow.indexOf(opener)
   assert.ok(start >= 0, 'embedded Node script opener must exist')
-  const close = workflow.indexOf('\\n          NODE\\n', start + opener.length)
+  const close = workflow.indexOf('\n          NODE\n', start + opener.length)
   assert.ok(close > start, 'heredoc delimiter must be correctly nested in the YAML run block')
-  const lines = workflow.slice(start + opener.length, close).split('\\n')
+  const lines = workflow.slice(start + opener.length, close).split('\n')
   assert.ok(lines.length > 20, 'expected actual remote asset integrity verifier')
   for (const line of lines) {
     assert.ok(line.trim() === '' || line.startsWith('          '), 'embedded script line escapes the YAML run block: ' + line)
   }
-  const script = lines.map(line => line.slice(10)).join('\\n')
-  assert.match(script, /crypto\\.createHash\\('sha256'\\)/)
+  const script = lines.map(line => line.slice(10)).join('\n')
+  assert.match(script, /crypto\.createHash\('sha256'\)/)
   const check = spawnSync(process.execPath, ['--check', '--input-type=commonjs'], {
     input: script,
     encoding: 'utf8',
