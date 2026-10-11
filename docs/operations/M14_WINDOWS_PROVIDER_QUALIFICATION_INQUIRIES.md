@@ -1,5 +1,14 @@
 # M14 Windows Public-Trust Provider Qualification Inquiry Drafts
 
+## Current owner authority — 2026-10-12 (supersedes historical action steps)
+
+**DEFERRED — NOT CURRENTLY AUTHORIZED.** This is a historical/future-reference provider-questionnaire template, not today's autonomous execution queue. On 2026-10-08 the owner deferred third-party Windows public-trust provider qualification, selection, integration and signer onboarding. Apple Developer ID enrollment, signing and notarization are deferred under Issue #123. Issue #62 holds the external release-control evidence boundary.
+
+All imperative contact, provider-evaluation, purchasing, enrollment, credential-placement, signer-integration, signing/notarization and publication instructions **below are future conditional steps only**. Do **not** resend September provider inquiries, contact/switch providers, purchase certificates/subscriptions, create keys, place GitHub secrets, sign artifacts, publish releases, deploy/restore production or run RB-005 without fresh explicit applicable authority. Read-only provider facts, source reviews, non-destructive diagnostics and ordinary CI/maintenance may continue.
+
+The original checklists and technical security requirements remain intact for a future authorized restart. Gate A/A2 tag ruleset evidence is verified; `production-release` protection, immutable GitHub Releases settings, signer evidence and real-target/recovery evidence remain **Not Verified**. **M14 remains 70% WAITING_EXTERNAL**, and trusted publication must fail closed until its independent gates are actually verified.
+
+
 **Purpose:** obtain written confirmation before any Windows public-trust code-signing purchase, credential placement or provider-specific repository integration.
 
 **Repository:** `Vertex-Systems-Network/workforce-intelligence`  
