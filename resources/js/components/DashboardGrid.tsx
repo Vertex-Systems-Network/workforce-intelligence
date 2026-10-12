@@ -39,7 +39,7 @@ export default function DashboardGrid({ items }: { items: GridItem[] }) {
       column: 12,
       cellHeight: 72,
       margin: 10,
-      float: true,
+      mode: 'float',
       animate: true,
       disableDrag: !editing,
       disableResize: !editing,
