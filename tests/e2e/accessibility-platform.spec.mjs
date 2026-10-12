@@ -7,7 +7,7 @@ test.skip(!fullMode, 'Accessibility journeys run with full seeded certification 
 async function login(page) {
   const email = process.env.WORKINTEL_E2E_EMAIL || 'owner@acme.test'
   const password = process.env.WORKINTEL_E2E_PASSWORD || 'password'
-  await page.goto('/app')
+  await page.goto('/app', { waitUntil: 'domcontentloaded' })
   await page.getByRole('textbox', { name: /email/i }).fill(email)
   await page.locator('input[type="password"]').first().fill(password)
   await page.getByRole('button', { name: /^sign in/i }).click()
@@ -44,6 +44,8 @@ async function expectReflow(page) {
 }
 
 test('skip link reaches the main workspace landmark and critical controls have accessible names', async ({ page }) => {
+  // Windows Firefox cold-load traces on CI spent 30-35s in navigation before the WCAG assertions.
+  test.setTimeout(90_000)
   await login(page)
   const skip = page.locator('.ui-skip-link').first()
   await skip.focus()
