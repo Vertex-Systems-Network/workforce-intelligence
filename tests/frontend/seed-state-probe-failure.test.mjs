@@ -29,6 +29,10 @@ test('Issue 70 collector preserves a JSON-only error boundary and absolute Windo
     "exit(2);",
     '$isWindowsAbsolute',
     "in_array($dbPath[2], ['\\\\', '/'], true)",
+    'PRAGMA query_only = ON',
+    "'probe_connection_foreign_keys_enabled'",
+    "'probe_connection_query_only'",
+    "'probe_connection_scope'",
   ]) assert.ok(source.includes(needle), 'missing diagnostic contract: ' + needle)
   assert.ok(source.includes('catch (Throwable $exception)'))
   assert.equal(source.includes('$exception->getMessage()'), false, 'never leak PDO messages into artifacts')
@@ -83,6 +87,10 @@ test('valid but unseeded SQLite remains a normal JSON assertion failure, never a
     const capture = runProbe(db, false)
     assert.equal(capture.status, 0)
     assert.equal(capture.payload.error, undefined)
+    assert.equal(capture.payload.sqlite.probe_connection_query_only, 1)
+    assert.match(capture.payload.sqlite.probe_connection_scope, /Separate post-failure SQLite observer/)
+    assert.ok([0, 1].includes(capture.payload.sqlite.probe_connection_foreign_keys_enabled))
+    assert.equal(Object.hasOwn(capture.payload.sqlite, 'foreign_keys'), false)
     const asserted = runProbe(db, true)
     assert.equal(asserted.status, 3)
     assert.equal(asserted.payload.assertions.workspace_exists, false)
