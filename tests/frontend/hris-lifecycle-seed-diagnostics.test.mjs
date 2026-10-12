@@ -25,6 +25,10 @@ test('Issue 178 HRIS probe is read-only and cannot leak raw SQL exceptions', () 
   for (const fragment of [
     'PRAGMA foreign_key_list(lifecycle_checklist_template_items)',
     'PRAGMA foreign_key_check(lifecycle_checklist_template_items)',
+    'PRAGMA query_only = ON',
+    "'probe_connection_foreign_keys_enabled'",
+    "'probe_connection_query_only'",
+    "'probe_connection_scope'",
     "'standard_onboarding'",
     "'template_ids'",
     "'item_parent_counts'",
@@ -66,6 +70,10 @@ test('HRIS probe preserves parent and child FK evidence without mutation', { ski
     assert.equal(Number(result.data.item_parent_counts[0].row_count), 1)
     assert.equal(result.data.item_foreign_keys[0].table, 'lifecycle_checklist_templates')
     assert.deepEqual(result.data.foreign_key_violations, [])
+    assert.equal(result.data.probe_connection_query_only, 1)
+    assert.ok([0, 1].includes(result.data.probe_connection_foreign_keys_enabled))
+    assert.match(result.data.probe_connection_scope, /Separate post-failure PDO connection/)
+    assert.equal(Object.hasOwn(result.data, 'foreign_keys_enabled'), false)
     assert.deepEqual(fs.readFileSync(db), before)
   } finally { fs.rmSync(dir, { recursive: true, force: true }) }
 })

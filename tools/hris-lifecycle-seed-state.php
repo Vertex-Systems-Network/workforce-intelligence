@@ -17,7 +17,9 @@ $payload = [
     'database_exists' => is_file($dbPath),
     'runtime' => ['php_version' => PHP_VERSION, 'sqlite_version' => null],
     'tables' => ['lifecycle_checklist_templates' => false, 'lifecycle_checklist_template_items' => false],
-    'foreign_keys_enabled' => null,
+    'probe_connection_foreign_keys_enabled' => null,
+    'probe_connection_query_only' => null,
+    'probe_connection_scope' => 'Separate post-failure PDO connection; does not represent failing application connection or transaction state.',
     'item_foreign_keys' => [],
     'template_ids' => [],
     'standard_onboarding' => [],
@@ -34,9 +36,16 @@ if (! $payload['database_exists']) {
 $stage = 'connection';
 try {
     $pdo = new PDO('sqlite:'.$dbPath, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $stage = 'read_only_connection';
+    // The probe has its own SQLite connection; enforce read-only before inspecting data.
+    $pdo->exec('PRAGMA query_only = ON');
+    $payload['probe_connection_query_only'] = (int) $pdo->query('PRAGMA query_only')->fetchColumn();
+    if ($payload['probe_connection_query_only'] !== 1) {
+        throw new RuntimeException('SQLite query-only mode unavailable.');
+    }
     $stage = 'sqlite_runtime';
     $payload['runtime']['sqlite_version'] = (string) $pdo->query('SELECT sqlite_version()')->fetchColumn();
-    $payload['foreign_keys_enabled'] = (int) $pdo->query('PRAGMA foreign_keys')->fetchColumn();
+    $payload['probe_connection_foreign_keys_enabled'] = (int) $pdo->query('PRAGMA foreign_keys')->fetchColumn();
     $stage = 'table_inventory';
     foreach (array_keys($payload['tables']) as $table) {
         $stmt = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ? LIMIT 1");
