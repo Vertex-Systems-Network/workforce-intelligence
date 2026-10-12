@@ -124,6 +124,7 @@ jobs:
             $diagnosticRoot = 'storage/app/private/seed-diagnostics'
             New-Item -ItemType Directory -Force -Path $diagnosticRoot | Out-Null
             php tools/access-control-seed-state.php | Out-File -FilePath (Join-Path $diagnosticRoot 'workintel-windows-seed-failure.json') -Encoding utf8
+            php tools/hris-lifecycle-seed-state.php | Out-File -FilePath (Join-Path $diagnosticRoot 'workintel-windows-hris-seed-failure.json') -Encoding utf8
             exit $seedStatus
           }
 
@@ -132,7 +133,9 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: workintel-windows-seed-failure-${{ github.run_id }}-${{ github.run_attempt }}
-          path: storage/app/private/seed-diagnostics/workintel-windows-seed-failure.json
+          path: |
+            storage/app/private/seed-diagnostics/workintel-windows-seed-failure.json
+            storage/app/private/seed-diagnostics/workintel-windows-hris-seed-failure.json
           if-no-files-found: error
           retention-days: 7
 
@@ -145,6 +148,7 @@ jobs:
             $diagnosticRoot = 'storage/app/private/seed-diagnostics'
             New-Item -ItemType Directory -Force -Path $diagnosticRoot | Out-Null
             php tools/access-control-seed-state.php | Out-File -FilePath (Join-Path $diagnosticRoot 'workintel-windows-idempotency-seed-failure.json') -Encoding utf8
+            php tools/hris-lifecycle-seed-state.php | Out-File -FilePath (Join-Path $diagnosticRoot 'workintel-windows-hris-idempotency-seed-failure.json') -Encoding utf8
             exit $seedStatus
           }
 
@@ -153,7 +157,9 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: workintel-windows-idempotency-seed-failure-${{ github.run_id }}-${{ github.run_attempt }}
-          path: storage/app/private/seed-diagnostics/workintel-windows-idempotency-seed-failure.json
+          path: |
+            storage/app/private/seed-diagnostics/workintel-windows-idempotency-seed-failure.json
+            storage/app/private/seed-diagnostics/workintel-windows-hris-idempotency-seed-failure.json
           if-no-files-found: error
           retention-days: 7
 
