@@ -29,6 +29,8 @@ test('dashboard widget visibility and layout are persisted in the per-user page 
   assert.match(dashboard, /visible_widgets/)
   assert.match(dashboard, /widget_layout/)
   assert.match(dashboard, /disableDrag: !editing/)
+  assert.match(dashboard, /mode:\s*'float'/)
+  assert.doesNotMatch(dashboard, /\bfloat:\s*true/)
   assert.match(dashboard, /Manage dashboard widgets/)
   assert.match(customization, /\/api\/v1\/ui\/preferences\//)
 })
