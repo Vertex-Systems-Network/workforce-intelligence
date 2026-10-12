@@ -24,7 +24,9 @@ $payload = [
         'sqlite_source_id' => null,
     ],
     'sqlite' => [
-        'foreign_keys' => null,
+        'probe_connection_foreign_keys_enabled' => null,
+        'probe_connection_query_only' => null,
+        'probe_connection_scope' => 'Separate post-failure SQLite observer; not the failing Laravel connection or transaction.',
         'journal_mode' => null,
         'integrity_check' => [],
         'foreign_key_check' => [],
@@ -48,6 +50,13 @@ if (! is_file($dbPath)) {
 $probeStage = 'connection';
 try {
     $pdo = new PDO('sqlite:'.$dbPath, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $probeStage = 'read_only_connection';
+    // The post-failure observer connects separately from Laravel; it must never mutate seed evidence.
+    $pdo->exec('PRAGMA query_only = ON');
+    $payload['sqlite']['probe_connection_query_only'] = (int) $pdo->query('PRAGMA query_only')->fetchColumn();
+    if ($payload['sqlite']['probe_connection_query_only'] !== 1) {
+        throw new RuntimeException('SQLite observer read-only mode unavailable.');
+    }
     $probeStage = 'runtime';
     $safeRuntimeValue = static function (callable $resolver): ?string {
         try {
@@ -78,7 +87,7 @@ try {
     };
 
     $probeStage = 'sqlite_pragmas';
-    $payload['sqlite']['foreign_keys'] = (int) $pdo->query('PRAGMA foreign_keys')->fetchColumn();
+    $payload['sqlite']['probe_connection_foreign_keys_enabled'] = (int) $pdo->query('PRAGMA foreign_keys')->fetchColumn();
     $payload['sqlite']['journal_mode'] = (string) $pdo->query('PRAGMA journal_mode')->fetchColumn();
     $payload['sqlite']['integrity_check'] = $pdo->query('PRAGMA integrity_check')->fetchAll(PDO::FETCH_COLUMN);
     $payload['sqlite']['foreign_key_check'] = $pdo->query('PRAGMA foreign_key_check')->fetchAll(PDO::FETCH_ASSOC);
