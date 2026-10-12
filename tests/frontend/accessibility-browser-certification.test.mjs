@@ -33,6 +33,16 @@ test('authenticated and public application surfaces expose skip links and main l
   }
 })
 
+test('Firefox cold-load readiness keeps explicit keyboard skip-link certification', () => {
+  const spec = read('tests/e2e/accessibility-platform.spec.mjs')
+  assert.match(spec, /waitUntil: 'domcontentloaded'/)
+  assert.match(spec, /test\.setTimeout\(90_000\)/)
+  assert.match(spec, /await skip\.focus\(\)/)
+  assert.match(spec, /await expect\(skip\)\.toBeFocused\(\)/)
+  assert.match(spec, /await page\.keyboard\.press\('Enter'\)/)
+  assert.match(spec, /await expect\(page\.locator\('#workintel-main'\)\)\.toBeFocused\(\)/)
+})
+
 test('Block N CSS covers focus visibility, reduced motion, forced colors and coarse pointer targets', () => {
   const css = read('resources/css/app.css')
   for (const marker of [':focus-visible', 'prefers-reduced-motion:reduce', '@media(pointer:coarse)', '@media(forced-colors:active)', '.ui-sr-only']) assert.ok(css.includes(marker), marker)
