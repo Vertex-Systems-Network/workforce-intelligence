@@ -72,6 +72,7 @@ jobs:
           if [ "$seed_status" -ne 0 ]; then
             mkdir -p storage/app/private/seed-diagnostics
             php tools/access-control-seed-state.php > storage/app/private/seed-diagnostics/workintel-ci-seed-failure.json || true
+            php tools/hris-lifecycle-seed-state.php > storage/app/private/seed-diagnostics/workintel-ci-hris-seed-failure.json || true
             exit "$seed_status"
           fi
       - name: Upload SQLite seed failure diagnostics
@@ -79,7 +80,9 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: workintel-seed-failure-${{ github.run_id }}-${{ github.run_attempt }}
-          path: storage/app/private/seed-diagnostics/workintel-ci-seed-failure.json
+          path: |
+            storage/app/private/seed-diagnostics/workintel-ci-seed-failure.json
+            storage/app/private/seed-diagnostics/workintel-ci-hris-seed-failure.json
           if-no-files-found: error
           retention-days: 7
       - id: sqlite_seed_idempotency
@@ -93,6 +96,7 @@ jobs:
           if [ "$seed_status" -ne 0 ]; then
             mkdir -p storage/app/private/seed-diagnostics
             php tools/access-control-seed-state.php > storage/app/private/seed-diagnostics/workintel-ci-idempotency-seed-failure.json || true
+            php tools/hris-lifecycle-seed-state.php > storage/app/private/seed-diagnostics/workintel-ci-hris-idempotency-seed-failure.json || true
             exit "$seed_status"
           fi
       - name: Upload SQLite idempotency seed failure diagnostics
@@ -100,7 +104,9 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: workintel-idempotency-seed-failure-${{ github.run_id }}-${{ github.run_attempt }}
-          path: storage/app/private/seed-diagnostics/workintel-ci-idempotency-seed-failure.json
+          path: |
+            storage/app/private/seed-diagnostics/workintel-ci-idempotency-seed-failure.json
+            storage/app/private/seed-diagnostics/workintel-ci-hris-idempotency-seed-failure.json
           if-no-files-found: error
           retention-days: 7
       - run: php artisan test
