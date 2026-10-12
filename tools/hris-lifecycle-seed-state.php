@@ -8,7 +8,7 @@ $isWindowsAbsolute = strlen($dbPath) >= 3
     && ctype_alpha($dbPath[0])
     && $dbPath[1] === ':'
     && in_array($dbPath[2], ['\\', '/'], true);
-if (!str_starts_with($dbPath, DIRECTORY_SEPARATOR) && !$isWindowsAbsolute) {
+if (! str_starts_with($dbPath, DIRECTORY_SEPARATOR) && ! $isWindowsAbsolute) {
     $dbPath = dirname(__DIR__).DIRECTORY_SEPARATOR.$dbPath;
 }
 
@@ -25,7 +25,7 @@ $payload = [
     'foreign_key_violations' => [],
 ];
 
-if (!$payload['database_exists']) {
+if (! $payload['database_exists']) {
     $payload['error'] = 'SQLite database file does not exist.';
     fwrite(STDOUT, json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES).PHP_EOL);
     exit(0);
