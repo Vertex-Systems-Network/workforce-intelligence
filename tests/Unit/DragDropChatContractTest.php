@@ -11,11 +11,13 @@ class DragDropChatContractTest extends TestCase
     public function test_drag_drop_uses_gridstack_for_dashboard_and_dnd_kit_for_sortable_flows(): void
     {
         $package = json_decode(file_get_contents(base_path('package.json')), true);
-        $this->assertSame('^13.3.0', $package['dependencies']['gridstack'] ?? null);
+        $this->assertSame('^14.0.0', $package['dependencies']['gridstack'] ?? null);
 
         $dashboard = file_get_contents(base_path('resources/js/components/DashboardGrid.tsx'));
         $this->assertStringContainsString("from 'gridstack'", $dashboard);
         $this->assertStringContainsString('GridStack.init', $dashboard);
+        $this->assertStringContainsString("mode: 'float'", $dashboard);
+        $this->assertStringNotContainsString('float: true', $dashboard);
 
         foreach ([
             'resources/js/components/TaskBoard.tsx',
